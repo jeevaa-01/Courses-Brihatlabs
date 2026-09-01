@@ -1,0 +1,185 @@
+---
+title: "Best Practices"
+description: "Best Practices — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Best Practices
+
+*⏱ Estimated time: 75 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Apply code organization, naming, schema, and idempotency practices.
+- Add observability metrics that make pipelines debuggable in production.
+- Manage configuration and secrets safely.
+
+:::
+
+### Code organization
+
+Separate:
+
+- Configuration.
+- Spark session creation.
+- Schemas.
+- Extraction.
+- Transformation.
+- Loading.
+- Orchestration.
+- Tests.
+
+### Naming conventions
+
+Use:
+
+```python
+raw_sales_df
+clean_sales_df
+regional_summary_df
+build_sales_summary()
+```
+
+Avoid:
+
+```python
+df1
+df2
+temp
+data
+```
+
+### Use explicit schemas
+
+Do not use inference for critical production datasets.
+
+### Avoid driver-heavy operations
+
+Avoid:
+
+```python
+collect()
+toPandas()
+```
+
+unless data is known to be small.
+
+### Use built-in Spark functions
+
+Prefer:
+
+```python
+F.upper()
+F.trim()
+F.when()
+F.to_date()
+```
+
+over Python UDFs.
+
+### Keep transformations deterministic
+
+The same input should produce the same output.
+
+### Add observability
+
+Track:
+
+- Input rows.
+- Valid rows.
+- Rejected rows.
+- Duplicate rows.
+- Output rows.
+- Duration.
+- Source path.
+- Output path.
+- Run ID.
+- Schema version.
+
+### Make pipelines idempotent
+
+Reprocessing the same input should not create duplicates.
+
+### Protect raw data
+
+Never overwrite raw input.
+
+### Use Parquet or Delta for analytics
+
+CSV is useful for exchange, not ideal for large analytical storage.
+
+### Validate joins
+
+Check:
+
+- Match rate.
+- Duplicate keys.
+- Row count before and after.
+- Null dimension values.
+
+### Use configuration files
+
+Avoid hardcoding:
+
+- Paths.
+- Environment names.
+- Partition counts.
+- Database names.
+- Cloud locations.
+
+### Secure secrets
+
+Use:
+
+- Environment variables.
+- Secret managers.
+- Databricks secrets.
+- Cloud key vaults.
+
+Never commit secrets.
+
+<Quiz
+  questions={[
+  {
+    "question": "An idempotent pipeline is one where:",
+    "options": [
+      "Jobs run faster",
+      "Reprocessing the same input produces no duplicates or inconsistencies",
+      "No logging is needed"
+    ],
+    "answer": 1,
+    "explanation": "Idempotency makes reruns and backfills safe."
+  },
+  {
+    "question": "Secrets belong in:",
+    "options": [
+      "Source code",
+      "Environment variables or secret managers",
+      "The README"
+    ],
+    "answer": 1,
+    "explanation": "Never commit credentials."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- Simple, well-tested pipelines beat clever, opaque ones.
+- Never overwrite raw data; never commit secrets.
+- Configuration lives outside code.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Clean code and reliable operations are part of Data Engineering, not optional extras.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+A simple, well-tested pipeline is better than a clever but opaque pipeline.
+
+:::

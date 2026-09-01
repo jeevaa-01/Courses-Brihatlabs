@@ -1,0 +1,169 @@
+---
+title: 'Git Internals — HEAD, Refs, and Objects'
+sidebar_position: 3
+description: 'Look inside the .git folder — how HEAD and refs point to commits, the four object types, and what detached HEAD really means.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Explain what HEAD and refs are and where they live
+- Name the four Git object types: blob, tree, commit, tag
+- Recognize and escape a detached HEAD state
+
+</LearningObjectives>
+
+Understanding Git internals helps you debug problems and use Git with confidence.
+
+### What is HEAD?
+
+`HEAD` is a pointer to your current position in the repository. It usually points to the branch you are on.
+
+```bash
+cat .git/HEAD
+```
+
+**Expected output:**
+
+```
+ref: refs/heads/main
+```
+
+HEAD points to the `main` branch.
+
+### What are Refs?
+
+Refs (references) are human-readable names for commit hashes.
+
+```bash
+ls .git/refs/heads/
+```
+
+**Expected output:**
+
+```
+main
+```
+
+```bash
+cat .git/refs/heads/main
+```
+
+This shows the full SHA-1 hash of the latest commit on main.
+
+### Git's Object Model
+
+Git stores everything as **objects** in `.git/objects/`. There are four types:
+
+| Object | What It Stores |
+|--------|---------------|
+| **Blob** | File contents |
+| **Tree** | Directory listings (filenames + blob references) |
+| **Commit** | Snapshot metadata (tree, parent, author, message) |
+| **Tag** | Annotated tag data |
+
+### Explore Objects
+
+```bash
+git cat-file -t HEAD
+```
+
+**Expected output:**
+
+```
+commit
+```
+
+```bash
+git cat-file -p HEAD
+```
+
+**Expected output:**
+
+```
+tree a1b2c3d4e5f6...
+parent f6g7h8i9j0k1...
+author HitaVir Tech <your.email@example.com> 1712300000 +0530
+committer HitaVir Tech <your.email@example.com> 1712300000 +0530
+
+Add CI status badge to README
+```
+
+### Detached HEAD State
+
+When you checkout a specific commit (not a branch), HEAD points directly to a commit instead of a branch:
+
+```bash
+git checkout HEAD~2
+```
+
+**Expected output:**
+
+```
+You are in 'detached HEAD' state...
+HEAD is now at a1b2c3d Some commit message
+```
+
+To get back to normal:
+
+```bash
+git switch main
+```
+
+:::tip[HitaVir Tech says]
+"Understanding Git internals is like understanding how an engine works. You do not need it for everyday driving, but it helps tremendously when something goes wrong."
+:::
+
+<KeyTakeaways>
+
+- HEAD is a pointer to your current position — normally it points to a branch ref
+- Refs are human-readable names (like `refs/heads/main`) that store commit hashes
+- Everything in Git is one of four objects: blob (file), tree (directory), commit, or tag
+- `git cat-file -p HEAD` prints the raw commit object — tree, parent, author, message
+- Detached HEAD means HEAD points at a commit directly; `git switch main` gets you back
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which Git object type stores the CONTENTS of a file?',
+      options: [
+        'Tree',
+        'Commit',
+        'Blob',
+        'Ref',
+      ],
+      answer: 2,
+      explanation:
+        'Blobs hold file contents. Trees hold directory listings, commits hold snapshot metadata, and refs are not objects at all.',
+    },
+    {
+      question: 'What does "ref: refs/heads/main" inside .git/HEAD mean?',
+      options: [
+        'The repository is corrupted',
+        'HEAD currently points to the main branch',
+        'main has been deleted',
+        'You are in detached HEAD state',
+      ],
+      answer: 1,
+      explanation:
+        'HEAD normally stores a reference to a branch; here it says your current position is the tip of main.',
+    },
+    {
+      question: 'You ran git checkout HEAD~2 and Git warned about detached HEAD. What does that mean?',
+      options: [
+        'HEAD points directly to a commit instead of a branch, so new commits can be lost',
+        'The .git folder was deleted',
+        'Your branch was force-pushed',
+        'Git is running in read-only mode',
+      ],
+      answer: 0,
+      explanation:
+        'In detached HEAD, commits you make belong to no branch. Switch back to a branch (git switch main) to resume normal work.',
+    },
+  ]}
+/>
+
+<LessonComplete />

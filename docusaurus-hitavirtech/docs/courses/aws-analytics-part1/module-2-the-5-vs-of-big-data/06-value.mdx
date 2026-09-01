@@ -1,0 +1,162 @@
+---
+title: 'Value'
+sidebar_position: 6
+description: 'The 5th V — Value. The value pyramid, the dashboard graveyard, and how to measure whether analytics actually changes decisions.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Define Value as the business outcome analytics delivers
+- Read the value pyramid — how the other four Vs stack up to enable outcomes
+- Apply the dashboard-graveyard test and the four ways to measure value
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              THE  5th  V   -   VALUE                         |
+  |          "What business outcome does it drive?"              |
+  +==============================================================+
+```
+
+### What is Value?
+
+💎 **Value** is the business outcome your data and analytics actually deliver — revenue gained, cost saved, risk reduced, customer experience improved.
+
+Without Value, the other four Vs are expensive hobbies.
+
+### The Value Pyramid
+
+```
+                       VALUE
+                     (outcome)
+                         ^
+                         |  enabled by
+                         |
+                Insights & decisions
+                         ^
+                         |  enabled by
+                         |
+                   Analytics + ML
+                         ^
+                         |  enabled by
+                         |
+               Trustworthy (Veracity) data
+                         ^
+                         |  at the right
+                         |  speed (Velocity)
+                         |
+                  across Varieties
+                         ^
+                         |  stored at
+                         |
+                   the right scale (Volume)
+```
+
+### Examples of Real Value
+
+| Industry | Analytics Value |
+|----------|-----------------|
+| 🛒 Retail | Recommendation engine → **+20% revenue** |
+| 🏦 Banking | Fraud detection → **millions saved** |
+| 🚚 Logistics | Route optimization → **-15% fuel cost** |
+| 🏥 Healthcare | Early diagnosis models → **better outcomes** |
+| 🎬 Streaming | Personalized content → **higher retention** |
+
+### The Dashboard Graveyard
+
+Most companies have folders full of unused dashboards — the **dashboard graveyard**. Every one cost engineering time, storage, and compute.
+
+The difference between a valuable dashboard and a graveyard dashboard:
+
+```
+  +------------------------------------------------------+
+  |                                                      |
+  |   "What decision will change because of this?"       |
+  |                                                      |
+  |   If nobody can answer   ->  DON'T BUILD IT.         |
+  |                                                      |
+  +------------------------------------------------------+
+```
+
+### How to Measure Value
+
+- 🔁 **Adoption** — active daily / weekly users
+- 💰 **Metric movement** — did conversion rise?
+- ⏱️ **Time saved** — replaces manual work?
+- 🎯 **Decisions influenced** — used in leadership meetings?
+
+### Questions Value Forces You to Ask
+
+- 👥 **Who** uses this, and **how often**?
+- 🎯 What **decision** would be different without it?
+- 💰 What's the **ROI** vs build + maintain cost?
+- 🗑️ When should we **retire** outdated reports?
+
+:::tip[HitaVir Tech says]
+"A data platform that costs more than the decisions it enables is a failure, no matter how beautiful the architecture. Lead with Value."
+:::
+
+:::info[Value in one line]
+Start from the decision, work backwards to the pipeline.
+:::
+
+### Preview — AWS Services That Deliver Value
+
+![QuickSight](/img/courses/aws-icons/quicksight.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png) ![Bedrock](/img/courses/aws-icons/bedrock.png) ![Forecast](/img/courses/aws-icons/forecast.png) ![Personalize](/img/courses/aws-icons/personalize.png)
+
+*Coming up in "AWS Services for Value".*
+
+<KeyTakeaways>
+
+- Value is the outcome V — revenue, savings, risk reduction, better customer experience
+- The other four Vs stack into a pyramid whose only point is Value; without it they are expensive hobbies
+- The graveyard test: if nobody can name the decision a dashboard changes, don't build it
+- Measure value through adoption, metric movement, time saved, and decisions influenced
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What sits at the top of the value pyramid?',
+      options: [
+        'The data lake',
+        'Machine learning models',
+        'Business outcome (Value)',
+        'Data volume',
+      ],
+      answer: 2,
+      explanation:
+        'Volume, Variety, Velocity, and Veracity all exist to enable insights, decisions, and ultimately business Value.',
+    },
+    {
+      question: 'What question separates a valuable dashboard from a graveyard dashboard?',
+      options: [
+        '"How many charts does it have?"',
+        '"What decision will change because of this?"',
+        '"Is it built on Redshift?"',
+        '"Does it refresh in real time?"',
+      ],
+      answer: 1,
+      explanation:
+        'If nobody can name the decision the dashboard changes, it will join the graveyard — don\'t build it.',
+    },
+    {
+      question: 'Which of these is one of the four suggested ways to measure analytics value?',
+      options: [
+        'Lines of SQL written',
+        'Number of AWS services used',
+        'Size of the data lake',
+        'Adoption — active daily / weekly users',
+      ],
+      answer: 3,
+      explanation:
+        'Adoption, metric movement, time saved, and decisions influenced are the four value measures — tool counts are not.',
+    },
+  ]}
+/>
+
+<LessonComplete />

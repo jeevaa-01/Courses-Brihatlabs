@@ -1,0 +1,241 @@
+---
+title: 'Azure Services for Velocity'
+sidebar_position: 4
+description: 'The Azure toolkit for real-time data — Event Hubs, Capture, Stream Analytics, Data Explorer, Functions, and the velocity decision tree.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Match Event Hubs, Stream Analytics, Data Explorer, Functions, and Event Grid to their Velocity roles
+- Explain how Event Hubs Capture archives streams to ADLS with zero code
+- Read a real-time pipeline where one stream feeds multiple independent consumers
+- Use the velocity decision tree to pick a streaming stack by freshness requirement
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              AZURE  FOR  VELOCITY                            |
+  |         "Move and process data in real time."                |
+  +==============================================================+
+```
+
+### The Velocity Lineup
+
+![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Data Explorer](/img/courses/azure-icons/data-explorer.svg) ![Functions](/img/courses/azure-icons/functions.svg) ![Event Grid](/img/courses/azure-icons/event-grid.svg) ![Logic Apps](/img/courses/azure-icons/logic-apps.svg)
+
+**Event Hubs** • **Stream Analytics** • **Data Explorer** • **Functions** • **Event Grid** • **Logic Apps**
+
+### The Velocity Toolkit
+
+| Service | Icon | Purpose |
+|---------|:---:|---------|
+| **Azure Event Hubs** | <img src="azure-icons/event-hubs.svg" width="32" height="32" alt="Event Hubs" /> | Real-time event stream (Kafka-compatible) |
+| **Event Hubs Capture** | <img src="azure-icons/event-hubs.svg" width="32" height="32" alt="Event Hubs Capture" /> | Buffered delivery to ADLS / Blob (no code) |
+| **Azure Stream Analytics** | <img src="azure-icons/stream-analytics.svg" width="32" height="32" alt="Stream Analytics" /> | SQL on streams, sub-second latency |
+| **Azure Data Explorer (Kusto)** | <img src="azure-icons/data-explorer.svg" width="32" height="32" alt="Data Explorer" /> | Blazing-fast time-series + log analytics |
+| **Azure Functions** | <img src="azure-icons/functions.svg" width="32" height="32" alt="Functions" /> | Event-driven serverless code |
+| **Azure Event Grid** | <img src="azure-icons/event-grid.svg" width="32" height="32" alt="Event Grid" /> | Serverless event bus across Azure |
+| **Azure Service Bus / Queue Storage** | <img src="azure-icons/logic-apps.svg" width="32" height="32" alt="Service Bus" /> | Queue and pub-sub messaging |
+
+### Service Spotlight — Azure Event Hubs
+
+![Event Hubs](/img/courses/azure-icons/event-hubs.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  AZURE  EVENT  HUBS  -  Real-time Event Stream               |
+  +--------------------------------------------------------------+
+  |  Latency     :  Sub-second                                   |
+  |  Retention   :  1-7 days (90 days on Premium)                |
+  |  Throughput  :  MB/sec per partition, scale by partition     |
+  |  Kafka API   :  Yes - drop-in for Kafka clients              |
+  |                                                              |
+  |  The "high-speed conveyor belt" for events on Azure.         |
+  +--------------------------------------------------------------+
+```
+
+### Event Hubs in Action — The Conveyor Belt
+
+```
+  PRODUCERS                EVENT HUBS                CONSUMERS
+  ------------             ------------              ------------
+
+  App events        +----------------------+         Functions
+  Clickstreams  --->|  >> >> >> >> >> >>   |--->    Stream Analytics
+  IoT sensors       |  durable, ordered,   |         Capture -> ADLS
+  Transactions      |  partitioned         |         Data Explorer
+  Card swipes       +----------------------+         Synapse
+```
+
+Event Hubs holds events **durably**. Multiple consumers read the same stream **independently**.
+
+### Service Spotlight — Event Hubs Capture
+
+![Event Hubs](/img/courses/azure-icons/event-hubs.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  EVENT  HUBS  CAPTURE  -  The Easy Button                    |
+  +--------------------------------------------------------------+
+  |  Model       :  Fully managed, no code                       |
+  |  Buffer      :  Time window or size (whichever first)        |
+  |  Format      :  Avro (native) or Parquet via Stream Analytics|
+  |  Sinks       :  ADLS Gen2, Blob Storage                      |
+  |                                                              |
+  |  No cluster - the laziest streaming archive on Azure.        |
+  +--------------------------------------------------------------+
+```
+
+```
+  Producers  --->  Event Hubs  --->  Capture (no servers)  --->  ADLS
+                                    auto-write every N mins
+```
+
+### Azure Stream Analytics — Continuous SQL
+
+```sql
+SELECT  user_id, amount, location
+INTO    FraudAlerts
+FROM    TransactionsStream TIMESTAMP BY event_time
+WHERE   amount > 10000 OR is_foreign = 1;
+```
+
+Results in **milliseconds** — not after the nightly batch.
+
+### Azure Functions — The Universal Event Glue
+
+```
+  Blob created     +
+  Event Hubs       +--->  Azure Function  --->  Synapse load
+  Cosmos change    +         |
+  Event Grid       +         +---->  Service Bus / Queue alert
+```
+
+Perfect for: event reactions, enrichment, alerting, small transforms.
+
+### Service Spotlight — Azure Data Explorer
+
+![Data Explorer](/img/courses/azure-icons/data-explorer.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  AZURE  DATA  EXPLORER  (ADX / KUSTO)                        |
+  +--------------------------------------------------------------+
+  |  Category    :  Time-series + log analytics                  |
+  |  Query lang  :  Kusto Query Language (KQL)                   |
+  |  Scale       :  Billions of rows, sub-second                 |
+  |  Ingest rate :  GB/sec, auto-indexed                         |
+  |                                                              |
+  |  Same engine powers Azure Monitor, Sentinel, Log Analytics.  |
+  +--------------------------------------------------------------+
+```
+
+### Real-World Velocity Pipeline — Rideshare App
+
+```
+  Rideshare app (1 million events/sec)
+              |
+              v
+       Azure Event Hubs
+              |
+     +--------+--------+---------+
+     |        |        |         |
+     v        v        v         v
+  Function  Stream    Capture
+  fraud     Analytics buffer
+  flag      real-time --> ADLS (Parquet)
+     |        |         |
+     v        v         v
+   Service  Power BI   Synapse
+   Bus      live dash  Serverless
+   alert                (historical)
+```
+
+### Velocity Decision Tree
+
+```
+                       How fresh must the data be?
+                                 |
+        +---------+----------+---+---+-----------+
+        |         |          |       |           |
+     Next day  15 minutes  Seconds  Sub-second  Kafka shop
+        |         |          |       |           |
+        v         v          v       v           v
+     ADF        Capture    Event     Stream      Event Hubs
+     pipeline   -> ADLS    Hubs +    Analytics   (Kafka API)
+                           Function
+```
+
+:::tip[HitaVir Tech says]
+"Every team thinks they need real-time until they see the bill. Start with Event
+Hubs Capture and 5-minute micro-batches — graduate later. Most of the time, you
+won't need to."
+:::
+
+<KeyTakeaways>
+
+- Event Hubs is the durable, partitioned, Kafka-compatible conveyor belt — many consumers read the same stream independently
+- Event Hubs Capture archives streams to ADLS/Blob with zero code — the easiest streaming starting point
+- Stream Analytics runs continuous SQL on streams with sub-second results; Functions glue events to actions
+- Data Explorer (Kusto) handles billions of time-series/log rows at sub-second query speed
+- Match the stack to freshness: ADF for next-day, Capture for minutes, Event Hubs + Functions for seconds, Stream Analytics for sub-second
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Your team already uses Kafka client libraries. What makes Event Hubs a drop-in option?',
+      options: [
+        'Event Hubs exposes a Kafka-compatible API',
+        'Event Hubs converts Kafka topics into Blob containers',
+        'Kafka is deprecated on Azure',
+        'Azure Functions translate Kafka calls automatically',
+      ],
+      answer: 0,
+      explanation:
+        'Event Hubs speaks the Kafka protocol, so existing Kafka producers and consumers connect without rewrites.',
+    },
+    {
+      question: 'What is the simplest zero-code way to archive a live event stream into ADLS Gen2?',
+      options: [
+        'A custom Spark Structured Streaming job',
+        'Event Hubs Capture with a time/size buffer',
+        'A nightly Data Factory copy',
+        'Manually exporting from the portal',
+      ],
+      answer: 1,
+      explanation:
+        'Capture is fully managed: it buffers by time window or size and writes to ADLS/Blob with no cluster and no code.',
+    },
+    {
+      question: 'Which service runs continuous SQL queries over a live stream with millisecond results?',
+      options: [
+        'Azure Data Factory',
+        'Azure Archive Storage',
+        'Azure Stream Analytics',
+        'Microsoft Purview',
+      ],
+      answer: 2,
+      explanation:
+        'Stream Analytics applies SQL to streams as events arrive — like the fraud-alert query in this lesson.',
+    },
+    {
+      question: 'Per the decision tree, a dashboard that needs ~15-minute freshness is best served by which pattern?',
+      options: [
+        'Sub-second Stream Analytics jobs',
+        'A dedicated HDInsight Kafka cluster',
+        'Next-day ADF batch',
+        'Event Hubs Capture micro-batches into ADLS',
+      ],
+      answer: 3,
+      explanation:
+        'Capture-to-ADLS micro-batches deliver minutes-level freshness at a fraction of true streaming cost.',
+    },
+  ]}
+/>
+
+<LessonComplete />

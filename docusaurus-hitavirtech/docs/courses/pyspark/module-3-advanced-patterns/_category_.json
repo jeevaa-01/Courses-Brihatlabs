@@ -1,0 +1,9 @@
+{
+  "label": "Module 3 \u00b7 Advanced Data Engineering Patterns",
+  "position": 5,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "description": "Joins, window functions, Spark SQL, and partitioned writes."
+  }
+}

@@ -1,0 +1,109 @@
+---
+title: 'Install Docker Desktop'
+sidebar_position: 4
+description: 'Enable WSL2, install Docker Desktop, and run your first PostgreSQL container.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Enable WSL2 with an Ubuntu 22.04 distribution
+- Install Docker Desktop on the WSL2 backend
+- Run and verify a PostgreSQL 15 container
+
+</LearningObjectives>
+### Step 1 - Enable WSL2
+
+```powershell
+# PowerShell as Administrator - then restart PC
+wsl --install
+```
+
+After restart:
+```powershell
+wsl --set-default-version 2
+wsl --install -d Ubuntu-22.04
+```
+
+### Step 2 - Install Docker Desktop
+
+Download from [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
+
+Install settings:
+- Use **WSL 2** instead of Hyper-V
+- Add shortcut to desktop
+
+### Verify Docker
+
+```bash
+docker --version
+# Docker version 26.x.x
+
+docker run hello-world
+# Hello from Docker!
+```
+
+### Test with PostgreSQL
+
+```bash
+docker run -d \
+  --name pg-dev \
+  -e POSTGRES_PASSWORD=hitavir123 \
+  -e POSTGRES_DB=dataengineering \
+  -p 5432:5432 \
+  postgres:15
+
+docker ps
+```
+
+<KeyTakeaways>
+
+- Docker Desktop on Windows runs on the **WSL2** backend — enable it first, then restart
+- `docker run hello-world` is the canonical install check
+- One `docker run` command gives you a disposable PostgreSQL for local pipelines
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What must be enabled BEFORE installing Docker Desktop on Windows 11?',
+      options: [
+        'WSL2 (wsl --install, then restart)',
+        'Hyper-V Manager',
+        'Windows Sandbox',
+        'Nothing — Docker installs everything',
+      ],
+      answer: 0,
+      explanation:
+        'Docker Desktop uses the WSL2 backend; installing WSL2 first (with a restart) avoids the most common setup failure.',
+    },
+    {
+      question: 'In the PostgreSQL example, what does -p 5432:5432 do?',
+      options: [
+        'Maps container port 5432 to port 5432 on your machine',
+        'Sets the postgres password',
+        'Limits the container to 5432 MB of RAM',
+        'Names the container pg-5432',
+      ],
+      answer: 0,
+      explanation:
+        'Port mapping (host:container) is what lets local tools connect to the database inside the container.',
+    },
+    {
+      question: 'Docker Desktop refuses to start. Per the troubleshooting table, what do you check?',
+      options: [
+        'That Virtualization is enabled in BIOS',
+        'That Python is on PATH',
+        'That JAVA_HOME is set',
+        'That port 8080 is free',
+      ],
+      answer: 0,
+      explanation:
+        'WSL2/Docker need hardware virtualization; on many machines it ships disabled in BIOS/UEFI.',
+    },
+  ]}
+/>
+
+<LessonComplete />

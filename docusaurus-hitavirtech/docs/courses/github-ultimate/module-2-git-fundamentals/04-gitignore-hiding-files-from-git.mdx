@@ -1,0 +1,162 @@
+---
+title: 'Gitignore — Hiding Files from Git'
+sidebar_position: 4
+description: 'Keep secrets, build output, and dependencies out of version control with a .gitignore file and common ignore patterns.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Create a `.gitignore` file and verify it works
+- Recognize common ignore patterns (logs, dependencies, secrets)
+- Explain why secrets must never be committed to Git
+
+</LearningObjectives>
+
+Not every file should be tracked by Git. Temporary files, passwords, build outputs — these should be ignored.
+
+### Create a .gitignore File
+
+```bash
+touch .gitignore
+```
+
+Open it in your editor and add patterns for files to ignore:
+
+```bash
+cat > .gitignore << 'EOF'
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+*.swp
+*.swo
+
+# Environment and secrets
+.env
+*.key
+*.pem
+
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+
+# Build output
+dist/
+build/
+*.log
+EOF
+```
+
+### Test It
+
+```bash
+echo "SECRET_KEY=abc123" > .env
+git status
+```
+
+**Expected output:**
+
+```
+On branch main
+Untracked files:
+        .gitignore
+
+```
+
+Notice: `.env` does **not** appear! Git is ignoring it.
+
+### Commit the .gitignore
+
+```bash
+git add .gitignore
+git commit -m "Add .gitignore file"
+```
+
+### Common .gitignore Patterns
+
+| Pattern | What It Ignores |
+|---------|----------------|
+| `*.log` | All log files |
+| `node_modules/` | Node.js dependencies folder |
+| `.env` | Environment variable files |
+| `build/` | Build output folder |
+| `*.pyc` | Python compiled files |
+| `!important.log` | Exception — do NOT ignore this file |
+
+### Find Templates
+
+GitHub provides ready-made `.gitignore` templates for every language:
+[https://github.com/github/gitignore](https://github.com/github/gitignore)
+
+:::tip[HitaVir Tech says]
+"Rule number one: NEVER commit passwords, API keys, or secrets to Git. Once something is in Git history, it is very hard to remove. The `.gitignore` file is your first line of defense."
+:::
+
+### Beginner Level Recap
+
+Congratulations! You have completed the Beginner Level. Here is what you learned:
+
+- What Git and GitHub are and why they matter
+- How to install and configure Git
+- How to create a repository with `git init`
+- The three-stage workflow: Working Directory → Staging Area → Repository
+- How to add, commit, and check status
+- How to use `.gitignore` to exclude files
+
+<KeyTakeaways>
+
+- `.gitignore` lists patterns for files Git should never track — secrets, build output, dependencies
+- Ignored files simply stop appearing in `git status`
+- Commit the `.gitignore` itself so the whole team shares the same rules
+- A `!pattern` line is an exception — it un-ignores a file matched by an earlier pattern
+- GitHub maintains ready-made templates for every language at github.com/github/gitignore
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which file should ALWAYS be in .gitignore?',
+      options: [
+        'README.md',
+        'index.html',
+        '.env with API keys and passwords',
+        '.gitignore itself',
+      ],
+      answer: 2,
+      explanation:
+        'Secrets must never enter Git history — once committed they are very hard to remove. The .gitignore file itself SHOULD be committed.',
+    },
+    {
+      question: 'What does the pattern !important.log mean in .gitignore?',
+      options: [
+        'Ignore important.log with high priority',
+        'Do NOT ignore important.log, even though *.log is ignored',
+        'Delete important.log',
+        'Warn when important.log changes',
+      ],
+      answer: 1,
+      explanation:
+        'The leading ! creates an exception: important.log stays tracked even though the *.log pattern ignores other logs.',
+    },
+    {
+      question: 'After adding .env to .gitignore, what happens when you run git status?',
+      options: [
+        '.env no longer appears in the output',
+        '.env shows as "ignored: .env"',
+        '.env is deleted from disk',
+        'git status fails with an error',
+      ],
+      answer: 0,
+      explanation:
+        'Ignored files are silently excluded from git status — they still exist on disk but Git pretends they are not there.',
+    },
+  ]}
+/>
+
+<LessonComplete />

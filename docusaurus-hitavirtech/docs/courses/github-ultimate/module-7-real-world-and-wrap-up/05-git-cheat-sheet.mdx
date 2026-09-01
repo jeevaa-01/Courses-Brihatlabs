@@ -1,0 +1,140 @@
+---
+title: 'Git Cheat Sheet'
+sidebar_position: 5
+description: 'A one-page reference of every command from the course — setup, workflow, branching, merging, remotes, undo, tags, and inspection.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Bookmark a single reference page for every command in the course
+- Group commands by task: setup, workflow, branching, remotes, undo, inspection
+
+</LearningObjectives>
+
+A quick reference for all the commands you learned. Save this for daily use!
+
+### Setup
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "your@email.com"
+git config --global init.defaultBranch main
+```
+
+### Create and Clone
+
+```bash
+git init                          # Initialize new repo
+git clone <url>                   # Clone remote repo
+```
+
+### Basic Workflow
+
+```bash
+git status                        # Check current state
+git add <file>                    # Stage a file
+git add .                         # Stage all changes
+git commit -m "message"           # Commit staged changes
+git log --oneline                 # View compact history
+```
+
+### Branching
+
+```bash
+git branch                        # List branches
+git branch <name>                 # Create branch
+git switch <name>                 # Switch to branch
+git switch -c <name>              # Create and switch
+git branch -d <name>              # Delete branch (safe)
+git branch -D <name>              # Delete branch (force)
+```
+
+### Merging and Rebasing
+
+```bash
+git merge <branch>                # Merge branch into current
+git rebase <branch>               # Rebase current onto branch
+git rebase -i HEAD~N              # Interactive rebase last N commits
+git cherry-pick <hash>            # Copy specific commit
+```
+
+### Remote Operations
+
+```bash
+git remote add origin <url>       # Add remote
+git push -u origin main           # Push and set upstream
+git push                          # Push to upstream
+git pull                          # Fetch and merge
+git fetch                         # Fetch only (no merge)
+```
+
+### Undo and Fix
+
+```bash
+git restore <file>                # Discard working changes
+git restore --staged <file>       # Unstage a file
+git reset --soft HEAD~1           # Undo commit (keep changes)
+git reset --hard HEAD~1           # Undo commit (discard changes)
+git revert HEAD                   # Create undo commit
+git stash                         # Stash changes
+git stash pop                     # Restore stashed changes
+```
+
+### Tags
+
+```bash
+git tag -a v1.0 -m "message"     # Create annotated tag
+git push origin --tags            # Push all tags
+```
+
+### Inspection
+
+```bash
+git diff                          # View unstaged changes
+git diff --staged                 # View staged changes
+git log --oneline --graph --all   # Visual branch history
+git show <hash>                   # View commit details
+git blame <file>                  # Who changed each line
+```
+
+<KeyTakeaways>
+
+- Daily loop: `git status` → `git add` → `git commit -m` → `git push`
+- Branch work: `git switch -c` to start, `git merge` to finish, `git branch -d` to clean up
+- Undo ladder: `restore` (working dir) → `restore --staged` (index) → `reset` (local commits) → `revert` (shared commits)
+- `git log --oneline --graph --all` is the fastest way to see the whole picture
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which command shows WHO last changed each line of a file?',
+      options: [
+        'git log --who',
+        'git blame <file>',
+        'git diff --author',
+        'git show --lines',
+      ],
+      answer: 1,
+      explanation:
+        'git blame annotates every line with the commit and author that last touched it — invaluable for debugging.',
+    },
+    {
+      question: 'From the cheat sheet, which command downloads remote changes WITHOUT merging them?',
+      options: [
+        'git pull',
+        'git clone',
+        'git fetch',
+        'git push',
+      ],
+      answer: 2,
+      explanation:
+        'fetch updates your remote-tracking branches only; pull would also merge into your current branch.',
+    },
+  ]}
+/>
+
+<LessonComplete />

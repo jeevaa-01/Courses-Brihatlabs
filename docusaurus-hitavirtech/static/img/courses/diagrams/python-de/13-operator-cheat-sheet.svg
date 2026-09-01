@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 652 258" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="652" height="258" rx="12" fill="#f8f9fa"/>
+  <text x="326" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Operator Cheat Sheet</text>
+  <rect x="15" y="40" width="97" height="30" rx="6" fill="#1a73e8"/>
+  <text x="63" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Category</text>
+  <rect x="117" y="40" width="137" height="30" rx="6" fill="#1a73e8"/>
+  <text x="186" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Operators</text>
+  <rect x="260" y="40" width="197" height="30" rx="6" fill="#1a73e8"/>
+  <text x="359" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Example</text>
+  <rect x="462" y="40" width="174" height="30" rx="6" fill="#1a73e8"/>
+  <text x="550" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Result</text>
+  <rect x="15" y="76" width="97" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">Arithmetic</text>
+  <rect x="117" y="76" width="137" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="127" y="94" font-size="12" font-family="monospace" fill="#1a73e8">+ - * / // %</text>
+  <rect x="260" y="76" width="197" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="270" y="94" font-size="12" font-family="monospace" fill="#1a73e8">7 // 2</text>
+  <rect x="462" y="76" width="174" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="472" y="94" font-size="12" font-family="monospace" fill="#1a73e8">3 (integer division)</text>
+  <rect x="15" y="108" width="97" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" fill="#3c4043">Comparison</text>
+  <rect x="117" y="108" width="137" height="28" rx="4" fill="white"/>
+  <text x="127" y="126" font-size="12" font-family="monospace" fill="#3c4043">== != &gt; &lt; &gt;= &lt;=</text>
+  <rect x="260" y="108" width="197" height="28" rx="4" fill="white"/>
+  <text x="270" y="126" font-size="12" font-family="monospace" fill="#3c4043">5 &gt; 3</text>
+  <rect x="462" y="108" width="174" height="28" rx="4" fill="white"/>
+  <text x="472" y="126" font-size="12" font-family="monospace" fill="#3c4043">True</text>
+  <rect x="15" y="140" width="97" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">Logical</text>
+  <rect x="117" y="140" width="137" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="127" y="158" font-size="12" font-family="monospace" fill="#1a73e8">and or not</text>
+  <rect x="260" y="140" width="197" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="270" y="158" font-size="12" font-family="monospace" fill="#1a73e8">True and False</text>
+  <rect x="462" y="140" width="174" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="472" y="158" font-size="12" font-family="monospace" fill="#1a73e8">False</text>
+  <rect x="15" y="172" width="97" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" fill="#3c4043">Membership</text>
+  <rect x="117" y="172" width="137" height="28" rx="4" fill="white"/>
+  <text x="127" y="190" font-size="12" font-family="monospace" fill="#3c4043">in, not in</text>
+  <rect x="260" y="172" width="197" height="28" rx="4" fill="white"/>
+  <text x="270" y="190" font-size="12" font-family="monospace" fill="#3c4043">"ETL" in "ETL Pipeline"</text>
+  <rect x="462" y="172" width="174" height="28" rx="4" fill="white"/>
+  <text x="472" y="190" font-size="12" font-family="monospace" fill="#3c4043">True</text>
+  <rect x="15" y="204" width="97" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" fill="#1a73e8">Identity</text>
+  <rect x="117" y="204" width="137" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="127" y="222" font-size="12" font-family="monospace" fill="#1a73e8">is, is not</text>
+  <rect x="260" y="204" width="197" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="270" y="222" font-size="12" font-family="monospace" fill="#1a73e8">value is None</text>
+  <rect x="462" y="204" width="174" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="472" y="222" font-size="12" fill="#1a73e8">True/False</text>
+  <text x="326" y="252" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

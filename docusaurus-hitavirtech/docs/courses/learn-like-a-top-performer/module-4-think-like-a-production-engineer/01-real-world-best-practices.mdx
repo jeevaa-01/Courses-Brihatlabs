@@ -1,0 +1,114 @@
+---
+title: 'Real-World Best Practices'
+sidebar_position: 1
+description: 'The DO and DO NOT lists for code quality, Git hygiene, and cloud practice that professional engineers live by.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Apply the code-quality DOs and DO NOTs (naming, small functions, no hardcoded secrets)
+- Practice Git hygiene: conventional commits, branches, and daily pushes
+- Follow cloud basics: tagging, least privilege, billing alerts, and no idle resources
+
+</LearningObjectives>
+
+### Code Quality
+
+```
+DO:
+  - Use meaningful variable names (customer_orders, not x)
+  - Follow the naming conventions of the project you are in
+  - Keep functions small and focused (one function, one job)
+  - Write comments only where the logic is not self-evident
+
+DO NOT:
+  - Hardcode file paths, credentials, or config values (EVER)
+  - Write 500-line functions
+  - Skip error handling
+  - Commit without reviewing your own diff first
+```
+
+### Git Hygiene
+
+```
+DO:
+  - Commit frequently with clear messages (feat:, fix:, docs:)
+  - Use branches for new features
+  - Review your diff before every commit
+  - Push to GitHub every day
+
+DO NOT:
+  - Commit directly to main/master without review
+  - Write commit messages like "fix" or "update" or "stuff"
+  - Push secrets, API keys, or credentials
+  - Ignore .gitignore
+```
+
+### Cloud Best Practices
+
+```
+DO:
+  - Tag all cloud resources (project, owner, environment)
+  - Use IAM roles with least privilege
+  - Set billing alerts on every cloud account
+  - Enable logging and monitoring
+
+DO NOT:
+  - Use root/admin accounts for daily work
+  - Leave clusters and VMs running when not in use
+  - Store data without encryption
+  - Hardcode credentials in code or config files
+```
+
+<KeyTakeaways>
+
+- Never hardcode file paths, credentials, or config values — ever
+- Commit frequently with meaningful conventional messages; review your own diff before every commit
+- In the cloud: tag everything, use least-privilege IAM, set billing alerts, and never leave clusters running idle
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which of these is on the code-quality DO NOT list?',
+      options: [
+        'Using meaningful variable names',
+        'Hardcoding credentials or config values in code',
+        'Keeping functions small and focused',
+        'Writing comments where logic is not self-evident',
+      ],
+      answer: 1,
+      explanation:
+        'Hardcoding paths, credentials, or config is banned — EVER. The other three are all on the DO list.',
+    },
+    {
+      question: 'Which commit message follows the Git hygiene rules of this lesson?',
+      options: [
+        '"stuff"',
+        '"update"',
+        '"feat: add checkpoint validation to ingestion pipeline"',
+        '"fix"',
+      ],
+      answer: 2,
+      explanation:
+        'Clear, conventional messages (feat:, fix:, docs:) describe the change; one-word messages like "fix" or "stuff" are explicitly called out as bad.',
+    },
+    {
+      question: 'Which cloud practice belongs on the DO list?',
+      options: [
+        'Use the root/admin account for daily work',
+        'Leave dev clusters running overnight for convenience',
+        'Store data unencrypted to save costs',
+        'Set billing alerts on every cloud account',
+      ],
+      answer: 3,
+      explanation:
+        'Billing alerts, resource tagging, least-privilege IAM, and logging are the cloud DOs; the other options are all DO NOTs.',
+    },
+  ]}
+/>
+
+<LessonComplete />

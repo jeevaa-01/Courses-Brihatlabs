@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 519 258" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="519" height="258" rx="12" fill="#f8f9fa"/>
+  <text x="259" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">The Anatomy of a Function — Visual Breakdown</text>
+  <rect x="15" y="40" width="152" height="30" rx="6" fill="#1a73e8"/>
+  <text x="91" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Part</text>
+  <rect x="172" y="40" width="332" height="30" rx="6" fill="#1a73e8"/>
+  <text x="338" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Meaning</text>
+  <rect x="15" y="76" width="152" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">def</text>
+  <rect x="172" y="76" width="332" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="182" y="94" font-size="12" fill="#1a73e8">Keyword that starts a function definition</text>
+  <rect x="15" y="108" width="152" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">calculate_total</text>
+  <rect x="172" y="108" width="332" height="28" rx="4" fill="white"/>
+  <text x="182" y="126" font-size="12" fill="#3c4043">The function's name (use snake_case)</text>
+  <rect x="15" y="140" width="152" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">(price, quantity)</text>
+  <rect x="172" y="140" width="332" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="182" y="158" font-size="12" fill="#1a73e8">Parameters — the inputs the function expects</text>
+  <rect x="15" y="172" width="152" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">"""..."""</text>
+  <rect x="172" y="172" width="332" height="28" rx="4" fill="white"/>
+  <text x="182" y="190" font-size="12" fill="#3c4043">Docstring — a description of what the function does</text>
+  <rect x="15" y="204" width="152" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">return total</text>
+  <rect x="172" y="204" width="332" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="182" y="222" font-size="12" fill="#1a73e8">The value the caller gets back</text>
+  <text x="259" y="252" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

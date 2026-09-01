@@ -1,0 +1,356 @@
+---
+title: 'Serve and query: Athena CTAS, Redshift Serverless, and the lake house'
+sidebar_position: 2
+description: 'Build the gold layer with an Athena CTAS, stand up Redshift Serverless, load it with COPY, and query the lake directly with Spectrum — the lake house pattern.'
+---
+
+<DurationBadge minutes={60} />
+
+<LearningObjectives>
+
+- Materialize the gold table `daily_region_sales` with an Athena CTAS statement
+- Stand up a minimal Redshift Serverless namespace and workgroup, and load gold with COPY
+- Query lake data in place from Redshift through a Spectrum external schema
+- Explain the lake house pattern and when to serve from Redshift instead of Athena
+
+</LearningObjectives>
+
+Your silver layer is clean, typed, and partitioned, but nobody runs a business off raw
+silver tables. Now build the **gold** layer — curated, ready-to-answer tables — and serve
+it two ways: query it in place with Athena, and load it into a warehouse with Redshift
+Serverless. By the end the same revenue-by-region answer comes out of both engines.
+
+### The concept visual
+
+The lake-house diagram — `assets/03-lakehouse-architecture.html` in the course materials
+repo — shows exactly the stack you complete in this lesson.
+
+:::warning[Redshift Serverless bills while it exists]
+**Redshift Serverless bills by RPU-hour for as long as the workgroup exists**, even
+idle, in 60-second minimums. An RPU (Redshift Processing Unit) is its unit of compute. Set
+base capacity to the minimum (8 RPUs) and move through this stage without long breaks. The
+final teardown removes it; do not leave it running overnight.
+:::
+
+### Setup
+
+```bash
+export ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+export BUCKET=hvt-retail-datalake-$ACCOUNT_ID
+
+aws s3api put-object --bucket "$BUCKET" --key athena-results/
+
+aws athena start-query-execution \
+  --query-string "SELECT COUNT(*) FROM hvt_retail_db.orders" \
+  --query-execution-context Database=hvt_retail_db \
+  --result-configuration OutputLocation=s3://$BUCKET/athena-results/
+```
+
+:::tip[What a lake house is]
+A **lake house** (one word in this track) is an architecture that puts warehouse-style
+querying directly on top of data-lake storage. You get the cheap, open storage of a lake
+and the fast, structured querying of a warehouse without copying everything twice.
+:::
+
+### Build the gold layer with Athena CTAS
+
+The **gold** layer holds curated tables shaped around real questions. HitaVir Retail's
+first question: how much revenue did each region make each day, counting only orders that
+became real sales (status `completed` or `shipped`)? Answer it with a **CTAS** —
+**Create Table As Select** — a single statement that runs a `SELECT`, writes the result to
+S3 as a new table, and registers it in the Glue catalog. The full script is
+`scripts/athena_gold_ctas.sql` in the course materials repo.
+
+```sql
+CREATE TABLE hvt_retail_db.daily_region_sales
+WITH (
+  format = 'PARQUET',
+  parquet_compression = 'SNAPPY',
+  external_location = 's3://hvt-retail-datalake-<account-id>/gold/daily_region_sales/'
+) AS
+SELECT
+    region,
+    order_date,
+    COUNT(order_id)  AS order_count,
+    SUM(quantity)    AS units_sold,
+    SUM(amount)      AS revenue
+FROM hvt_retail_db.orders
+WHERE status IN ('completed', 'shipped')
+GROUP BY region, order_date;
+```
+
+**Console path**
+
+1. Open **Athena**, **Query editor**. Confirm the result location is set under **Settings**.
+2. Pick `hvt_retail_db`, paste the CTAS (replace `<account-id>`), and choose **Run**.
+
+**AWS CLI**
+
+```bash
+aws athena start-query-execution \
+  --query-string "CREATE TABLE hvt_retail_db.daily_region_sales WITH (format='PARQUET', parquet_compression='SNAPPY', external_location='s3://$BUCKET/gold/daily_region_sales/') AS SELECT region, order_date, COUNT(order_id) AS order_count, SUM(quantity) AS units_sold, SUM(amount) AS revenue FROM hvt_retail_db.orders WHERE status IN ('completed','shipped') GROUP BY region, order_date" \
+  --query-execution-context Database=hvt_retail_db \
+  --result-configuration OutputLocation=s3://$BUCKET/athena-results/
+
+aws s3 ls s3://$BUCKET/gold/daily_region_sales/
+```
+
+:::tip[CTAS registers the table for every engine]
+CTAS wrote Parquet, not CSV, and registered the table in Glue. Anything that reads the
+Glue catalog — Athena, Redshift Spectrum, another Glue job — can now query gold without
+knowing where the files physically live.
+:::
+
+### Stand up Redshift Serverless
+
+A **warehouse** like Amazon Redshift loads data into its own optimized storage and compute,
+which makes repeated, complex, concurrent queries fast and cheap per query. **Redshift
+Serverless** has no cluster to size or manage: it scales compute on demand and you pay only
+for what you use. **Serverless** means you never provision or run servers yourself.
+
+It has two pieces. A **namespace** holds your databases, users, and data; a **workgroup**
+holds the compute and network settings. Create one of each.
+
+**Console path**
+
+1. Open **Amazon Redshift**, then **Redshift Serverless**, then **Create workgroup**. Name
+   it `hvt-retail-wg`, set **Base capacity** to the minimum **8 RPUs**.
+2. Create a new namespace `hvt-retail-ns` with an admin user and password; note them.
+3. Accept the default VPC and subnets, then create. It takes a few minutes to become
+   **Available**.
+
+**AWS CLI**
+
+```bash
+aws redshift-serverless create-namespace \
+  --namespace-name hvt-retail-ns \
+  --admin-username hvtadmin \
+  --admin-user-password 'ChangeMe-Str0ng!' \
+  --tags key=project,value=hvt-retail key=env,value=dev
+
+aws redshift-serverless create-workgroup \
+  --workgroup-name hvt-retail-wg \
+  --namespace-name hvt-retail-ns \
+  --base-capacity 8 \
+  --publicly-accessible \
+  --tags key=project,value=hvt-retail key=env,value=dev
+
+aws redshift-serverless get-workgroup \
+  --workgroup-name hvt-retail-wg \
+  --query 'workgroup.status' --output text
+```
+
+:::tip[The meter is already running]
+The 60-second meter starts when the workgroup becomes available, not when you first
+query. Move through the next two steps without long breaks.
+:::
+
+### Give Redshift permission to read S3
+
+Redshift cannot read your gold data until an **IAM role** grants it permission. Create a
+role Redshift can assume, attach read access to S3 and the Glue catalog, and associate it
+with the namespace.
+
+```bash
+cat > redshift-trust.json <<'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": { "Service": "redshift.amazonaws.com" },
+    "Action": "sts:AssumeRole"
+  }]
+}
+EOF
+
+aws iam create-role \
+  --role-name hvt-retail-redshift-role \
+  --assume-role-policy-document file://redshift-trust.json \
+  --tags Key=project,Value=hvt-retail Key=env,Value=dev
+
+aws iam attach-role-policy \
+  --role-name hvt-retail-redshift-role \
+  --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+
+aws iam attach-role-policy \
+  --role-name hvt-retail-redshift-role \
+  --policy-arn arn:aws:iam::aws:policy/AmazonAthenaFullAccess
+
+export ROLE_ARN=arn:aws:iam::$ACCOUNT_ID:role/hvt-retail-redshift-role
+
+aws redshift-serverless update-namespace \
+  --namespace-name hvt-retail-ns \
+  --iam-roles "$ROLE_ARN"
+```
+
+:::warning[Broad on purpose — for now]
+`AmazonS3ReadOnlyAccess` is broad on purpose to keep this stage moving. In production
+you would scope the role to just `s3://hvt-retail-datalake-<account-id>/gold/*` and
+`silver/*`. You practice least-privilege scoping in the security stage.
+:::
+
+### Load gold into Redshift with COPY
+
+**COPY** is Redshift's bulk loader: it reads many files from S3 in parallel far faster than
+individual `INSERT`s. The full script is `scripts/redshift_copy.sql` in the course
+materials repo.
+
+```sql
+CREATE TABLE daily_region_sales (
+    region        VARCHAR(32),
+    order_date    DATE,
+    order_count   BIGINT,
+    units_sold    BIGINT,
+    revenue       DOUBLE PRECISION
+);
+
+COPY daily_region_sales
+FROM 's3://hvt-retail-datalake-<account-id>/gold/daily_region_sales/'
+IAM_ROLE '<redshift-role-arn>'
+FORMAT AS PARQUET;
+```
+
+**Console path**
+
+In **Redshift Serverless**, open **Query editor v2**, connect to `hvt-retail-wg` as your
+admin user, paste the `CREATE TABLE`, then the `COPY` (replace the bucket and role ARN),
+then a `SELECT`. Run them in order.
+
+**AWS CLI**
+
+Drive the same statements through the **Redshift Data API**, which runs SQL over HTTPS with
+no database driver or open port.
+
+```bash
+aws redshift-data execute-statement \
+  --workgroup-name hvt-retail-wg \
+  --database dev \
+  --sql "CREATE TABLE daily_region_sales (region VARCHAR(32), order_date DATE, order_count BIGINT, units_sold BIGINT, revenue DOUBLE PRECISION)"
+
+aws redshift-data execute-statement \
+  --workgroup-name hvt-retail-wg \
+  --database dev \
+  --sql "COPY daily_region_sales FROM 's3://$BUCKET/gold/daily_region_sales/' IAM_ROLE '$ROLE_ARN' FORMAT AS PARQUET"
+
+aws redshift-data execute-statement \
+  --workgroup-name hvt-retail-wg \
+  --database dev \
+  --sql "SELECT region, SUM(revenue) AS total_revenue FROM daily_region_sales GROUP BY region ORDER BY total_revenue DESC"
+```
+
+Each call returns a statement `Id`. Check status and read results with:
+
+```bash
+aws redshift-data describe-statement --id <statement-id> --query 'Status' --output text
+aws redshift-data get-statement-result --id <statement-id>
+```
+
+### Query the lake directly with Redshift Spectrum
+
+Sometimes you want Redshift to read S3 data *without* loading it first. **Redshift
+Spectrum** does that through an **external schema** mapped to the Glue catalog.
+
+**Console path / Query editor v2**
+
+```sql
+CREATE EXTERNAL SCHEMA hvt_spectrum
+FROM DATA CATALOG
+DATABASE 'hvt_retail_db'
+IAM_ROLE '<redshift-role-arn>';
+
+SELECT region, SUM(revenue) AS total_revenue
+FROM hvt_spectrum.daily_region_sales
+GROUP BY region
+ORDER BY total_revenue DESC;
+```
+
+**AWS CLI**
+
+```bash
+aws redshift-data execute-statement \
+  --workgroup-name hvt-retail-wg \
+  --database dev \
+  --sql "CREATE EXTERNAL SCHEMA hvt_spectrum FROM DATA CATALOG DATABASE 'hvt_retail_db' IAM_ROLE '$ROLE_ARN'"
+
+aws redshift-data execute-statement \
+  --workgroup-name hvt-retail-wg \
+  --database dev \
+  --sql "SELECT region, SUM(revenue) AS total_revenue FROM hvt_spectrum.daily_region_sales GROUP BY region ORDER BY total_revenue DESC"
+```
+
+:::tip[The lake house in action]
+This is the **Modern Data Architecture**, the **lake house**, in action. Your **lake** is
+the open, cheap S3 store in Parquet; your **warehouse** is Redshift's fast store for hot,
+curated tables; Spectrum is the seam between them. One set of catalog tables, two engines,
+no duplicated pipelines.
+:::
+
+### Checkpoint: the same answer from both engines
+
+You have served gold two ways. Confirm both agree: Athena returned revenue by region from
+`hvt_retail_db.daily_region_sales`, and Redshift returned the same totals from the
+COPY-loaded table and again through the `hvt_spectrum` external schema. If your Athena and
+Redshift results match — one row per region with a `total_revenue`, in the same order — you
+have a working lake house.
+
+### Troubleshooting
+
+- **CTAS fails with `location ... is not empty`** — Athena will not write into a non-empty
+  prefix. Delete old gold objects first, then re-run.
+- **COPY: `S3ServiceException: Access Denied`** — the role lacks S3 read or is not
+  associated with the namespace. Confirm `AmazonS3ReadOnlyAccess` is attached and you ran
+  `update-namespace --iam-roles`.
+- **Spectrum: `IAM role ... cannot assume`** — confirm `AmazonAthenaFullAccess` (which
+  includes Glue read) is attached to `hvt-retail-redshift-role`.
+
+<KeyTakeaways>
+
+- CTAS runs a SELECT, writes Parquet to S3, and registers the gold table in the catalog — one statement, three effects
+- Redshift Serverless = namespace (data, users) + workgroup (compute); it bills by RPU-hour whenever the workgroup exists
+- COPY bulk-loads Parquet from S3 in parallel; Spectrum queries the lake in place through an external schema
+- Serve from Athena for ad-hoc and pipeline queries; move to Redshift for low-latency, high-concurrency serving
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What three things does the Athena CTAS statement do in one shot?',
+      options: [
+        'Creates a crawler, runs it, and deletes it',
+        'Runs the SELECT, writes the result to S3 as Parquet, and registers the table in the Glue catalog',
+        'Loads Redshift, creates an alarm, and tags the bucket',
+        'Only defines an empty table for later loading',
+      ],
+      answer: 1,
+      explanation:
+        'Create Table As Select materializes query results as a new external table: data in S3, definition in the catalog.',
+    },
+    {
+      question: 'You finish the lesson and step away for the weekend without tearing down. What bills the most?',
+      options: [
+        'The Athena workgroup, per hour',
+        'The Glue catalog, per table',
+        'S3 storage of the gold Parquet files',
+        'The Redshift Serverless workgroup — it bills by RPU-hour even while idle',
+      ],
+      answer: 3,
+      explanation:
+        'Redshift Serverless is the only notable idle biller in this track. Athena bills per query, Glue per run, and tiny Parquet files cost cents.',
+    },
+    {
+      question: 'When is loading gold into Redshift with COPY worth it over querying S3 with Athena?',
+      options: [
+        'When you need consistent low-latency, high-concurrency serving of hot tables',
+        'Whenever the data is larger than 1 GB',
+        'When the data is CSV instead of Parquet',
+        'Never — Spectrum makes COPY obsolete',
+      ],
+      answer: 0,
+      explanation:
+        'Athena is ideal for ad-hoc and pipeline queries; a warehouse shines for repeated, concurrent, dashboard-style reads. Together they form the lake house.',
+    },
+  ]}
+/>
+
+<LessonComplete />

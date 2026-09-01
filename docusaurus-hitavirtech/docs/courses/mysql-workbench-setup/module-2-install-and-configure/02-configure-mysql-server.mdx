@@ -1,0 +1,151 @@
+---
+title: 'Configure MySQL Server'
+sidebar_position: 2
+description: 'Configure networking on port 3306, strong password authentication, the root password, and the MySQL80 Windows service.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Configure Type and Networking with the default port **3306**
+- Choose strong password encryption (`caching_sha2_password`) authentication
+- Set (and record!) the **root password**
+- Register MySQL as the **MySQL80** Windows service that starts at boot
+
+</LearningObjectives>
+
+After installation, the installer moves to configuration. This is where you set up your database server.
+
+### Step 1 — Type and Networking
+
+The first configuration screen shows **Type and Networking** settings:
+
+| Setting | Value | Notes |
+|---------|-------|-------|
+| Config Type | Development Computer | Uses minimal resources |
+| TCP/IP | Checked | Enables network connections |
+| Port | **3306** | Default MySQL port |
+| X Protocol Port | 33060 | For MySQL Shell X Protocol |
+| Open Windows Firewall | Checked | Allows connections through firewall |
+
+**Keep all defaults** and click **Next**.
+
+### Step 2 — Authentication Method
+
+Select **"Use Strong Password Encryption for Authentication (RECOMMENDED)"**
+
+This uses the modern `caching_sha2_password` authentication. Click **Next**.
+
+### Step 3 — Accounts and Roles (CRITICAL)
+
+This is where you set the **root password**. The root account has full access to everything.
+
+**Set your MySQL Root Password:**
+
+| Field | What to Enter |
+|-------|--------------|
+| MySQL Root Password | Your chosen password |
+| Repeat Password | Same password again |
+
+**Password rules:**
+
+- Use at least 8 characters
+- Mix uppercase, lowercase, numbers
+- Example: `HitaVir2026!`
+
+**WRITE DOWN THIS PASSWORD.** You will need it every time you connect to MySQL.
+
+You can also add additional user accounts here, but for learning, the root account is sufficient.
+
+Click **Next**.
+
+### Step 4 — Windows Service
+
+| Setting | Value |
+|---------|-------|
+| Configure MySQL Server as a Windows Service | Checked |
+| Windows Service Name | MySQL80 |
+| Start the MySQL Server at System Startup | Checked |
+| Run Windows Service as | Standard System Account |
+
+**Keep all defaults** and click **Next**.
+
+This means MySQL will start automatically whenever you turn on your computer.
+
+### Step 5 — Apply Configuration
+
+Click **Execute** to apply all configuration settings.
+
+You will see checkmarks appear:
+
+```
+Writing configuration file             ✓
+Updating Windows Firewall rules        ✓
+Adjusting Windows service              ✓
+Initializing database (may take time)  ✓
+Starting the server                    ✓
+Applying security settings             ✓
+Updating the Start menu link           ✓
+```
+
+Once all steps show checkmarks, click **Finish**.
+
+### Step 6 — Complete the Installer
+
+Click **Next** through any remaining screens, then **Finish**.
+
+Check both boxes if offered:
+- Start MySQL Workbench after setup
+- Start MySQL Shell after setup
+
+:::info[HitaVir Tech says]
+"Port 3306 is MySQL's home address. Just like your house has a street address, every network service has a port number. If something else is using port 3306, the installation will warn you — we will cover that in troubleshooting."
+:::
+
+<KeyTakeaways>
+
+- MySQL listens on port **3306** by default (X Protocol on 33060)
+- Strong Password Encryption uses the modern `caching_sha2_password` plugin
+- The **root** account has full access — write its password down immediately
+- The **MySQL80** Windows service starts the server automatically at boot
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is the default port MySQL Server listens on?',
+      options: ['3306', '8080', '5432', '33060'],
+      answer: 0,
+      explanation:
+        'Port 3306 is MySQL’s default; 33060 is the X Protocol port and 5432 belongs to PostgreSQL.',
+    },
+    {
+      question: 'Which authentication method does this course select?',
+      options: [
+        'Legacy authentication for old connectors',
+        'Use Strong Password Encryption (caching_sha2_password)',
+        'Anonymous login without a password',
+        'Windows Hello fingerprint login',
+      ],
+      answer: 1,
+      explanation:
+        'The recommended option uses the modern caching_sha2_password plugin for stronger security.',
+    },
+    {
+      question: 'What does the MySQL80 Windows service configuration accomplish?',
+      options: [
+        'It limits MySQL to 80 connections',
+        'It runs MySQL only when Workbench is open',
+        'MySQL starts automatically every time the computer boots',
+        'It upgrades MySQL to version 80',
+      ],
+      answer: 2,
+      explanation:
+        '"Start the MySQL Server at System Startup" registers MySQL80 as a service that launches at boot.',
+    },
+  ]}
+/>
+
+<LessonComplete />

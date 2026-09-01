@@ -1,0 +1,79 @@
+---
+title: 'Final Summary'
+sidebar_position: 3
+description: 'Your journey from beginner to expert in review — the four levels you completed and the seven rules to carry into every project.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Review the skills gained at each level of the course
+- Internalize the seven rules of professional Git usage
+
+</LearningObjectives>
+
+Congratulations! You have completed **GitHub Ultimate: Master Git and GitHub - Beginner to Expert** by **HitaVir Tech**!
+
+### Your Journey
+
+| Level | What You Learned |
+|-------|-----------------|
+| Beginner | Git basics, init, add, commit, .gitignore |
+| Intermediate | Branching, merging, conflicts, remotes |
+| Advanced | PRs, rebase, cherry-pick, stash, Actions |
+| Expert | Internals, hooks, workflows, simulation |
+
+### Seven Rules to Remember
+
+1. **Git is a time machine** — use it to track, undo, and explore your code history
+2. **Branches are free** — use them for every feature, bug fix, and experiment
+3. **Commit often, push daily** — small commits are easier to review and debug
+4. **PRs are conversations** — write good descriptions and review thoughtfully
+5. **Never rewrite shared history** — use revert for shared branches, reset for local only
+6. **Automate with Actions** — let robots do the repetitive work
+7. **Practice is everything** — the more you use Git, the more natural it becomes
+
+:::tip[HitaVir Tech says]
+"You now have the skills to manage code like a professional. Go build something amazing, contribute to open source, and keep learning. The world of Git and GitHub is yours!"
+:::
+
+<KeyTakeaways>
+
+- You progressed through four levels: basics → branching and remotes → PRs and automation → internals and workflows
+- Commit often, push daily — small commits are easier to review and debug
+- Never rewrite pushed history; revert on shared branches, reset only locally
+- Branches are free and PRs are conversations — use both generously
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which practice does the course recommend for day-to-day work?',
+      options: [
+        'One giant commit per week',
+        'Commit often, push daily — small commits are easier to review and debug',
+        'Avoid branches to keep things simple',
+        'Rebase shared branches every morning',
+      ],
+      answer: 1,
+      explanation:
+        'Small, frequent commits create a readable history and make bugs easy to isolate; daily pushes keep work backed up and visible.',
+    },
+    {
+      question: 'What is the safe undo for a branch other people also use?',
+      options: [
+        'git reset --hard',
+        'Force push over their changes',
+        'git revert — it adds a new commit instead of rewriting history',
+        'Delete and recreate the branch',
+      ],
+      answer: 2,
+      explanation:
+        'Revert never rewrites shared history, so teammates’ clones stay valid.',
+    },
+  ]}
+/>
+
+<LessonComplete />

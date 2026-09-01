@@ -1,0 +1,190 @@
+---
+title: 'SQL Style Guide — Write SQL Like a Pro'
+sidebar_position: 2
+description: 'The seven habits of professional SQL — formatting, naming, aliasing, safe DML, and CTEs — shown with a before/after refactor.'
+---
+
+<DurationBadge minutes={12} />
+
+<LearningObjectives>
+
+- Apply the seven habits of professional SQL to every query you write
+- Rewrite a one-line "amateur" query into clean, aliased, multi-line form
+- State the half-open date-range rule and why it prevents boundary bugs
+
+</LearningObjectives>
+
+> *"Programs must be written for people to read, and only incidentally for machines to execute."*
+> — Harold Abelson, *Structure and Interpretation of Computer Programs*
+
+:::info[HitaVir Tech connection]
+A query runs once but is read dozens of times — in review, in an incident at 2 a.m., by the analyst who inherits it next year. Professional SQL optimizes for the reader first. The database does not care how you format it; your teammates do.
+:::
+
+:::tip[Why this matters now]
+Learn the house style **before** you write your first `SELECT`. Apply it to every query from Step 3 onward and it becomes muscle memory. Retrofitting style onto sloppy habits later is ten times harder.
+:::
+
+Anyone can get a query to return the right rows. What separates a professional Data Engineer is writing SQL that is **obvious** — easy to read, safe to run, and cheap to change. This page is the style contract you sign for the rest of the codelab.
+
+### Why pros write "boring" SQL
+
+Clever SQL is a liability. The query that takes thirty minutes to understand is the one that breaks production, because nobody — including the author six months later — can safely change it. Boring, predictable SQL is a *feature*: every query reads the same way, so reviews take minutes and bugs have nowhere to hide.
+
+### The seven habits of professional SQL
+
+**1. Format for the eye.** Uppercase keywords, lowercase identifiers, one clause per line, one column per line in long `SELECT` lists. Indent two spaces inside CTEs and subqueries. Layout *is* documentation.
+
+**2. Name with intent.** `snake_case` everywhere. Tables plural (`customers`), columns singular (`customer_id`). Foreign keys end in `_id`. Use the pipeline prefixes — `stg_` (staging), `dim_` / `fact_` (warehouse), `v_` (views). A good name removes the need for a comment.
+
+**3. Alias and qualify — always.** In any multi-table query, alias every table (`AS c`, `AS o`) and prefix every column with its alias (`c.full_name`). Unqualified columns in a join are a bug waiting for someone to add a same-named column.
+
+**4. Be explicit, never lazy.** List the columns you need — never `SELECT *` in code that ships. Use `JOIN ... ON`, never the comma-join. Compare nulls with `IS NULL` / `IS NOT NULL`, never `= NULL`.
+
+**5. Write safe DML.** Never run an `UPDATE` or `DELETE` without a `WHERE`. Wrap multi-statement changes in `START TRANSACTION … COMMIT`. Use half-open date ranges — `>= start AND < end` — so a row never lands in two buckets. Store money in `DECIMAL`, never `FLOAT`.
+
+**6. Think in sets, not loops.** SQL is declarative: describe *what* you want and let the engine find the rows. If you find yourself reaching for a cursor or a row-by-row loop, step back — a `JOIN`, `GROUP BY`, or window function almost always does it in one pass.
+
+**7. Name your steps with CTEs.** Prefer a `WITH` chain of named CTEs over a pyramid of nested subqueries. Each CTE reads like a sentence; the final `SELECT` reads like a conclusion.
+
+### Before and after — one query, refactored
+
+The same business question — *"the five customers who spent the most in 2026"* — written two ways.
+
+❌ **Amateur:** correct rows, unreadable, unsafe to change.
+
+```sql
+select * from customers c, orders o, order_items oi
+where c.customer_id=o.customer_id and o.order_id=oi.order_id
+and o.order_date>'2026-01-01'
+group by c.customer_id order by sum(oi.line_amount) desc
+```
+
+✅ **Professional:** same result, but a five-second read.
+
+```sql
+SELECT
+    c.customer_id,
+    c.full_name,
+    SUM(oi.line_amount) AS total_revenue
+FROM customers   AS c
+JOIN orders      AS o  ON o.customer_id = c.customer_id
+JOIN order_items AS oi ON oi.order_id   = o.order_id
+WHERE o.order_date >= '2026-01-01'
+  AND o.order_date <  '2027-01-01'
+GROUP BY c.customer_id, c.full_name
+ORDER BY total_revenue DESC
+LIMIT 5;
+```
+
+**What changed, and why it matters:**
+
+- **Explicit columns** instead of `SELECT *` — the result is stable even if someone adds a column, and the reader sees exactly what comes back.
+- **Explicit `JOIN ... ON`** instead of the comma-join — join logic is separated from filter logic, so the `WHERE` clause only does filtering.
+- **Aliased and qualified** — every column says which table it came from; no ambiguity, no guessing.
+- **Half-open date range** (`>= '2026-01-01' AND < '2027-01-01'`) instead of `> '2026-01-01'` — captures the whole year correctly and never double-counts a boundary date.
+- **Complete `GROUP BY`** (`customer_id, full_name`) — every non-aggregated column is grouped, so the query is valid under `ONLY_FULL_GROUP_BY` and portable to Postgres, Snowflake, and BigQuery.
+- **`ORDER BY` + `LIMIT`** — a deterministic, intentional "top 5", not whatever order the engine happens to return.
+
+:::warning[You cannot run these yet]
+The `hitavir_sales` tables are created in **Step 2**. This page is about *how* you write SQL; from Step 3 on, every example you run will follow exactly this style.
+:::
+
+### Amateur vs Pro at a glance
+
+| Situation | Amateur writes… | A pro writes… | Why |
+|-----------|-----------------|---------------|-----|
+| Picking columns | `SELECT *` | explicit column list | Stable, intentional, faster |
+| Joining tables | `FROM a, b WHERE a.id = b.id` | `FROM a JOIN b ON a.id = b.id` | Join logic ≠ filter logic |
+| Null check | `WHERE col = NULL` | `WHERE col IS NULL` | `= NULL` is always false |
+| Date filter | `WHERE d > '2026-01-01'` | `WHERE d >= start AND d < end` | No boundary double-count |
+| Money column | `FLOAT` | `DECIMAL(10,2)` | No rounding drift |
+| Mass update | `UPDATE t SET x = 1;` | `UPDATE t SET x = 1 WHERE …;` | A `WHERE`-less update hits every row |
+| Nested logic | subquery inside subquery | named CTEs (`WITH`) | Each step is readable |
+| Keyword case | `select … from …` | `SELECT … FROM …` | Keywords stand out from data |
+
+:::info[Pro Insight]
+The fastest engineering teams have the *strictest* SQL style, not the loosest. When every query is formatted identically, a reviewer's eyes go straight to the logic — the formatting is invisible because it never changes. Consistency is a speed feature.
+:::
+
+### Your professional SQL checklist
+
+Tape this next to your monitor. Run it over every query before you call it done:
+
+- [ ] Keywords UPPERCASE, identifiers `snake_case`
+- [ ] One clause per line; one column per line in long `SELECT`s
+- [ ] Every table aliased, every column qualified
+- [ ] No `SELECT *` in code that ships
+- [ ] Every `UPDATE` / `DELETE` has a `WHERE`
+- [ ] Date filters are half-open (`>= start AND < end`)
+- [ ] Money is `DECIMAL`; nulls use `IS [NOT] NULL`
+- [ ] Complex logic expressed as named CTEs, not nested subqueries
+- [ ] Every non-aggregated column appears in `GROUP BY`
+
+:::note[Where this goes next]
+**Step 15** distills this page into a one-page reference card you can recite in interviews. This page teaches the *why*; Step 15 is the quick recap.
+:::
+
+### ✅ Checkpoint
+
+Before moving on, you should be able to:
+
+- ✅ Explain why a pro avoids `SELECT *` and the comma-join
+- ✅ Rewrite a one-line query into clean, aliased, multi-line form
+- ✅ State the half-open date-range rule and why it prevents bugs
+- ✅ List three reasons "boring" SQL is more professional than clever SQL
+
+---
+
+<KeyTakeaways>
+
+- Boring, predictable SQL is a feature — reviews take minutes and bugs have nowhere to hide
+- Uppercase keywords, `snake_case` identifiers, one clause per line, every table aliased and every column qualified
+- Never ship `SELECT *`, a comma-join, `= NULL`, `FLOAT` money, or an `UPDATE`/`DELETE` without `WHERE`
+- Filter dates with half-open ranges (`>= start AND < end`) so no row lands in two buckets
+- Express complex logic as named CTEs, not nested subqueries
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why do professionals avoid SELECT * in code that ships?',
+      options: [
+        'It is slower to type than a column list',
+        'MySQL 8.0 removed support for it',
+        'It hides the query’s real dependencies and breaks when columns change',
+        'It only works inside Workbench',
+      ],
+      answer: 2,
+      explanation:
+        'An explicit column list keeps the result stable when the table changes and shows the reader exactly what comes back.',
+    },
+    {
+      question: 'Which date filter correctly captures all of 2026 with no boundary bugs?',
+      options: [
+        "order_date > '2026-01-01'",
+        "order_date >= '2026-01-01' AND order_date < '2027-01-01'",
+        "order_date BETWEEN '2026-01-01' AND '2027-01-01'",
+        "YEAR(order_date) = '2026' OR order_date = '2026-01-01'",
+      ],
+      answer: 1,
+      explanation:
+        'The half-open range includes January 1st and excludes next year’s boundary date — no double-counting, no missed rows.',
+    },
+    {
+      question: 'What is the professional alternative to a pyramid of nested subqueries?',
+      options: [
+        'A chain of named CTEs using WITH',
+        'A stored procedure with loops',
+        'Splitting the query across multiple application calls',
+        'A comma-join with all filters in WHERE',
+      ],
+      answer: 0,
+      explanation:
+        'Each CTE reads like a sentence and the final SELECT reads like a conclusion — same result, dramatically better readability.',
+    },
+  ]}
+/>
+
+<LessonComplete />

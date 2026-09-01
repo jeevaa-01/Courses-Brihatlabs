@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 789 497" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="789" height="497" rx="12" fill="#f8f9fa"/>
+  <text x="394" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">When to Use What — Data Engineering Guide</text>
+  <rect x="15" y="40" width="261" height="30" rx="6" fill="#1a73e8"/>
+  <text x="145" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Scenario</text>
+  <rect x="281" y="40" width="127" height="30" rx="6" fill="#1a73e8"/>
+  <text x="345" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Use This</text>
+  <rect x="414" y="40" width="360" height="30" rx="6" fill="#1a73e8"/>
+  <text x="594" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Why</text>
+  <rect x="15" y="76" width="261" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">Rows from a CSV file</text>
+  <rect x="281" y="76" width="127" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="291" y="94" font-size="12" fill="#1a73e8">List of dicts</text>
+  <rect x="414" y="76" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="424" y="94" font-size="12" fill="#1a73e8">Each row is a dict, collection is a list</text>
+  <rect x="15" y="108" width="261" height="43" rx="4" fill="white"/>
+  <text x="25" y="133" font-size="12" font-weight="700" fill="#3c4043">Database connection config</text>
+  <rect x="281" y="108" width="127" height="43" rx="4" fill="white"/>
+  <text x="291" y="133" font-size="12" fill="#3c4043">Tuple or dict</text>
+  <rect x="414" y="108" width="360" height="43" rx="4" fill="white"/>
+  <text x="424" y="126" font-size="12" fill="#3c4043">Config should not change (tuple) or needs named access</text>
+  <text x="424" y="141" font-size="12" fill="#3c4043">(dict)</text>
+  <rect x="15" y="155" width="261" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="173" font-size="12" font-weight="700" fill="#1a73e8">Column names to process</text>
+  <rect x="281" y="155" width="127" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="291" y="173" font-size="12" fill="#1a73e8">List</text>
+  <rect x="414" y="155" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="424" y="173" font-size="12" fill="#1a73e8">Ordered, may have duplicates</text>
+  <rect x="15" y="187" width="261" height="28" rx="4" fill="white"/>
+  <text x="25" y="205" font-size="12" font-weight="700" fill="#3c4043">Unique customer IDs</text>
+  <rect x="281" y="187" width="127" height="28" rx="4" fill="white"/>
+  <text x="291" y="205" font-size="12" fill="#3c4043">Set</text>
+  <rect x="414" y="187" width="360" height="28" rx="4" fill="white"/>
+  <text x="424" y="205" font-size="12" fill="#3c4043">Automatic deduplication, O(1) lookup</text>
+  <rect x="15" y="219" width="261" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="237" font-size="12" font-weight="700" fill="#1a73e8">API response / JSON data</text>
+  <rect x="281" y="219" width="127" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="291" y="237" font-size="12" fill="#1a73e8">Dict</text>
+  <rect x="414" y="219" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="424" y="237" font-size="12" fill="#1a73e8">Key-value structure matches JSON</text>
+  <rect x="15" y="251" width="261" height="28" rx="4" fill="white"/>
+  <text x="25" y="269" font-size="12" font-weight="700" fill="#3c4043">Mapping old column names to new</text>
+  <rect x="281" y="251" width="127" height="28" rx="4" fill="white"/>
+  <text x="291" y="269" font-size="12" fill="#3c4043">Dict</text>
+  <rect x="414" y="251" width="360" height="28" rx="4" fill="white"/>
+  <text x="424" y="269" font-size="12" font-family="monospace" fill="#3c4043">{"old_name": "new_name"}</text>
+  <rect x="15" y="283" width="261" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="301" font-size="12" font-weight="700" fill="#1a73e8">Batch of records for processing</text>
+  <rect x="281" y="283" width="127" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="291" y="301" font-size="12" fill="#1a73e8">List of dicts</text>
+  <rect x="414" y="283" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="424" y="301" font-size="12" fill="#1a73e8">Industry standard for tabular data</text>
+  <rect x="15" y="315" width="261" height="28" rx="4" fill="white"/>
+  <text x="25" y="333" font-size="12" font-weight="700" fill="#3c4043">Immutable function return values</text>
+  <rect x="281" y="315" width="127" height="28" rx="4" fill="white"/>
+  <text x="291" y="333" font-size="12" fill="#3c4043">Tuple</text>
+  <rect x="414" y="315" width="360" height="28" rx="4" fill="white"/>
+  <text x="424" y="333" font-size="12" fill="#3c4043">Cannot be accidentally modified</text>
+  <rect x="15" y="347" width="261" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="365" font-size="12" font-weight="700" fill="#1a73e8">Checking if value exists in large dataset</text>
+  <rect x="281" y="347" width="127" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="291" y="365" font-size="12" fill="#1a73e8">Set</text>
+  <rect x="414" y="347" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="424" y="365" font-size="12" fill="#1a73e8">O(1) vs O(n) for lists</text>
+  <rect x="15" y="379" width="261" height="28" rx="4" fill="white"/>
+  <text x="25" y="397" font-size="12" font-weight="700" fill="#3c4043">Environment variables / settings</text>
+  <rect x="281" y="379" width="127" height="28" rx="4" fill="white"/>
+  <text x="291" y="397" font-size="12" fill="#3c4043">Dict</text>
+  <rect x="414" y="379" width="360" height="28" rx="4" fill="white"/>
+  <text x="424" y="397" font-size="12" fill="#3c4043">Named access: config["DB_HOST"]</text>
+  <rect x="15" y="411" width="261" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="429" font-size="12" font-weight="700" fill="#1a73e8">Coordinates or fixed pairs</text>
+  <rect x="281" y="411" width="127" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="291" y="429" font-size="12" fill="#1a73e8">Tuple</text>
+  <rect x="414" y="411" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="424" y="429" font-size="12" font-family="monospace" fill="#1a73e8">(latitude, longitude) — immutable</text>
+  <rect x="15" y="443" width="261" height="28" rx="4" fill="white"/>
+  <text x="25" y="461" font-size="12" font-weight="700" fill="#3c4043">Pipeline of transformation steps</text>
+  <rect x="281" y="443" width="127" height="28" rx="4" fill="white"/>
+  <text x="291" y="461" font-size="12" fill="#3c4043">List of functions</text>
+  <rect x="414" y="443" width="360" height="28" rx="4" fill="white"/>
+  <text x="424" y="461" font-size="12" font-family="monospace" fill="#3c4043">[clean, validate, transform]</text>
+  <text x="394" y="491" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

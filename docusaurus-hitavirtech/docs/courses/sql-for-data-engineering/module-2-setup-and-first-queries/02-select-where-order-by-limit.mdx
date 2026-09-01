@@ -1,0 +1,205 @@
+---
+title: 'Step 3: SELECT, WHERE, ORDER BY, LIMIT'
+sidebar_position: 2
+description: 'Write your first real queries — SELECT with explicit columns, WHERE filters, deterministic ORDER BY, and LIMIT.'
+---
+
+<DurationBadge minutes={15} />
+
+<LearningObjectives>
+
+- Run `SELECT` queries with explicit column lists against `hitavir_sales`
+- Filter rows with `WHERE` using comparison operators and `AND`
+- Sort deterministically with `ORDER BY` and cap results with `LIMIT`
+
+</LearningObjectives>
+
+> *"Make it work, make it right, make it fast."*
+> — Kent Beck
+
+:::info[HitaVir Tech connection]
+This step is "make it work." You will write your first real queries against `hitavir_sales` — getting them correct, then refining them, then making them fast comes in Steps 13 and 15.
+:::
+
+:::tip[Why this matters now]
+Type every query yourself. Do not copy-paste. Muscle memory for `SELECT … FROM … WHERE … ORDER BY … LIMIT` is non-negotiable.
+:::
+
+### 3.1 — Your first SELECT
+
+```sql
+-- Read every customer's name and city
+SELECT
+    customer_id,
+    full_name,
+    city
+FROM customers
+ORDER BY customer_id
+LIMIT 5;
+```
+
+**Expected output:**
+
+```
++-------------+---------------+-----------+
+| customer_id | full_name     | city      |
++-------------+---------------+-----------+
+|           1 | Asha Sharma   | Bengaluru |
+|           2 | Ravi Kumar    | bengaluru |
+|           3 | Priya Patel   | Mumbai    |
+|           4 | Arjun Reddy   | Hyderabad |
+|           5 | Kavya Iyer    | Chennai   |
++-------------+---------------+-----------+
+```
+
+Notice: `LIMIT 5` says "give me at most 5 rows." `ORDER BY customer_id` guarantees a deterministic order; without it, MySQL is allowed to return rows in any order it wants.
+
+### 3.2 — WHERE: filtering rows
+
+```sql
+-- Customers from Mumbai only
+SELECT
+    customer_id,
+    full_name,
+    signup_date
+FROM customers
+WHERE city = 'Mumbai'
+ORDER BY signup_date;
+```
+
+**Expected output:**
+
+```
++-------------+--------------+-------------+
+| customer_id | full_name    | signup_date |
++-------------+--------------+-------------+
+|           3 | Priya Patel  | 2025-08-10  |
+|           6 | Rohan Mehta  | 2025-08-21  |
++-------------+--------------+-------------+
+```
+
+:::tip[HitaVir Tech Tip]
+`WHERE city = 'Mumbai'` is case-sensitive against your data. If your collation is `utf8mb4_unicode_ci` (the schema default), it is case-*insensitive*, so `'mumbai'` and `'Mumbai'` both match. Step 11 covers this in detail.
+:::
+
+### 3.3 — Comparison operators
+
+```sql
+-- Products that cost more than ₹3000
+SELECT
+    product_id,
+    product_name,
+    unit_price
+FROM products
+WHERE unit_price > 3000
+ORDER BY unit_price DESC;
+```
+
+**Expected output:**
+
+```
++------------+---------------------+------------+
+| product_id | product_name        | unit_price |
++------------+---------------------+------------+
+|          1 | Laptop Pro 14       |   89999.00 |
+|          8 | Office Chair        |   12999.00 |
+|          3 | Mechanical Keyboard |    4999.00 |
+|          7 | Running Shoes       |    3499.00 |
++------------+---------------------+------------+
+```
+
+### 3.4 — Multiple conditions
+
+```sql
+-- Orders placed in February that were delivered
+SELECT
+    order_id,
+    customer_id,
+    order_date,
+    status
+FROM orders
+WHERE order_date >= '2026-02-01'
+  AND order_date <  '2026-03-01'
+  AND status = 'DELIVERED'
+ORDER BY order_date
+LIMIT 5;
+```
+
+**Expected output:**
+
+```
++----------+-------------+------------+-----------+
+| order_id | customer_id | order_date | status    |
++----------+-------------+------------+-----------+
+|       28 |           2 | 2026-02-01 | DELIVERED |
+|       29 |          13 | 2026-02-02 | DELIVERED |
+|       30 |          17 | 2026-02-03 | DELIVERED |
+|       31 |          30 | 2026-02-04 | DELIVERED |
+|       33 |          21 | 2026-02-06 | DELIVERED |
++----------+-------------+------------+-----------+
+```
+
+:::info[Pro Insight]
+In production, always filter dates as half-open intervals: `>= start AND < end`. The pattern `BETWEEN '2026-02-01' AND '2026-02-28'` silently breaks in leap years and on month boundaries — the half-open form does not.
+:::
+
+### 3.5 — Why no SELECT *
+
+```sql
+-- ❌ Anti-pattern — never do this in production code
+SELECT * FROM orders LIMIT 1;
+```
+
+`SELECT *` is fine in the Workbench scratchpad, but never in code that ships. It hides which columns the query depends on, breaks if the table adds columns, and ships unused bytes over the network. Spell out the columns you actually need.
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Run a `SELECT` with explicit column names
+- ✅ Filter with `WHERE` using `=`, `>`, `<`, `>=`, `<=`, `<>`
+- ✅ Combine conditions with `AND`
+- ✅ Sort with `ORDER BY ... DESC`
+- ✅ Cap rows with `LIMIT`
+
+---
+
+<KeyTakeaways>
+
+- Without `ORDER BY`, MySQL may return rows in **any** order — always sort when order matters
+- `LIMIT n` returns at most `n` rows; combined with `ORDER BY` it gives a deterministic "top n"
+- Filter date ranges as half-open intervals: `>= start AND < end`
+- `SELECT *` is fine in a scratchpad, never in code that ships
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'A query without ORDER BY returns rows in a surprising order. Is this a MySQL bug?',
+      options: [
+        'Yes — MySQL must always return rows by primary key',
+        'Yes — rows are always returned in insert order',
+        'No — without ORDER BY the engine may return rows in any order it wants',
+        'No — but only because the table has an index',
+      ],
+      answer: 2,
+      explanation:
+        'Row order is undefined without ORDER BY. Any apparent ordering is an implementation detail that can change at any time.',
+    },
+    {
+      question: 'Which pattern safely selects all February 2026 orders?',
+      options: [
+        "order_date BETWEEN '2026-02-01' AND '2026-02-28'",
+        "order_date >= '2026-02-01' AND order_date < '2026-03-01'",
+        "MONTH(order_date) = 2",
+        "order_date LIKE '2026-02%'",
+      ],
+      answer: 1,
+      explanation:
+        'The half-open interval works in leap years and keeps the column sargable so an index on order_date can still be used.',
+    },
+  ]}
+/>
+
+<LessonComplete />

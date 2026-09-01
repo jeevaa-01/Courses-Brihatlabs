@@ -1,0 +1,98 @@
+---
+title: 'Final Quiz'
+sidebar_position: 2
+description: 'The graded final quiz for the Git and GitHub basics course — aim for at least 6 of 8.'
+---
+
+<DurationBadge minutes={5} />
+
+# Final Quiz
+
+This quiz covers the whole course. **Aim for at least 6 of 8.** If you miss a
+question, revisit the lesson it came from before moving on to the next course.
+
+<Quiz
+  title="Graded final quiz"
+  questions={[
+    {
+      question: 'What does git init create inside your project folder?',
+      options: [
+        'A README.md file',
+        'A hidden .git folder holding all version history',
+        'A GitHub repository',
+        'A backup ZIP of your files',
+      ],
+      answer: 1,
+      explanation: 'git init creates the hidden .git folder — commits, branches, HEAD, and config all live there.',
+    },
+    {
+      question: 'Which command stages every change in the current directory at once?',
+      options: ['git add .', 'git commit -a .', 'git stage --all-files', 'git push .'],
+      answer: 0,
+      explanation: 'git add . stages all new and modified files in the current directory.',
+    },
+    {
+      question: 'Which command creates a new branch and switches to it in one step?',
+      options: [
+        'git branch new-branch',
+        'git merge new-branch',
+        'git checkout -b new-branch',
+        'git remote add new-branch',
+      ],
+      answer: 2,
+      explanation: 'git checkout -b (or git switch -c) creates the branch and moves you onto it immediately.',
+    },
+    {
+      question: 'A fast-forward merge happens when…',
+      options: [
+        'both branches modified the same line',
+        'you pass the --fast flag to git merge',
+        'the feature branch has only one commit',
+        'main received no new commits while you worked on the branch',
+      ],
+      answer: 3,
+      explanation: 'If main has not moved, Git simply advances the pointer to the branch tip — no merge commit is created.',
+    },
+    {
+      question: 'In git remote add origin <url>, what is "origin"?',
+      options: [
+        'The first commit of the project',
+        'A nickname for the remote repository URL',
+        'The name of the default branch',
+        'Your GitHub username',
+      ],
+      answer: 1,
+      explanation: 'origin is just the conventional name Git gives the remote URL — nothing more.',
+    },
+    {
+      question: 'What is the difference between git fetch and git pull?',
+      options: [
+        'fetch downloads without merging; pull downloads and merges',
+        'fetch uploads; pull downloads',
+        'They are identical',
+        'fetch only works on GitHub; pull works everywhere',
+      ],
+      answer: 0,
+      explanation: 'git pull = git fetch + merge. Fetch lets you inspect remote changes before merging.',
+    },
+    {
+      question: 'You need to undo a commit that is already pushed to a shared branch. Safest command?',
+      options: [
+        'git reset --hard HEAD~1',
+        'git push --force',
+        'git revert HEAD',
+        'git commit --amend',
+      ],
+      answer: 2,
+      explanation: 'revert creates a new commit that undoes the old one — history is preserved and teammates are safe.',
+    },
+    {
+      question: 'Which file keeps secrets like .env and *.key out of your repository?',
+      options: ['README.md', 'config.yaml', '.git/HEAD', '.gitignore'],
+      answer: 3,
+      explanation: 'Patterns listed in .gitignore are never staged — the standard defense against committing secrets.',
+    },
+  ]}
+/>
+
+<LessonComplete />

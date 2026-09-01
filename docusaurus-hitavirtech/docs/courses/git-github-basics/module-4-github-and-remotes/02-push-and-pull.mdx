@@ -1,0 +1,122 @@
+---
+title: 'Push and Pull'
+sidebar_position: 2
+description: 'Keep local and remote in sync — push your commits, pull your team’s changes, and know when to fetch.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Upload local commits to GitHub with `git push`
+- Download and merge remote changes with `git pull`
+- Know the difference between `git fetch` and `git pull`
+
+</LearningObjectives>
+
+Push and pull keep your local and remote repositories in sync.
+
+### git push — Upload Your Changes
+
+After making local commits, push them to GitHub:
+
+```bash
+echo "# Data Pipeline Configuration" > pipeline_config.yaml
+echo "source: postgres" >> pipeline_config.yaml
+echo "destination: s3" >> pipeline_config.yaml
+git add pipeline_config.yaml
+git commit -m "Add pipeline configuration file"
+git push
+```
+
+### git pull — Download Remote Changes
+
+When teammates push changes (or you edit files on GitHub), pull them:
+
+```bash
+git pull origin main
+```
+
+Or simply:
+
+```bash
+git pull
+```
+
+### git fetch — Download Without Merging
+
+```bash
+git fetch
+```
+
+This downloads remote changes but does **not** merge them. Use `git pull` when you want both.
+
+### The Sync Workflow
+
+```
+  Start of day:
+  ┌─────────────┐
+  │  git pull    │ ← Get latest from team
+  └──────┬──────┘
+         │
+         ▼
+  ┌─────────────┐
+  │  Your work   │ ← Code, test, debug
+  └──────┬──────┘
+         │
+         ▼
+  ┌─────────────┐
+  │  git add .   │ ← Stage changes
+  └──────┬──────┘
+         │
+         ▼
+  ┌─────────────┐
+  │  git commit  │ ← Save locally
+  └──────┬──────┘
+         │
+         ▼
+  ┌─────────────┐
+  │  git push    │ ← Share with team
+  └─────────────┘
+```
+
+> **HitaVir Tech says:** "Always `git pull` before you start working. Always `git push` when you finish. This simple habit prevents 90% of merge conflicts."
+
+<KeyTakeaways>
+
+- `git push` uploads your local commits; `git pull` downloads and merges remote changes
+- `git fetch` downloads remote changes WITHOUT merging them
+- Daily rhythm: pull → work → add → commit → push
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is the difference between git fetch and git pull?',
+      options: [
+        'fetch works only on main; pull works on any branch',
+        'They are identical commands',
+        'fetch uploads changes; pull downloads them',
+        'fetch downloads changes without merging; pull downloads AND merges',
+      ],
+      answer: 3,
+      explanation:
+        'git pull = git fetch + merge. Use fetch when you want to inspect remote changes before merging them.',
+    },
+    {
+      question: 'Which habit prevents most merge conflicts, according to this lesson?',
+      options: [
+        'Always git pull before you start working and git push when you finish',
+        'Only commit once per week',
+        'Never use branches',
+        'Force-push after every commit',
+      ],
+      answer: 0,
+      explanation:
+        'Starting from the latest code and sharing your work promptly keeps local and remote in sync, avoiding most conflicts.',
+    },
+  ]}
+/>
+
+<LessonComplete />

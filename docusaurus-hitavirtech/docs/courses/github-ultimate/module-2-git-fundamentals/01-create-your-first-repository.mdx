@@ -1,0 +1,132 @@
+---
+title: 'Create Your First Repository'
+sidebar_position: 1
+description: 'Initialize the hitavir-portfolio project with git init, create your first file, and learn what the hidden .git folder and "untracked" status mean.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Initialize a repository with `git init`
+- Read `git status` output to see what Git is tracking
+- Understand what the hidden `.git` folder stores
+
+</LearningObjectives>
+
+Time to create your first Git repository! This will be our project for the entire codelab.
+
+### Step 1 — Create a Project Folder
+
+```bash
+mkdir hitavir-portfolio
+cd hitavir-portfolio
+```
+
+### Step 2 — Initialize Git
+
+```bash
+git init
+```
+
+**Expected output:**
+
+```
+Initialized empty Git repository in /home/user/hitavir-portfolio/.git/
+```
+
+This creates a hidden `.git` folder that stores all version history.
+
+### Step 3 — Check the Status
+
+```bash
+git status
+```
+
+**Expected output:**
+
+```
+On branch main
+No commits yet
+nothing to commit (create/copy files and use "git add" to track)
+```
+
+### Step 4 — Create Your First File
+
+```bash
+echo "# HitaVir Portfolio" > README.md
+```
+
+This creates a file called `README.md` with a heading.
+
+### Step 5 — Check Status Again
+
+```bash
+git status
+```
+
+**Expected output:**
+
+```
+On branch main
+No commits yet
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        README.md
+
+nothing added to commit but untracked files present (use "git add" to track)
+```
+
+Git sees the file but is **not tracking it yet**. The file is "untracked."
+
+### What Just Happened?
+
+```
+hitavir-portfolio/
+├── .git/          ← Hidden folder (Git's brain)
+└── README.md      ← Your first file (untracked)
+```
+
+:::tip[HitaVir Tech says]
+"Running `git init` is like installing a security camera in your project folder. It does not record anything yet — but it is ready to start tracking when you tell it to."
+:::
+
+<KeyTakeaways>
+
+- `git init` creates a hidden `.git` folder that stores the entire version history
+- New files start as **untracked** — Git sees them but does not record changes yet
+- `git status` is your dashboard; run it constantly to see the state of the repository
+- The `hitavir-portfolio` folder you just created is the project for the rest of this course
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What does git init actually create?',
+      options: [
+        'A hidden .git folder that stores all version history',
+        'A README.md file',
+        'A GitHub repository in the cloud',
+        'A backup copy of every file',
+      ],
+      answer: 0,
+      explanation:
+        'git init only creates the local .git folder. Nothing is uploaded anywhere, and no files are recorded until you add and commit them.',
+    },
+    {
+      question: 'After creating README.md, git status lists it under "Untracked files". What does that mean?',
+      options: [
+        'The file is corrupted',
+        'The file has been committed',
+        'Git sees the file but is not tracking its changes yet',
+        'The file is ignored by .gitignore',
+      ],
+      answer: 2,
+      explanation:
+        'Untracked means Git has noticed the file exists but will not record its history until you stage it with git add.',
+    },
+  ]}
+/>
+
+<LessonComplete />

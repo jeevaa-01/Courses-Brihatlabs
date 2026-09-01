@@ -1,0 +1,9 @@
+{
+  "label": "Module 4 \u00b7 Spark Internals and Performance",
+  "position": 6,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "description": "Execution plans, caching, optimization, and observability."
+  }
+}

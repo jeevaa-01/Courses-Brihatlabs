@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 587 354" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="587" height="354" rx="12" fill="#f8f9fa"/>
+  <text x="293" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Pillar 4 — Naming Conventions</text>
+  <rect x="15" y="40" width="131" height="30" rx="6" fill="#1a73e8"/>
+  <text x="80" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Element</text>
+  <rect x="151" y="40" width="167" height="30" rx="6" fill="#1a73e8"/>
+  <text x="234" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Convention</text>
+  <rect x="323" y="40" width="249" height="30" rx="6" fill="#1a73e8"/>
+  <text x="448" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Data Engineering example</text>
+  <rect x="15" y="76" width="131" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">Variable</text>
+  <rect x="151" y="76" width="167" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="161" y="94" font-size="12" font-family="monospace" fill="#1a73e8">snake_case</text>
+  <rect x="323" y="76" width="249" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="333" y="94" font-size="12" font-family="monospace" fill="#1a73e8">total_records, customer_id</text>
+  <rect x="15" y="108" width="131" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" fill="#3c4043">Function</text>
+  <rect x="151" y="108" width="167" height="28" rx="4" fill="white"/>
+  <text x="161" y="126" font-size="12" font-family="monospace" fill="#3c4043">snake_case</text>
+  <rect x="323" y="108" width="249" height="28" rx="4" fill="white"/>
+  <text x="333" y="126" font-size="12" font-family="monospace" fill="#3c4043">read_csv(), validate_record()</text>
+  <rect x="15" y="140" width="131" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">Class</text>
+  <rect x="151" y="140" width="167" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="161" y="158" font-size="12" font-family="monospace" fill="#1a73e8">PascalCase</text>
+  <rect x="323" y="140" width="249" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="333" y="158" font-size="12" font-family="monospace" fill="#1a73e8">DataPipeline, SalesTransformer</text>
+  <rect x="15" y="172" width="131" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" fill="#3c4043">Constant</text>
+  <rect x="151" y="172" width="167" height="28" rx="4" fill="white"/>
+  <text x="161" y="190" font-size="12" font-family="monospace" fill="#3c4043">UPPER_SNAKE_CASE</text>
+  <rect x="323" y="172" width="249" height="28" rx="4" fill="white"/>
+  <text x="333" y="190" font-size="12" font-family="monospace" fill="#3c4043">MAX_RETRY_COUNT, BATCH_SIZE</text>
+  <rect x="15" y="204" width="131" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" fill="#1a73e8">Module / file</text>
+  <rect x="151" y="204" width="167" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="161" y="222" font-size="12" font-family="monospace" fill="#1a73e8">snake_case.py</text>
+  <rect x="323" y="204" width="249" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="333" y="222" font-size="12" font-family="monospace" fill="#1a73e8">etl_pipeline.py, validators.py</text>
+  <rect x="15" y="236" width="131" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" fill="#3c4043">Package / folder</text>
+  <rect x="151" y="236" width="167" height="28" rx="4" fill="white"/>
+  <text x="161" y="254" font-size="12" font-family="monospace" fill="#3c4043">lowercase</text>
+  <rect x="323" y="236" width="249" height="28" rx="4" fill="white"/>
+  <text x="333" y="254" font-size="12" font-family="monospace" fill="#3c4043">src/, config/</text>
+  <rect x="15" y="268" width="131" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" fill="#1a73e8">Internal (private)</text>
+  <rect x="151" y="268" width="167" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="161" y="286" font-size="12" font-family="monospace" fill="#1a73e8">_leading_underscore</text>
+  <rect x="323" y="268" width="249" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="333" y="286" font-size="12" font-family="monospace" fill="#1a73e8">_internal_cache, _helper()</text>
+  <rect x="15" y="300" width="131" height="28" rx="4" fill="white"/>
+  <text x="25" y="318" font-size="12" font-weight="700" fill="#3c4043">Strongly private</text>
+  <rect x="151" y="300" width="167" height="28" rx="4" fill="white"/>
+  <text x="161" y="318" font-size="12" font-family="monospace" fill="#3c4043">__double_underscore</text>
+  <rect x="323" y="300" width="249" height="28" rx="4" fill="white"/>
+  <text x="333" y="318" font-size="12" font-family="monospace" fill="#3c4043">__name_mangled (advanced)</text>
+  <text x="293" y="348" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

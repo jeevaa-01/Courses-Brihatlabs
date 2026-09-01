@@ -1,0 +1,171 @@
+---
+title: 'Merge Branches'
+sidebar_position: 2
+description: 'Merge a feature branch back into main, understand fast-forward vs three-way merges, and resolve conflicts.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Merge a feature branch into `main` and clean up with `git branch -d`
+- Distinguish fast-forward merges from three-way merges
+- Resolve a merge conflict by editing the conflict markers
+
+</LearningObjectives>
+
+Once you finish work on a branch, you **merge** it back into `main` to include your changes.
+
+### The Merge Concept
+
+```
+Before merge:
+main:       A ── B ── C
+                       \
+feature-1:              D ── E
+
+After merge:
+main:       A ── B ── C ──────── F (merge commit)
+                       \        /
+feature-1:              D ── E
+```
+
+### Step 1 — Switch to Main
+
+You always merge **into** the branch you are on:
+
+```bash
+git checkout main
+```
+
+### Step 2 — Merge the Feature Branch
+
+```bash
+git merge feature-1
+```
+
+**Expected output:**
+
+```
+Updating b2c3d4e..d4e5f6g
+Fast-forward
+ pipeline.py | 4 ++++
+ 1 file changed, 4 insertions(+)
+ create mode 100644 pipeline.py
+```
+
+### Step 3 — Verify the Merge
+
+```bash
+ls
+```
+
+**Expected output:**
+
+```
+README.md  config.txt  file1.txt  file2.txt  file3.txt  notes.txt  pipeline.py
+```
+
+`pipeline.py` is now on `main`!
+
+### Step 4 — View the Merged History
+
+```bash
+git log --oneline --graph --all
+```
+
+### Step 5 — Delete the Merged Branch
+
+After merging, clean up:
+
+```bash
+git branch -d feature-1
+```
+
+**Expected output:**
+
+```
+Deleted branch feature-1 (was d4e5f6g).
+```
+
+### Fast-Forward vs Three-Way Merge
+
+| Type | When | What Happens |
+|------|------|-------------|
+| Fast-forward | Main had no new commits | Git moves the pointer forward |
+| Three-way merge | Both branches have new commits | Git creates a merge commit |
+
+### Handling Merge Conflicts
+
+When two branches change the **same line** in the **same file**, Git cannot decide which to keep:
+
+```
+<<<<<<< HEAD
+Color: Blue
+=======
+Color: Red
+>>>>>>> feature-2
+```
+
+**How to resolve:**
+
+1. Open the file in your editor
+2. Choose which version to keep (or combine them)
+3. Remove the conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`)
+4. Save the file
+5. Run `git add <file>` and `git commit`
+
+> **HitaVir Tech says:** "Merge conflicts are NOT errors. They are Git asking for your human judgment. Do not be afraid of them — they are a normal part of teamwork."
+
+<KeyTakeaways>
+
+- You always merge **into** the branch you are currently on — checkout `main` first
+- Fast-forward merge: `main` had no new commits, so Git just moves the pointer
+- Three-way merge: both branches advanced, so Git creates a merge commit
+- Conflicts happen when both branches change the same line — edit, remove markers, add, commit
+- Delete merged branches with `git branch -d` to keep the repo tidy
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'You want to merge feature-1 into main. What must you do first?',
+      options: [
+        'Delete the feature-1 branch',
+        'Run git push',
+        'Rename feature-1 to main',
+        'Switch to main with git checkout main',
+      ],
+      answer: 3,
+      explanation:
+        'Git merges INTO your current branch, so you must be on main before running git merge feature-1.',
+    },
+    {
+      question: 'When does Git perform a fast-forward merge?',
+      options: [
+        'When main received no new commits while the branch was being worked on',
+        'When both branches changed the same file',
+        'When you pass the --fast flag',
+        'When the branch has fewer than 10 commits',
+      ],
+      answer: 0,
+      explanation:
+        'If main has not moved, Git simply advances the main pointer to the branch tip — no merge commit needed.',
+    },
+    {
+      question: 'A file shows <<<<<<< HEAD and >>>>>>> feature-2 markers. What is the correct fix?',
+      options: [
+        'Delete the file and recreate it',
+        'Run git merge again until the markers disappear',
+        'Edit the file, keep the version you want, remove the markers, then add and commit',
+        'Run git reset --hard to skip the conflict',
+      ],
+      answer: 2,
+      explanation:
+        'Conflicts require human judgment: choose or combine the versions, delete the markers, then git add and git commit.',
+    },
+  ]}
+/>
+
+<LessonComplete />

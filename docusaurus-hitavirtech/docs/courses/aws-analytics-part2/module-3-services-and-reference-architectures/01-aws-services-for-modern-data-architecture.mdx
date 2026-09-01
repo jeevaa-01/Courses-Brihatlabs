@@ -1,0 +1,167 @@
+---
+title: 'AWS Services for Modern Data Architecture'
+sidebar_position: 1
+description: 'The complete AWS service map for the Lake House — which service answers which question, plus DataZone, Zero-ETL, and Glue.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Map each layer of the modern architecture to the AWS service that owns it
+- Explain what Amazon DataZone and Zero-ETL add to the platform
+- Recognize Glue's six roles as the connective tissue of the architecture
+- Use the service lookup table to translate problem statements into services
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |         THE  COMPLETE  AWS  SERVICE  MAP                     |
+  |            for Modern Data Architecture                      |
+  +==============================================================+
+```
+
+### The Headline Cast for Part 2
+
+![S3](/img/courses/aws-icons/s3.png) ![Lake Formation](/img/courses/aws-icons/lake-formation.png) ![Glue](/img/courses/aws-icons/glue.png) ![Athena](/img/courses/aws-icons/athena.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![EMR](/img/courses/aws-icons/emr.png) ![Kinesis Streams](/img/courses/aws-icons/kinesis-streams.png) ![Firehose](/img/courses/aws-icons/kinesis-firehose.png) ![OpenSearch](/img/courses/aws-icons/opensearch.png) ![QuickSight](/img/courses/aws-icons/quicksight.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png) ![DataZone](/img/courses/aws-icons/datazone.png)
+
+Each service answers a specific question in the modern architecture:
+
+| Layer | Question | Service | Icon |
+|-------|----------|---------|:---:|
+| Storage | Where does my data live? | Amazon S3 | 🪣 |
+| Governance | Who can see what? | AWS Lake Formation | 🏗️ |
+| Catalog | What data do we have? | AWS Glue Data Catalog | 📚 |
+| ETL | How do I shape it? | AWS Glue ETL, EMR | 🕸️ |
+| SQL on lake | How do I explore? | Amazon Athena | 🔍 |
+| SQL on warehouse | How do I serve BI? | Amazon Redshift | 🏛️ |
+| Stream ingest | How do I handle real time? | Kinesis + Firehose + MSK | 🌊 |
+| Search | How do I query logs? | Amazon OpenSearch | 🔎 |
+| BI | How do people see it? | Amazon QuickSight | 📊 |
+| ML | How do we predict? | Amazon SageMaker | 🤖 |
+| Discovery | How do business users find data? | Amazon DataZone | 🧭 |
+
+### Service Spotlight — Amazon DataZone
+
+![DataZone](/img/courses/aws-icons/datazone.png)
+
+```
+  +--------------------------------------------------------------+
+  |  AMAZON  DATAZONE  -  Business-Friendly Data Catalog         |
+  +--------------------------------------------------------------+
+  |  Audience    :  Business analysts, product managers          |
+  |  Features    :  Search by business term, request access      |
+  |  Integrates  :  Glue Catalog, Redshift, S3, third-party      |
+  |  ML assist   :  Auto-generate descriptions for tables        |
+  |                                                              |
+  |  Bridges the "I need data" gap between teams and engineers.  |
+  +--------------------------------------------------------------+
+```
+
+### Zero-ETL — The Quiet Revolution
+
+Classic ETL means writing code to extract-transform-load between systems. Zero-ETL makes AWS **automatically** replicate curated data between services:
+
+```
+  +----------------+           +-----------------------+
+  | Aurora MySQL   |  ==ETL==> | Redshift (analytics)  |
+  |  (app DB)      |  managed  |                       |
+  +----------------+           +-----------------------+
+
+  Supported today:
+  - Aurora  -> Redshift
+  - RDS     -> Redshift
+  - DynamoDB -> OpenSearch
+  - S3      -> Redshift  (auto-copy)
+```
+
+Fewer pipelines to maintain. Fresher analytics. Less on-call pain.
+
+### AWS Glue — The Connective Tissue
+
+![Glue](/img/courses/aws-icons/glue.png) ![Crawler](/img/courses/aws-icons/glue-crawler.png) ![Catalog](/img/courses/aws-icons/glue-catalog.png) ![DataBrew](/img/courses/aws-icons/glue-databrew.png) ![Data Quality](/img/courses/aws-icons/glue-dq.png)
+
+In a modern architecture, Glue is **everywhere**:
+
+| Capability | Icon | Role |
+|------------|:---:|------|
+| Crawlers | 🕷️ | Auto-discover schemas in S3 |
+| Data Catalog | 📚 | The shared metadata layer |
+| ETL jobs (Spark / Python) | 🕸️ | Transform raw → curated |
+| DataBrew | 🧪 | No-code cleaning for analysts |
+| Data Quality | 🛡️ | Rules enforced on every run |
+| Workflows | 🧭 | Orchestrate multi-job pipelines |
+
+### A Mental Shortcut — The Service Lookup Table
+
+When someone describes a problem, scan this table first:
+
+| Problem Sounds Like... | Reach For |
+|------------------------|-----------|
+| "We have terabytes piling up and need cheap storage" | 🪣 S3 + 🧊 Glacier |
+| "Analysts want SQL on 1B rows, must return in seconds" | 🏛️ Redshift |
+| "We dump random files hourly, want ad-hoc SQL" | 🔍 Athena + 🕸️ Glue |
+| "Events come at 1M / sec and drive a live dashboard" | 🌊 Kinesis + 🎯 K. Analytics |
+| "Logs need to be searchable with keyword filters" | 🔎 OpenSearch |
+| "We keep 2 copies of the same data in lake and warehouse" | 🔭 Redshift Spectrum / Zero-ETL |
+| "We need to share a slice with another AWS account" | 🔗 Redshift Data Sharing / Lake Formation grants |
+| "Non-engineers can't find any data" | 🧭 DataZone |
+| "We want the CEO to ask questions in English" | 💬 Amazon Q in QuickSight |
+
+:::tip[HitaVir Tech says]
+"When a junior asks 'which AWS service should we use?', the senior reply is another question — 'what is the actual pattern?' Service choice without pattern = tech for tech's sake."
+:::
+
+<KeyTakeaways>
+
+- Every layer of the modern architecture has one owning service — from S3 (storage) to DataZone (discovery)
+- DataZone gives business users a catalog searchable by business terms, with access requests built in
+- Zero-ETL replicates data between Aurora/RDS/DynamoDB/S3 and analytics engines with no pipeline code
+- Glue plays six roles: crawlers, catalog, ETL, DataBrew, data quality, and workflow orchestration
+- Diagnose the pattern first — then the service lookup table gives you the tool
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which service helps non-engineers discover datasets using business terms instead of table names?',
+      options: [
+        'AWS Glue Crawler',
+        'Amazon Macie',
+        'AWS CloudTrail',
+        'Amazon DataZone',
+      ],
+      answer: 3,
+      explanation:
+        'DataZone provides a business-friendly catalog on top of the Glue Catalog, with search and access requests.',
+    },
+    {
+      question: 'Logs from production services need keyword search with filters. Which service is the standard answer?',
+      options: [
+        'Amazon Redshift',
+        'Amazon OpenSearch',
+        'AWS Glue DataBrew',
+        'Amazon Athena',
+      ],
+      answer: 1,
+      explanation:
+        'OpenSearch is the full-text and log search engine in the modern architecture; Redshift and Athena are SQL engines.',
+    },
+    {
+      question: 'Which Glue capability automatically discovers schemas of files sitting in S3?',
+      options: [
+        'Glue Crawlers',
+        'Glue Workflows',
+        'Glue DataBrew',
+        'Glue Data Quality',
+      ],
+      answer: 0,
+      explanation:
+        'Crawlers scan S3, infer schemas and partitions, and register them in the Glue Data Catalog.',
+    },
+  ]}
+/>
+
+<LessonComplete />

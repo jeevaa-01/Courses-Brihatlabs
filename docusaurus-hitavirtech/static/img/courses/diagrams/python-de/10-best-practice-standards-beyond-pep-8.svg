@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 722 463" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="722" height="463" rx="12" fill="#f8f9fa"/>
+  <text x="361" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Best-Practice Standards Beyond PEP 8</text>
+  <rect x="15" y="40" width="327" height="30" rx="6" fill="#1a73e8"/>
+  <text x="178" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Practice</text>
+  <rect x="347" y="40" width="360" height="30" rx="6" fill="#1a73e8"/>
+  <text x="527" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Why it matters in DE</text>
+  <rect x="15" y="76" width="327" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">Type hints (def f(x: int) -&gt; str:)</text>
+  <rect x="347" y="76" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="357" y="94" font-size="12" fill="#1a73e8">Catch type bugs before runtime; IDE autocomplete</text>
+  <rect x="15" y="108" width="327" height="43" rx="4" fill="white"/>
+  <text x="25" y="133" font-size="12" font-weight="700" fill="#3c4043">Docstrings on every public function</text>
+  <rect x="347" y="108" width="360" height="43" rx="4" fill="white"/>
+  <text x="357" y="126" font-size="12" fill="#3c4043">New teammates can read the API without reading the</text>
+  <text x="357" y="141" font-size="12" fill="#3c4043">body</text>
+  <rect x="15" y="155" width="327" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="173" font-size="12" font-weight="700" fill="#1a73e8">One function = one job (Single Responsibility)</text>
+  <rect x="347" y="155" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="357" y="173" font-size="12" fill="#1a73e8">Easier to test, easier to reuse</text>
+  <rect x="15" y="187" width="327" height="43" rx="4" fill="white"/>
+  <text x="25" y="212" font-size="12" font-weight="700" fill="#3c4043">No magic numbers</text>
+  <rect x="347" y="187" width="360" height="43" rx="4" fill="white"/>
+  <text x="357" y="205" font-size="12" font-family="monospace" fill="#3c4043">THRESHOLD = 100 at the top, not if x &gt; 100:</text>
+  <text x="357" y="220" font-size="12" font-family="monospace" fill="#3c4043">buried in code</text>
+  <rect x="15" y="234" width="327" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="252" font-size="12" font-weight="700" fill="#1a73e8">Fail loudly, log clearly</text>
+  <rect x="347" y="234" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="357" y="252" font-size="12" fill="#1a73e8">Silent failures destroy trust in pipelines</text>
+  <rect x="15" y="266" width="327" height="28" rx="4" fill="white"/>
+  <text x="25" y="284" font-size="12" font-weight="700" fill="#3c4043">Keep functions under ~50 lines</text>
+  <rect x="347" y="266" width="360" height="28" rx="4" fill="white"/>
+  <text x="357" y="284" font-size="12" fill="#3c4043">If it does not fit on one screen, split it</text>
+  <rect x="15" y="298" width="327" height="43" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="323" font-size="12" font-weight="700" fill="#1a73e8">Pure functions when possible</text>
+  <rect x="347" y="298" width="360" height="43" rx="4" fill="#e8f0fe"/>
+  <text x="357" y="316" font-size="12" fill="#1a73e8">Same input, same output, no side effects = trivial to</text>
+  <text x="357" y="331" font-size="12" fill="#1a73e8">test</text>
+  <rect x="15" y="345" width="327" height="28" rx="4" fill="white"/>
+  <text x="25" y="363" font-size="12" font-weight="700" fill="#3c4043">Use pathlib over os.path</text>
+  <rect x="347" y="345" width="360" height="28" rx="4" fill="white"/>
+  <text x="357" y="363" font-size="12" fill="#3c4043">Modern, cross-platform, readable</text>
+  <rect x="15" y="377" width="327" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="395" font-size="12" font-weight="700" fill="#1a73e8">F-strings over % and .format()</text>
+  <rect x="347" y="377" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="357" y="395" font-size="12" fill="#1a73e8">Readable, fast, the recommended style since Python 3.6</text>
+  <rect x="15" y="409" width="327" height="28" rx="4" fill="white"/>
+  <text x="25" y="427" font-size="12" font-weight="700" fill="#3c4043">Never except:; always except Exception or specific</text>
+  <rect x="347" y="409" width="360" height="28" rx="4" fill="white"/>
+  <text x="357" y="427" font-size="12" fill="#3c4043">Bare except swallows Ctrl-C and hides bugs</text>
+  <text x="361" y="457" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

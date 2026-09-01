@@ -1,0 +1,122 @@
+---
+title: 'Volume'
+sidebar_position: 2
+description: 'The 1st V — Volume. The byte-to-zettabyte scale ladder, why traditional databases break past ~10 TB, and the questions scale forces you to ask.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Define Volume and read the scale ladder from bytes to zettabytes
+- Explain why single-machine systems break past roughly 1-10 TB
+- List the four questions Volume forces every engineer to ask
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              THE  1st  V   -   VOLUME                        |
+  |              "How much data do we have?"                     |
+  +==============================================================+
+```
+
+### What is Volume?
+
+📦 **Volume** is the size of your data — how many bytes, rows, events, or files you must store, move, and process.
+
+### The Scale Ladder
+
+| Unit | Power | What It Holds |
+|------|:---:|---------------|
+| Byte (B) | 1 | A letter |
+| KB | 10^3 | One email |
+| MB | 10^6 | One song |
+| GB | 10^9 | One DVD |
+| TB | 10^12 | One year of company sales |
+| PB | 10^15 | One day of YouTube uploads |
+| EB | 10^18 | All of Netflix streaming |
+| ZB | 10^21 | The entire internet per year |
+
+### Why Volume is Hard
+
+A traditional database runs fine up to ~1-10 TB. Past that, things break:
+
+- 💥 Single disk too small to hold it
+- 💥 Single CPU too slow to scan it in reasonable time
+- 💥 Backups take days
+- 💥 Failures become likely (1-in-1000 → every day)
+- 💥 Cost spirals out of control
+
+At big-data scale, you need **distributed** systems — hundreds of machines sharing the load.
+
+### Real-World Volume
+
+| Company | Daily Volume |
+|---------|--------------|
+| 📱 Instagram | 100M+ photos uploaded |
+| 🛒 Amazon | Billions of events |
+| 🚗 Uber | 10s of TB of trip data |
+| 🎬 Netflix | PB of logs and streams |
+| 🔎 Google | Unimaginable |
+
+### Questions Volume Forces You to Ask
+
+- 💾 Where do I **store** 500 TB affordably?
+- ⚡ How do I **scan** 10 TB in minutes, not days?
+- 💼 How do I **back up** a multi-PB system?
+- 💰 How do I **afford** this without going bankrupt?
+
+:::tip[HitaVir Tech says]
+"What works at 10 GB catastrophically fails at 10 TB. Always ask — *how does this scale at 100x?*"
+:::
+
+:::info[Volume in one line]
+Design for 100× your current data — or rebuild painfully later.
+:::
+
+### Preview — AWS Services That Solve Volume
+
+![S3](/img/courses/aws-icons/s3.png) ![Glacier](/img/courses/aws-icons/glacier.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![EMR](/img/courses/aws-icons/emr.png) ![Lake Formation](/img/courses/aws-icons/lake-formation.png)
+
+*Coming up in "AWS Services for Volume".*
+
+<KeyTakeaways>
+
+- Volume is the scale V: bytes, rows, events, files — how much you must store and process
+- Traditional single-machine databases work up to ~1-10 TB, then disks, CPUs, backups, and costs all break
+- Big-data scale demands distributed systems — many machines sharing the load
+- Design for 100× your current data or plan on a painful rebuild
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Around what scale does a traditional single-machine database start to break down?',
+      options: [
+        '~1-10 GB',
+        '~1-10 TB',
+        '~1-10 PB',
+        'Traditional databases never break down',
+      ],
+      answer: 1,
+      explanation:
+        'Past roughly 1-10 TB, single disks, single CPUs, backup windows, and costs all start to fail — you need distributed systems.',
+    },
+    {
+      question: 'What is the "design for 100×" rule about?',
+      options: [
+        'Buying 100 servers up front',
+        'Making dashboards 100× faster',
+        'Architecting so your system survives 100× data growth',
+        'Compressing data 100×',
+      ],
+      answer: 2,
+      explanation:
+        'What works at 10 GB catastrophically fails at 10 TB — architect for orders-of-magnitude growth or rebuild painfully later.',
+    },
+  ]}
+/>
+
+<LessonComplete />

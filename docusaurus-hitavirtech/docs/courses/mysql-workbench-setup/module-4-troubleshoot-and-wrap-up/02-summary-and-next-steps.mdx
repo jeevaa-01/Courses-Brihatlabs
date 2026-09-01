@@ -1,0 +1,120 @@
+---
+title: 'Summary and Next Steps'
+sidebar_position: 2
+description: 'Recap everything you set up and see the SQL learning path that comes after this course.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Review everything you installed, configured, and queried in this course
+- Map out the SQL topics to learn next on your data engineering path
+
+</LearningObjectives>
+
+Congratulations! You have successfully set up MySQL on your Windows computer!
+
+### What You Accomplished
+
+| Step | Status |
+|------|--------|
+| Downloaded MySQL Installer | Done |
+| Installed MySQL Server | Done |
+| Configured root password | Done |
+| Installed MySQL Workbench | Done |
+| Connected to the database | Done |
+| Created a database and table | Done |
+| Ran SELECT, INSERT, UPDATE queries | Done |
+| Imported a .sql database file | Done |
+| Learned troubleshooting steps | Done |
+
+### Quick Revision Checklist
+
+- MySQL Server runs on port **3306** by default
+- The **root** account has full admin access
+- Use `SHOW DATABASES;` to list all databases
+- Use `USE database_name;` before querying tables
+- Use `SHOW TABLES;` to see tables in the current database
+- Always end SQL statements with a **semicolon** (`;`)
+- Import databases via **Server > Data Import** in Workbench
+- Check **services.msc** if MySQL will not start
+
+### What to Learn Next
+
+| Topic | Why It Matters |
+|-------|---------------|
+| SQL SELECT (WHERE, ORDER BY, LIMIT) | Filtering and sorting data |
+| SQL JOINs (INNER, LEFT, RIGHT) | Combining data from multiple tables |
+| SQL Aggregations (GROUP BY, HAVING) | Summarizing data for reports |
+| Subqueries and CTEs | Complex data analysis |
+| Indexes and optimization | Making queries faster |
+| Stored procedures | Reusable SQL logic |
+| Python + MySQL | Connecting pipelines to databases |
+
+Browse the other courses on the [HitaVir Tech portal](/) to continue your path.
+
+### Your Learning Path
+
+```
+MySQL Setup (you are here!)
+    │
+    ▼
+SQL Basics (SELECT, INSERT, UPDATE, DELETE)
+    │
+    ▼
+SQL Intermediate (JOINs, GROUP BY, Subqueries)
+    │
+    ▼
+SQL Advanced (Window Functions, CTEs, Optimization)
+    │
+    ▼
+Python + MySQL (SQLAlchemy, pandas)
+    │
+    ▼
+Data Engineering (ETL Pipelines with SQL)
+```
+
+:::tip[HitaVir Tech says]
+"You now have a professional database environment on your computer. This is the same setup used by data engineers worldwide. SQL is the universal language of data — everything you learn here transfers directly to PostgreSQL, BigQuery, Snowflake, and every other database. Keep practicing, keep querying, and keep growing!"
+:::
+
+<KeyTakeaways>
+
+- You built a complete local database environment: Server + Workbench + a real database
+- Port **3306**, the **root** account, and the **semicolon** rule are your daily basics
+- The next milestones are SELECT filtering, JOINs, aggregations, and Python + MySQL
+- Everything you practiced transfers to PostgreSQL, BigQuery, and Snowflake
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which command shows the tables inside the database you are currently using?',
+      options: [
+        'SHOW DATABASES;',
+        'LIST TABLES;',
+        'SELECT TABLES;',
+        'SHOW TABLES;',
+      ],
+      answer: 3,
+      explanation:
+        'SHOW TABLES lists tables in the active database; SHOW DATABASES lists the databases themselves.',
+    },
+    {
+      question: 'According to the learning path, what comes immediately after MySQL setup?',
+      options: [
+        'SQL Basics (SELECT, INSERT, UPDATE, DELETE)',
+        'ETL pipelines with Airflow',
+        'Window functions and CTEs',
+        'SQLAlchemy and pandas',
+      ],
+      answer: 0,
+      explanation:
+        'The path goes Setup → SQL Basics → Intermediate → Advanced → Python + MySQL → Data Engineering.',
+    },
+  ]}
+/>
+
+<LessonComplete />

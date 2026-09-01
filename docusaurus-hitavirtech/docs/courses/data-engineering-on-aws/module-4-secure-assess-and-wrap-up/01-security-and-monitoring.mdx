@@ -1,0 +1,412 @@
+---
+title: 'Data engineering security and monitoring'
+sidebar_position: 1
+description: 'Wrap the lake in least-privilege IAM, Lake Formation column permissions, KMS encryption at rest, CloudWatch alarms, and a CloudTrail audit trail.'
+---
+
+<DurationBadge minutes={55} />
+
+<LearningObjectives>
+
+- Write and attach a least-privilege read-only policy for an analyst user
+- Hide a sensitive column with a Lake Formation column-level grant
+- Encrypt the lake at rest with a customer-managed KMS key set as the bucket default
+- Wire up a CloudWatch alarm, a CloudTrail audit trail, and cost allocation tags
+
+</LearningObjectives>
+
+Your lake works, but so far you have been the only user, working as a full admin. That is
+fine for building, not for running. Now wrap the lake in layers of protection and put eyes
+on it: give an analyst exactly the access they need, hide a sensitive column, encrypt the
+data at rest, and wire up alarms and an audit trail.
+
+### The concept visual
+
+The defense-in-layers visual — `assets/05-security-layers.html` in the course materials
+repo — shows IAM, Lake Formation, KMS, CloudWatch, and CloudTrail as protective rings
+wrapping the lake, each labeled with the one job it does.
+
+:::warning[KMS costs about a dollar a month]
+One service here is not free. **KMS** charges roughly **$1 per month** per
+customer-managed key, plus a tiny per-request fee. The teardown schedules the key for
+deletion so the charge stops.
+:::
+
+### Setup
+
+```bash
+export ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+export REGION=us-east-1
+export BUCKET=hvt-retail-datalake-$ACCOUNT_ID
+export DB=hvt_retail_db
+
+aws s3 ls s3://$BUCKET/
+aws glue get-database --name $DB --query 'Database.Name' --output text
+```
+
+### Write and attach a least-privilege IAM policy
+
+**Least privilege** grants an identity only the permissions it truly needs. Create a
+read-only analyst user and give it a policy that allows reading the lake and running Athena
+queries, but denies every write and delete.
+
+**AWS CLI**
+
+```bash
+aws iam create-user \
+  --user-name hvt-retail-analyst \
+  --tags Key=project,Value=hvt-retail Key=env,Value=dev
+```
+
+Save this as `analyst-readonly.json`:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadLakeBucket",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:ListBucket", "s3:GetBucketLocation"],
+      "Resource": [
+        "arn:aws:s3:::hvt-retail-datalake-ACCOUNT_ID",
+        "arn:aws:s3:::hvt-retail-datalake-ACCOUNT_ID/*"
+      ]
+    },
+    {
+      "Sid": "RunAthenaQueries",
+      "Effect": "Allow",
+      "Action": [
+        "athena:StartQueryExecution",
+        "athena:GetQueryExecution",
+        "athena:GetQueryResults",
+        "athena:StopQueryExecution",
+        "athena:GetWorkGroup"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ReadGlueCatalog",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetDatabase",
+        "glue:GetDatabases",
+        "glue:GetTable",
+        "glue:GetTables",
+        "glue:GetPartitions"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
+
+```bash
+sed -i "s/ACCOUNT_ID/$ACCOUNT_ID/g" analyst-readonly.json
+
+aws iam create-policy \
+  --policy-name hvt-retail-analyst-readonly \
+  --policy-document file://analyst-readonly.json \
+  --tags Key=project,Value=hvt-retail Key=env,Value=dev
+
+aws iam attach-user-policy \
+  --user-name hvt-retail-analyst \
+  --policy-arn arn:aws:iam::$ACCOUNT_ID:policy/hvt-retail-analyst-readonly
+```
+
+**Console path**
+
+1. In **IAM**, **Policies**, **Create policy**, switch to **JSON**, paste the document
+   (with your account id), name it `hvt-retail-analyst-readonly`.
+2. In **Users**, select `hvt-retail-analyst`, **Add permissions**, **Attach policies
+   directly**, attach the policy.
+
+:::tip[Implicit deny does the work]
+Because the policy lists only read actions, you do not need an explicit `Deny` for
+writes. IAM denies everything that is not explicitly allowed.
+:::
+
+### Govern the lake with Lake Formation column permissions
+
+**AWS Lake Formation** sits on top of the Glue catalog and controls who can read which
+databases, tables, and even which columns. It can do something IAM alone cannot: a
+**column-level permission**. The `customers` table has an `email` column; an analyst
+studying loyalty tiers by region has no business reading it. Grant `SELECT` on `customers`
+for every column except `email`.
+
+```bash
+aws lakeformation register-resource \
+  --resource-arn arn:aws:s3:::$BUCKET \
+  --use-service-linked-role
+
+aws lakeformation grant-permissions \
+  --principal DataLakePrincipalIdentifier=arn:aws:iam::$ACCOUNT_ID:user/hvt-retail-analyst \
+  --permissions SELECT \
+  --resource '{
+    "TableWithColumns": {
+      "DatabaseName": "'"$DB"'",
+      "Name": "customers",
+      "ColumnWildcard": { "ExcludedColumnNames": ["email"] }
+    }
+  }'
+```
+
+**Console path**
+
+1. Open **Lake Formation**; if prompted, add `hvt-admin` as a **Data lake administrator**.
+2. Under **Administration**, **Data lake locations**, **Register location**, set the S3
+   path to `s3://hvt-retail-datalake-<account-id>` with the
+   **AWSServiceRoleForLakeFormationDataAccess** role.
+3. Under **Data permissions**, **Grant**: principal `hvt-retail-analyst`, database
+   `hvt_retail_db`, table `customers`, **Select**, then **Column-based access**, **Exclude
+   columns**, select `email`.
+
+:::warning[Registration changes who arbitrates access]
+Registering a location means Lake Formation now arbitrates access to that data. If a
+previously working query returns `Insufficient Lake Formation permissions`, it is because
+the grant has not been made yet. Grant `SELECT` to the principals that need it.
+:::
+
+### Encrypt the lake at rest with KMS
+
+**Encryption at rest** scrambles bytes while they sit on disk. **Encryption in transit**
+protects data moving over the network; AWS already does this for you over **TLS** on every
+S3 and Athena call. **KMS** (AWS Key Management Service) creates and controls encryption
+keys. Make a customer-managed key and set it as the bucket default, so S3 encrypts every
+new object with it (**SSE-KMS**).
+
+```bash
+export KEY_ID=$(aws kms create-key \
+  --description "hvt-retail lake data encryption key" \
+  --tags TagKey=project,TagValue=hvt-retail TagKey=env,TagValue=dev \
+  --query 'KeyMetadata.KeyId' --output text)
+
+aws kms create-alias \
+  --alias-name alias/hvt-retail-lake \
+  --target-key-id $KEY_ID
+```
+
+Save this as `encryption.json` and apply it:
+
+```json
+{
+  "Rules": [
+    {
+      "ApplyServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "aws:kms",
+        "KMSMasterKeyID": "alias/hvt-retail-lake"
+      },
+      "BucketKeyEnabled": true
+    }
+  ]
+}
+```
+
+```bash
+aws s3api put-bucket-encryption \
+  --bucket $BUCKET \
+  --server-side-encryption-configuration file://encryption.json
+```
+
+**Console path**
+
+1. **KMS**, **Customer managed keys**, **Create key**: symmetric, encrypt and decrypt,
+   alias `hvt-retail-lake`, tags `project=hvt-retail` and `env=dev`, yourself as
+   administrator and user.
+2. **S3**, your bucket, **Properties**, **Default encryption**, **Edit**: choose **SSE-KMS**
+   with the `hvt-retail-lake` key, enable **Bucket Key**, save.
+
+:::tip[Bucket keys cut KMS cost]
+`BucketKeyEnabled` caches a bucket-level data key, cutting KMS calls and per-request cost
+without weakening encryption — security and cost optimization at once.
+:::
+
+### Watch the lake with CloudWatch and CloudTrail
+
+**CloudWatch** collects metrics, stores logs, and fires **alarms** when a metric crosses a
+threshold. **CloudTrail** records who called which API, when, and from where. CloudWatch
+tells you *something is wrong*; CloudTrail tells you *who did what*.
+
+Alarm on Glue job failures:
+
+```bash
+aws cloudwatch put-metric-alarm \
+  --alarm-name hvt-retail-glue-job-failures \
+  --alarm-description "Fires when a HitaVir Retail Glue job reports failed tasks" \
+  --namespace Glue \
+  --metric-name "glue.driver.aggregate.numFailedTasks" \
+  --statistic Sum \
+  --period 300 \
+  --threshold 1 \
+  --comparison-operator GreaterThanOrEqualToThreshold \
+  --evaluation-periods 1 \
+  --treat-missing-data notBreaching \
+  --tags Key=project,Value=hvt-retail Key=env,Value=dev
+```
+
+Turn on a CloudTrail audit trail. Your first trail is free.
+
+```bash
+aws s3api create-bucket --bucket hvt-retail-cloudtrail-$ACCOUNT_ID --region $REGION
+
+aws s3api put-bucket-policy \
+  --bucket hvt-retail-cloudtrail-$ACCOUNT_ID \
+  --policy file://trail-bucket-policy.json
+
+aws cloudtrail create-trail \
+  --name hvt-retail-audit \
+  --s3-bucket-name hvt-retail-cloudtrail-$ACCOUNT_ID \
+  --is-multi-region-trail
+
+aws cloudtrail start-logging --name hvt-retail-audit
+```
+
+The `trail-bucket-policy.json` grants the CloudTrail service write access:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AWSCloudTrailAclCheck",
+      "Effect": "Allow",
+      "Principal": { "Service": "cloudtrail.amazonaws.com" },
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:s3:::hvt-retail-cloudtrail-ACCOUNT_ID"
+    },
+    {
+      "Sid": "AWSCloudTrailWrite",
+      "Effect": "Allow",
+      "Principal": { "Service": "cloudtrail.amazonaws.com" },
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::hvt-retail-cloudtrail-ACCOUNT_ID/AWSLogs/ACCOUNT_ID/*",
+      "Condition": { "StringEquals": { "s3:x-amz-acl": "bucket-owner-full-control" } }
+    }
+  ]
+}
+```
+
+:::tip[Alarm on cost too]
+You can alarm on cost the same way. In `us-east-1` the Billing namespace exposes
+`EstimatedCharges`; an alarm at greater than 5 USD gives a real-time tripwire that
+complements the monthly budget you set at the start.
+:::
+
+### Apply the cost allocation tag scheme
+
+A **cost allocation tag** is a tag AWS recognizes in billing so spend can be sliced by tag
+value. You have tagged everything `project=hvt-retail` and `env=dev`. Activate those tags in
+billing so they show up as a cost dimension.
+
+**Console path**
+
+1. Open **Billing and Cost Management**, **Cost allocation tags**.
+2. Find `project` and `env` under **User-defined cost allocation tags**, select both,
+   **Activate**.
+
+**AWS CLI**
+
+```bash
+aws ce update-cost-allocation-tags-status \
+  --cost-allocation-tags-status \
+      TagKey=project,Status=Active \
+      TagKey=env,Status=Active
+```
+
+:::tip[Activate cost tags early]
+Tag activation is not retroactive — it attributes cost from activation forward. Activate
+cost tags early in a real project so the history is there when you need it.
+:::
+
+### Checkpoint
+
+Confirm encryption at rest, then prove least privilege.
+
+```bash
+aws s3api get-bucket-encryption --bucket $BUCKET \
+  --query 'ServerSideEncryptionConfiguration.Rules[0].ApplyServerSideEncryptionByDefault'
+```
+
+You should see `"SSEAlgorithm": "aws:kms"`. Now create an access key for the analyst and a
+throwaway CLI profile, then test:
+
+```bash
+aws iam create-access-key --user-name hvt-retail-analyst
+aws configure --profile analyst
+
+aws s3 ls s3://$BUCKET/ --profile analyst
+
+echo "should fail" > deny-test.txt
+aws s3 cp deny-test.txt s3://$BUCKET/deny-test.txt --profile analyst
+# Expected: An error occurred (AccessDenied) ...
+```
+
+If the read returns the lake contents and the write returns `AccessDenied`, your
+least-privilege policy is correct. In Athena, the same analyst can `SELECT` from `customers`
+but the `email` column is hidden by Lake Formation. That asymmetry is the whole point.
+
+### Troubleshooting
+
+- **`Insufficient Lake Formation permissions` on `customers`** — registering the bucket put
+  Lake Formation in charge. Grant the analyst the column-filtered `SELECT`; the IAM policy
+  alone is not enough once a location is registered.
+- **`KMS.DisabledException` or `AccessDenied` after encryption** — the principal also needs
+  `kms:Decrypt` on the key. Add the analyst as a key user.
+- **CloudTrail `InsufficientS3BucketPolicyException`** — re-apply `trail-bucket-policy.json`
+  with your real account id in both ARNs.
+- **The Glue alarm sits in `INSUFFICIENT_DATA`** — that metric only appears after a Glue
+  job runs at least once. `--treat-missing-data notBreaching` keeps no runs from looking
+  like a failure.
+
+<KeyTakeaways>
+
+- IAM denies by default — a policy listing only read actions needs no explicit Deny for writes
+- Lake Formation adds what IAM cannot: table- and column-level grants (the analyst sees `customers` minus `email`)
+- SSE-KMS with a customer-managed key encrypts every new object; `BucketKeyEnabled` keeps the KMS bill down
+- CloudWatch says *something is wrong*; CloudTrail says *who did what* — you need both
+- Cost allocation tags attribute spend only from activation forward, so activate them early
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'The analyst can read the lake but a write returns AccessDenied — without any Deny statement in the policy. Why?',
+      options: [
+        'S3 blocks all writes from IAM users by default',
+        'The bucket policy overrides the user policy',
+        'Lake Formation intercepts the write',
+        'IAM implicitly denies everything not explicitly allowed, and the policy only allows read actions',
+      ],
+      answer: 3,
+      explanation:
+        'Default-deny is the core IAM model. Listing only s3:GetObject and s3:ListBucket means every write and delete is denied automatically.',
+    },
+    {
+      question: 'What can Lake Formation do here that a plain IAM policy cannot?',
+      options: [
+        'Grant SELECT on customers for every column except email — column-level access control',
+        'Encrypt the bucket at rest',
+        'Fire an alarm when a query fails',
+        'Rotate the analyst access key',
+      ],
+      answer: 0,
+      explanation:
+        'IAM stops at the resource level (bucket, table). Lake Formation arbitrates catalog reads down to individual columns.',
+    },
+    {
+      question: 'Which pairing is correct for observability of the lake?',
+      options: [
+        'CloudTrail fires alarms; CloudWatch records API calls',
+        'CloudWatch tells you something is wrong (metrics and alarms); CloudTrail tells you who did what (API audit)',
+        'Both do the same job; keep one',
+        'KMS handles both monitoring and audit',
+      ],
+      answer: 1,
+      explanation:
+        'CloudWatch is metrics, logs, and alarms; CloudTrail is the immutable record of API activity. Detection and audit are different jobs.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,144 @@
+---
+title: "Summary and What's Next"
+sidebar_position: 1
+description: 'Everything you learned in Part 1 — concepts, the 5 Vs, the AWS service map, hands-on skills — and what AWS Analytics Part 2 will cover.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Recap the full arc: analytics concepts, the 5 Vs, and the AWS service mapping
+- Review the hands-on skills you practiced in the lab
+- Preview the topics coming in AWS Analytics Part 2
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |          CONGRATULATIONS  -  PART 1 DONE!                    |
+  +==============================================================+
+```
+
+### What You Learned
+
+**🧠 Analytics Concepts**
+
+| Topic | Icon |
+|-------|:---:|
+| Analytics and the four maturity levels | 📊 |
+| Machine Learning — three flavors | 🤖 |
+
+**📏 The 5 Vs of Big Data**
+
+| V | Icon | Theme |
+|---|:---:|-------|
+| **VOLUME** | 📦 | Scale |
+| **VARIETY** | 🧩 | Formats |
+| **VELOCITY** | 🌊 | Speed |
+| **VERACITY** | 🛡️ | Trust |
+| **VALUE** | 💎 | Outcome |
+
+![S3](/img/courses/aws-icons/s3.png) ![Glue](/img/courses/aws-icons/glue.png) ![Athena](/img/courses/aws-icons/athena.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![Kinesis](/img/courses/aws-icons/kinesis-streams.png) ![Kinesis Firehose](/img/courses/aws-icons/kinesis-firehose.png) ![Lambda](/img/courses/aws-icons/lambda.png) ![QuickSight](/img/courses/aws-icons/quicksight.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png) ![Bedrock](/img/courses/aws-icons/bedrock.png)
+
+**☁️ AWS Services Mapped to Each V**
+
+| V | Key Services |
+|---|--------------|
+| 📦 Volume | 🪣 S3 • 🏛️ Redshift • 🐘 EMR • 🧊 Glacier • 🏗️ Lake Formation |
+| 🧩 Variety | 🕸️ Glue • 🔍 Athena • 🤖 Rekognition • 📝 Textract • 🔊 Transcribe • 💭 Comprehend |
+| 🌊 Velocity | 🌊 Kinesis • 🚒 Firehose • 🪐 MSK • 🎯 Kinesis Analytics • ⚡ Lambda |
+| 🛡️ Veracity | 🧪 DataBrew • 🛡️ Glue DQ • 🏗️ Lake Formation • 🕵️ Macie • 📜 CloudTrail |
+| 💎 Value | 📊 QuickSight • 🤖 SageMaker • 🔮 Forecast • 🎯 Personalize • 🧠 Redshift ML |
+
+**🛠️ Hands-on Skills**
+
+- 🪣 Created an S3 bucket
+- ⬆️ Uploaded data to S3
+- 🕷️ Ran a Glue crawler
+- 📚 Viewed the Data Catalog
+- 🔍 Ran SQL with Athena
+- 🧹 Cleaned up AWS resources
+
+### What's Coming in Part 2
+
+🚀 **AWS Analytics Part 2 — Advanced Analytics on AWS** (coming soon to this portal) will cover:
+
+- ⚙️ Glue ETL with Spark
+- 🛡️ Production data-quality rules
+- 🧩 Partitioning + Parquet deep-dive
+- 🏛️ Redshift hands-on — load, query, Spectrum
+- 🌊 Streaming lab with Kinesis Firehose
+- 📊 Real QuickSight dashboard
+- 🤖 Intro to SageMaker + Redshift ML
+- 🎯 Capstone project
+
+### What To Do Next
+
+1. 🔄 **Repeat this lab** with a different dataset (try a Kaggle CSV) — see the [hands-on lab](/courses/aws-analytics-part1/module-4-end-to-end-and-hands-on-lab/hands-on-lab-your-first-aws-analytics-pipeline)
+2. 📖 **Read the AWS Athena and Glue docs**
+3. 💰 **Watch your AWS bill** for a few days
+4. 🧠 **Apply the 5 Vs** to a project you work on — the next lesson's [self-assessment](/courses/aws-analytics-part1/module-5-wrap-up/bonus-self-assessment) walks you through it
+5. 🐍 **Keep building fundamentals** with the [PySpark course](/courses/pyspark/intro) and [Learn Like a Top Performer](/courses/learn-like-a-top-performer)
+
+### Final Thoughts
+
+```
+  +==============================================================+
+  |                                                              |
+  |    The 5 Vs  =  universal data challenge framework           |
+  |    AWS      =  complete toolbox for each V                   |
+  |                                                              |
+  |    Learn both  ->  you can pick up any cloud's analytics     |
+  |    stack in a week.                                          |
+  |                                                              |
+  +==============================================================+
+```
+
+:::tip[HitaVir Tech says]
+"Analytics is not about tools. Tools change every two years. Analytics is about asking the right question, finding the right data, and presenting an insight people can act on. Master the fundamentals — Volume, Variety, Velocity, Veracity, Value — and every new tool becomes just another syntax."
+:::
+
+🎓 Welcome to cloud analytics. See you in **AWS Analytics Part 2**.
+
+— **HitaVir Tech** ☁️
+
+<KeyTakeaways>
+
+- You now hold the full map: analytics maturity levels, the 5 Vs, and one AWS service lineup per V
+- The hands-on lab exercised the core loop — S3 storage, Glue cataloging, Athena SQL, cleanup
+- The 5 Vs framework transfers to any cloud; only the service names change
+- AWS Analytics Part 2 goes hands-on with Glue ETL, Redshift, streaming, and QuickSight
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why does mastering the 5 Vs make other clouds easier to learn?',
+      options: [
+        'The framework is universal — only the service names change per cloud',
+        'Other clouds have no analytics services',
+        'The 5 Vs only apply to AWS',
+        'AWS certifications transfer automatically',
+      ],
+      answer: 0,
+      explanation:
+        'The 5 Vs describe the data challenges themselves; every cloud offers a toolbox for the same five problems.',
+    },
+    {
+      question: 'Which of these is a Part 2 topic, not something you did in Part 1?',
+      options: [
+        'Running a Glue crawler',
+        'Querying with Athena',
+        'Loading and querying Redshift hands-on',
+        'Creating an S3 bucket',
+      ],
+      answer: 2,
+      explanation:
+        'Part 1\'s lab was S3 → Glue → Athena. Redshift hands-on, streaming labs, and QuickSight dashboards arrive in Part 2.',
+    },
+  ]}
+/>
+
+<LessonComplete />

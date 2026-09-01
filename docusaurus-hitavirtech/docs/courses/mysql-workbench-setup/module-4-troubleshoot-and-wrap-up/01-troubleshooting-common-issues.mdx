@@ -1,0 +1,179 @@
+---
+title: 'Troubleshooting Common Issues'
+sidebar_position: 1
+description: 'Fix the most common MySQL setup problems — service not starting, port 3306 conflicts, forgotten root password, and firewall blocks.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Restart the MySQL80 service with `services.msc` or `net start MySQL80`
+- Diagnose port 3306 conflicts with `netstat` and pick an alternative port
+- Reset a forgotten root password using `--skip-grant-tables` safe mode
+- Decode the five most common MySQL error codes
+
+</LearningObjectives>
+
+Here are the most common problems and their fixes.
+
+### MySQL Service Not Starting
+
+**Symptom:** MySQL Workbench cannot connect, error "Can't connect to MySQL server"
+
+**Fix:**
+
+1. Press `Win + R`, type `services.msc`, press Enter
+2. Find **MySQL80** in the list
+3. Check if the status is **Running**
+4. If stopped, right-click and select **Start**
+
+Or from Command Prompt (run as Administrator):
+
+```cmd
+net start MySQL80
+```
+
+### Port 3306 Already in Use
+
+**Symptom:** Installation warns that port 3306 is occupied
+
+**Fix:**
+
+Check what is using the port:
+
+```cmd
+netstat -ano | findstr :3306
+```
+
+If another MySQL instance is running, stop it first. Or use a different port (e.g., 3307) during configuration.
+
+### Forgot Root Password
+
+**Symptom:** Cannot connect to MySQL, password rejected
+
+**Fix (Windows):**
+
+1. Stop MySQL service: `net stop MySQL80`
+2. Open Command Prompt as Administrator
+3. Start MySQL in safe mode:
+
+```cmd
+mysqld --skip-grant-tables --shared-memory
+```
+
+4. Open another Command Prompt:
+
+```cmd
+mysql -u root
+```
+
+5. Reset the password:
+
+```sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'NewPassword123!';
+FLUSH PRIVILEGES;
+```
+
+6. Restart MySQL normally: `net start MySQL80`
+
+### Workbench Connection Failed
+
+**Symptom:** "Cannot Connect to Database Server" error
+
+**Checklist:**
+
+| Check | How |
+|-------|-----|
+| Is MySQL service running? | Check services.msc |
+| Correct password? | Try the password you set during install |
+| Correct port? | Default is 3306 |
+| Firewall blocking? | See below |
+
+### Windows Firewall Issues
+
+**Fix:**
+
+1. Open **Windows Defender Firewall**
+2. Click **"Allow an app through firewall"**
+3. Look for **MySQL Server** in the list
+4. Make sure both **Private** and **Public** are checked
+5. If not in the list, click **"Allow another app"** and browse to:
+
+```
+C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe
+```
+
+### MySQL Installer Won't Open
+
+**Fix:**
+
+1. Make sure you downloaded the `.msi` file (not `.zip`)
+2. Right-click the file and select **"Run as administrator"**
+3. If it still fails, install **Visual C++ Redistributable** from Microsoft first
+
+### Common Error Messages
+
+| Error | Meaning | Fix |
+|-------|---------|-----|
+| `ERROR 1045 (28000)` | Access denied (wrong password) | Check your root password |
+| `ERROR 2003 (HY000)` | Cannot connect to server | Start MySQL service |
+| `ERROR 1049 (42000)` | Unknown database | Check spelling, run `SHOW DATABASES;` |
+| `ERROR 1146 (42S02)` | Table does not exist | Check spelling, run `SHOW TABLES;` |
+| `ERROR 1064 (42000)` | SQL syntax error | Check for typos, missing semicolons |
+
+:::tip[HitaVir Tech says]
+"90% of MySQL issues come down to: (1) the service is not running, (2) wrong password, or (3) wrong port. Check these three things first before Googling the error."
+:::
+
+<KeyTakeaways>
+
+- Most connection failures are the **MySQL80 service not running** — check `services.msc` first
+- `netstat -ano | findstr :3306` reveals what is occupying the MySQL port
+- A forgotten root password is recoverable via safe mode + `ALTER USER`
+- `ERROR 1045` = wrong password; `ERROR 2003` = server not reachable
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Workbench says "Can\'t connect to MySQL server". What should you check first?',
+      options: [
+        'Whether the MySQL80 service is running in services.msc',
+        'Whether your internet connection is up',
+        'Whether Workbench needs an update',
+        'Whether the students table exists',
+      ],
+      answer: 0,
+      explanation:
+        'A stopped MySQL80 service is the most common cause; start it before investigating anything else.',
+    },
+    {
+      question: 'What does ERROR 1045 (28000) "Access denied" indicate?',
+      options: [
+        'The server is not running',
+        'Port 3306 is blocked by the firewall',
+        'You entered the wrong password',
+        'The database name is misspelled',
+      ],
+      answer: 2,
+      explanation:
+        'ERROR 1045 means MySQL rejected your credentials — usually a wrong root password.',
+    },
+    {
+      question: 'Which flag starts MySQL in safe mode to reset a forgotten root password?',
+      options: [
+        '--reset-root',
+        '--skip-grant-tables',
+        '--force-login',
+        '--no-password',
+      ],
+      answer: 1,
+      explanation:
+        'mysqld --skip-grant-tables bypasses authentication so you can log in and run ALTER USER.',
+    },
+  ]}
+/>
+
+<LessonComplete />

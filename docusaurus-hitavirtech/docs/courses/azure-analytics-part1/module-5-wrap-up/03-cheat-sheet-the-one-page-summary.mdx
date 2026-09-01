@@ -1,0 +1,117 @@
+---
+title: 'Cheat Sheet - The One-Page Summary'
+sidebar_position: 3
+description: 'The whole course on one page — concepts in a sentence, the 5 Vs one-liners, the Azure service map by V, and the six decision rules.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Keep a one-page reference of every concept, V, and Azure service from this course
+- Recall the universal Azure analytics pipeline shape
+- Apply the six decision rules to any new Azure analytics project
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |          AZURE  ANALYTICS  -  PART 1  CHEAT  SHEET           |
+  |                  (screenshot and keep)                       |
+  +==============================================================+
+```
+
+### The Azure Analytics Toolbox — At a Glance
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Databricks](/img/courses/azure-icons/databricks.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Data Explorer](/img/courses/azure-icons/data-explorer.svg) ![Cosmos DB](/img/courses/azure-icons/cosmos-db.svg) ![Defender](/img/courses/azure-icons/defender.svg) ![Key Vault](/img/courses/azure-icons/key-vault.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg) ![ML](/img/courses/azure-icons/ml.svg) ![OpenAI](/img/courses/azure-icons/openai.svg) ![AI Search](/img/courses/azure-icons/ai-search.svg)
+
+### 🧠 Concepts in a Sentence
+
+| Term | Definition |
+|------|------------|
+| 📊 **Analytics** | Turning data into decisions |
+| 🤖 **Machine Learning** | Algorithms that learn patterns instead of being programmed |
+| 📸 **Descriptive** → 🕵️ **Diagnostic** → 🔮 **Predictive** → 🎯 **Prescriptive** | The 4 levels of analytics maturity |
+
+### 📏 The 5 Vs in a Sentence
+
+| V | Icon | Question | One-Liner |
+|---|:---:|----------|-----------|
+| 1 | 📦 | How much? | Design for 100× your current data |
+| 2 | 🧩 | How many formats? | Structure is created, not found |
+| 3 | 🌊 | How fast? | Match speed to the decision's deadline |
+| 4 | 🛡️ | Can we trust it? | Quality rules are pipeline-level, not tribal |
+| 5 | 💎 | Worth it? | Start from the decision, work backwards |
+
+### ☁️ Azure Services — By V
+
+| V | Store | Process | Catalog / Quality | Deliver |
+|---|-------|---------|-------------------|---------|
+| 📦 **Volume** | 🪣 ADLS Gen2 • 🧊 Archive | 🏛️ Synapse • 🔥 Databricks | 🏗️ Purview | — |
+| 🧩 **Variety** | 🪣 ADLS • ⚡ Cosmos DB | 🤖 AI Vision • 📝 Doc Intel. • 🔊 AI Speech • 💭 AI Language | 🕸️ ADF • 📚 Purview | 🔍 Synapse Serverless |
+| 🌊 **Velocity** | 🌊 Event Hubs • 🪐 Kafka API | ⚡ Functions • 🎯 Stream Analytics | 🚒 Capture (→ ADLS) | 🔬 Data Explorer |
+| 🛡️ **Veracity** | — | 🧪 ADF Data Flows | 🛡️ Purview DQ • 🕵️ Defender • 📜 Activity Log • ⚙️ Policy | 🏗️ Purview |
+| 💎 **Value** | — | 🤖 Azure ML • 🎯 Personalizer • 👁️ Anomaly Detector | — | 📊 Power BI • 💬 Copilot • 🧠 OpenAI |
+
+### 🛠️ The Universal Azure Analytics Pipeline
+
+```
+   INGEST  -->  STORE  -->  CATALOG  -->  PROCESS  -->  QUERY  -->  VISUALIZE  -->  DECIDE
+     |          |           |             |             |            |               |
+   Event Hubs  ADLS         Purview       ADF flows     Synapse      Power BI        Human
+   ADF         Synapse      Fabric cat.   Databricks    Dedicated    Azure ML        action
+   Functions   Archive      Data Shares   Synapse Spark Serverless   OpenAI
+```
+
+### 🎯 The Decision Rules
+
+- 📦 **Start with ADLS Gen2**, always. Every Azure analytics service reads from it.
+- 🗂️ **Use Parquet / Delta + partitioning** in ADLS. 10-100× cheaper queries.
+- 🌊 **Use Event Hubs Capture** before custom streaming jobs — it's 10× simpler.
+- 🛡️ **Add data-quality rules from day one** — not "someday".
+- 💎 **Lead with Value** — if nobody changes a decision, don't build it.
+- 💰 **Always clean up resources** after labs — `rg delete` is your friend.
+
+---
+
+*Azure service icons used in this course are from the official Microsoft Azure Public Service Icons set (V23), freely distributed by Microsoft for use in architecture diagrams and educational materials.*
+
+<KeyTakeaways>
+
+- One sentence each: analytics turns data into decisions; ML learns rules from data; maturity runs descriptive → prescriptive
+- Each V has a one-liner worth memorizing — from "design for 100×" to "start from the decision"
+- The universal pipeline: ingest → store → catalog → process → query → visualize → decide
+- The six decision rules start with "ADLS Gen2 first" and end with "always clean up"
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'According to the decision rules, what should you reach for BEFORE writing a custom streaming job?',
+      options: [
+        'A dedicated HDInsight Kafka cluster',
+        'Event Hubs Capture — it is 10× simpler',
+        'A Power BI streaming dataset',
+        'Azure Functions with timers',
+      ],
+      answer: 1,
+      explanation:
+        'Capture archives streams to ADLS with no code; graduate to custom streaming only when the business truly needs it.',
+    },
+    {
+      question: 'Why do the decision rules recommend Parquet/Delta with partitioning in ADLS?',
+      options: [
+        'They are the only formats Azure supports',
+        'They make files easier to open in Excel',
+        'Queries become 10-100× cheaper because engines scan far less data',
+        'They disable the need for cleanup',
+      ],
+      answer: 2,
+      explanation:
+        'Columnar formats plus partition pruning shrink the data scanned — which is exactly what Serverless SQL bills on.',
+    },
+  ]}
+/>
+
+<LessonComplete />

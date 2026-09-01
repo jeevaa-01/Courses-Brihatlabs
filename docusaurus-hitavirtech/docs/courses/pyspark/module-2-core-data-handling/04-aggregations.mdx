@@ -1,0 +1,167 @@
+---
+title: "Aggregations"
+description: "Aggregations — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Aggregations
+
+*⏱ Estimated time: 70 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Aggregate data with `groupBy`/`agg` using clearly aliased outputs.
+- Apply pivots, approximate distinct counts, and statistical functions.
+- Recognize that aggregations trigger shuffles and plan accordingly.
+
+:::
+
+### Basic groupBy
+
+```python
+regional_summary_df = (
+    valid_df
+    .groupBy("region")
+    .agg(
+        F.sum("revenue").alias("total_revenue"),
+        F.sum("quantity").alias("total_quantity"),
+        F.count("*").alias("row_count"),
+        F.countDistinct(
+            "transaction_id"
+        ).alias("transaction_count"),
+        F.avg("unit_price").alias("average_unit_price")
+    )
+)
+```
+
+### Sort summary
+
+```python
+regional_summary_df.orderBy(
+    F.col("total_revenue").desc()
+).show()
+```
+
+### Multiple grouping columns
+
+```python
+product_summary_df = (
+    valid_df
+    .groupBy("region", "product")
+    .agg(
+        F.sum("revenue").alias("total_revenue"),
+        F.sum("quantity").alias("total_quantity")
+    )
+)
+```
+
+### Pivot
+
+```python
+pivot_df = (
+    valid_df
+    .groupBy("region")
+    .pivot("product")
+    .agg(F.sum("revenue"))
+)
+
+pivot_df.show()
+```
+
+### Approximate distinct count
+
+For large datasets:
+
+```python
+valid_df.agg(
+    F.approx_count_distinct(
+        "transaction_id"
+    ).alias("approx_transactions")
+).show()
+```
+
+### Statistical functions
+
+```python
+valid_df.agg(
+    F.min("revenue").alias("min_revenue"),
+    F.max("revenue").alias("max_revenue"),
+    F.avg("revenue").alias("avg_revenue"),
+    F.stddev("revenue").alias("stddev_revenue")
+).show()
+```
+
+### ✅ Checkpoint
+
+Generate a summary by product with:
+
+- total revenue
+- total quantity
+- transaction count
+
+### 🛠️ Exercise
+
+Calculate average revenue by region.
+
+<details>
+<summary>Show solution</summary>
+
+```python
+valid_df.groupBy("region").agg(
+    F.avg("revenue").alias("average_revenue")
+).show()
+```
+
+</details>
+
+<Quiz
+  questions={[
+  {
+    "question": "`approx_count_distinct` is used instead of `countDistinct` when:",
+    "options": [
+      "Exact counting is impossible in Spark",
+      "An approximate answer is much cheaper on very large data",
+      "It is more accurate"
+    ],
+    "answer": 1,
+    "explanation": "It trades a small error bound for far less shuffle and memory."
+  },
+  {
+    "question": "A `groupBy` aggregation typically causes:",
+    "options": [
+      "A narrow transformation",
+      "A shuffle",
+      "A driver-side collect"
+    ],
+    "answer": 1,
+    "explanation": "Rows with the same key must move to the same partition."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- Name every aggregate output explicitly with `alias()`.
+- Group by multiple columns for finer-grained summaries; pivot for cross-tabs.
+- Aggregations shuffle — monitor shuffle volume and partition counts.
+
+:::
+
+:::note[💬 Discussion prompt — Module 2]
+
+Share one real data-cleaning rule from your domain (region codes, product names, date formats) and show how you would implement it with built-in functions instead of a UDF.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Name aggregate columns clearly. Avoid leaving expressions like `sum(revenue)` in production output.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Aggregations often cause shuffles. Monitor shuffle volume and partition counts.
+
+:::

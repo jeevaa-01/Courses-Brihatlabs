@@ -1,0 +1,78 @@
+---
+title: 'Final Quiz'
+sidebar_position: 4
+description: 'The graded final quiz for the Linux Basics course — aim for at least 6 of 8.'
+---
+
+<DurationBadge minutes={5} />
+
+# Final Quiz
+
+This quiz covers the whole course. **Aim for at least 6 of 8.** If you miss a
+question, revisit the lesson it came from before moving on to the next course.
+
+<Quiz
+  title="Graded final quiz"
+  questions={[
+    {
+      question: 'Which command prints your current location in the file system?',
+      options: ['ls', 'cd', 'pwd', 'echo $USER'],
+      answer: 2,
+      explanation: 'pwd (print working directory) shows the full path of the directory you are in.',
+    },
+    {
+      question: 'Which of these is a relative path?',
+      options: ['/c/Users/Asha/Documents', '../logs/app.log', '/tmp', '/etc'],
+      answer: 1,
+      explanation: 'Paths that do not start from the root (/) are relative — ../logs/app.log is resolved from your current directory.',
+    },
+    {
+      question: 'You need to copy an entire folder including its subfolders. Which command works?',
+      options: ['cp folder backup', 'cp -r folder backup', 'mv -r folder backup', 'touch backup'],
+      answer: 1,
+      explanation: 'cp requires the -r (recursive) flag to copy directories; mv never needs -r because it relocates rather than copies.',
+    },
+    {
+      question: 'Which command deletes an EMPTY directory only, refusing otherwise?',
+      options: ['rm -r', 'rm -rf', 'rm', 'rmdir'],
+      answer: 3,
+      explanation: 'rmdir is the safe option — it fails with "Directory not empty" unless the directory has no contents.',
+    },
+    {
+      question: 'A server just crashed. Which command shows the most recent log entries?',
+      options: ['tail -20 app.log', 'head -20 app.log', 'cat app.log | head', 'wc -l app.log'],
+      answer: 0,
+      explanation: 'tail shows the end of a file — where the newest log lines live. head would show the oldest entries.',
+    },
+    {
+      question: 'How do you count the number of ERROR lines in app.log?',
+      options: [
+        'grep -n "ERROR" app.log',
+        'grep -v "ERROR" app.log',
+        'grep -c "ERROR" app.log',
+        'find app.log ERROR',
+      ],
+      answer: 2,
+      explanation: 'The -c flag makes grep output the count of matching lines instead of the lines themselves.',
+    },
+    {
+      question: 'chmod 755 script.sh sets which permissions?',
+      options: ['rw-r--r--', 'rwxrwxrwx', 'rw-------', 'rwxr-xr-x'],
+      answer: 3,
+      explanation: '7 = rwx for the owner, 5 = r-x for the group, 5 = r-x for others — the standard mode for executable scripts.',
+    },
+    {
+      question: 'Which pipeline counts the occurrences of each log level, highest first?',
+      options: [
+        'grep -o "INFO\\|WARNING\\|ERROR" log | sort | uniq -c | sort -rn',
+        'cat log | wc -l',
+        'sort log | grep -c level',
+        'uniq -c log | grep -rn',
+      ],
+      answer: 0,
+      explanation: 'Extract the levels with grep -o, group them with sort, count with uniq -c, then order by count with sort -rn.',
+    },
+  ]}
+/>
+
+<LessonComplete />

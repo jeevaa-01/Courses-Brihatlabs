@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 642 290" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="642" height="290" rx="12" fill="#f8f9fa"/>
+  <text x="321" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Interview Preparation Tips</text>
+  <rect x="15" y="40" width="256" height="30" rx="6" fill="#1a73e8"/>
+  <text x="143" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Tip</text>
+  <rect x="276" y="40" width="350" height="30" rx="6" fill="#1a73e8"/>
+  <text x="452" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Why</text>
+  <rect x="15" y="76" width="256" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">Always give a data engineering example</text>
+  <rect x="276" y="76" width="350" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="286" y="94" font-size="12" fill="#1a73e8">Shows you understand the domain, not just syntax</text>
+  <rect x="15" y="108" width="256" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" fill="#3c4043">Mention trade-offs</text>
+  <rect x="276" y="108" width="350" height="28" rx="4" fill="white"/>
+  <text x="286" y="126" font-size="12" fill="#3c4043">"Lists are flexible but sets are faster for lookups"</text>
+  <rect x="15" y="140" width="256" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">Talk about production concerns</text>
+  <rect x="276" y="140" width="350" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="286" y="158" font-size="12" fill="#1a73e8">Error handling, logging, memory, scalability</text>
+  <rect x="15" y="172" width="256" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" fill="#3c4043">Know pandas deeply</text>
+  <rect x="276" y="172" width="350" height="28" rx="4" fill="white"/>
+  <text x="286" y="190" font-size="12" fill="#3c4043">groupby, merge, apply, pivot_table are asked most</text>
+  <rect x="15" y="204" width="256" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" fill="#1a73e8">Practice coding on paper</text>
+  <rect x="276" y="204" width="350" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="286" y="222" font-size="12" fill="#1a73e8">Many interviews have whiteboard or live coding rounds</text>
+  <rect x="15" y="236" width="256" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" fill="#3c4043">Understand Big-O basics</text>
+  <rect x="276" y="236" width="350" height="28" rx="4" fill="white"/>
+  <text x="286" y="254" font-size="12" fill="#3c4043">O(1) vs O(n) matters when processing millions of rows</text>
+  <text x="321" y="284" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

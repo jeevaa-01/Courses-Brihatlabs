@@ -1,0 +1,115 @@
+---
+title: 'What is Linux? What is a Shell?'
+sidebar_position: 3
+description: 'Understand what Linux is, what a shell does, and why Bash is the industry-standard shell worth learning.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Explain what Linux is and where it runs
+- Describe the role of a shell using the waiter/kitchen analogy
+- Identify Bash among the common shell types
+
+</LearningObjectives>
+
+Before typing commands, let us understand what we are working with.
+
+### What is Linux?
+
+**Linux** is an operating system — like Windows or macOS — but it is **free and open source**. It powers:
+
+- 90% of the world's servers
+- All Android phones
+- Most cloud platforms (AWS, Google Cloud, Azure)
+- Supercomputers
+- Smart TVs, routers, and IoT devices
+
+You do not need to install Linux to learn its commands. Git Bash gives you the same tools on Windows.
+
+### What is a Shell?
+
+A **shell** is a program that takes your typed commands and sends them to the operating system.
+
+Think of it this way:
+
+| Concept | Real-World Analogy |
+|---------|-------------------|
+| Operating System | The kitchen |
+| Shell | The waiter who takes your order |
+| Commands | Your food order |
+| Output | The food delivered to your table |
+
+You tell the waiter (shell) what you want, and the waiter tells the kitchen (OS) to prepare it.
+
+### What is Git Bash?
+
+**Git Bash** is a shell for Windows that understands Linux commands. It combines:
+
+- **Bash** — the most popular Linux shell
+- **Git** — version control software
+- **Unix tools** — ls, grep, find, and more
+
+### Types of Shells
+
+| Shell | Full Name | Used In |
+|-------|-----------|---------|
+| bash | Bourne Again Shell | Linux, Mac, Git Bash |
+| zsh | Z Shell | Mac (default), Linux |
+| sh | Bourne Shell | Older Unix systems |
+| PowerShell | PowerShell | Windows |
+| cmd | Command Prompt | Windows (legacy) |
+
+We will use **Bash** throughout this course because it is the industry standard.
+
+:::tip[HitaVir Tech says]
+"Learning Bash is like learning to drive a manual car. Once you know it, you can drive anything. The same commands work on Linux, Mac, servers, Docker containers, and cloud instances."
+:::
+
+<KeyTakeaways>
+
+- Linux powers ~90% of servers, all Android phones, and most cloud platforms
+- A shell translates your typed commands into instructions for the operating system
+- Git Bash = Bash + Git + Unix tools, running on Windows
+- Bash is the industry standard — your skills transfer to Linux, Mac, servers, and containers
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In the kitchen analogy, what does the shell represent?',
+      options: [
+        'The kitchen',
+        'The food order',
+        'The waiter who takes your order',
+        'The dining table',
+      ],
+      answer: 2,
+      explanation:
+        'The shell is the middleman: it takes your order (commands) to the kitchen (the operating system) and brings back the result.',
+    },
+    {
+      question: 'Which shell does this course use, and why?',
+      options: [
+        'PowerShell — it is newest',
+        'cmd — it ships with Windows',
+        'zsh — it is the Mac default',
+        'bash — it is the industry standard',
+      ],
+      answer: 3,
+      explanation:
+        'Bash is the most widely used shell across Linux, Mac, servers, and containers — skills learned here transfer everywhere.',
+    },
+    {
+      question: "Roughly what share of the world's servers run Linux?",
+      options: ['10%', '50%', '90%', 'Almost none'],
+      answer: 2,
+      explanation:
+        'About 90% of servers run Linux, which is why command line skills are essential for server, cloud, and DevOps work.',
+    },
+  ]}
+/>
+
+<LessonComplete />

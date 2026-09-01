@@ -1,0 +1,193 @@
+---
+title: "Writing Data and Partitioning"
+description: "Writing Data and Partitioning — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Writing Data and Partitioning
+
+*⏱ Estimated time: 75 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Write CSV, JSON, and Parquet outputs with the correct save mode.
+- Partition output folders by a column and reason about partition layout.
+- Choose between `repartition()` and `coalesce()` and avoid the small-file problem.
+
+:::
+
+### Write CSV
+
+```python
+(
+    valid_df.write
+    .mode("overwrite")
+    .option("header", True)
+    .csv(f"{BASE_PATH}/processed/clean_sales_csv")
+)
+```
+
+Spark writes a folder containing part files.
+
+### Write Parquet
+
+```python
+(
+    valid_df.write
+    .mode("overwrite")
+    .parquet(f"{BASE_PATH}/processed/clean_sales")
+)
+```
+
+### Write JSON
+
+```python
+(
+    valid_df.write
+    .mode("overwrite")
+    .json(f"{BASE_PATH}/processed/clean_sales_json")
+)
+```
+
+### Write modes
+
+- `overwrite`
+- `append`
+- `ignore`
+- `error` or `errorifexists`
+
+### Partition output
+
+```python
+(
+    valid_df.write
+    .mode("overwrite")
+    .partitionBy("region")
+    .parquet(f"{BASE_PATH}/processed/sales_by_region")
+)
+```
+
+Output resembles (one folder per region present in the valid data — with the [sample sales data](/courses/pyspark/module-2-core-data-handling/reading-csv-json-and-parquet#create-a-csv-file), T004's WEST row was rejected, so only three regions appear):
+
+```text
+sales_by_region/
+├── region=EAST/
+├── region=NORTH/
+└── region=SOUTH/
+```
+
+### Repartition before write
+
+```python
+output_df = valid_df.repartition(
+    "region"
+)
+```
+
+Then:
+
+```python
+(
+    output_df.write
+    .mode("overwrite")
+    .partitionBy("region")
+    .parquet(f"{BASE_PATH}/processed/sales_by_region")
+)
+```
+
+### Coalesce
+
+Reduce partitions:
+
+```python
+small_output_df = valid_df.coalesce(1)
+```
+
+Use carefully.
+
+### Repartition vs coalesce
+
+`repartition()`:
+
+- Can increase or decrease partitions.
+- Causes a full shuffle.
+- Balances data.
+
+`coalesce()`:
+
+- Usually decreases partitions.
+- May avoid a full shuffle.
+- Can create uneven partitions.
+
+### Small file problem
+
+Too many small output files can:
+
+- Increase metadata overhead.
+- Slow reads.
+- Increase cloud storage listing cost.
+- Reduce query efficiency.
+
+### ✅ Checkpoint
+
+Write clean sales as:
+
+- Parquet.
+- Partitioned by region.
+- Overwrite mode.
+
+### 🛠️ Exercise
+
+Write product summary as CSV with header.
+
+<Quiz
+  questions={[
+  {
+    "question": "Compared with `repartition()`, `coalesce()`:",
+    "options": [
+      "Always performs a full shuffle",
+      "Usually reduces partitions with less data movement",
+      "Is used to increase partitions"
+    ],
+    "answer": 1,
+    "explanation": "It merges partitions but can leave them unbalanced."
+  },
+  {
+    "question": "You should partition output by:",
+    "options": [
+      "A unique ID like `transaction_id`",
+      "A frequently filtered column with reasonable cardinality",
+      "A random column"
+    ],
+    "answer": 1,
+    "explanation": "High-cardinality partitioning creates millions of tiny files."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- Spark writes folders of part files, not single files.
+- Partitioned output enables partition pruning on read.
+- Aim for reasonably sized files: neither one giant file nor millions of tiny ones.
+
+:::
+
+:::note[💬 Discussion prompt — Module 3]
+
+Which column would you partition your team's largest dataset by, and roughly what cardinality does it have? Debate the trade-offs with a peer before reading [Performance Optimization](/courses/pyspark/module-4-internals-and-performance/performance-optimization).
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Partition by frequently filtered columns with reasonable cardinality.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Do not partition by high-cardinality columns such as transaction IDs.
+
+:::

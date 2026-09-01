@@ -1,0 +1,110 @@
+---
+title: 'Download MySQL Installer'
+sidebar_position: 2
+description: 'Download the full ~450 MB MySQL Installer from the official dev.mysql.com site — no Oracle account needed.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Download the **full** MySQL Installer from the official website
+- Skip the Oracle login using "No thanks, just start my download"
+- Verify the downloaded file is the right one by its size
+
+</LearningObjectives>
+
+Let us download the official MySQL Installer from Oracle's website.
+
+### Step 1 — Open the MySQL Downloads Page
+
+Open your browser and go to:
+
+[https://dev.mysql.com/downloads/installer/](https://dev.mysql.com/downloads/installer/)
+
+### Step 2 — Select the Full Installer
+
+You will see two download options:
+
+| Installer | Size | What It Contains |
+|-----------|------|-----------------|
+| Web installer (smaller) | ~2 MB | Downloads components during installation |
+| Full installer (larger) | ~450 MB | Contains everything offline |
+
+**Choose the larger installer** (approximately 450 MB) — it includes everything and does not require internet during installation.
+
+### Step 3 — Download Without Login
+
+After clicking **Download**, MySQL may ask you to log in or sign up. You do NOT need an account.
+
+Click **"No thanks, just start my download"** at the bottom of the page.
+
+### Step 4 — Wait for Download to Complete
+
+The file will be named something like:
+
+```
+mysql-installer-community-8.0.xx.msi
+```
+
+Save it to your **Downloads** folder.
+
+### Verify the Download
+
+Make sure the file size is approximately **400-500 MB**. If it is only a few MB, you downloaded the web installer by mistake — go back and select the larger one.
+
+:::tip[HitaVir Tech says]
+"Always download from the official MySQL website (dev.mysql.com). Never use third-party download sites — they may contain modified or outdated software."
+:::
+
+<KeyTakeaways>
+
+- Download only from the official site **dev.mysql.com** — never third-party mirrors
+- Pick the **full ~450 MB installer**, not the ~2 MB web installer
+- No Oracle account is required — use **"No thanks, just start my download"**
+- A file of only a few MB means you grabbed the wrong (web) installer
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which installer should you download, and why?',
+      options: [
+        'The web installer — it is faster to download',
+        'Either one — they are identical after install',
+        'The full ~450 MB installer — it works offline and contains everything',
+        'The .zip archive — installers are unsafe',
+      ],
+      answer: 2,
+      explanation:
+        'The full installer bundles every component so the installation does not depend on your internet connection.',
+    },
+    {
+      question: 'MySQL asks you to log in or sign up before downloading. What do you do?',
+      options: [
+        'Click "No thanks, just start my download" — no account is needed',
+        'Create an Oracle account — it is mandatory',
+        'Download from a third-party site instead',
+        'Restart the browser and try again',
+      ],
+      answer: 0,
+      explanation:
+        'The login prompt is optional; the skip link at the bottom of the page starts the download immediately.',
+    },
+    {
+      question: 'Your downloaded file is only 2 MB. What happened?',
+      options: [
+        'The download was corrupted by the firewall',
+        'You downloaded the web installer instead of the full installer',
+        'That is the normal size for MySQL 8',
+        'Windows compressed the file automatically',
+      ],
+      answer: 1,
+      explanation:
+        'The ~2 MB file is the web installer; go back and select the ~450 MB full installer.',
+    },
+  ]}
+/>
+
+<LessonComplete />

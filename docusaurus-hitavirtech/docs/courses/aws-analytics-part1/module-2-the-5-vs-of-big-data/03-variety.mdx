@@ -1,0 +1,131 @@
+---
+title: 'Variety'
+sidebar_position: 3
+description: 'The 2nd V — Variety. Structured, semi-structured, and unstructured data, why each format needs different tooling, and real-world format mixes.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Classify data as structured, semi-structured, or unstructured
+- Explain why each format demands different tooling and pipelines
+- Recognize real-world variety mixes in healthcare, retail, and banking
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              THE  2nd  V   -   VARIETY                       |
+  |              "How many kinds of data?"                       |
+  +==============================================================+
+```
+
+### What is Variety?
+
+🧩 **Variety** is the diversity of data — formats, schemas, and sources.
+
+Twenty years ago, "data" meant rows in a database. Today, it means far more:
+
+| Type | Icon | Examples | Schema |
+|------|:---:|----------|--------|
+| **Structured** | 📊 | SQL tables, CSV, spreadsheets | Fixed |
+| **Semi-structured** | 🧩 | JSON from APIs, XML, Parquet, Avro | Flexible |
+| **Unstructured** | 🎞️ | Images, video, audio, PDFs, free text | None |
+
+### Why Variety is Hard
+
+Each format needs different tooling:
+
+| Format | Tool Needed |
+|--------|-------------|
+| SQL tables | Relational engine |
+| JSON | Document parser |
+| PDF | OCR |
+| Image | Computer vision |
+| Audio | Speech-to-text |
+| Free text | NLP / embeddings |
+
+Most real projects combine these. Example — "Correlate support emails + call recordings + order history into one insight." **Three completely different pipelines** feeding one answer.
+
+### Real-World Variety
+
+| Industry | Variety Mix |
+|----------|-------------|
+| 🏥 Healthcare | Patient records + X-rays + doctor's notes |
+| 🛒 Retail | Orders + product photos + reviews |
+| 🏦 Banking | Transactions + scanned checks + call transcripts |
+| 🚗 Autonomous cars | Sensors + video + maps + LiDAR |
+
+### Questions Variety Forces You to Ask
+
+- 🪣 Can **one storage system** hold all my types?
+- 📚 How do I **catalog** schemas that keep changing?
+- 🔍 Which engine queries **JSON, CSV, Parquet** in one SQL?
+- 🤖 How do I extract insights from **unstructured** data?
+
+:::tip[HitaVir Tech says]
+"90% of the world's data is unstructured. But 90% of analytics happens on structured data. Your job is often to convert chaos into order."
+:::
+
+:::info[Variety in one line]
+Structure is created, not found — choose tools that embrace format diversity.
+:::
+
+### Preview — AWS Services That Solve Variety
+
+![Glue](/img/courses/aws-icons/glue.png) ![Athena](/img/courses/aws-icons/athena.png) ![DynamoDB](/img/courses/aws-icons/dynamodb.png) ![Rekognition](/img/courses/aws-icons/rekognition.png) ![Textract](/img/courses/aws-icons/textract.png) ![Comprehend](/img/courses/aws-icons/comprehend.png)
+
+*Coming up in "AWS Services for Variety".*
+
+<KeyTakeaways>
+
+- Variety spans three classes: structured (fixed schema), semi-structured (flexible), unstructured (none)
+- Each format needs its own tooling — OCR for PDFs, vision for images, NLP for free text
+- Most of the world's data is unstructured, but most analytics runs on structured data — conversion is the job
+- Structure is created, not found
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'JSON returned by an API is best classified as...',
+      options: [
+        'Structured data',
+        'Unstructured data',
+        'Semi-structured data',
+        'Binary data',
+      ],
+      answer: 2,
+      explanation:
+        'JSON has a flexible, self-describing schema — neither the fixed schema of SQL tables nor the schema-free chaos of images and audio.',
+    },
+    {
+      question: 'Why is Variety hard in practice?',
+      options: [
+        'Each format needs different tooling, and real projects combine several formats',
+        'There are too few data formats to choose from',
+        'Unstructured data is always small',
+        'SQL can natively read images',
+      ],
+      answer: 0,
+      explanation:
+        'A single insight often needs three different pipelines — e.g., emails (NLP), call recordings (speech-to-text), and order history (SQL).',
+    },
+    {
+      question: 'Roughly what share of the world\'s data is unstructured, per this lesson?',
+      options: [
+        '10%',
+        '50%',
+        '25%',
+        '90%',
+      ],
+      answer: 3,
+      explanation:
+        '90% of data is unstructured while 90% of analytics happens on structured data — converting chaos into order is the analytics engineer\'s job.',
+    },
+  ]}
+/>
+
+<LessonComplete />

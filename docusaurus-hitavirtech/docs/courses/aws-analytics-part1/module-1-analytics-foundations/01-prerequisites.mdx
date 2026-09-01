@@ -1,0 +1,90 @@
+---
+title: 'Prerequisites'
+sidebar_position: 1
+description: 'What you need before starting — an AWS free-tier account, basic SQL, and a browser. Includes the free-tier cost budget for the hands-on lab.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Check off the required setup: laptop, browser, AWS free-tier account, basic SQL
+- Understand why no local software installs are needed for this course
+- Know the free-tier cost budget for the hands-on lab (target: $0.00)
+
+</LearningObjectives>
+
+### What You Need
+
+**Required**
+- 💻 Laptop — Windows, Mac, or Linux
+- 🌐 A modern web browser (Chrome, Edge, Firefox)
+- ☁️ AWS account — free tier is enough
+- 💳 Credit card for AWS sign-up (no charges expected)
+- 🧮 Basic SQL (SELECT, FROM, WHERE)
+
+**Helpful**
+- 📝 Spreadsheet or Python exposure
+- 🟦 Any other cloud experience
+
+### No Local Installs Required
+
+Everything in this course runs in the **AWS web console** in your browser. Zero software installation on your machine.
+
+### Cost Awareness
+
+Every step stays inside the **AWS Free Tier**:
+
+| Free Tier Budget | Usage in This Course |
+|------------------|------------------------|
+| 🪣 S3 storage — 5 GB | \< 1 MB |
+| 🔍 Athena — pay per query | \< 1¢ total |
+| 📚 Glue Data Catalog — 1M objects | 1 table |
+| 💰 Estimated total cost | **$0.00** |
+
+:::warning[Always clean up]
+The final step of the hands-on lab is a cleanup ritual. Skip it and AWS will happily bill you for forgotten resources.
+:::
+
+### Services the Hands-on Lab Will Use
+
+![S3](/img/courses/aws-icons/s3.png) ![Glue](/img/courses/aws-icons/glue.png) ![Glue Crawler](/img/courses/aws-icons/glue-crawler.png) ![Glue Catalog](/img/courses/aws-icons/glue-catalog.png) ![Athena](/img/courses/aws-icons/athena.png)
+
+<KeyTakeaways>
+
+- All you need is a browser, an AWS free-tier account, and basic SQL — no local installs
+- The entire hands-on lab fits inside the AWS Free Tier (~$0.00 expected)
+- Cleanup at the end of the lab is mandatory — forgotten resources are the #1 source of surprise bills
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What software do you need to install locally for this course?',
+      options: [
+        'The AWS CLI and Python',
+        'Docker Desktop',
+        'Nothing — everything runs in the AWS web console',
+        'A local Spark cluster',
+      ],
+      answer: 2,
+      explanation:
+        'The whole course, including the hands-on lab, runs in the AWS Management Console in your browser.',
+    },
+    {
+      question: 'What is the expected AWS bill for completing the hands-on lab?',
+      options: [
+        'About $10',
+        'About $0.00 — everything stays inside the Free Tier',
+        'About $1 per Athena query',
+        'A flat $5 lab fee',
+      ],
+      answer: 1,
+      explanation:
+        'The lab uses under 1 MB of S3, one Glue table, and a few tiny Athena queries — all comfortably inside the Free Tier, as long as you clean up.',
+    },
+  ]}
+/>
+
+<LessonComplete />

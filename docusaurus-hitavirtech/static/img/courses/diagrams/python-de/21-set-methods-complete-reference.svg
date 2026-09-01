@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 546" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="600" height="546" rx="12" fill="#f8f9fa"/>
+  <text x="300" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Set Methods — Complete Reference</text>
+  <rect x="15" y="40" width="197" height="30" rx="6" fill="#1a73e8"/>
+  <text x="113" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Method</text>
+  <rect x="217" y="40" width="265" height="30" rx="6" fill="#1a73e8"/>
+  <text x="350" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">What it does</text>
+  <rect x="488" y="40" width="97" height="30" rx="6" fill="#1a73e8"/>
+  <text x="536" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Returns</text>
+  <rect x="15" y="76" width="197" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">add(x)</text>
+  <rect x="217" y="76" width="265" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="227" y="94" font-size="12" fill="#1a73e8">Add one element</text>
+  <rect x="488" y="76" width="97" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="498" y="94" font-size="12" font-family="monospace" fill="#1a73e8">None</text>
+  <rect x="15" y="108" width="197" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">update(iterable)</text>
+  <rect x="217" y="108" width="265" height="28" rx="4" fill="white"/>
+  <text x="227" y="126" font-size="12" fill="#3c4043">Add many elements</text>
+  <rect x="488" y="108" width="97" height="28" rx="4" fill="white"/>
+  <text x="498" y="126" font-size="12" font-family="monospace" fill="#3c4043">None</text>
+  <rect x="15" y="140" width="197" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">remove(x)</text>
+  <rect x="217" y="140" width="265" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="227" y="158" font-size="12" fill="#1a73e8">Remove x (KeyError if absent)</text>
+  <rect x="488" y="140" width="97" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="498" y="158" font-size="12" font-family="monospace" fill="#1a73e8">None</text>
+  <rect x="15" y="172" width="197" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">discard(x)</text>
+  <rect x="217" y="172" width="265" height="28" rx="4" fill="white"/>
+  <text x="227" y="190" font-size="12" fill="#3c4043">Remove x if present (no error)</text>
+  <rect x="488" y="172" width="97" height="28" rx="4" fill="white"/>
+  <text x="498" y="190" font-size="12" font-family="monospace" fill="#3c4043">None</text>
+  <rect x="15" y="204" width="197" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">pop()</text>
+  <rect x="217" y="204" width="265" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="227" y="222" font-size="12" fill="#1a73e8">Remove and return an arbitrary element</text>
+  <rect x="488" y="204" width="97" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="498" y="222" font-size="12" fill="#1a73e8">the element</text>
+  <rect x="15" y="236" width="197" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">clear()</text>
+  <rect x="217" y="236" width="265" height="28" rx="4" fill="white"/>
+  <text x="227" y="254" font-size="12" fill="#3c4043">Remove all elements</text>
+  <rect x="488" y="236" width="97" height="28" rx="4" fill="white"/>
+  <text x="498" y="254" font-size="12" font-family="monospace" fill="#3c4043">None</text>
+  <rect x="15" y="268" width="197" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">copy()</text>
+  <rect x="217" y="268" width="265" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="227" y="286" font-size="12" fill="#1a73e8">Return a shallow copy</text>
+  <rect x="488" y="268" width="97" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="498" y="286" font-size="12" fill="#1a73e8">new set</text>
+  <rect x="15" y="300" width="197" height="28" rx="4" fill="white"/>
+  <text x="25" y="318" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">union(*s)</text>
+  <rect x="217" y="300" width="265" height="28" rx="4" fill="white"/>
+  <text x="227" y="318" font-size="12" fill="#3c4043">Items in any set (operator: |)</text>
+  <rect x="488" y="300" width="97" height="28" rx="4" fill="white"/>
+  <text x="498" y="318" font-size="12" fill="#3c4043">new set</text>
+  <rect x="15" y="332" width="197" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="350" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">intersection(*s)</text>
+  <rect x="217" y="332" width="265" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="227" y="350" font-size="12" fill="#1a73e8">Items in all sets (operator: &amp;)</text>
+  <rect x="488" y="332" width="97" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="498" y="350" font-size="12" fill="#1a73e8">new set</text>
+  <rect x="15" y="364" width="197" height="28" rx="4" fill="white"/>
+  <text x="25" y="382" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">difference(*s)</text>
+  <rect x="217" y="364" width="265" height="28" rx="4" fill="white"/>
+  <text x="227" y="382" font-size="12" fill="#3c4043">Items in this set only (operator: -)</text>
+  <rect x="488" y="364" width="97" height="28" rx="4" fill="white"/>
+  <text x="498" y="382" font-size="12" fill="#3c4043">new set</text>
+  <rect x="15" y="396" width="197" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="414" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">symmetric_difference(s)</text>
+  <rect x="217" y="396" width="265" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="227" y="414" font-size="12" fill="#1a73e8">Items in exactly one set (operator: ^)</text>
+  <rect x="488" y="396" width="97" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="498" y="414" font-size="12" fill="#1a73e8">new set</text>
+  <rect x="15" y="428" width="197" height="28" rx="4" fill="white"/>
+  <text x="25" y="446" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">issubset(s)</text>
+  <rect x="217" y="428" width="265" height="28" rx="4" fill="white"/>
+  <text x="227" y="446" font-size="12" fill="#3c4043">Is every item also in s?</text>
+  <rect x="488" y="428" width="97" height="28" rx="4" fill="white"/>
+  <text x="498" y="446" font-size="12" font-family="monospace" fill="#3c4043">bool</text>
+  <rect x="15" y="460" width="197" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="478" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">issuperset(s)</text>
+  <rect x="217" y="460" width="265" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="227" y="478" font-size="12" fill="#1a73e8">Does this set contain all of s?</text>
+  <rect x="488" y="460" width="97" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="498" y="478" font-size="12" font-family="monospace" fill="#1a73e8">bool</text>
+  <rect x="15" y="492" width="197" height="28" rx="4" fill="white"/>
+  <text x="25" y="510" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">isdisjoint(s)</text>
+  <rect x="217" y="492" width="265" height="28" rx="4" fill="white"/>
+  <text x="227" y="510" font-size="12" fill="#3c4043">Do the sets share nothing?</text>
+  <rect x="488" y="492" width="97" height="28" rx="4" fill="white"/>
+  <text x="498" y="510" font-size="12" font-family="monospace" fill="#3c4043">bool</text>
+  <text x="300" y="540" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

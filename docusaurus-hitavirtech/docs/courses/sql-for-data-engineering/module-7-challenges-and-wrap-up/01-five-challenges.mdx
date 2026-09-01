@@ -1,0 +1,358 @@
+---
+title: 'Step 18: Five challenges (with inline solutions)'
+sidebar_position: 1
+description: 'Five graded challenges — filtering, joins with HAVING, top-per-group, cleaning, and an end-to-end report — with worked solutions.'
+---
+
+<DurationBadge minutes={25} />
+
+<LearningObjectives>
+
+- Solve five production-style SQL challenges without peeking at the solutions
+- Explain why each solution works — cardinality, `WHERE` vs `HAVING`, deterministic tiebreakers
+- Spot the NULL, fan-out, and tie-breaking traps hidden in each challenge
+
+</LearningObjectives>
+
+> *"The standard you walk past is the standard you accept."*
+> — Lt. Gen. David Morrison
+
+:::info[HitaVir Tech connection]
+These five challenges are your standard. Every SQL hire at HitaVir Tech can solve all five in 30 minutes. Walk past one and you have lowered the bar.
+:::
+
+:::tip[Why this matters now]
+Solve each challenge yourself first. Open the solution only after you have a runnable answer — even a wrong one.
+:::
+
+### Challenge 1: Filtering + aggregation
+
+**Scenario:** Marketing wants to know how many DELIVERED orders happened in March 2026, and the total revenue.
+**Your task:** One query that returns `order_count` and `gross_revenue` for March 2026 deliveries only.
+**Expected output shape:**
+
+```
++-------------+---------------+
+| order_count | gross_revenue |
++-------------+---------------+
+|         <n> |          <₹>  |
++-------------+---------------+
+```
+
+<details>
+<summary>💡 Show solution</summary>
+
+```sql
+SELECT
+    COUNT(DISTINCT o.order_id)  AS order_count,
+    SUM(oi.line_amount)         AS gross_revenue
+FROM orders      AS o
+JOIN order_items AS oi ON oi.order_id = o.order_id
+WHERE o.status = 'DELIVERED'
+  AND o.order_date >= '2026-03-01'
+  AND o.order_date <  '2026-04-01';
+```
+
+```
++-------------+---------------+
+| order_count | gross_revenue |
++-------------+---------------+
+|          29 |     588666.00 |
++-------------+---------------+
+```
+
+**Why this works:** `COUNT(DISTINCT o.order_id)` is required because the join to `order_items` multiplies rows; without `DISTINCT` we would count line items, not orders. The half-open date range avoids month-boundary bugs.
+</details>
+
+---
+
+### Challenge 2: Multi-table join with HAVING
+
+**Scenario:** Find every customer who has spent more than ₹100,000 across all DELIVERED orders.
+**Your task:** Return `customer_id`, `full_name`, `total_spent`, sorted descending.
+**Expected output shape:**
+
+```
++-------------+----------------+-------------+
+| customer_id | full_name      | total_spent |
++-------------+----------------+-------------+
+| ...                                       |
++-------------+----------------+-------------+
+```
+
+<details>
+<summary>💡 Show solution</summary>
+
+```sql
+SELECT
+    c.customer_id,
+    c.full_name,
+    SUM(oi.line_amount) AS total_spent
+FROM customers   AS c
+JOIN orders      AS o  ON o.customer_id  = c.customer_id
+JOIN order_items AS oi ON oi.order_id    = o.order_id
+WHERE o.status = 'DELIVERED'
+GROUP BY c.customer_id, c.full_name
+HAVING SUM(oi.line_amount) > 100000
+ORDER BY total_spent DESC;
+```
+
+```
++-------------+----------------+-------------+
+| customer_id | full_name      | total_spent |
++-------------+----------------+-------------+
+|           1 | Asha Sharma    |   317478.00 |
+|          30 | Tara Bhat      |   203293.00 |
+|           4 | Arjun Reddy    |   197292.00 |
+|           3 | Priya Patel    |   129286.00 |
+|           9 | Anjali Desai   |   105687.00 |
+|           7 | Sneha Nair     |   102879.00 |
+|           2 | Ravi Kumar     |   102090.00 |
++-------------+----------------+-------------+
+```
+
+**Why this works:** `WHERE` filters individual rows (delivered orders); `HAVING` filters the *groups* after `SUM` is computed. Mixing them up is the most common bug in this pattern.
+</details>
+
+---
+
+### Challenge 3: Correlated subquery OR window function
+
+**Scenario:** For each customer, return their order with the highest line-amount total across the order's items.
+**Your task:** Return `customer_id`, `full_name`, `top_order_id`, `top_order_total`.
+**Expected output shape:**
+
+```
++-------------+--------------+--------------+-----------------+
+| customer_id | full_name    | top_order_id | top_order_total |
++-------------+--------------+--------------+-----------------+
+| ...                                                       |
++-------------+--------------+--------------+-----------------+
+```
+
+<details>
+<summary>💡 Show solution</summary>
+
+```sql
+WITH order_totals AS (
+    SELECT
+        o.order_id,
+        o.customer_id,
+        SUM(oi.line_amount) AS order_total
+    FROM orders      AS o
+    JOIN order_items AS oi ON oi.order_id = o.order_id
+    GROUP BY o.order_id, o.customer_id
+),
+ranked AS (
+    SELECT
+        ot.customer_id,
+        ot.order_id,
+        ot.order_total,
+        ROW_NUMBER() OVER (PARTITION BY ot.customer_id
+                           ORDER BY ot.order_total DESC, ot.order_id) AS rn
+    FROM order_totals AS ot
+)
+SELECT
+    r.customer_id,
+    c.full_name,
+    r.order_id        AS top_order_id,
+    r.order_total     AS top_order_total
+FROM ranked       AS r
+JOIN customers    AS c ON c.customer_id = r.customer_id
+WHERE r.rn = 1
+ORDER BY r.customer_id
+LIMIT 5;
+```
+
+```
++-------------+----------------+--------------+-----------------+
+| customer_id | full_name      | top_order_id | top_order_total |
++-------------+----------------+--------------+-----------------+
+|           1 | Asha Sharma    |           98 |        96297.00 |
+|           2 | Ravi Kumar     |           56 |        94998.00 |
+|           3 | Priya Patel    |           71 |        94998.00 |
+|           4 | Arjun Reddy    |           13 |        93498.00 |
+|           5 | Kavya Iyer     |           51 |        12999.00 |
++-------------+----------------+--------------+-----------------+
+```
+
+**Why this works:** Compute order totals once in a CTE, rank them per customer with `ROW_NUMBER()`, then keep `rn = 1`. The `, ot.order_id` in the `ORDER BY` is the deterministic tiebreaker — without it, ties are non-deterministic.
+</details>
+
+---
+
+### Challenge 4: Data cleaning (NULLs + string normalization)
+
+**Scenario:** Build a clean customer view for downstream BI: lowercased trimmed email (replacing NULL with `'unknown@example.com'`), city normalized to a canonical form, and a flag `has_quality_issue` set to 1 when the original row needed a fix.
+**Your task:** Return `customer_id`, `full_name`, `email_clean`, `city_clean`, `has_quality_issue` for the 6 known dirty rows.
+**Expected output shape:**
+
+```
++-------------+-----------------+----------------------+------------+--------------------+
+| customer_id | full_name       | email_clean          | city_clean | has_quality_issue  |
++-------------+-----------------+----------------------+------------+--------------------+
+```
+
+<details>
+<summary>💡 Show solution</summary>
+
+```sql
+SELECT
+    customer_id,
+    full_name,
+    LOWER(TRIM(COALESCE(email, 'unknown@example.com')))      AS email_clean,
+    CASE
+        WHEN UPPER(TRIM(city)) IN ('BENGALURU','BLR','BANGALORE') THEN 'Bengaluru'
+        WHEN city IS NULL                                          THEN 'Unknown'
+        ELSE CONCAT(
+                UPPER(SUBSTRING(TRIM(city),1,1)),
+                LOWER(SUBSTRING(TRIM(city),2))
+             )
+    END                                                       AS city_clean,
+    CASE
+        WHEN email IS NULL
+          OR city  IS NULL
+          OR email <> LOWER(email)
+          OR city  IN ('bengaluru','BLR')
+        THEN 1
+        ELSE 0
+    END                                                       AS has_quality_issue
+FROM customers
+WHERE customer_id IN (2, 11, 14, 18, 23, 26)
+ORDER BY customer_id;
+```
+
+```
++-------------+-----------------+-----------------------------+------------+-------------------+
+| customer_id | full_name       | email_clean                 | city_clean | has_quality_issue |
++-------------+-----------------+-----------------------------+------------+-------------------+
+|           2 | Ravi Kumar      | ravi.kumar@example.com      | Bengaluru  |                 1 |
+|          11 | Meera Rao       | meera.rao@example.com       | Bengaluru  |                 1 |
+|          14 | Rahul Joshi     | rahul.joshi@example.com     | Unknown    |                 1 |
+|          18 | Suresh Iyengar  | suresh.iyengar@example.com  | Bengaluru  |                 1 |
+|          23 | Ritu Agarwal    | unknown@example.com         | Delhi      |                 1 |
+|          26 | Sanjay Murthy   | sanjay.murthy@example.com   | Bengaluru  |                 1 |
++-------------+-----------------+-----------------------------+------------+-------------------+
+```
+
+**Why this works:** `COALESCE` first, then `LOWER(TRIM(...))` for emails. Cities use a `CASE` to canonicalize known variants. The `has_quality_issue` column captures the same logic Step 11 used to *find* the dirty rows — by computing it inline, downstream consumers can audit data quality without re-running the detection query.
+</details>
+
+---
+
+### Challenge 5: End-to-end mini-report (CTE + window + aggregation)
+
+**Scenario:** Build a "top product per category, with category share of total revenue" report from delivered orders only.
+**Your task:** Return `category`, `top_product`, `top_product_revenue`, `category_revenue`, `category_share_pct` (the category's share of company-wide revenue, two decimals).
+**Expected output shape:**
+
+```
++-------------+---------------------+---------------------+------------------+--------------------+
+| category    | top_product         | top_product_revenue | category_revenue | category_share_pct |
++-------------+---------------------+---------------------+------------------+--------------------+
+```
+
+<details>
+<summary>💡 Show solution</summary>
+
+```sql
+WITH product_rev AS (
+    SELECT
+        p.category,
+        p.product_name,
+        SUM(oi.line_amount) AS revenue
+    FROM order_items AS oi
+    JOIN orders   AS o ON o.order_id   = oi.order_id
+    JOIN products AS p ON p.product_id = oi.product_id
+    WHERE o.status = 'DELIVERED'
+    GROUP BY p.category, p.product_name
+),
+ranked AS (
+    SELECT
+        pr.category,
+        pr.product_name,
+        pr.revenue,
+        SUM(pr.revenue) OVER (PARTITION BY pr.category)         AS category_revenue,
+        SUM(pr.revenue) OVER ()                                 AS company_revenue,
+        ROW_NUMBER() OVER (PARTITION BY pr.category
+                           ORDER BY pr.revenue DESC, pr.product_name) AS rn
+    FROM product_rev AS pr
+)
+SELECT
+    category,
+    product_name                                                    AS top_product,
+    revenue                                                         AS top_product_revenue,
+    category_revenue,
+    ROUND(100.0 * category_revenue / company_revenue, 2)            AS category_share_pct
+FROM ranked
+WHERE rn = 1
+ORDER BY category_share_pct DESC;
+```
+
+```
++-------------+---------------------+---------------------+------------------+--------------------+
+| category    | top_product         | top_product_revenue | category_revenue | category_share_pct |
++-------------+---------------------+---------------------+------------------+--------------------+
+| Electronics | Laptop Pro 14       |          1259986.00 |       1394734.00 |              78.76 |
+| Furniture   | Office Chair        |           116991.00 |        139476.00 |               7.88 |
+| Apparel     | Denim Jeans         |            35980.00 |         64133.00 |               3.62 |
+| Fitness     | Dumbbell Pair 5kg   |            32487.00 |         56467.00 |               3.19 |
+| Footwear    | Running Shoes       |            55984.00 |         55984.00 |               3.16 |
+| Home        | Coffee Mug Set      |            23171.00 |         46161.00 |               2.61 |
+| Stationery  | Notebook A4         |             7562.00 |         13820.00 |               0.78 |
++-------------+---------------------+---------------------+------------------+--------------------+
+```
+
+**Why this works:** Two CTEs separate concerns — first compute per-product revenue, then layer two windows: one for category subtotal, one for company total. `ROW_NUMBER()` with a deterministic tiebreaker picks the top product per category. The whole report is one query, no temp tables, fully composable into a view.
+</details>
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Solve all five challenges in under 30 minutes total
+- ✅ Explain *why* each solution works in 2–3 sentences
+- ✅ Spot the cardinality, NULL, and tie-breaking traps that each challenge hides
+
+---
+
+<KeyTakeaways>
+
+- Joining to `order_items` multiplies rows — count orders with `COUNT(DISTINCT o.order_id)`
+- Row filters go in `WHERE`, aggregate filters in `HAVING` — mixing them up is the classic bug
+- Top-per-group = CTE for the totals, `ROW_NUMBER()` per partition, keep `rn = 1` with a deterministic tiebreaker
+- Cleaning logic (COALESCE + CASE canonicalization) can double as an inline `has_quality_issue` audit flag
+- One well-structured query with layered CTEs and windows can replace a whole temp-table pipeline
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In Challenge 1, why is COUNT(DISTINCT o.order_id) required instead of COUNT(*)?',
+      options: [
+        'DISTINCT makes the query faster',
+        'The join to order_items multiplies rows, so COUNT(*) would count line items, not orders',
+        'COUNT(*) ignores cancelled orders',
+        'MySQL forbids COUNT(*) with joins',
+      ],
+      answer: 1,
+      explanation:
+        'Each order contributes one row per line item after the join; DISTINCT collapses them back to unique orders.',
+    },
+    {
+      question: 'In the top-order-per-customer solution, what breaks ties between equal order totals?',
+      options: [
+        'Nothing — ties are left random',
+        'RANK() handles ties automatically',
+        'The ", ot.order_id" added to the window ORDER BY',
+        'A HAVING clause',
+      ],
+      answer: 2,
+      explanation:
+        'Without a deterministic tiebreaker, ROW_NUMBER() could pick a different "top" order on every run — the extra ORDER BY key makes it stable.',
+    },
+  ]}
+/>
+
+<LessonComplete />

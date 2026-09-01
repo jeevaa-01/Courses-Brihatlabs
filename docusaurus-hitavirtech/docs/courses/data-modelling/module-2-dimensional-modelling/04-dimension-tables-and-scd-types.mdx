@@ -1,0 +1,213 @@
+---
+title: 'Dimension Tables and SCD Types'
+sidebar_position: 4
+description: 'Handle change over time in dimensions with SCD Types 0-6, including hands-on SCD Type 2 in SQL and Databricks MERGE.'
+---
+
+<DurationBadge minutes={15} />
+
+<LearningObjectives>
+
+- Compare SCD Types 0, 1, 2, 3, and 6 and the history each preserves
+- Implement SCD Type 2 with expire-and-insert logic in SQL
+- Apply the MERGE-based SCD Type 2 pattern used on Databricks/Spark SQL
+
+</LearningObjectives>
+
+Dimension tables provide the **descriptive context** for facts. The biggest challenge is handling changes over time — this is where **Slowly Changing Dimensions (SCD)** come in.
+
+![Dimension Types](/img/courses/diagrams/dimension-types.svg)
+
+### Types of Dimensions
+
+![Dimension Types Table](/img/courses/diagrams/dimension-types-table.svg)
+
+### Slowly Changing Dimensions (SCD)
+
+When a customer moves cities, or a product changes categories — how do you handle it?
+
+### SCD Type 0 — Retain Original
+
+**Never update.** The original value is preserved forever.
+
+**Use case:** Date of birth, original registration date.
+
+### SCD Type 1 — Overwrite
+
+**Overwrite the old value.** No history kept.
+
+```sql
+-- Customer moved from Mumbai to Pune
+-- Type 1: Just update the row
+UPDATE dim_customer
+SET city = 'Pune', state = 'Maharashtra'
+WHERE customer_id = 'C001';
+
+-- History is LOST — we no longer know they were in Mumbai
+```
+
+**Use case:** Fixing data entry errors, when history does not matter.
+
+### SCD Type 2 — Add New Row (Most Important)
+
+**Insert a new row** with the new values. The old row is marked as expired. Full history is preserved.
+
+```sql
+-- Before: Customer in Mumbai
+-- customer_key=1, customer_id='C001', city='Mumbai',
+--   effective_date='2025-01-01', expiry_date='9999-12-31', is_current=TRUE
+
+-- After Type 2 update: Customer moved to Pune
+
+-- Step 1: Expire old row
+UPDATE dim_customer
+SET expiry_date = '2026-03-14',
+    is_current = FALSE
+WHERE customer_id = 'C001' AND is_current = TRUE;
+
+-- Step 2: Insert new row
+INSERT INTO dim_customer
+    (customer_id, first_name, last_name, city, state, effective_date, expiry_date, is_current)
+VALUES
+    ('C001', 'Priya', 'Sharma', 'Pune', 'Maharashtra', '2026-03-15', '9999-12-31', TRUE);
+```
+
+**Result:**
+
+![SCD Type 2 Example](/img/courses/diagrams/scd-type2.svg)
+
+**Use case:** Customer address changes, employee department transfers, product price changes — any time you need historical analysis.
+
+### SCD Type 3 — Add Column
+
+**Add a column** for the previous value. Only stores one level of history.
+
+```sql
+ALTER TABLE dim_customer
+ADD COLUMN previous_city VARCHAR(50),
+ADD COLUMN city_change_date DATE;
+
+UPDATE dim_customer
+SET previous_city = city,
+    city = 'Pune',
+    city_change_date = '2026-03-15'
+WHERE customer_id = 'C001';
+```
+
+**Use case:** When you only need current vs previous (not full history).
+
+### SCD Type 6 — Hybrid (Type 1 + 2 + 3)
+
+Combines Type 1 (current column), Type 2 (history rows), and Type 3 (previous value column).
+
+```sql
+-- Type 6 structure
+CREATE TABLE dim_customer_scd6 (
+    customer_key      INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id       VARCHAR(20),
+    first_name        VARCHAR(50),
+    current_city      VARCHAR(50),    -- Type 1 (always current)
+    historical_city   VARCHAR(50),    -- Type 2 (value at row time)
+    previous_city     VARCHAR(50),    -- Type 3 (previous value)
+    effective_date    DATE,
+    expiry_date       DATE,
+    is_current        BOOLEAN
+);
+```
+
+### SCD Comparison
+
+![SCD Types Comparison](/img/courses/diagrams/scd-comparison.svg)
+
+### SCD Type 2 with MERGE (Databricks/Spark SQL)
+
+```sql
+MERGE INTO dim_customer AS target
+USING staging_customer AS source
+ON target.customer_id = source.customer_id
+   AND target.is_current = TRUE
+
+WHEN MATCHED AND (
+    target.city <> source.city
+    OR target.segment <> source.segment
+) THEN UPDATE SET
+    target.expiry_date = CURRENT_DATE(),
+    target.is_current = FALSE
+
+WHEN NOT MATCHED THEN INSERT (
+    customer_id, first_name, last_name, city, state,
+    segment, effective_date, expiry_date, is_current
+) VALUES (
+    source.customer_id, source.first_name, source.last_name,
+    source.city, source.state, source.segment,
+    CURRENT_DATE(), '9999-12-31', TRUE
+);
+
+-- Then insert new rows for changed records
+INSERT INTO dim_customer
+SELECT
+    s.customer_id, s.first_name, s.last_name, s.city, s.state,
+    s.segment, CURRENT_DATE(), '9999-12-31', TRUE
+FROM staging_customer s
+JOIN dim_customer t
+    ON s.customer_id = t.customer_id
+    AND t.is_current = FALSE
+    AND t.expiry_date = CURRENT_DATE();
+```
+
+:::tip[HitaVir Tech says]
+"SCD Type 2 is the most frequently asked data modelling interview question. If you can explain it clearly with an example, you will impress any interviewer. Practise drawing the before/after table on a whiteboard."
+:::
+
+<KeyTakeaways>
+
+- SCD Type 0 never changes, Type 1 overwrites (no history), Type 3 keeps one previous value in a column
+- **SCD Type 2** expires the old row and inserts a new one — full history with effective/expiry dates and is_current
+- Type 6 is a hybrid that combines current-value, historical-row, and previous-value columns
+- On Databricks, SCD Type 2 is implemented with MERGE INTO plus a follow-up insert for changed records
+- Type 2 is the single most asked data modelling interview topic — practise the before/after example
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which SCD type preserves the FULL history of attribute changes?',
+      options: [
+        'Type 1',
+        'Type 0',
+        'Type 3',
+        'Type 2',
+      ],
+      answer: 3,
+      explanation:
+        'Type 2 inserts a new versioned row for every change, keeping the complete history with effective and expiry dates.',
+    },
+    {
+      question: 'In SCD Type 2, what happens to the OLD row when a customer moves cities?',
+      options: [
+        'It gets expiry_date set and is_current flipped to FALSE',
+        'It is deleted',
+        'Its city column is overwritten',
+        'It is moved to an archive table',
+      ],
+      answer: 0,
+      explanation:
+        'Type 2 never destroys history: the old row is expired (expiry_date = change date, is_current = FALSE) and a new row is inserted.',
+    },
+    {
+      question: 'You only need the current city and the immediately previous city — nothing older. Which SCD type is the lightest fit?',
+      options: [
+        'Type 2',
+        'Type 3',
+        'Type 0',
+        'Type 6',
+      ],
+      answer: 1,
+      explanation:
+        'Type 3 adds a previous_value column — exactly one level of history, no extra rows.',
+    },
+  ]}
+/>
+
+<LessonComplete />

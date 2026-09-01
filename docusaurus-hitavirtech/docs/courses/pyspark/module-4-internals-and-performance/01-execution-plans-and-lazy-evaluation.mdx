@@ -1,0 +1,162 @@
+---
+title: "Execution Plans and Lazy Evaluation"
+description: "Execution Plans and Lazy Evaluation — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Execution Plans and Lazy Evaluation
+
+*⏱ Estimated time: 70 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Read `explain()` output and identify Scan, Filter, Exchange, and Aggregate nodes.
+- Distinguish narrow from wide transformations and explain what a shuffle costs.
+- Describe predicate pushdown and column pruning.
+
+:::
+
+### Explain a plan
+
+```python
+result_df.explain()
+```
+
+Detailed:
+
+```python
+result_df.explain("formatted")
+```
+
+### Plan stages
+
+Spark builds:
+
+1. Parsed logical plan.
+2. Analyzed logical plan.
+3. Optimized logical plan.
+4. Physical plan.
+
+### Narrow transformations
+
+Examples:
+
+- `select`
+- `filter`
+- `withColumn`
+- `mapPartitions`
+
+These usually operate within existing partitions.
+
+### Wide transformations
+
+Examples:
+
+- `groupBy`
+- `join`
+- `distinct`
+- `repartition`
+- `orderBy`
+
+These often cause shuffles.
+
+### Shuffle
+
+A shuffle moves data between partitions or executors.
+
+Shuffles can be expensive because of:
+
+- Network transfer.
+- Disk I/O.
+- Serialization.
+- Sorting.
+- Memory pressure.
+
+### Predicate pushdown
+
+When reading Parquet:
+
+```python
+filtered_df = (
+    spark.read
+    .parquet(f"{BASE_PATH}/processed/sales_by_region")
+    .filter(F.col("region") == "SOUTH")
+)
+```
+
+Spark may read only relevant partitions and row groups.
+
+### Column pruning
+
+```python
+selected_df = spark.read.parquet(
+    f"{BASE_PATH}/processed/clean_sales"
+).select(
+    "transaction_id",
+    "region",
+    "revenue"
+)
+```
+
+Spark reads only needed columns where supported.
+
+### ✅ Checkpoint
+
+Run:
+
+```python
+regional_summary_df.explain("formatted")
+```
+
+Identify:
+
+- Scan.
+- Filter.
+- Exchange.
+- HashAggregate.
+
+<Quiz
+  questions={[
+  {
+    "question": "An `Exchange` node in a physical plan indicates:",
+    "options": [
+      "Caching",
+      "A shuffle",
+      "A Python UDF"
+    ],
+    "answer": 1,
+    "explanation": "Exchange is where data moves between partitions or executors."
+  },
+  {
+    "question": "Predicate pushdown means:",
+    "options": [
+      "Filtering at the storage read layer",
+      "Filtering on the driver",
+      "Skipping actions"
+    ],
+    "answer": 0,
+    "explanation": "Parquet readers can skip partitions and row groups that cannot match."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- Lazy evaluation lets Catalyst optimize the whole plan before running anything.
+- Wide transformations cause shuffles; narrow ones stay within partitions.
+- Most major performance problems are visible in the physical plan.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Use `explain()` whenever a pipeline is slower than expected.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Most major Spark performance problems are visible in the physical plan.
+
+:::

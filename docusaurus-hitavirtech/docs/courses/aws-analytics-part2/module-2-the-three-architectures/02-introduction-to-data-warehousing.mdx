@@ -1,0 +1,220 @@
+---
+title: 'Introduction to Data Warehousing'
+sidebar_position: 2
+description: 'Columnar storage, MPP, star schemas, Amazon Redshift and Spectrum — why warehouses answer business SQL in seconds.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Explain why columnar storage plus MPP makes warehouses fast at aggregation
+- Describe the star schema: fact tables and dimension tables
+- Position Amazon Redshift, Spectrum, and its loading patterns on AWS
+- Compare lakes and warehouses along cost, schema, speed, and users
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |           ARCHITECTURE  2   -   DATA  WAREHOUSE              |
+  |           "Fast SQL on curated, trusted data."               |
+  +==============================================================+
+```
+
+![Redshift](/img/courses/aws-icons/redshift.png) ![EMR](/img/courses/aws-icons/emr.png)
+
+### What is a Data Warehouse?
+
+🏛️ A **data warehouse** is a centralized, highly-structured database optimized for **analytical queries** — aggregations, joins, and scans across billions of rows — at interactive speeds.
+
+Key properties:
+
+| Property | Icon | What It Means |
+|----------|:---:|---------------|
+| **Schema-on-write** | 📝 | Every row fits a predefined schema at load time |
+| **Columnar storage** | 📊 | Stores columns together, not rows — 10-100× faster scans |
+| **MPP (Massively Parallel Processing)** | ⚡ | Splits work across many nodes automatically |
+| **Optimized for reads** | 📖 | Writes are slower; reads are lightning-fast |
+| **Business-user friendly** | 👥 | Clean star schemas; analysts can self-serve SQL |
+
+### Row vs Columnar Storage
+
+```
+  ROW STORE (OLTP, e.g. MySQL)
+  ----------------------------
+  [id | name | country | amount]  <-- each row stored together
+
+  Great for:  "Get everything about order 1042"
+  Bad for:    "SUM(amount) across 1B rows"
+
+  COLUMNAR STORE (OLAP, e.g. Redshift, Parquet)
+  ---------------------------------------------
+  [id][id][id]...
+  [name][name][name]...
+  [country][country][country]...
+  [amount][amount][amount]...      <-- each column stored together
+
+  Great for:  "SUM(amount) across 1B rows"  (scan only one column)
+  Bad for:    "Get everything about order 1042"
+```
+
+**Warehouses use columnar.** That one design choice is why they can aggregate billions of rows in seconds.
+
+### Star Schema — The Warehouse Language
+
+Most warehouse tables follow the **star schema**:
+
+```
+                    +---------------------+
+                    |   DIM_CUSTOMER      |
+                    |   (who bought)      |
+                    +----------+----------+
+                               |
+                               |
+  +---------------+    +---------------+    +---------------+
+  | DIM_PRODUCT   |----|  FACT_SALES   |----|  DIM_DATE     |
+  | (what sold)   |    |  (the event)  |    | (when sold)   |
+  +---------------+    +-------+-------+    +---------------+
+                               |
+                               |
+                    +----------+----------+
+                    |   DIM_STORE         |
+                    |   (where sold)      |
+                    +---------------------+
+```
+
+- 🌟 **Fact table** — the measurable events (one row per sale, click, payment)
+- 📐 **Dimension tables** — the context (who, what, when, where)
+
+Star schemas make queries fast AND readable: `SELECT country, SUM(amount) FROM fact_sales JOIN dim_store ...`.
+
+### Service Spotlight — Amazon Redshift
+
+![Redshift](/img/courses/aws-icons/redshift.png)
+
+```
+  +--------------------------------------------------------------+
+  |  AMAZON  REDSHIFT  -  AWS's Managed Data Warehouse           |
+  +--------------------------------------------------------------+
+  |  Category     :  Columnar MPP warehouse                      |
+  |  Modes        :  Serverless  |  Provisioned (RA3)            |
+  |  Scale        :  GBs to petabytes                            |
+  |  SQL dialect  :  PostgreSQL-flavored                         |
+  |  Superpowers  :  Redshift Spectrum, Redshift ML, Data Share  |
+  |                                                              |
+  |  The engine behind Nasdaq, McDonald's, Yelp analytics.       |
+  +--------------------------------------------------------------+
+```
+
+### Redshift Spectrum — Warehouse Queries Over the Lake
+
+```
+                 +----------------------------+
+                 |  Redshift Cluster          |
+                 |  (hot, curated tables)     |
+                 +-------------+--------------+
+                               |
+                               | joins across
+                               v
+                 +----------------------------+
+                 |  S3 Data Lake via Spectrum |
+                 |  (cold, historical data)   |
+                 +----------------------------+
+```
+
+One SQL query spans **both** the warehouse (recent, hot) and the lake (years of history). No duplicate storage, no duplicate pipelines.
+
+### Redshift Loading Patterns
+
+| Source | Icon | Loader | Speed |
+|--------|:---:|--------|:-----:|
+| S3 files | 🪣 | `COPY` command (parallel) | 🚀 |
+| Kinesis Streams | 🌊 | Redshift streaming ingestion | 🚀 |
+| Operational DBs (MySQL, Postgres) | 🗄️ | AWS DMS + CDC | 🏃 |
+| SaaS apps (Salesforce, etc.) | ☁️ | AWS AppFlow or partner tools | 🚶 |
+
+### Data Warehouse Strengths and Weaknesses
+
+| Strength | Icon | Weakness | Icon |
+|----------|:---:|----------|:---:|
+| Sub-second SQL on billions of rows | ⚡ | Expensive per TB stored | 💸 |
+| Business-analyst friendly | 👥 | Rigid schema — changes need migrations | 🔒 |
+| Mature BI tool ecosystem | 📊 | Only handles structured data | 📋 |
+| ACID transactions and governance baked-in | 🛡️ | Locked into one vendor's engine | 🔗 |
+
+### Lake vs Warehouse — The Canonical Comparison
+
+```
+  +--------------------+------------------------+------------------------+
+  |  ATTRIBUTE         |  DATA  LAKE            |  DATA  WAREHOUSE       |
+  +--------------------+------------------------+------------------------+
+  |  Data type         |  Anything              |  Structured only       |
+  |  Schema            |  On read               |  On write              |
+  |  Cost / TB stored  |  $  (cheap)            |  $$$$  (expensive)     |
+  |  Query speed       |  Medium                |  Fast                  |
+  |  Users             |  Engineers, data sci.  |  Analysts, business    |
+  |  AWS example       |  S3 + Glue + Athena    |  Redshift              |
+  +--------------------+------------------------+------------------------+
+```
+
+:::tip[HitaVir Tech says]
+"Warehouses are optimized for the answers you know you want. Lakes are optimized for the answers you haven't invented questions for yet. Real companies need both. The next lesson shows how to stop choosing and combine them."
+:::
+
+:::tip[Warehouse in one line]
+Columnar + MPP + star schema = fast answers for business users.
+:::
+
+<KeyTakeaways>
+
+- Warehouses use schema-on-write, columnar storage, and MPP to aggregate billions of rows in seconds
+- The star schema — one fact table surrounded by dimension tables — is the warehouse modeling language
+- Amazon Redshift is AWS's columnar MPP warehouse, available serverless or provisioned
+- Redshift Spectrum lets one SQL query span hot warehouse tables and cold S3 lake files
+- Warehouses are fast and analyst-friendly but expensive per TB and structured-data-only
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why can a columnar warehouse compute SUM(amount) over a billion rows so quickly?',
+      options: [
+        'It caches every query result in advance',
+        'It stores all rows in RAM',
+        'It scans only the amount column instead of every full row',
+        'It samples 1% of the data',
+      ],
+      answer: 2,
+      explanation:
+        'Columnar storage keeps each column together on disk, so an aggregation touches only the columns it needs.',
+    },
+    {
+      question: 'In a star schema, what does the fact table contain?',
+      options: [
+        'The measurable events — one row per sale, click, or payment',
+        'Descriptive context like customer names and store locations',
+        'Database configuration settings',
+        'Only aggregated totals',
+      ],
+      answer: 0,
+      explanation:
+        'Facts are the events being measured; dimensions (customer, product, date, store) supply the who/what/when/where context.',
+    },
+    {
+      question: 'What does Redshift Spectrum enable?',
+      options: [
+        'Automatic cluster scaling',
+        'Encrypting the warehouse at rest',
+        'Training ML models inside Redshift',
+        'Running Redshift SQL directly against S3 lake files',
+      ],
+      answer: 3,
+      explanation:
+        'Spectrum extends warehouse SQL into the lake, so one query joins hot curated tables with years of cold history — no duplication.',
+    },
+  ]}
+/>
+
+<LessonComplete />

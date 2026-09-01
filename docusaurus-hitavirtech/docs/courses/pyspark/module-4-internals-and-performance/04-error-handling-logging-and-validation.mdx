@@ -1,0 +1,196 @@
+---
+title: "Error Handling, Logging, and Validation"
+description: "Error Handling, Logging, and Validation — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Error Handling, Logging, and Validation
+
+*⏱ Estimated time: 75 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Configure structured logging for a pipeline run.
+- Validate input paths, required columns, and non-empty inputs.
+- Emit rejected-record counts and fail loudly when assumptions are violated.
+
+:::
+
+### Python logging
+
+```python
+import logging
+from pathlib import Path
+
+log_path = Path("logs/pipeline.log")
+log_path.parent.mkdir(parents=True, exist_ok=True)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[
+        logging.FileHandler(
+            log_path,
+            encoding="utf-8"
+        ),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+```
+
+### Validate input path
+
+This pattern applies to local file systems. On Databricks, check volume paths with `dbutils.fs.ls` or `os.path.exists` on `/Volumes/...` paths.
+
+```python
+from pathlib import Path
+
+input_path = Path("data/raw/sales.csv")
+
+if not input_path.exists():
+    raise FileNotFoundError(
+        f"Input not found: {input_path}"
+    )
+```
+
+### Validate required columns
+
+```python
+def validate_required_columns(
+    df,
+    required_columns: set[str]
+) -> None:
+    missing_columns = required_columns - set(df.columns)
+
+    if missing_columns:
+        raise ValueError(
+            f"Missing columns: {sorted(missing_columns)}"
+        )
+```
+
+### Validate non-empty input
+
+```python
+if df.limit(1).count() == 0:
+    raise ValueError("Input DataFrame is empty")
+```
+
+### Count rejected records
+
+```python
+rejected_count = rejected_df.count()
+
+logger.warning(
+    "Rejected rows: %s",
+    rejected_count
+)
+```
+
+### Handle exceptions
+
+```python
+try:
+    run_pipeline()
+except Exception:
+    logger.exception("Pipeline failed")
+    raise
+```
+
+### Data quality checks
+
+Check:
+
+- Required columns.
+- Null transaction IDs.
+- Duplicate transaction IDs.
+- Invalid dates.
+- Negative quantity.
+- Negative price.
+- Unexpected region.
+- Empty product.
+- Row count thresholds.
+- Join match rate.
+
+Example:
+
+```python
+duplicate_count = (
+    df.groupBy("transaction_id")
+    .count()
+    .filter(F.col("count") > 1)
+    .count()
+)
+
+if duplicate_count > 0:
+    logger.warning(
+        "Duplicate transaction IDs: %s",
+        duplicate_count
+    )
+```
+
+### ✅ Checkpoint
+
+Create a validation function that raises an error when a required column is missing.
+
+### 🛠️ Exercise
+
+Log:
+
+- input count
+- valid count
+- rejected count
+- output path
+
+<Quiz
+  questions={[
+  {
+    "question": "At minimum, every production pipeline run should log:",
+    "options": [
+      "Nothing, to keep logs clean",
+      "Run ID, source, row counts, rejections, outputs, duration, and status",
+      "Executor IP addresses"
+    ],
+    "answer": 1,
+    "explanation": "These make failures diagnosable and successes auditable."
+  },
+  {
+    "question": "Production data quality should:",
+    "options": [
+      "Only raise exceptions",
+      "Produce metrics, alerts, and rejected-record outputs",
+      "Be checked manually"
+    ],
+    "answer": 1,
+    "explanation": "Exceptions stop the run; metrics and reject files explain it."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- A pipeline should fail clearly and loudly when assumptions are violated.
+- Log run ID, counts, rejections, outputs, duration, and status on every run.
+- Data quality means metrics, alerts, and rejected-record outputs — not just exceptions.
+
+:::
+
+:::note[💬 Discussion prompt — Module 4]
+
+Run `explain("formatted")` on one of your own queries, identify the most expensive node, and post what you would change and why.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+A pipeline should fail clearly when assumptions are violated.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Production data quality should produce metrics, alerts, and rejected-record outputs, not only exceptions.
+
+:::

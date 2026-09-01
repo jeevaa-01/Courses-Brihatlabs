@@ -1,0 +1,195 @@
+---
+title: 'AWS Services for Volume'
+sidebar_position: 2
+description: 'The AWS Volume toolkit — S3, Glacier, Redshift, EMR, Lake Formation — plus S3 storage classes, the medallion data lake, and a volume decision tree.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Match the Volume lineup — S3, Glacier, Redshift, EMR, Lake Formation — to their storage/compute roles
+- Choose an S3 storage class along the hot-to-archive cost pyramid
+- Lay out a raw / curated / analytics (medallion) data lake on S3
+- Pick the right stack for under 1 TB, 1-100 TB, and 100+ TB workloads
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              AWS  FOR  VOLUME                                |
+  |         "Store any amount of data, affordably."              |
+  +==============================================================+
+```
+
+### The Volume Lineup
+
+![S3](/img/courses/aws-icons/s3.png) ![Glacier](/img/courses/aws-icons/glacier.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![EMR](/img/courses/aws-icons/emr.png) ![Lake Formation](/img/courses/aws-icons/lake-formation.png)
+
+**S3** • **Glacier** • **Redshift** • **EMR** • **Lake Formation**
+
+### The Volume Toolkit
+
+| Service | Icon | Purpose |
+|---------|:---:|---------|
+| **Amazon S3** | <img src="aws-icons/s3.png" width="32" height="32" alt="Amazon S3" /> | Object storage — the data-lake foundation (infinite scale) |
+| **Amazon S3 Glacier** | <img src="aws-icons/glacier.png" width="32" height="32" alt="S3 Glacier" /> | Cheapest archive tier for cold data |
+| **Amazon Redshift** | <img src="aws-icons/redshift.png" width="32" height="32" alt="Redshift" /> | Petabyte-scale columnar data warehouse |
+| **Amazon EMR** | <img src="aws-icons/emr.png" width="32" height="32" alt="EMR" /> | Managed Spark / Hadoop clusters for huge batch jobs |
+| **AWS Lake Formation** | <img src="aws-icons/lake-formation.png" width="32" height="32" alt="Lake Formation" /> | Manage, govern, and secure a data lake on S3 |
+| **Amazon EBS / EFS** | <img src="aws-icons/s3.png" width="32" height="32" alt="EBS / EFS" /> | Block and file storage for compute workloads |
+
+### Service Spotlight — Amazon S3
+
+![S3](/img/courses/aws-icons/s3.png)
+
+```
+  +--------------------------------------------------------------+
+  |  AMAZON  S3  -  Simple Storage Service                       |
+  +--------------------------------------------------------------+
+  |  Category     :  Object storage / data lake                  |
+  |  Durability   :  99.999999999%  (11 nines)                   |
+  |  Scale        :  Unlimited (practically)                     |
+  |  Pricing      :  ~$0.023 / GB / month (Standard)             |
+  |  Read by      :  Athena, Redshift, EMR, SageMaker, QuickSight|
+  |                                                              |
+  |  If you remember only one AWS service - make it S3.          |
+  +--------------------------------------------------------------+
+```
+
+### S3 Storage Classes — The Cost Pyramid
+
+| Class | Icon | Access Pattern | Relative Cost |
+|-------|:---:|----------------|:-------------:|
+| **S3 Standard** | 🔥 | Hot, frequent access | $$$$ |
+| **S3 Intelligent-Tiering** | 🌡️ | Auto hot/cold moves | $$$ |
+| **S3 Standard-IA** | ❄️ | Monthly access | $$ |
+| **S3 Glacier Instant** | 🧊 | Rare access, instant | $ |
+| **S3 Glacier Flexible** | 🗄️ | Hours to retrieve | ¢ |
+| **S3 Glacier Deep Archive** | 🏔️ | Compliance vault | ¢ |
+
+### Service Spotlight — Amazon Redshift
+
+![Redshift](/img/courses/aws-icons/redshift.png)
+
+```
+  +--------------------------------------------------------------+
+  |  AMAZON  REDSHIFT  -  Data Warehouse                         |
+  +--------------------------------------------------------------+
+  |  Category     :  Columnar MPP data warehouse                 |
+  |  Scale        :  Petabytes (exabytes tested)                 |
+  |  SQL          :  PostgreSQL-flavored                         |
+  |  Modes        :  Serverless  |  Provisioned (RA3 nodes)      |
+  |  Superpower   :  Sub-second queries over billions of rows    |
+  |                                                              |
+  |  Use when you need fast SQL on huge structured data.         |
+  +--------------------------------------------------------------+
+```
+
+### Service Spotlight — Amazon EMR
+
+![EMR](/img/courses/aws-icons/emr.png)
+
+```
+  +--------------------------------------------------------------+
+  |  AMAZON  EMR  -  Elastic MapReduce                           |
+  +--------------------------------------------------------------+
+  |  Category     :  Managed Hadoop / Spark / Presto clusters    |
+  |  Scale        :  Thousands of nodes                          |
+  |  Pricing      :  Per-instance-hour (spot = 90% off)          |
+  |                                                              |
+  |  Use for petabyte-scale custom Spark jobs.                   |
+  +--------------------------------------------------------------+
+```
+
+### S3 Data Lake — Medallion Architecture
+
+```
+  s3://hitavirtech-analytics/
+    |
+    +-- raw/             <-- Bronze:  untouched source data
+    |     +-- sales/2026/04/22/orders.csv
+    |     +-- inventory/2026/04/22/stock.json
+    |
+    +-- curated/         <-- Silver:  cleaned, typed Parquet
+    |     +-- sales_fact/year=2026/month=04/day=22/part-001.parquet
+    |
+    +-- analytics/       <-- Gold:    pre-aggregated for BI
+          +-- daily_revenue/year=2026/month=04/day=22/part-001.parquet
+```
+
+- 🥉 **Raw (bronze)** — the data lake's truth. Reprocess from here if anything goes wrong.
+- 🥈 **Curated (silver)** — cleaned, typed. Parquet for fast analytics.
+- 🥇 **Analytics (gold)** — pre-aggregated. Powers dashboards.
+
+### Volume Decision Tree
+
+```
+                      How much data?
+                            |
+       +--------------------+--------------------+
+       |                    |                    |
+     < 1 TB              1-100 TB             > 100 TB
+       |                    |                    |
+       v                    v                    v
+    RDS or                S3 +               S3 + EMR +
+  Redshift Serverless    Athena              Redshift +
+  (small + cheap)       (most common)        Lake Formation
+                                             (huge platform)
+```
+
+:::tip[HitaVir Tech says]
+"Start with S3. Every analytics service on AWS reads from it. You'll never regret putting data into S3 — you may regret putting it anywhere else first."
+:::
+
+<KeyTakeaways>
+
+- S3 is the data-lake foundation: 11 nines of durability, practically unlimited scale, read by every analytics service
+- S3 storage classes trade access speed for cost — Standard (hot) down to Glacier Deep Archive (compliance vault)
+- The medallion layout (raw/bronze → curated/silver → analytics/gold) organizes the lake by refinement stage
+- Match the stack to scale: RDS/Redshift Serverless under 1 TB, S3 + Athena for 1-100 TB, add EMR + Redshift + Lake Formation beyond
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which S3 storage class is designed as a compliance vault with hours-long retrieval?',
+      options: [
+        'S3 Standard',
+        'S3 Intelligent-Tiering',
+        'S3 Glacier Deep Archive',
+        'S3 Standard-IA',
+      ],
+      answer: 2,
+      explanation:
+        'Deep Archive is the cheapest, coldest tier — for data you must retain but almost never read.',
+    },
+    {
+      question: 'In the medallion architecture, what lives in the raw (bronze) zone?',
+      options: [
+        'Untouched source data — the lake\'s reprocessable truth',
+        'Pre-aggregated dashboard tables',
+        'Cleaned, typed Parquet files',
+        'Only temporary scratch files',
+      ],
+      answer: 0,
+      explanation:
+        'Bronze holds source data exactly as it arrived. If anything downstream goes wrong, you reprocess from here.',
+    },
+    {
+      question: 'Per the decision tree, what is the most common stack for 1-100 TB of data?',
+      options: [
+        'A single RDS instance',
+        'EMR with thousands of nodes',
+        'DynamoDB',
+        'S3 + Athena',
+      ],
+      answer: 3,
+      explanation:
+        'S3 for storage plus Athena for serverless SQL is the sweet spot for the vast majority of mid-scale workloads.',
+    },
+  ]}
+/>
+
+<LessonComplete />

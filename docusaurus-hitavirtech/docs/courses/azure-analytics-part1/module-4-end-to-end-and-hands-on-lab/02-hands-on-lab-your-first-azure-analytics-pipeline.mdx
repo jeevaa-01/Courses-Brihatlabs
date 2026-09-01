@@ -1,0 +1,249 @@
+---
+title: 'Hands-on Lab - Your First Azure Analytics Pipeline'
+sidebar_position: 2
+description: 'Build a real pipeline in ten steps — upload a CSV to ADLS Gen2, create a Synapse workspace, query with Serverless SQL OPENROWSET, and clean up to $0.'
+---
+
+<DurationBadge minutes={25} />
+
+<LearningObjectives>
+
+- Create a Storage Account with ADLS Gen2 (hierarchical namespace) and upload data
+- Stand up a Synapse workspace and grant its managed identity access to the lake
+- Run OPENROWSET analytical queries on CSV with Serverless SQL
+- Read the "data scanned" cost signal and clean up every resource afterwards
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |  HANDS-ON  LAB  -  ADLS  ->  SYNAPSE  SERVERLESS SQL         |
+  +==============================================================+
+```
+
+### The Services We'll Touch
+
+![Storage Account](/img/courses/azure-icons/storage-accounts.svg) ![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg)
+
+You will build a mini pipeline that touches **Volume** (ADLS Gen2), **Variety** (CSV auto-queried), and **Value** (SQL insights).
+
+```
+   Step 1         Step 2-3         Step 4-5           Step 6          Step 7-9
+  +------+       +------+          +----------+    +--------+     +----------+
+  | CSV  | ----> | ADLS | ------>  | Synapse  | -> |Serverl.| --> | T-SQL    |
+  +------+       +------+          | workspace|    | SQL    |     +----------+
+  Prepare        Upload            Create                        Run OPENROWSET
+  sample data    to container      workspace                     get insights
+```
+
+### 📄 Step 1 — Prepare Sample Data
+
+On your laptop, create a file called `sales.csv`:
+
+```csv
+order_id,customer,product,quantity,amount,order_date
+1001,Ravi,Laptop,1,75000.00,2026-04-01
+1002,Priya,Mouse,2,1500.00,2026-04-01
+1003,Amit,Keyboard,1,3500.00,2026-04-02
+1004,Ravi,Monitor,1,18000.00,2026-04-02
+1005,Sneha,Headphones,1,4500.00,2026-04-03
+1006,Priya,Laptop,1,75000.00,2026-04-03
+1007,Vikram,USB Cable,3,900.00,2026-04-04
+1008,Neha,Webcam,1,5000.00,2026-04-04
+1009,Ravi,Mouse,1,750.00,2026-04-05
+1010,Amit,Monitor,1,18000.00,2026-04-05
+```
+
+### 🪣 Step 2 — Create a Storage Account with ADLS Gen2
+
+1. Sign in to the **Azure Portal** (`portal.azure.com`)
+2. Click **Create a resource** → **Storage account**
+3. Resource group: `rg-hitavirtech-analytics` (create new)
+4. Storage account name: `hitavirtechanalyticsXX` (lowercase, unique — add random digits)
+5. Region: closest to you (`Central India`)
+6. Redundancy: **LRS** (cheapest)
+7. **Advanced** tab → enable **Hierarchical namespace** (this makes it ADLS Gen2)
+8. **Review + create** → **Create**
+
+### ⬆️ Step 3 — Upload the CSV
+
+1. Open your storage account → **Containers** → **+ Container**
+2. Name: `lake` → **Create**
+3. Open `lake` → **+ Add Directory** → `raw`
+4. Inside `raw/` → **+ Add Directory** → `sales`
+5. Inside `raw/sales/` → **Upload** → select `sales.csv` → **Upload**
+
+Your file now lives at:
+
+```
+https://hitavirtechanalyticsXX.dfs.core.windows.net/lake/raw/sales/sales.csv
+```
+
+### 🏗️ Step 4 — Create a Synapse Workspace
+
+1. Portal → **Create a resource** → **Azure Synapse Analytics**
+2. Resource group: `rg-hitavirtech-analytics`
+3. Workspace name: `syn-hitavirtech-XX`
+4. Region: same as the storage account
+5. **Select Data Lake Storage Gen2**: pick `hitavirtechanalyticsXX` + container `lake`
+6. SQL admin credentials: set a strong password (save it!)
+7. **Review + create** → **Create** (takes ~3 minutes)
+
+### 🔐 Step 5 — Grant Synapse Access to the Lake
+
+1. Open the storage account → **Access Control (IAM)** → **+ Add role assignment**
+2. Role: **Storage Blob Data Contributor**
+3. Assign access to: **Managed identity** → pick the Synapse workspace
+4. **Save**
+
+Without this step, Synapse Serverless SQL cannot read your files.
+
+### 💻 Step 6 — Open Synapse Studio
+
+1. Portal → your Synapse workspace → **Open Synapse Studio**
+2. Left nav → **Data** tab
+3. Expand **Linked** → Azure Data Lake Storage Gen2 → your account → `lake` → `raw` → `sales`
+4. Right-click `sales.csv` → **New SQL script** → **Select TOP 100 rows**
+5. Synapse auto-generates an `OPENROWSET` query — click **Run**
+
+You should see 10 rows. 🎉
+
+### 🔍 Step 7 — Query with Serverless SQL
+
+Replace the auto-generated query with:
+
+```sql
+SELECT *
+FROM OPENROWSET(
+    BULK 'https://hitavirtechanalyticsXX.dfs.core.windows.net/lake/raw/sales/sales.csv',
+    FORMAT = 'CSV',
+    PARSER_VERSION = '2.0',
+    HEADER_ROW = TRUE
+) AS sales;
+```
+
+Replace `hitavirtechanalyticsXX` with your actual account name. Click **Run**.
+
+### 💡 Step 8 — Analytical Queries
+
+```sql
+-- Top customers by revenue
+SELECT customer, SUM(CAST(amount AS DECIMAL(12,2))) AS total_spent
+FROM OPENROWSET(
+    BULK 'https://hitavirtechanalyticsXX.dfs.core.windows.net/lake/raw/sales/sales.csv',
+    FORMAT = 'CSV', PARSER_VERSION = '2.0', HEADER_ROW = TRUE
+) AS sales
+GROUP BY customer
+ORDER BY total_spent DESC;
+```
+
+```sql
+-- Best-selling products
+SELECT product, SUM(CAST(quantity AS INT)) AS units_sold
+FROM OPENROWSET(
+    BULK 'https://hitavirtechanalyticsXX.dfs.core.windows.net/lake/raw/sales/sales.csv',
+    FORMAT = 'CSV', PARSER_VERSION = '2.0', HEADER_ROW = TRUE
+) AS sales
+GROUP BY product
+ORDER BY units_sold DESC;
+```
+
+```sql
+-- Daily revenue
+SELECT order_date, SUM(CAST(amount AS DECIMAL(12,2))) AS daily_revenue
+FROM OPENROWSET(
+    BULK 'https://hitavirtechanalyticsXX.dfs.core.windows.net/lake/raw/sales/sales.csv',
+    FORMAT = 'CSV', PARSER_VERSION = '2.0', HEADER_ROW = TRUE
+) AS sales
+GROUP BY order_date
+ORDER BY order_date;
+```
+
+### 💰 Step 9 — The "Data Scanned" Number
+
+At the bottom of every query result: **"Data processed: 1 KB"** (or similar).
+
+That number is your bill. Serverless SQL charges **~$5 per TB scanned**. At scale, every analytics engineer watches it. Partitioning + Parquet shrinks it 100-1000×.
+
+### 🧹 Step 10 — Cleanup (Mandatory!)
+
+:::warning[Forgetting cleanup = surprise Azure bill]
+Do not skip this step. Azure bills for resources that exist, even idle ones.
+:::
+
+The simplest, safest cleanup on Azure: **delete the entire resource group**.
+
+1. Portal → **Resource groups** → `rg-hitavirtech-analytics`
+2. **Delete resource group** → type the name to confirm → **Delete**
+3. Wait ~5 minutes for all resources to terminate
+4. 💰 Check **Cost Management** next day → confirm **~$0**
+
+:::tip[HitaVir Tech says]
+"The last 5 minutes of cleanup are the most valuable 5 minutes of the entire
+lab. Engineers who skip it end up with $300 surprise bills."
+:::
+
+<KeyTakeaways>
+
+- Enabling **Hierarchical namespace** on a storage account is what turns Blob into ADLS Gen2
+- Synapse reads the lake through its **managed identity** — the Storage Blob Data Contributor role assignment is mandatory
+- OPENROWSET queries CSV in place: no loading, no cluster, pay only for data scanned
+- The "data processed" number under every result is your bill — Parquet + partitioning shrinks it 100-1000×
+- Deleting the resource group is the one-step cleanup that guarantees ~$0
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which setting turns a plain storage account into ADLS Gen2 during creation?',
+      options: [
+        'Choosing GRS redundancy',
+        'Enabling Hierarchical namespace on the Advanced tab',
+        'Naming the container "lake"',
+        'Selecting the Premium tier',
+      ],
+      answer: 1,
+      explanation:
+        'Hierarchical namespace adds real directories and POSIX ACLs — the defining feature of ADLS Gen2.',
+    },
+    {
+      question: 'Synapse Serverless returns a permissions error reading your CSV. What did you most likely skip?',
+      options: [
+        'Setting PARSER_VERSION to 2.0',
+        'Creating the raw/sales directory',
+        'Granting Storage Blob Data Contributor to the workspace managed identity',
+        'Enabling LRS redundancy',
+      ],
+      answer: 2,
+      explanation:
+        'Step 5 assigns the RBAC role to the Synapse managed identity — without it, Serverless SQL cannot read the lake.',
+    },
+    {
+      question: 'What does the "Data processed" figure at the bottom of a Serverless SQL result represent?',
+      options: [
+        'The amount of data you will be billed for scanning (~$5/TB)',
+        'The size of the result set returned to your browser',
+        'The total size of your storage account',
+        'Free-tier quota remaining',
+      ],
+      answer: 0,
+      explanation:
+        'Serverless SQL bills per data scanned — that number is literally your bill, and Parquet + partitioning shrinks it.',
+    },
+    {
+      question: 'What is the recommended one-step cleanup after the lab?',
+      options: [
+        'Delete each file in the container individually',
+        'Pause the Synapse workspace',
+        'Downgrade the storage tier to Archive',
+        'Delete the entire rg-hitavirtech-analytics resource group',
+      ],
+      answer: 3,
+      explanation:
+        'Deleting the resource group removes every resource inside it in one action — the safest way to guarantee ~$0.',
+    },
+  ]}
+/>
+
+<LessonComplete />

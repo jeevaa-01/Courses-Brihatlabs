@@ -1,0 +1,146 @@
+---
+title: 'Create Your First Repository'
+sidebar_position: 1
+description: 'Initialize your first Git repository with git init and understand what the hidden .git folder does.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Create a project folder and turn it into a Git repository with `git init`
+- Understand what the hidden `.git` folder stores and why it matters
+- Read the output of `git status` on a brand-new repository
+
+</LearningObjectives>
+
+A **repository** (or "repo") is a folder that Git tracks. Every file change inside this folder is recorded.
+
+### Real-World Analogy
+
+Think of a repository as a **project diary**. Every time you make a significant change, you write an entry (commit). You can flip back to any page (version) at any time.
+
+### Step 1 — Create a Project Folder
+
+```bash
+mkdir git-learning
+cd git-learning
+```
+
+### Step 2 — Initialize Git
+
+```bash
+git init
+```
+
+**Expected output:**
+
+```
+Initialized empty Git repository in /c/Users/YourName/git-learning/.git/
+```
+
+### Step 3 — Understand the .git Folder
+
+Git created a hidden folder called `.git` inside your project:
+
+```bash
+ls -la
+```
+
+**Expected output:**
+
+```
+total 0
+drwxr-xr-x 1 user group 0 Apr  6 10:00 .
+drwxr-xr-x 1 user group 0 Apr  6 10:00 ..
+drwxr-xr-x 1 user group 0 Apr  6 10:00 .git
+```
+
+The `.git` folder is **Git's brain**. It stores:
+
+| What | Where |
+|------|-------|
+| All commit history | `.git/objects/` |
+| Branch information | `.git/refs/` |
+| Current branch pointer | `.git/HEAD` |
+| Configuration | `.git/config` |
+
+:::danger[Never delete the .git folder]
+Deleting `.git` destroys **all your version history** for that project.
+:::
+
+### Step 4 — Check Repository Status
+
+```bash
+git status
+```
+
+**Expected output:**
+
+```
+On branch main
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+```
+
+This tells you:
+
+- You are on the `main` branch
+- There are no commits yet
+- There is nothing to commit (no files yet)
+
+> **HitaVir Tech says:** "`git init` is like installing a security camera in your project folder. It does not record anything yet, but it is ready to track every change you make."
+
+<KeyTakeaways>
+
+- `git init` turns any folder into a Git repository by creating a hidden `.git` folder
+- `.git` is Git's brain — it stores all commits, branches, HEAD, and configuration
+- Deleting `.git` destroys your entire version history
+- `git status` is your go-to command for seeing the current state of the repo
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What does running git init actually create?',
+      options: [
+        'A README.md file',
+        'An account on GitHub',
+        'A hidden .git folder that stores all version history',
+        'A backup copy of your project on another drive',
+      ],
+      answer: 2,
+      explanation:
+        'git init creates the hidden .git folder — commits, branches, HEAD, and config all live inside it.',
+    },
+    {
+      question: 'What happens if you delete the .git folder in a project?',
+      options: [
+        'Nothing — Git recreates it automatically',
+        'You lose all version history for that project',
+        'Only the last commit is lost',
+        'GitHub restores it on the next push',
+      ],
+      answer: 1,
+      explanation:
+        'The .git folder IS the repository. Delete it and every commit, branch, and setting for that project is gone.',
+    },
+    {
+      question: 'Immediately after git init, what does git status report?',
+      options: [
+        'On branch main, no commits yet, nothing to commit',
+        'fatal: not a git repository',
+        'One initial commit created automatically',
+        'Untracked files: .git',
+      ],
+      answer: 0,
+      explanation:
+        'A fresh repo has no commits and no files to track — git status tells you exactly that, and that you are on main.',
+    },
+  ]}
+/>
+
+<LessonComplete />

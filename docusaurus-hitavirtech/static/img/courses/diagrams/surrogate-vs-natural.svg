@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 170" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="780" height="170" rx="12" fill="#f8f9fa"/>
+  <text x="390" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#202124">Surrogate Keys vs Natural Keys</text>
+
+  <rect x="15" y="44" width="130" height="34" rx="6" fill="#5f6368"/>
+  <text x="80" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="white">Key Type</text>
+  <rect x="150" y="44" width="300" height="34" rx="6" fill="#5f6368"/>
+  <text x="300" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="white">Definition</text>
+  <rect x="455" y="44" width="310" height="34" rx="6" fill="#5f6368"/>
+  <text x="610" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="white">Example</text>
+
+  <rect x="15" y="84" width="130" height="36" rx="4" fill="#fef7e0"/>
+  <text x="80" y="107" text-anchor="middle" font-size="13" font-weight="700" fill="#ea8600">Natural key</text>
+  <rect x="150" y="84" width="300" height="36" rx="4" fill="#fef7e0"/>
+  <text x="300" y="107" text-anchor="middle" font-size="12" fill="#b06000">A real-world business identifier</text>
+  <rect x="455" y="84" width="310" height="36" rx="4" fill="#fef7e0"/>
+  <text x="610" y="107" text-anchor="middle" font-size="12" font-family="monospace" fill="#ea8600">EMP-2345, alice@mail.com</text>
+
+  <rect x="15" y="126" width="130" height="36" rx="4" fill="#e8f0fe"/>
+  <text x="80" y="149" text-anchor="middle" font-size="13" font-weight="700" fill="#1a73e8">Surrogate key</text>
+  <rect x="150" y="126" width="300" height="36" rx="4" fill="#e8f0fe"/>
+  <text x="300" y="149" text-anchor="middle" font-size="12" fill="#1557b0">System-generated meaningless integer</text>
+  <rect x="455" y="126" width="310" height="36" rx="4" fill="#e8f0fe"/>
+  <text x="610" y="149" text-anchor="middle" font-size="12" font-family="monospace" fill="#1a73e8">customer_key = 1001 (auto-inc)</text>
+</svg>

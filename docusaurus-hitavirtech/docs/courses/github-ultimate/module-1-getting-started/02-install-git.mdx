@@ -1,0 +1,140 @@
+---
+title: 'Install Git'
+sidebar_position: 2
+description: 'Install Git on Windows, Mac, or Linux, verify it with git --version, and fix the most common installation problems.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Install Git on Windows, Mac, or Linux
+- Verify the installation with `git --version`
+- Troubleshoot the most common installation problems
+
+</LearningObjectives>
+
+Let us get Git installed on your computer. Follow the instructions for your operating system.
+
+### Windows
+
+**Option 1 — Using winget (Recommended)**
+
+Open **PowerShell as Administrator** and run:
+
+```console
+winget install Git.Git
+```
+
+**Option 2 — Manual Download**
+
+1. Go to [https://git-scm.com/download/win](https://git-scm.com/download/win)
+2. Download the **64-bit Windows installer**
+3. Run the installer with default settings
+4. Make sure "Git Bash" is selected during installation
+
+### Mac
+
+**Option 1 — Using Homebrew (Recommended)**
+
+```bash
+brew install git
+```
+
+**Option 2 — Xcode Command Line Tools**
+
+```bash
+xcode-select --install
+```
+
+### Linux (Ubuntu/Debian)
+
+```bash
+sudo apt update
+sudo apt install git -y
+```
+
+### Linux (Fedora/RHEL)
+
+```bash
+sudo dnf install git -y
+```
+
+### Verify Installation
+
+After installing, open your terminal (Git Bash on Windows) and run:
+
+```bash
+git --version
+```
+
+**Expected output:**
+
+```
+git version 2.44.0
+```
+
+The version number may differ — any version 2.30+ is fine.
+
+:::tip[HitaVir Tech says]
+"If you see a version number, you are good to go. If you get 'command not found', restart your terminal and try again."
+:::
+
+### Common Mistakes
+
+| Problem | Solution |
+|---------|----------|
+| `git` not recognized | Restart terminal or reinstall Git |
+| Old version of Git | Update using the same install method |
+| Permission denied | Run installer as Administrator (Windows) or with `sudo` (Linux) |
+
+<KeyTakeaways>
+
+- On Windows, install with `winget install Git.Git` or the official installer (keep Git Bash selected)
+- `git --version` is the universal check — any version 2.30+ is fine
+- A "command not found" error usually just means you need to restart the terminal
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'You installed Git but the terminal says "git: command not found". What should you try FIRST?',
+      options: [
+        'Reinstall the operating system',
+        'Restart the terminal and try again',
+        'Install GitHub Desktop instead',
+        'Run git --fix',
+      ],
+      answer: 1,
+      explanation:
+        'Terminals capture their environment at launch. Restarting the terminal picks up the new PATH entry created by the installer.',
+    },
+    {
+      question: 'Which command installs Git on Ubuntu/Debian Linux?',
+      options: [
+        'winget install Git.Git',
+        'brew install git',
+        'xcode-select --install',
+        'sudo apt install git -y',
+      ],
+      answer: 3,
+      explanation:
+        'apt is the Debian/Ubuntu package manager. winget is Windows, brew and xcode-select are Mac.',
+    },
+    {
+      question: 'The lesson says the expected output is "git version 2.44.0" but you see 2.39.1. What does that mean?',
+      options: [
+        'You are fine — any version 2.30 or newer works',
+        'You must uninstall and get exactly 2.44.0',
+        'Git is corrupted',
+        'You installed GitHub, not Git',
+      ],
+      answer: 0,
+      explanation:
+        'The exact version number differs by platform and release date; anything 2.30+ is fine for this course.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,533 @@
+---
+title: 'Data Engineering Mini Project — Complete ETL Pipeline'
+sidebar_position: 1
+description: 'Build a production-quality ETL pipeline — config-driven, logged end to end, with validation, rejected-record capture, and a JSON run report.'
+---
+
+<DurationBadge minutes={20} />
+
+<LearningObjectives>
+
+- Structure a pipeline as `extract()`, `transform()`, `load()` plus a report stage
+- Drive every business rule from a CONFIG dict instead of magic numbers
+- Route invalid records to `rejected_records.csv` with the reasons attached
+- Emit a JSON run report with success rate and revenue metrics
+
+</LearningObjectives>
+
+**What is ETL?**
+
+ETL stands for **Extract, Transform, Load** — the three universal stages of every data pipeline.
+1. **Extract** — pull raw data from a source (file, database, API)
+2. **Transform** — clean, validate, enrich, reshape it
+3. **Load** — save the result to a destination (file, warehouse, dashboard)
+
+### The ETL Pipeline You Are About to Build
+
+```
+                              HitaVir Tech Sales ETL
+                              ----------------------
+
+  +---------------+      +---------------+      +-------------------+
+  |    EXTRACT    |      |   TRANSFORM   |      |       LOAD        |
+  |               |      |               |      |                   |
+  | sales_raw.csv | ---> |  validate     | ---> |  sales_cleaned.csv|
+  |               |      |  type-cast    |      |  rejected.csv     |
+  | input/        |      |  enrich       |      |  daily_report.json|
+  +---------------+      |  categorize   |      +-------------------+
+                         +---------------+               |
+                                |                        v
+                                v                +-------------------+
+                         +---------------+       |    pipeline.log   |
+                         | rejected.csv  |       |  (every step is   |
+                         | (bad records) |       |   logged here)    |
+                         +---------------+       +-------------------+
+
+  Every arrow above is one Python function. Every function is logged.
+  If a record fails validation, it goes to rejected.csv with the reason.
+```
+
+Time to build a **real, production-quality ETL pipeline** that combines everything you have learned: variables, control flow, functions, data structures, file I/O, error handling, and logging.
+
+### The Scenario
+
+HitaVir Tech receives daily sales CSV files. You need to build an automated pipeline that:
+
+1. Reads the raw CSV
+2. Validates every record against business rules
+3. Cleans and transforms the data
+4. Generates summary reports
+5. Saves outputs with proper logging
+
+```bash
+mkdir -p pipeline_project/input pipeline_project/output pipeline_project/logs
+```
+
+### The Pipeline Code
+
+**`pipeline_project/etl_pipeline.py`**
+
+```python
+"""
+HitaVir Tech - Sales Data ETL Pipeline
+=======================================
+A production-quality ETL pipeline that processes daily sales data.
+
+Usage:
+    python etl_pipeline.py
+
+Author: HitaVir Tech
+Version: 1.0.0
+"""
+
+import csv
+import json
+import logging
+import os
+from datetime import datetime
+from collections import defaultdict
+
+# ============================================================
+# CONFIGURATION
+# All "knobs" of the pipeline live here, not buried in code
+# ============================================================
+
+CONFIG = {
+    "input_file": "input/sales_raw.csv",
+    "output_file": "output/sales_cleaned.csv",
+    "report_file": "output/daily_report.json",
+    "rejected_file": "output/rejected_records.csv",
+    "log_file": "logs/pipeline.log",
+    "rules": {
+        "required_fields": ["order_id", "customer", "product", "quantity", "price"],
+        "min_quantity": 1,
+        "min_price": 0.01,
+        "max_price": 100000,
+        "valid_regions": ["North", "South", "East", "West"]
+    }
+}
+
+# ============================================================
+# LOGGING SETUP
+# ============================================================
+
+def setup_logging(log_file):
+    """Configure logging to write to BOTH a file and the console."""
+    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)-8s] %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+        handlers=[
+            logging.FileHandler(log_file),
+            logging.StreamHandler()
+        ]
+    )
+    return logging.getLogger("HitaVirETL")
+
+# ============================================================
+# EXTRACT
+# ============================================================
+
+def extract(filepath, logger):
+    """
+    Extract: Read raw CSV data from source file.
+
+    Returns:
+        list[dict]: List of records, or empty list on failure.
+    """
+    logger.info(f"[EXTRACT] Reading from {filepath}")
+
+    if not os.path.exists(filepath):
+        logger.error(f"[EXTRACT] File not found: {filepath}")
+        return []
+
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            records = list(reader)
+
+        logger.info(f"[EXTRACT] Loaded {len(records)} records with columns: {reader.fieldnames}")
+        return records
+    except Exception as e:
+        logger.critical(f"[EXTRACT] Failed to read file: {e}")
+        return []
+
+# ============================================================
+# VALIDATE
+# ============================================================
+
+def validate_record(record, rules):
+    """
+    Validate a single record against business rules.
+
+    Returns:
+        tuple: (is_valid: bool, errors: list[str])
+    """
+    errors = []
+
+    # Check required fields are present and non-empty
+    for field in rules["required_fields"]:
+        if not record.get(field, "").strip():
+            errors.append(f"Missing required field: {field}")
+
+    # Validate quantity
+    try:
+        qty = int(record.get("quantity", 0))
+        if qty < rules["min_quantity"]:
+            errors.append(f"Quantity {qty} below minimum {rules['min_quantity']}")
+    except ValueError:
+        errors.append(f"Invalid quantity: {record.get('quantity')}")
+
+    # Validate price
+    try:
+        price = float(record.get("price", 0))
+        if price < rules["min_price"]:
+            errors.append(f"Price {price} below minimum {rules['min_price']}")
+        if price > rules["max_price"]:
+            errors.append(f"Price {price} above maximum {rules['max_price']}")
+    except ValueError:
+        errors.append(f"Invalid price: {record.get('price')}")
+
+    # Validate region (if provided)
+    region = record.get("region", "").strip()
+    if region and region not in rules["valid_regions"]:
+        errors.append(f"Invalid region: {region}")
+
+    return len(errors) == 0, errors
+
+# ============================================================
+# TRANSFORM
+# ============================================================
+
+def transform(records, rules, logger):
+    """
+    Transform: Clean, validate, and enrich records.
+
+    Returns:
+        tuple: (cleaned_records, rejected_records)
+    """
+    logger.info(f"[TRANSFORM] Processing {len(records)} records")
+
+    cleaned = []
+    rejected = []
+
+    for record in records:
+        is_valid, errors = validate_record(record, rules)
+
+        if not is_valid:
+            record["rejection_reasons"] = "; ".join(errors)
+            rejected.append(record)
+            logger.warning(f"[TRANSFORM] Rejected order {record.get('order_id', '?')}: {errors}")
+            continue
+
+        # Type conversion (CSV strings → numbers)
+        record["quantity"] = int(record["quantity"])
+        record["price"] = float(record["price"])
+
+        # Enrichment — add computed fields
+        record["total"] = round(record["price"] * record["quantity"], 2)
+        record["customer"] = record["customer"].strip().title()
+        record["product"] = record["product"].strip().title()
+
+        # Categorization
+        if record["total"] >= 1000:
+            record["tier"] = "Enterprise"
+        elif record["total"] >= 200:
+            record["tier"] = "Business"
+        else:
+            record["tier"] = "Consumer"
+
+        cleaned.append(record)
+
+    logger.info(f"[TRANSFORM] Result: {len(cleaned)} valid, {len(rejected)} rejected")
+    return cleaned, rejected
+
+# ============================================================
+# LOAD
+# ============================================================
+
+def load(cleaned, rejected, config, logger):
+    """
+    Load: Save cleaned data and rejected records to files.
+    """
+    os.makedirs("output", exist_ok=True)
+
+    # Save cleaned records
+    if cleaned:
+        fieldnames = ["order_id", "customer", "product", "quantity",
+                       "price", "total", "tier", "date", "region"]
+        with open(config["output_file"], "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+            writer.writeheader()
+            writer.writerows(cleaned)
+        logger.info(f"[LOAD] Saved {len(cleaned)} cleaned records to {config['output_file']}")
+
+    # Save rejected records (always useful for debugging)
+    if rejected:
+        fieldnames = ["order_id", "customer", "product", "quantity",
+                       "price", "date", "region", "rejection_reasons"]
+        with open(config["rejected_file"], "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+            writer.writeheader()
+            writer.writerows(rejected)
+        logger.info(f"[LOAD] Saved {len(rejected)} rejected records to {config['rejected_file']}")
+
+# ============================================================
+# REPORT
+# ============================================================
+
+def generate_report(cleaned, rejected, duration, config, logger):
+    """Generate a JSON pipeline run report."""
+    total_input = len(cleaned) + len(rejected)
+    success_rate = (len(cleaned) / total_input * 100) if total_input > 0 else 0
+
+    # Aggregate metrics
+    revenue_by_region = defaultdict(float)
+    revenue_by_product = defaultdict(float)
+    tier_counts = defaultdict(int)
+
+    for record in cleaned:
+        revenue_by_region[record["region"]] += record["total"]
+        revenue_by_product[record["product"]] += record["total"]
+        tier_counts[record["tier"]] += 1
+
+    report = {
+        "pipeline": "HitaVir Tech Sales ETL",
+        "run_timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "duration_seconds": round(duration, 2),
+        "summary": {
+            "total_input": total_input,
+            "cleaned": len(cleaned),
+            "rejected": len(rejected),
+            "success_rate": round(success_rate, 1)
+        },
+        "revenue": {
+            "total": round(sum(r["total"] for r in cleaned), 2),
+            "by_region": dict(sorted(revenue_by_region.items())),
+            "by_product": dict(sorted(revenue_by_product.items(),
+                                       key=lambda x: x[1], reverse=True))
+        },
+        "tier_distribution": dict(tier_counts)
+    }
+
+    with open(config["report_file"], "w") as f:
+        json.dump(report, f, indent=2)
+    logger.info(f"[REPORT] Saved to {config['report_file']}")
+
+    return report
+
+# ============================================================
+# MAIN — ORCHESTRATOR
+# Calls every step in the right order
+# ============================================================
+
+def run_pipeline():
+    """Main pipeline orchestrator."""
+    logger = setup_logging(CONFIG["log_file"])
+
+    logger.info("=" * 60)
+    logger.info("HitaVir Tech Sales ETL Pipeline — Starting")
+    logger.info("=" * 60)
+
+    start_time = datetime.now()
+
+    # EXTRACT
+    raw_data = extract(CONFIG["input_file"], logger)
+    if not raw_data:
+        logger.error("No data extracted. Pipeline aborted.")
+        return
+
+    # TRANSFORM
+    cleaned, rejected = transform(raw_data, CONFIG["rules"], logger)
+
+    # LOAD
+    load(cleaned, rejected, CONFIG, logger)
+
+    # REPORT
+    end_time = datetime.now()
+    duration = (end_time - start_time).total_seconds()
+    report = generate_report(cleaned, rejected, duration, CONFIG, logger)
+
+    # SUMMARY
+    logger.info("=" * 60)
+    logger.info("PIPELINE COMPLETE")
+    logger.info(f"  Input: {report['summary']['total_input']} records")
+    logger.info(f"  Cleaned: {report['summary']['cleaned']} records")
+    logger.info(f"  Rejected: {report['summary']['rejected']} records")
+    logger.info(f"  Success rate: {report['summary']['success_rate']}%")
+    logger.info(f"  Total revenue: ${report['revenue']['total']:,.2f}")
+    logger.info(f"  Duration: {duration:.2f}s")
+    logger.info("=" * 60)
+
+
+if __name__ == "__main__":
+    run_pipeline()
+```
+
+**What is the if-name-main idiom?**
+
+`if __name__ == "__main__":` is a standard Python idiom that means: "Only run `run_pipeline()` if this file is executed directly (`python etl_pipeline.py`), NOT if it is imported by another file." It is how you make a Python file work both as a script and as a reusable module.
+
+### Copy Sample Data and Run
+
+```bash
+cp sales_raw.csv pipeline_project/input/
+cd pipeline_project
+python etl_pipeline.py
+```
+
+### Verify Outputs
+
+```bash
+echo "--- Cleaned Data ---"
+cat output/sales_cleaned.csv
+
+echo -e "\n--- Rejected Records ---"
+cat output/rejected_records.csv
+
+echo -e "\n--- Pipeline Report ---"
+cat output/daily_report.json
+
+echo -e "\n--- Pipeline Log ---"
+cat logs/pipeline.log
+```
+
+### Project Structure
+
+```
+pipeline_project/
+├── etl_pipeline.py          ← Main pipeline script
+├── input/
+│   └── sales_raw.csv        ← Raw input data
+├── output/
+│   ├── sales_cleaned.csv    ← Cleaned output
+│   ├── rejected_records.csv ← Failed records (for debugging)
+│   └── daily_report.json    ← Summary report
+└── logs/
+    └── pipeline.log         ← Execution log
+```
+
+:::tip[HitaVir Tech says]
+"This is a real ETL pipeline. It extracts, validates, transforms, loads, reports, and logs. This exact pattern scales from 10 records to 10 million. Add PySpark and you are ready for Big Data."
+:::
+
+### Assignment 8 — Extend the ETL Pipeline (capstone)
+
+**Goal:** Modify the production pipeline you just built to add new business rules, a new tier, and richer reporting.
+
+**The scenario:** Sales leadership added three asks: catch typo orders, identify "whale" customers, and surface the top buyers in the daily report.
+
+**Tasks:**
+
+1. Open `pipeline_project/etl_pipeline.py` in VS Code.
+2. **New validation rule.** In `validate_record`, add a check: if `quantity > 1000`, reject with reason `"quantity too large (likely typo)"`. Add a new key to `CONFIG["rules"]` for this maximum (`"max_quantity": 1000`).
+3. **New tier.** In `transform`, add a "Whale" tier above "Enterprise":
+   - `total >= 5000` -> `"Whale"`
+   - `total >= 1000` -> `"Enterprise"`
+   - `total >= 200`  -> `"Business"`
+   - else            -> `"Consumer"`
+4. **Richer report.** In `generate_report`, add a `top_customers` section: top 5 customers by total spend, formatted as `[{"customer": "Alice Johnson", "spend": 1999.98}, ...]`.
+5. Edit `pipeline_project/input/sales_raw.csv` and add 2 test rows:
+   - One row with `quantity=2000` (should be rejected)
+   - One row with `total >= 5000` (should land in the new Whale tier)
+6. Run `python etl_pipeline.py` and verify:
+   - `output/rejected_records.csv` contains your typo row
+   - `output/sales_cleaned.csv` shows a `"Whale"` in the `tier` column
+   - `output/daily_report.json` includes `top_customers`
+
+**Success criteria:**
+
+- [ ] New rule reads its limit from `CONFIG["rules"]["max_quantity"]` (no magic numbers)
+- [ ] Whale tier appears in cleaned CSV
+- [ ] `top_customers` section in JSON has up to 5 entries, sorted descending
+- [ ] Pipeline log shows the typo rejection and the Whale assignment
+- [ ] All existing tests still pass — no regression on the current good records
+
+**Stretch goal:** Add command-line arguments using `argparse` so the pipeline can be run with `python etl_pipeline.py --input path/to/file.csv --top-n 10`.
+
+```bash
+cd ~/python-de-learning
+```
+
+### What You Have Learnt on This Page
+
+By the end of this page you should be able to confidently:
+
+- Build a complete **Extract → Transform → Load** pipeline from scratch
+- Structure a project with `input/`, `output/`, `logs/` folders
+- Drive behaviour from a **CONFIG dict** — no magic numbers in code
+- Validate every record at the boundary, log rejections with reasons
+- Write both **`cleaned.csv`** and a JSON **summary report**
+- Make the pipeline **idempotent** — running twice produces identical output
+
+### PEP 8 — Style Rules to Apply Strictly to ETL Pipelines
+
+Capstone code is what hiring managers read first. Apply these rules every single time you ship a pipeline:
+
+- **Imports at top**, grouped (stdlib → third-party → local) with one blank line between groups
+- Constants in **`UPPER_SNAKE_CASE`** at module top (e.g., `INPUT_PATH`, `MAX_QUANTITY`)
+- One **`def`** per pipeline stage: `extract()`, `transform()`, `load()` — single responsibility
+- **Docstrings** on every stage explaining args, returns, raises
+- **Type hints** everywhere: `def transform(records: list[dict]) -> list[dict]:`
+- An `if __name__ == "__main__":` guard at the bottom
+- Run **`black .`** and **`flake8 .`** before committing — zero warnings is the bar
+
+:::note[Inspiration for the road ahead]
+*"First, solve the problem. Then, write the code."*
+— John Johnson
+:::
+
+<KeyTakeaways>
+
+- ETL = Extract, Transform, Load — the universal shape of every data pipeline
+- One function per stage, each logged, each testable
+- Validation failures become rejected records **with reasons** — auditable, never lost
+- `if __name__ == "__main__":` lets the file run as a script AND import as a module
+- This exact pattern scales from 10 records to 10 million
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Where do business rules like min_price live in this pipeline?',
+      options: [
+        'Hardcoded inside transform()',
+        'In a database',
+        'In command-line flags only',
+        'In the CONFIG dict at the top of the module',
+      ],
+      answer: 3,
+      explanation:
+        'All the knobs live in CONFIG so rules can change without hunting through logic — no magic numbers.',
+    },
+    {
+      question: 'A record fails validation. What happens to it?',
+      options: [
+        'It is deleted silently',
+        'It is written to rejected_records.csv with its rejection reasons',
+        'The whole pipeline stops',
+        'It is auto-corrected',
+      ],
+      answer: 1,
+      explanation:
+        'Good pipelines never silently drop data. Rejected rows are saved with reasons for debugging and audits.',
+    },
+    {
+      question: 'What does the if __name__ == "__main__": guard achieve?',
+      options: [
+        'The pipeline runs when executed directly but not when imported as a module',
+        'It makes the script faster',
+        'It enables logging',
+        'It is required for CSV writing',
+      ],
+      answer: 0,
+      explanation:
+        'The guard makes the file dual-purpose: runnable as a script, importable as a library of functions.',
+    },
+  ]}
+/>
+
+<LessonComplete />

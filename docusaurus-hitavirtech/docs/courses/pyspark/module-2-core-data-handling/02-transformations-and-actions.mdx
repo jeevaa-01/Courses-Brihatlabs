@@ -1,0 +1,224 @@
+---
+title: "Transformations and Actions"
+description: "Transformations and Actions — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Transformations and Actions
+
+*⏱ Estimated time: 70 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Distinguish transformations from actions and explain lazy evaluation.
+- Select, filter, derive, rename, sort, and limit columns and rows.
+- Avoid driver-heavy operations such as unnecessary `collect()`.
+
+:::
+
+### Lazy evaluation
+
+Spark transformations do not immediately execute.
+
+Examples:
+
+- `select`
+- `filter`
+- `withColumn`
+- `groupBy`
+- `join`
+
+Actions trigger execution.
+
+Examples:
+
+- `show`
+- `count`
+- `collect`
+- `write`
+- `take`
+
+### Select columns
+
+```python
+sales_df.select(
+    "transaction_id",
+    "product",
+    "quantity"
+).show()
+```
+
+### Filter rows
+
+```python
+from pyspark.sql import functions as F
+
+sales_df.filter(
+    F.col("quantity") > 0
+).show()
+```
+
+Alternative:
+
+```python
+sales_df.where(
+    F.col("unit_price") >= 10000
+).show()
+```
+
+### Add a column
+
+```python
+sales_df = sales_df.withColumn(
+    "revenue",
+    F.col("quantity") * F.col("unit_price")
+)
+```
+
+### Rename a column
+
+```python
+sales_df = sales_df.withColumnRenamed(
+    "unit_price",
+    "price"
+)
+```
+
+### Drop a column
+
+```python
+sales_df = sales_df.drop("temporary_column")
+```
+
+### Distinct values
+
+```python
+sales_df.select("region").distinct().show()
+```
+
+### Sort rows
+
+```python
+sales_df.orderBy(
+    F.col("unit_price").desc()
+).show()
+```
+
+### Limit
+
+```python
+sales_df.limit(3).show()
+```
+
+### Count
+
+```python
+row_count = sales_df.count()
+print(row_count)
+```
+
+### Avoid unnecessary collect
+
+```python
+rows = sales_df.collect()
+```
+
+This brings all rows to the driver.
+
+Use only for small datasets.
+
+Better:
+
+```python
+sales_df.show(20, truncate=False)
+```
+
+or:
+
+```python
+sales_df.take(5)
+```
+
+### ✅ Checkpoint
+
+Add `revenue` and show only rows where revenue is at least 50,000.
+
+<details>
+<summary>Show solution</summary>
+
+```python
+result_df = (
+    sales_df
+    .withColumn(
+        "revenue",
+        F.col("quantity") * F.col("unit_price")
+    )
+    .filter(F.col("revenue") >= 50000)
+)
+
+result_df.show()
+```
+
+</details>
+
+### 🛠️ Exercise
+
+Add a column named `tax_amount` equal to 18% of revenue.
+
+<details>
+<summary>Show solution</summary>
+
+```python
+result_df = result_df.withColumn(
+    "tax_amount",
+    F.col("revenue") * F.lit(0.18)
+)
+```
+
+</details>
+
+<Quiz
+  questions={[
+  {
+    "question": "Which of these triggers execution?",
+    "options": [
+      "`filter`",
+      "`withColumn`",
+      "`count`"
+    ],
+    "answer": 2,
+    "explanation": "`count` is an action; the others are lazy transformations."
+  },
+  {
+    "question": "`collect()` is dangerous on large data because it:",
+    "options": [
+      "Deletes source data",
+      "Moves all rows into driver memory",
+      "Disables caching"
+    ],
+    "answer": 1,
+    "explanation": "Prefer `show()` or `take()` for inspection."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- Transformations are lazy; only actions trigger Spark jobs.
+- Every action can launch a job, so avoid casual repeated actions.
+- Prefer `show()` and `take()` over `collect()` for inspection.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Build transformation chains that are readable and grouped by purpose.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Every action can trigger a Spark job. Avoid repeated actions unless the DataFrame is cached for a justified reason.
+
+:::

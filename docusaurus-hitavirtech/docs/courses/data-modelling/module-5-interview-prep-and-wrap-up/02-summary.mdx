@@ -1,0 +1,64 @@
+---
+title: 'Summary'
+sidebar_position: 2
+description: 'A quick recap of everything you mastered across the data modelling course, from foundations to enterprise architecture.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Recap the full journey from modelling foundations to enterprise architecture
+- Identify which topics to revisit before the final quiz
+
+</LearningObjectives>
+
+Congratulations! You have completed the lessons of **Data Modelling for Data Engineering** by **HitaVir Tech**!
+
+### What You Mastered
+
+![What You Mastered](/img/courses/diagrams/what-you-mastered.svg)
+
+:::tip[HitaVir Tech says]
+"Data modelling is the most underrated skill in Data Engineering. Tools change every year. Cloud platforms evolve every quarter. But a well-designed data model lasts for decades. Master this, and you will always be in demand."
+:::
+
+<KeyTakeaways>
+
+- You progressed from conceptual/logical/physical models through star schemas, SCDs, and enterprise architectures
+- The golden rule holds everywhere: normalize where data is written, denormalize where data is read
+- Architecture patterns (Kimball, Inmon, Data Vault, medallion) are complementary tools, not competitors
+- A well-designed model outlives every tool and platform it runs on
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which single design decision must be made FIRST for every fact table?',
+      options: [
+        'Declaring the grain',
+        'Choosing the compression codec',
+        'Picking the BI tool',
+        'Naming the indexes',
+      ],
+      answer: 0,
+      explanation:
+        'The grain — what one row represents — determines everything else: keys, measures, and the questions the model can answer.',
+    },
+    {
+      question: 'Why does the course argue data modelling outlasts tool knowledge?',
+      options: [
+        'Tools never change once adopted',
+        'Models cannot be migrated between platforms',
+        'Tools and platforms change constantly, but a well-designed model lasts decades',
+        'Cloud vendors maintain the models for you',
+      ],
+      answer: 2,
+      explanation:
+        'Platforms evolve every quarter; the modelling principles (grain, facts, dimensions, SCDs) transfer everywhere and endure.',
+    },
+  ]}
+/>
+
+<LessonComplete />

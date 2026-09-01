@@ -1,0 +1,200 @@
+---
+title: 'Step 5: INSERT, UPDATE, DELETE'
+sidebar_position: 2
+description: 'Safe DML — single and batch INSERTs, WHERE-guarded UPDATE and DELETE, and transactions for all-or-nothing changes.'
+---
+
+<DurationBadge minutes={15} />
+
+<LearningObjectives>
+
+- Insert single rows and multi-row batches efficiently
+- Update and delete rows safely with a `WHERE` clause every time
+- Wrap related changes in `START TRANSACTION` … `COMMIT`/`ROLLBACK`
+
+</LearningObjectives>
+
+> *"It's not about how hard you hit. It's about how hard you can get hit and keep moving forward."*
+> — Rocky Balboa
+
+:::info[HitaVir Tech connection]
+DML is the unglamorous engine room of every pipeline — it inserts, it updates, it deletes, every day, forever, and *it must not lose data when something goes wrong*.
+:::
+
+:::tip[Why this matters now]
+For the next 15 minutes, every `UPDATE` and `DELETE` you write must include a `WHERE` clause you have *read out loud*. No exceptions.
+:::
+
+### 5.1 — INSERT a single row
+
+```sql
+-- Add one new product
+INSERT INTO products (product_name, category, unit_price)
+VALUES ('Bluetooth Speaker', 'Electronics', 2999.00);
+
+-- Confirm it was added
+SELECT
+    product_id,
+    product_name,
+    category,
+    unit_price
+FROM products
+WHERE product_name = 'Bluetooth Speaker';
+```
+
+**Expected output:**
+
+```
++------------+-------------------+-------------+------------+
+| product_id | product_name      | category    | unit_price |
++------------+-------------------+-------------+------------+
+|         16 | Bluetooth Speaker | Electronics |    2999.00 |
++------------+-------------------+-------------+------------+
+```
+
+`product_id = 16` because the column is `AUTO_INCREMENT` and you already had 15 products.
+
+### 5.2 — INSERT multiple rows in one statement
+
+```sql
+-- Two more products in one round-trip to the server
+INSERT INTO products (product_name, category, unit_price) VALUES
+('Webcam HD',     'Electronics', 3299.00),
+('Tripod Stand',  'Electronics', 1599.00);
+```
+
+:::tip[HitaVir Tech Tip]
+Multi-row inserts are 10–100× faster than one-row-per-statement. In production batch loads, batches of 500–5000 rows are typical.
+:::
+
+### 5.3 — UPDATE: change existing rows
+
+```sql
+-- Bump every Stationery item price by 10%
+UPDATE products
+SET    unit_price = unit_price * 1.10
+WHERE  category = 'Stationery';
+
+SELECT
+    product_id,
+    product_name,
+    unit_price
+FROM products
+WHERE category = 'Stationery';
+```
+
+**Expected output:**
+
+```
++------------+----------------+------------+
+| product_id | product_name   | unit_price |
++------------+----------------+------------+
+|         14 | Notebook A4    |     218.90 |
+|         15 | Pen Pack       |     163.90 |
++------------+----------------+------------+
+```
+
+:::warning[No WHERE, no mercy]
+Run this WITHOUT a WHERE clause and you have just updated **every** row in `products`. Always read your `WHERE` clause out loud before pressing Run.
+:::
+
+:::info[Pro Insight]
+Many production teams require an explicit `LIMIT` on every ad-hoc `UPDATE` and `DELETE`. Setting `SQL_SAFE_UPDATES = 1` in MySQL Workbench (Edit → Preferences → SQL Editor) blocks any `UPDATE`/`DELETE` without a key-based `WHERE`. Turn it on now.
+:::
+
+### 5.4 — DELETE: remove rows
+
+```sql
+-- Delete the test products you just inserted
+DELETE FROM products
+WHERE product_name IN ('Bluetooth Speaker', 'Webcam HD', 'Tripod Stand');
+
+-- Restore Stationery prices so the rest of the codelab matches expected outputs
+UPDATE products SET unit_price = 199.00 WHERE product_id = 14;
+UPDATE products SET unit_price = 149.00 WHERE product_id = 15;
+```
+
+**Expected output (from `DELETE`):**
+
+```
+3 row(s) affected
+```
+
+### 5.5 — Wrap multi-statement changes in a transaction
+
+```sql
+-- All-or-nothing block: either everything below commits, or nothing does
+START TRANSACTION;
+
+INSERT INTO customers (full_name, email, city, signup_date)
+VALUES ('Test User', 'test@example.com', 'Bengaluru', CURRENT_DATE);
+
+UPDATE customers
+SET    city = 'Bangalore'
+WHERE  full_name = 'Test User';
+
+-- If anything looks wrong, run: ROLLBACK;
+-- Otherwise commit:
+ROLLBACK;
+```
+
+The `ROLLBACK` undoes both statements. If you used `COMMIT` instead, both would persist atomically.
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Insert a single row and a batch of rows
+- ✅ Update rows safely with a `WHERE` clause
+- ✅ Delete rows safely with a `WHERE` clause
+- ✅ Wrap related changes in `START TRANSACTION` … `COMMIT`/`ROLLBACK`
+- ✅ Confirm `SQL_SAFE_UPDATES` is on in Workbench
+
+---
+
+<KeyTakeaways>
+
+- Multi-row `INSERT` statements are 10–100× faster than one-row-per-statement
+- An `UPDATE` or `DELETE` without `WHERE` hits **every** row — read the clause out loud before running
+- `SQL_SAFE_UPDATES = 1` in Workbench blocks key-less `UPDATE`/`DELETE` — turn it on
+- `START TRANSACTION` … `COMMIT`/`ROLLBACK` makes multi-statement changes all-or-nothing
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'You ran UPDATE products SET unit_price = 0; with no WHERE. What happened?',
+      options: [
+        'Nothing — MySQL rejects UPDATEs without WHERE by default',
+        'Only the first row changed',
+        'Every row in products now has unit_price = 0',
+        'MySQL asked for confirmation first',
+      ],
+      answer: 2,
+      explanation:
+        'Without a WHERE clause the statement applies to all rows. SQL_SAFE_UPDATES in Workbench exists precisely to catch this.',
+    },
+    {
+      question: 'Inside a transaction you notice the UPDATE was wrong. What undoes it?',
+      options: ['COMMIT;', 'ROLLBACK;', 'UNDO;', 'Closing Workbench always reverts changes'],
+      answer: 1,
+      explanation:
+        'ROLLBACK discards every statement since START TRANSACTION; COMMIT would have made them permanent.',
+    },
+    {
+      question: 'Why do production loads insert rows in batches of 500–5000?',
+      options: [
+        'MySQL cannot insert more than 5000 rows total',
+        'Batching amortizes round-trips and is 10–100× faster than row-by-row inserts',
+        'Batches bypass foreign key checks',
+        'Smaller batches would corrupt the table',
+      ],
+      answer: 1,
+      explanation:
+        'Each statement costs a network round-trip and parse; batching spreads that cost over thousands of rows.',
+    },
+  ]}
+/>
+
+<LessonComplete />

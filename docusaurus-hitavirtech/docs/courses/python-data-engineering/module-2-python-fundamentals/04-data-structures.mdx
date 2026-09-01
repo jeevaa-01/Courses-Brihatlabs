@@ -1,0 +1,1084 @@
+---
+title: 'Data Structures'
+sidebar_position: 4
+description: 'Lists, strings, tuples, sets, and dictionaries — every method, the Big-O comparison table, and the list-of-dicts pattern that powers pipelines.'
+---
+
+<DurationBadge minutes={32} />
+
+<LearningObjectives>
+
+- Pick the right structure — list, tuple, set, or dict (plus strings) — for each job
+- Apply every core method of each structure, including set algebra and safe dict lookups
+- Explain the Big-O trade-offs interviewers ask about (set vs list membership)
+- Filter, aggregate, and group data with the list-of-dicts pattern
+
+</LearningObjectives>
+
+**What is a "data structure"?**
+
+A data structure is a **way of organizing values together** so you can work with them efficiently. Python ships with four built-in collections — list, tuple, set, dictionary — and one more sequence you use constantly: the **string** (a sequence of characters). Each is best for a specific job.
+
+Real-life analogy:
+- **String** — a word spelled out letter by letter (ordered characters, locked)
+- **List** — a numbered to-do list (order matters, can edit, duplicates allowed)
+- **Tuple** — your printed boarding pass (order matters, locked, cannot edit)
+- **Set** — a collection of unique stamps (no duplicates, no order)
+- **Dictionary** — a phone contacts list (look up a number by name)
+
+### Visual Comparison — The Four Collections at a Glance
+
+```
+   LIST  [ ]                          TUPLE  ( )
+   +---+---+---+---+                  +---+---+---+---+
+   | A | B | C | A |  <-- duplicates  | A | B | C | A |  <-- locked,
+   +---+---+---+---+                  +---+---+---+---+      cannot
+     0   1   2   3   <-- positions      0   1   2   3      change
+   ordered, mutable                    ordered, immutable
+
+
+   SET  { }                           DICT  { key: value }
+   +---+---+---+                      +-----+-----+-----+
+   | A | B | C |  <-- unique only     | id  | name|email|   keys
+   +---+---+---+                      +-----+-----+-----+
+   no order, no duplicates            | 1   |Alice| a@.. |  values
+                                      +-----+-----+-----+
+                                      lookup by KEY (not position)
+```
+
+Data engineers use these every single day. Master them and you can model almost any data.
+
+The rest of this page walks through **each structure on its own**, with a **separate, runnable example for every built-in method** — no mixing. Type each snippet into its own file and run it. Seeing one method per example is how the muscle memory forms.
+
+---
+
+### Lists — Ordered, Mutable Collections
+
+A **list** is an ordered, changeable sequence. It is the workhorse of data engineering: a batch of rows, a set of column names, a queue of files to process.
+
+#### List Methods — Complete Reference
+
+![List Methods — Complete Reference](/img/courses/diagrams/python-de/18-list-methods-complete-reference.svg)
+
+#### Example 1 — Creating and Accessing a List
+
+**`list_access.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Lists: Creating and Accessing
+# ============================================
+
+# A list holds an ordered, changeable collection of items.
+groceries = ["milk", "eggs", "bread", "apples"]
+
+# Access by position — indexing starts at 0; negatives count from the end.
+print(f"First item:   {groceries[0]}")
+print(f"Last item:    {groceries[-1]}")
+print(f"Second item:  {groceries[1]}")
+
+# Slicing — [start:stop:step] returns a NEW sub-list.
+print(f"First two:    {groceries[:2]}")
+print(f"Last two:     {groceries[-2:]}")
+print(f"Every other:  {groceries[::2]}")
+print(f"Reversed:     {groceries[::-1]}")
+
+# How many items, and does a value exist?
+print(f"Total items:  {len(groceries)}")
+print(f"Has 'eggs'?   {'eggs' in groceries}")
+```
+
+Run it:
+
+```bash
+python list_access.py
+```
+
+#### Example 2 — Adding Items: `append()`, `insert()`, `extend()`
+
+**`list_add.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Lists: Adding Items
+# ============================================
+
+todo = ["wake up", "brush teeth"]
+print(f"Start:        {todo}")
+
+# append(x) — add ONE item to the end.
+todo.append("eat breakfast")
+print(f"append:       {todo}")
+
+# insert(i, x) — add ONE item at a specific position.
+todo.insert(0, "switch off alarm")
+print(f"insert:       {todo}")
+
+# extend(iterable) — add MANY items from another iterable.
+todo.extend(["go to work", "have lunch"])
+print(f"extend:       {todo}")
+
+# Common trap: append() with a list NESTS it; extend() MERGES it.
+demo = ["a"]
+demo.append(["b", "c"])   # -> ['a', ['b', 'c']]
+print(f"append a list: {demo}")
+```
+
+Run it:
+
+```bash
+python list_add.py
+```
+
+#### Example 3 — Removing Items: `remove()`, `pop()`, `clear()`
+
+**`list_remove.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Lists: Removing Items
+# ============================================
+
+columns = ["id", "name", "temp", "email", "debug"]
+print(f"Start:        {columns}")
+
+# remove(x) — delete the FIRST matching value (ValueError if absent).
+columns.remove("temp")
+print(f"remove:       {columns}")
+
+# pop(i) — remove AND return the item at index i (default: last).
+last = columns.pop()
+print(f"pop():        {last!r}  ->  {columns}")
+
+first = columns.pop(0)
+print(f"pop(0):       {first!r}  ->  {columns}")
+
+# del — delete by index or slice (returns nothing).
+del columns[0]
+print(f"del[0]:       {columns}")
+
+# clear() — empty the whole list.
+columns.clear()
+print(f"clear():      {columns}")
+```
+
+Run it:
+
+```bash
+python list_remove.py
+```
+
+#### Example 4 — Searching and Counting: `index()`, `count()`
+
+**`list_search.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Lists: Searching and Counting
+# ============================================
+
+status_log = ["ok", "ok", "fail", "ok", "fail", "ok"]
+
+# count(x) — how many times a value appears.
+print(f"'ok' count:   {status_log.count('ok')}")
+print(f"'fail' count: {status_log.count('fail')}")
+
+# index(x) — position of the FIRST match (ValueError if absent).
+print(f"First 'fail': index {status_log.index('fail')}")
+
+# index(x, start) — search from a given position onward.
+print(f"Next 'fail':  index {status_log.index('fail', 3)}")
+
+# Always check membership before index() to avoid a crash.
+if "timeout" in status_log:
+    print(f"'timeout':    index {status_log.index('timeout')}")
+else:
+    print("'timeout':    not found")
+```
+
+Run it:
+
+```bash
+python list_search.py
+```
+
+#### Example 5 — Reordering: `sort()`, `reverse()`, `copy()`
+
+**`list_reorder.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Lists: Sorting, Reversing, Copying
+# ============================================
+
+scores = [85, 92, 78, 95, 88]
+
+# sort() — sorts IN PLACE (changes the original, returns None).
+scores.sort()
+print(f"Ascending:    {scores}")
+
+scores.sort(reverse=True)
+print(f"Descending:   {scores}")
+
+# sort(key=...) — sort by a custom rule.
+words = ["python", "sql", "spark", "go"]
+words.sort(key=len)
+print(f"By length:    {words}")
+
+# reverse() — reverse the order IN PLACE.
+words.reverse()
+print(f"Reversed:     {words}")
+
+# copy() — a shallow copy so the original is left untouched.
+backup = scores.copy()
+backup.append(100)
+print(f"Original:     {scores}")
+print(f"Copy + 100:   {backup}")
+```
+
+Run it:
+
+```bash
+python list_reorder.py
+```
+
+#### Example 6 — Built-in Functions That Work on Lists
+
+These are **global functions**, not list methods — you pass the list as an argument. The key distinction: `list.sort()` changes the list and returns `None`, while `sorted(list)` leaves the list alone and returns a **new** sorted list.
+
+**`list_builtins.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Built-in Functions on Lists
+# ============================================
+
+scores = [85, 92, 78, 95, 88, 76, 91]
+
+print(f"len()      count:        {len(scores)}")
+print(f"sum()      total:        {sum(scores)}")
+print(f"min()      lowest:       {min(scores)}")
+print(f"max()      highest:      {max(scores)}")
+print(f"sorted()   new sorted:   {sorted(scores)}")
+print(f"reversed() new reversed: {list(reversed(scores))}")
+
+# any() / all() — boolean checks across the whole list.
+flags = [True, True, False]
+print(f"any()  at least one True? {any(flags)}")
+print(f"all()  every item True?   {all(flags)}")
+
+# enumerate() — index AND value together (ideal for numbered loops).
+print("\nenumerate():")
+for index, score in enumerate(scores[:3], start=1):
+    print(f"  Row {index}: {score}")
+
+# zip() — pair up two lists element by element.
+names = ["Alice", "Bob", "Carol"]
+ages = [30, 25, 35]
+print("\nzip():")
+for name, age in zip(names, ages):
+    print(f"  {name} is {age}")
+```
+
+Run it:
+
+```bash
+python list_builtins.py
+```
+
+:::tip[HitaVir Tech says]
+"Interviewers love the `sort()` vs `sorted()` question. `sort()` mutates and returns `None` (so `x = my_list.sort()` is a classic bug — `x` is `None`). `sorted()` returns a new list and works on any iterable."
+:::
+
+---
+
+### Strings — Ordered, Immutable Text
+
+A **string** is a sequence of characters written in quotes. Like a list, you can index and slice it; like a tuple, it is **immutable** — so every "change" method hands back a **brand-new string** and leaves the original untouched. Strings are everywhere in data work: names, dates, CSV lines, and log messages all arrive as text.
+
+#### String Methods — Complete Reference
+
+Strings are immutable, so every method below returns a **new** string (or a list / number) — none of them change the original.
+
+![String Methods — Complete Reference](/img/courses/diagrams/python-de/19-string-methods-complete-reference.svg)
+
+#### Example 1 — Creating and Accessing a String
+
+**`string_access.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Strings: Creating and Accessing
+# ============================================
+
+# A string is text wrapped in quotes — a sequence of characters.
+name = "Python"
+
+# Access one character by position (indexing starts at 0).
+print(f"First letter: {name[0]}")
+print(f"Last letter:  {name[-1]}")
+
+# Slicing — [start:stop:step] returns a NEW piece of the string.
+print(f"First three:  {name[:3]}")
+print(f"Last two:     {name[-2:]}")
+print(f"Reversed:     {name[::-1]}")
+
+# How long is it, and does it contain something?
+print(f"Length:       {len(name)}")
+print(f"Has 'th'?     {'th' in name}")
+```
+
+Run it:
+
+```bash
+python string_access.py
+```
+
+#### Example 2 — Changing Case: `upper()`, `lower()`, `title()`, `capitalize()`
+
+**`string_case.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Strings: Changing Case
+# ============================================
+
+text = "hello WORLD"
+
+print(f"upper():      {text.upper()}")        # HELLO WORLD
+print(f"lower():      {text.lower()}")        # hello world
+print(f"title():      {text.title()}")        # Hello World
+print(f"capitalize(): {text.capitalize()}")   # Hello world
+
+# Proof the original never changed (strings are immutable).
+print(f"original:     {text}")
+```
+
+Run it:
+
+```bash
+python string_case.py
+```
+
+#### Example 3 — Cleaning Whitespace: `strip()`, `lstrip()`, `rstrip()`
+
+**`string_clean.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Strings: Cleaning Whitespace
+# ============================================
+
+# Messy text often has extra spaces — very common when reading files.
+raw = "   Asha Sharma   "
+
+# Quotes added so you can SEE where the spaces are.
+print(f"strip():  '{raw.strip()}'")     # trims BOTH ends
+print(f"lstrip(): '{raw.lstrip()}'")    # trims the LEFT only
+print(f"rstrip(): '{raw.rstrip()}'")    # trims the RIGHT only
+
+# strip() can also remove specific characters, not just spaces.
+price = "$1500"
+print(f"clean price: {price.strip('$')}")
+```
+
+Run it:
+
+```bash
+python string_clean.py
+```
+
+#### Example 4 — Searching and Replacing: `startswith()`, `find()`, `count()`, `replace()`
+
+**`string_search.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Strings: Searching and Replacing
+# ============================================
+
+email = "asha@example.com"
+
+# startswith() / endswith() — quick yes/no checks.
+print(f"Starts with 'asha'? {email.startswith('asha')}")
+print(f"Ends with '.com'?   {email.endswith('.com')}")
+
+# find() — position of the first match, or -1 if it is not there.
+print(f"Position of '@':    {email.find('@')}")
+
+# count() — how many times something appears.
+sentence = "she sells sea shells"
+print(f"Count of 's':       {sentence.count('s')}")
+
+# replace(old, new) — returns a NEW string with the swaps made.
+print(f"replace:            {email.replace('example', 'gmail')}")
+```
+
+Run it:
+
+```bash
+python string_search.py
+```
+
+#### Example 5 — Splitting and Joining: `split()`, `join()`
+
+**`string_split_join.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Strings: Splitting and Joining
+# ============================================
+
+# split() — break a string into a LIST of pieces.
+csv_line = "Asha,25,Bangalore"
+parts = csv_line.split(",")
+print(f"split:  {parts}")
+
+# split() with no argument splits on spaces — handy for words.
+sentence = "data is the new oil"
+words = sentence.split()
+print(f"words:  {words}")
+
+# join() — glue a list of strings back into ONE string.
+print(f"join:   {' '.join(words)}")
+
+# You can glue with any separator you like.
+print(f"hyphen: {'-'.join(parts)}")
+```
+
+Run it:
+
+```bash
+python string_split_join.py
+```
+
+#### Example 6 — Checking the Content: `isdigit()`, `isalpha()`, `isalnum()`
+
+**`string_check.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Strings: Checking the Content
+# ============================================
+
+# These return True or False — perfect for validating user input.
+print(f"'12345'.isdigit():  {'12345'.isdigit()}")    # all digits?
+print(f"'Asha'.isalpha():   {'Asha'.isalpha()}")     # all letters?
+print(f"'Asha12'.isalnum(): {'Asha12'.isalnum()}")   # letters/digits?
+
+# Real use: only convert to a number if the text actually looks like one.
+user_input = "42"
+if user_input.isdigit():
+    print(f"Valid number: {int(user_input) + 1}")
+else:
+    print("That is not a whole number")
+```
+
+Run it:
+
+```bash
+python string_check.py
+```
+
+:::tip[HitaVir Tech says]
+"Because strings are immutable, `text.upper()` does **not** change `text` — it returns a new string. Beginners often forget to save the result: write `text = text.upper()`, not just `text.upper()`."
+:::
+
+---
+
+### Tuples — Ordered, Immutable Records
+
+A **tuple** is an ordered sequence that **cannot be changed** after creation. Use it for fixed records: coordinates, RGB colors, database credentials. Because it is immutable, it has only **two** methods.
+
+#### Tuple Methods — Complete Reference
+
+![Tuple Methods — Complete Reference](/img/courses/diagrams/python-de/20-tuple-methods-complete-reference.svg)
+
+#### Example 1 — Creating and Unpacking a Tuple
+
+**`tuple_basics.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Tuples: Creating and Unpacking
+# ============================================
+
+# A tuple is an ordered, IMMUTABLE collection.
+db_config = ("prod-db.hitavir.tech", 5432, "hitavir_prod")
+
+# Access by index, exactly like a list.
+print(f"Host: {db_config[0]}")
+print(f"Port: {db_config[1]}")
+
+# Tuple unpacking — assign every item to a variable in one line.
+host, port, database = db_config
+print(f"Unpacked -> {host} : {port} / {database}")
+
+# A single-item tuple NEEDS a trailing comma.
+not_a_tuple = ("solo")     # this is just a string
+real_tuple = ("solo",)     # this is a tuple
+print(f"{type(not_a_tuple).__name__} vs {type(real_tuple).__name__}")
+
+# Immutability — uncommenting the next line raises a TypeError.
+# db_config[1] = 5433
+```
+
+Run it:
+
+```bash
+python tuple_basics.py
+```
+
+#### Example 2 — The Two Tuple Methods: `count()`, `index()`
+
+**`tuple_methods.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Tuples: count() and index()
+# ============================================
+
+regions = ("North", "South", "North", "East", "North", "West")
+
+# count(x) — how many times a value appears.
+print(f"'North' count: {regions.count('North')}")
+
+# index(x) — position of the first match.
+print(f"First 'East':  index {regions.index('East')}")
+
+# Why tuples? They are lighter than lists and protect data that must
+# not change — coordinates, fixed pairs, credentials.
+point = (12.97, 77.59)   # (latitude, longitude)
+print(f"Coordinates:   {point}")
+```
+
+Run it:
+
+```bash
+python tuple_methods.py
+```
+
+---
+
+### Sets — Unordered Collections of Unique Values
+
+A **set** stores **unique** values with **no order**. It is the fastest way to deduplicate data and to test membership (`O(1)`), and it gives you mathematical set operations for free.
+
+#### Set Methods — Complete Reference
+
+![Set Methods — Complete Reference](/img/courses/diagrams/python-de/21-set-methods-complete-reference.svg)
+
+#### Example 1 — Creating and Adding: `add()`, `update()`
+
+**`set_add.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Sets: Creating and Adding
+# ============================================
+
+# A set stores UNIQUE values. Building one from a list deduplicates it.
+raw_ids = [101, 102, 101, 103, 102, 104]
+unique_ids = set(raw_ids)
+print(f"Raw:    {raw_ids}")
+print(f"Unique: {unique_ids}")
+
+# add(x) — insert ONE value (duplicates are silently ignored).
+unique_ids.add(105)
+unique_ids.add(101)        # already present -> no effect
+print(f"add:    {unique_ids}")
+
+# update(iterable) — insert MANY values at once.
+unique_ids.update([106, 107, 108])
+print(f"update: {unique_ids}")
+
+# An EMPTY set must use set() — {} creates an empty dict, not a set.
+empty = set()
+print(f"Empty set type: {type(empty).__name__}")
+```
+
+Run it:
+
+```bash
+python set_add.py
+```
+
+#### Example 2 — Removing: `remove()`, `discard()`, `pop()`, `clear()`
+
+**`set_remove.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Sets: Removing Items
+# ============================================
+
+active_users = {"alice", "bob", "charlie", "diana", "eve"}
+print(f"Start:        {active_users}")
+
+# discard(x) — remove if present; does NOTHING if missing (safe).
+active_users.discard("bob")
+active_users.discard("zoe")     # not there -> no error
+print(f"discard:      {active_users}")
+
+# remove(x) — remove if present; raises KeyError if missing (strict).
+active_users.remove("alice")
+print(f"remove:       {active_users}")
+
+# pop() — remove and return an ARBITRARY item (a set has no order).
+removed = active_users.pop()
+print(f"pop():        {removed!r}  ->  {active_users}")
+
+# clear() — empty the set.
+active_users.clear()
+print(f"clear():      {active_users}")
+```
+
+Run it:
+
+```bash
+python set_remove.py
+```
+
+#### Example 3 — Set Algebra: `union`, `intersection`, `difference`, `symmetric_difference`
+
+**`set_algebra.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Sets: Comparing Two Groups
+# ============================================
+
+# Which students are in the chess club vs the coding club?
+chess_club = {"Asha", "Ravi", "Meena", "Diana"}
+coding_club = {"Meena", "Diana", "Eve", "Frank"}
+
+# union — everyone in EITHER club.
+print(f"In any club    (|): {chess_club | coding_club}")
+print(f"union method      : {chess_club.union(coding_club)}")
+
+# intersection — only students in BOTH clubs.
+print(f"In both clubs  (&): {chess_club & coding_club}")
+
+# difference — in chess club but NOT in coding club.
+print(f"Only chess     (-): {chess_club - coding_club}")
+
+# symmetric_difference — in exactly ONE club, not both.
+print(f"In just one    (^): {chess_club ^ coding_club}")
+```
+
+Run it:
+
+```bash
+python set_algebra.py
+```
+
+#### Example 4 — Relationship Tests: `issubset()`, `issuperset()`, `isdisjoint()`
+
+**`set_relations.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Sets: Relationship Tests
+# ============================================
+
+# A recipe needs some ingredients; our kitchen has these on the shelf.
+needed = {"flour", "sugar", "eggs"}
+pantry = {"flour", "sugar", "eggs", "salt", "butter"}
+cleaning = {"soap", "sponge"}
+
+# issubset() — are ALL the needed ingredients on the shelf?
+print(f"Have everything needed?  {needed.issubset(pantry)}")
+
+# issuperset() — does the pantry cover every needed ingredient?
+print(f"Pantry covers the recipe?{pantry.issuperset(needed)}")
+
+# isdisjoint() — do two sets share NOTHING in common?
+print(f"Food vs cleaning overlap?{needed.isdisjoint(cleaning)}")
+
+# A handy follow-up: what (if anything) are we missing?
+missing = needed - pantry
+print(f"Missing ingredients:     {missing or 'none — ready to bake!'}")
+```
+
+Run it:
+
+```bash
+python set_relations.py
+```
+
+---
+
+### Dictionaries — Key-Value Mappings
+
+A **dictionary** maps **keys to values** and looks up values by key in `O(1)` time. It is the natural fit for a single record, a JSON object, or any named configuration.
+
+#### Dict Methods — Complete Reference
+
+![Dict Methods — Complete Reference](/img/courses/diagrams/python-de/22-dict-methods-complete-reference.svg)
+
+#### Example 1 — Accessing Data: `get()`, `keys()`, `values()`, `items()`
+
+**`dict_access.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Dictionaries: Accessing Data
+# ============================================
+
+employee = {
+    "id": 101,
+    "name": "Priya Sharma",
+    "department": "Data Engineering",
+    "salary": 85000,
+}
+
+# Direct access with [] — raises KeyError if the key is missing.
+print(f"Name:    {employee['name']}")
+
+# get(key, default) — safe access; returns the default instead of crashing.
+print(f"Manager: {employee.get('manager', 'Not assigned')}")
+
+# keys() / values() / items() — views you can loop over.
+print(f"Keys:    {list(employee.keys())}")
+print(f"Values:  {list(employee.values())}")
+
+# items() is the standard way to iterate a dictionary.
+print("Record:")
+for key, value in employee.items():
+    print(f"  {key:<12}: {value}")
+```
+
+Run it:
+
+```bash
+python dict_access.py
+```
+
+#### Example 2 — Adding and Updating: `update()`, `setdefault()`
+
+**`dict_update.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Dictionaries: Adding and Updating
+# ============================================
+
+settings = {"sound": "on", "level": 1}
+print(f"Start:      {settings}")
+
+# [] assignment — change an existing key or add a new one.
+settings["level"] = 2            # update existing key
+settings["player"] = "Asha"      # add a brand new key
+print(f"[] set:     {settings}")
+
+# update() — merge another dict (or key/value pairs) in one call.
+settings.update({"difficulty": "easy", "lives": 3})
+print(f"update:     {settings}")
+
+# setdefault(key, default) — return the value, OR insert it if missing.
+settings.setdefault("sound", "off")   # key exists -> left unchanged
+settings.setdefault("paused", False)  # key is new -> inserted
+print(f"setdefault: {settings}")
+```
+
+Run it:
+
+```bash
+python dict_update.py
+```
+
+#### Example 3 — Removing Data: `pop()`, `popitem()`, `clear()`
+
+**`dict_remove.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Dictionaries: Removing Data
+# ============================================
+
+record = {"id": 1, "name": "Alice", "temp": "x", "debug": True}
+print(f"Start:      {record}")
+
+# pop(key) — remove a key and return its value.
+name = record.pop("name")
+print(f"pop:        {name!r}  ->  {record}")
+
+# pop(key, default) — safe pop that won't crash on a missing key.
+missing = record.pop("ghost", "not found")
+print(f"pop ghost:  {missing!r}")
+
+# popitem() — remove and return the LAST inserted (key, value) pair.
+last_pair = record.popitem()
+print(f"popitem:    {last_pair}  ->  {record}")
+
+# del — delete a key by name.
+del record["temp"]
+print(f"del:        {record}")
+
+# clear() — empty the dictionary.
+record.clear()
+print(f"clear:      {record}")
+```
+
+Run it:
+
+```bash
+python dict_remove.py
+```
+
+#### Example 4 — Building and Copying: `fromkeys()`, `copy()`, membership
+
+**`dict_utils.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Dictionaries: fromkeys, copy, membership
+# ============================================
+
+# fromkeys(keys, value) — build a dict from a list of keys.
+columns = ["id", "name", "email"]
+schema = dict.fromkeys(columns, "string")
+print(f"fromkeys:   {schema}")
+
+# Membership (in) tests KEYS by default — a fast O(1) lookup.
+print(f"'name' in schema?  {'name' in schema}")
+print(f"'phone' in schema? {'phone' in schema}")
+
+# copy() — a shallow copy so edits don't touch the original.
+original = {"a": 1, "b": 2}
+clone = original.copy()
+clone["c"] = 3
+print(f"Original:   {original}")
+print(f"Copy:       {clone}")
+```
+
+Run it:
+
+```bash
+python dict_utils.py
+```
+
+---
+
+### List of Dictionaries — The Data Engineering Standard
+
+This is the single most common pattern in data engineering. A CSV file, an API response, and a database query result all arrive as a **list of dictionaries**: the list is the rows, each dictionary is one row.
+
+**`list_of_dicts.py`**
+
+```python
+# ============================================
+# HitaVir Tech - List of Dicts: Filter, Aggregate, Group
+# ============================================
+
+from collections import defaultdict
+
+sales_data = [
+    {"date": "2026-04-01", "product": "Laptop", "amount": 999.99,
+     "region": "North"},
+    {"date": "2026-04-01", "product": "Mouse", "amount": 29.99,
+     "region": "South"},
+    {"date": "2026-04-02", "product": "Keyboard", "amount": 79.99,
+     "region": "North"},
+    {"date": "2026-04-02", "product": "Monitor", "amount": 449.99,
+     "region": "East"},
+    {"date": "2026-04-03", "product": "Laptop", "amount": 999.99,
+     "region": "West"},
+]
+
+# Filter — keep only sales above $100 (list comprehension).
+big_sales = [s for s in sales_data if s["amount"] > 100]
+print(f"Sales > $100: {len(big_sales)}")
+
+# Aggregate — total revenue (generator expression into sum()).
+total_revenue = sum(s["amount"] for s in sales_data)
+print(f"Total revenue: ${total_revenue:,.2f}")
+
+# Group by region — defaultdict avoids manual "if key in dict" checks.
+by_region = defaultdict(float)
+for sale in sales_data:
+    by_region[sale["region"]] += sale["amount"]
+
+print("\nRevenue by region:")
+for region, total in sorted(by_region.items()):
+    print(f"  {region:<6}: ${total:,.2f}")
+```
+
+Run it:
+
+```bash
+python list_of_dicts.py
+```
+
+:::tip[HitaVir Tech says]
+"A list of dictionaries is the bread and butter of data engineering. It is how APIs return data, how you process CSV rows, and how you pass data between pipeline stages. Master this pattern."
+:::
+
+### Data Structure Comparison Table — Interview Reference
+
+This table is asked in **every Python interview** for Data Engineering roles. Memorize it.
+
+#### Core Comparison
+
+![Core Comparison](/img/courses/diagrams/python-de/23-core-comparison.svg)
+
+#### Performance Comparison (Big-O)
+
+**What is "Big-O"?**
+
+Big-O describes how much slower an operation gets as your dataset grows. `O(1)` means "instant — the same speed for 10 rows or 10 million." `O(n)` means "scales with size — 10× the data takes 10× longer." For data engineers handling millions of rows, this matters.
+
+![Performance Comparison (Big-O)](/img/courses/diagrams/python-de/24-performance-comparison-big-o.svg)
+
+#### When to Use What — Data Engineering Guide
+
+![When to Use What — Data Engineering Guide](/img/courses/diagrams/python-de/25-when-to-use-what-data-engineering-guide.svg)
+
+#### Quick Memory Aid for Interviews
+
+```
+List  = Shopping cart     → ordered, changeable, duplicates OK
+Tuple = ID card           → ordered, fixed, cannot be changed
+Set   = Unique stamps     → unordered, no duplicates, fast lookup
+Dict  = Phone book        → name→number pairs, fast lookup by key
+```
+
+:::tip[HitaVir Tech says]
+"In interviews, they will ask: 'When would you use a set instead of a list?' The answer: when you need unique values and fast O(1) lookups. A set checks membership instantly; a list scans every element. For 10 million records, that is the difference between milliseconds and minutes."
+:::
+
+### Assignment 4 — Sales Aggregator
+
+**Goal:** Use every Python data structure to build a small sales aggregator.
+
+**The scenario:** Marketing wants three answers from yesterday's sales: revenue per region, the list of unique customers, and the top-spending customer.
+
+**Tasks:**
+
+1. Create `assignment_04_data_structures.py`.
+2. Use this input data:
+
+```python
+sales = [
+    {"customer": "Alice",  "region": "North", "amount": 1500},
+    {"customer": "Bob",    "region": "South", "amount":  800},
+    {"customer": "Alice",  "region": "North", "amount": 2300},
+    {"customer": "Carol",  "region": "East",  "amount": 1200},
+    {"customer": "Bob",    "region": "South", "amount":  600},
+    {"customer": "David",  "region": "West",  "amount":  450},
+    {"customer": "Carol",  "region": "East",  "amount":  900},
+]
+```
+
+3. Build:
+   - `revenue_by_region` (a `dict`) -> total amount per region
+   - `unique_customers` (a `set`) -> distinct customer names
+   - `revenue_by_customer` (a `dict`) -> total amount per customer
+   - `top_customer` (a `tuple` of `(name, amount)`) -> the highest-spender
+
+4. Print a clean report:
+
+```text
+Revenue by Region:
+  East   : $2,100.00
+  North  : $3,800.00
+  South  : $1,400.00
+  West   :   $450.00
+
+Unique customers: 4
+Names: ['Alice', 'Bob', 'Carol', 'David']
+
+Top customer: Alice ($3,800.00)
+```
+
+**Success criteria:**
+
+- [ ] Uses `dict`, `set`, `list`, and `tuple` (all four)
+- [ ] Regions printed in alphabetical order
+- [ ] Customer list sorted alphabetically
+- [ ] Top customer = `("Alice", 3800)`
+- [ ] Numbers formatted with thousands separator and 2 decimals
+
+**Stretch goal:** Replace the manual loops with `defaultdict(float)` and a dictionary comprehension. Then replace the `for`-loop top-customer logic with `max(revenue_by_customer.items(), key=lambda x: x[1])`.
+
+### What You Have Learnt on This Page
+
+By the end of this page you should be able to confidently:
+
+- Choose the **right structure** — string (text), list (ordered, mutable), tuple (locked), set (unique), dict (key→value)
+- Use every **list** method — `append`, `extend`, `insert`, `remove`, `pop`, `clear`, `index`, `count`, `sort`, `reverse`, `copy` — and know `sort()` mutates while `sorted()` returns a new list
+- Use the everyday **string** methods — `upper`, `lower`, `title`, `strip`, `replace`, `split`, `join`, `find`, `count`, `startswith`, `isdigit` — and remember strings are immutable, so each returns a new string
+- Apply the **built-in functions** that work on any sequence — `len`, `sum`, `min`, `max`, `sorted`, `reversed`, `any`, `all`, `enumerate`, `zip`
+- Use the two **tuple** methods (`count`, `index`) and unpack tuples cleanly
+- Use every **set** method — `add`, `update`, `remove`, `discard`, `pop`, `clear` — plus set algebra (`union`, `intersection`, `difference`, `symmetric_difference`) and relationship tests (`issubset`, `issuperset`, `isdisjoint`)
+- Use every **dict** method — `get`, `keys`, `values`, `items`, `update`, `setdefault`, `pop`, `popitem`, `clear`, `copy`, `fromkeys`
+- Combine them into the **list-of-dicts** pattern to filter, aggregate, and group real data
+
+### PEP 8 — Style Rules to Apply Strictly to Data Structures
+
+Real pipeline code lives or dies on how cleanly your data structures are written. Apply these rules every single time:
+
+- For multi-line literals, add a **trailing comma** so diffs show one-line additions only
+- Use **dict / list comprehensions** when they fit on one readable line — otherwise use a `for` loop
+- Use **`if not records:`** for empty checks, never `len(records) == 0`
+- Prefer **double quotes** consistently for keys: `{"name": "Alice"}`
+- Avoid mutable default arguments — never `def f(x=[]):` (subtle bug); use `def f(x=None):` then assign inside
+- Pick **`defaultdict`** or **`Counter`** from `collections` over manual `if key in d:` checks
+
+:::note[Inspiration for the road ahead]
+*"Bad programmers worry about the code. Good programmers worry about data structures and their relationships."*
+— Linus Torvalds
+:::
+
+<KeyTakeaways>
+
+- list = ordered + mutable, tuple = ordered + locked, set = unique + unordered, dict = key→value
+- `sort()` mutates and returns `None`; `sorted()` returns a new list — a classic interview trap
+- Strings are immutable: every method returns a **new** string, so reassign the result
+- Set membership is O(1); list membership is O(n) — a huge difference at pipeline scale
+- APIs, CSVs, and query results all arrive as a **list of dictionaries**
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'x = my_list.sort() leaves x holding what?',
+      options: [
+        'None — sort() mutates in place and returns nothing',
+        'A new sorted list',
+        'A tuple',
+        'The original unsorted list',
+      ],
+      answer: 0,
+      explanation:
+        'sort() changes the list itself and returns None. Use sorted(my_list) when you want a new list back.',
+    },
+    {
+      question: 'You must deduplicate 10 million IDs and check membership fast. Which structure?',
+      options: [
+        'list',
+        'tuple',
+        'set',
+        'str',
+      ],
+      answer: 2,
+      explanation:
+        'A set stores unique values and answers membership checks in O(1) — instant even at millions of rows.',
+    },
+    {
+      question: '("solo") is not a tuple. What is missing?',
+      options: [
+        'Square brackets',
+        'A trailing comma — ("solo",)',
+        'The tuple() keyword',
+        'Nothing — it is already a tuple',
+      ],
+      answer: 1,
+      explanation:
+        'Parentheses alone are just grouping. The comma is what makes a single-item tuple.',
+    },
+  ]}
+/>
+
+<LessonComplete />

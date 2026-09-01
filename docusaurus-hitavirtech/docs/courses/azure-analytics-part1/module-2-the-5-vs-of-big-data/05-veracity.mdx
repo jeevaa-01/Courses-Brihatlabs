@@ -1,0 +1,143 @@
+---
+title: 'Veracity'
+sidebar_position: 5
+description: 'The fourth V — the nine enemies of data quality, the six quality dimensions, and famous real-world failures caused by untrustworthy data.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Define Veracity and recognize the common enemies of data quality
+- Apply the six dimensions of data quality to any dataset
+- Explain GIGO and why a wrong-but-believed insight is the most dangerous kind
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              THE  4th  V   -   VERACITY                      |
+  |              "Can we trust the data?"                        |
+  +==============================================================+
+```
+
+### What is Veracity?
+
+🛡️ **Veracity** is the accuracy, consistency, and trustworthiness of your data.
+
+Big volumes and fast pipelines are useless if the data is **wrong**.
+
+### The Veracity Enemies
+
+| Enemy | Icon | Symptom |
+|-------|:---:|---------|
+| Missing | 🦠 | NULL in required fields |
+| Duplicates | 🗑️ | Same row repeated |
+| Inconsistent | 🎭 | 2024-01-05 vs 01/05/24 |
+| Outliers | 📉 | Age = 347 |
+| Units | 🪙 | USD mixed with INR |
+| Bias | 🪞 | Only US users sampled |
+| Stale | 🪤 | Last updated 2019 |
+| Broken joins | 📎 | Order with no user |
+| Noise | 🎲 | Flaky sensor readings |
+
+### GIGO — Garbage In, Garbage Out
+
+:::warning[Garbage In, Garbage Out]
+A beautiful dashboard built on bad data is worse than no dashboard — it creates
+**false confidence**. The most dangerous insight is a wrong insight someone believes.
+:::
+
+### Six Dimensions of Data Quality
+
+| Dimension | Icon | Question |
+|-----------|:---:|----------|
+| **Completeness** | 🧩 | Required fields populated? |
+| **Accuracy** | 🎯 | Data reflects reality? |
+| **Consistency** | 🧭 | Related systems agree? |
+| **Timeliness** | ⏰ | Is it current enough? |
+| **Validity** | ✅ | Matches formats / rules? |
+| **Uniqueness** | 🔢 | Any unintended duplicates? |
+
+### Real-World Veracity Failures
+
+| Incident | Consequence |
+|----------|-------------|
+| 🛰️ NASA Mars Climate Orbiter (1999) | Lost $125M — metric vs imperial unit mismatch |
+| 🏦 Knight Capital (2012) | $440M loss in 45 minutes — bad trading data |
+| 🤧 Google Flu Trends | Overestimated flu peaks 100%+ due to search bias |
+
+### Questions Veracity Forces You to Ask
+
+- 🛡️ Do we have **quality rules** running on every pipeline?
+- 👁️ Are we **monitoring** upstream schema changes?
+- 🪞 Does our data **match source systems**?
+- 🧑 Who **owns** the quality of each dataset?
+
+:::tip[HitaVir Tech says]
+"Senior engineers obsess over data quality. Juniors obsess over cool tools.
+Guess which group builds systems that actually work in production."
+:::
+
+:::info[Veracity in one line]
+Quality rules are a pipeline concern, not a hope.
+:::
+
+### Preview — Azure Services That Solve Veracity
+
+![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Data Shares](/img/courses/azure-icons/data-shares.svg) ![Defender](/img/courses/azure-icons/defender.svg) ![Key Vault](/img/courses/azure-icons/key-vault.svg) ![Activity Log](/img/courses/azure-icons/activity-log.svg)
+
+*Coming up in "Azure Services for Veracity".*
+
+<KeyTakeaways>
+
+- Veracity = accuracy, consistency, and trustworthiness — the trust dimension of data
+- Common enemies: missing values, duplicates, inconsistent formats, outliers, unit mixups, bias, staleness
+- The six quality dimensions: completeness, accuracy, consistency, timeliness, validity, uniqueness
+- GIGO: a wrong insight that people believe is worse than no insight at all
+- Quality rules belong in the pipeline from day one, with a named owner per dataset
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'The NASA Mars Climate Orbiter was lost because of which veracity enemy?',
+      options: [
+        'Duplicate telemetry rows',
+        'A metric vs imperial unit mismatch',
+        'Stale data from 2019',
+        'Missing NULL fields',
+      ],
+      answer: 1,
+      explanation:
+        'One team used metric units, another imperial — a $125M unit-consistency failure.',
+    },
+    {
+      question: 'Why is a polished dashboard built on bad data worse than no dashboard?',
+      options: [
+        'It costs more compute',
+        'It loads slower',
+        'It creates false confidence in a wrong insight people act on',
+        'It cannot be shared',
+      ],
+      answer: 2,
+      explanation:
+        'GIGO: the most dangerous insight is a wrong insight someone believes and acts on.',
+    },
+    {
+      question: '"Do related systems agree with each other?" tests which data quality dimension?',
+      options: [
+        'Consistency',
+        'Completeness',
+        'Uniqueness',
+        'Timeliness',
+      ],
+      answer: 0,
+      explanation:
+        'Consistency checks that the same fact matches across related systems; completeness is about populated fields.',
+    },
+  ]}
+/>
+
+<LessonComplete />

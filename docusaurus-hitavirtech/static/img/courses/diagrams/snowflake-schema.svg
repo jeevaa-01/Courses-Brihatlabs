@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="s" x="-4%" y="-4%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  <rect width="800" height="440" rx="12" fill="#f8f9fa"/>
+  <text x="400" y="26" text-anchor="middle" font-size="14" font-weight="600" fill="#5f6368">SNOWFLAKE SCHEMA — Normalized Dimensions</text>
+
+  <!-- Center: Fact Table -->
+  <rect x="300" y="160" width="200" height="120" rx="10" fill="#1a73e8" filter="url(#s)"/>
+  <text x="400" y="186" text-anchor="middle" font-size="14" font-weight="700" fill="white">fact_sales</text>
+  <line x1="318" y1="194" x2="482" y2="194" stroke="#4d9ef5" stroke-width="1"/>
+  <text x="318" y="212" font-size="10" fill="#c2d9f7">FK customer_key</text>
+  <text x="318" y="228" font-size="10" fill="#c2d9f7">FK product_key</text>
+  <text x="318" y="244" font-size="10" fill="#c2d9f7">FK store_key, date_key</text>
+  <text x="318" y="262" font-size="10" fill="white">quantity, amount, profit</text>
+
+  <!-- Left: dim_product (level 2) -->
+  <rect x="40" y="130" width="160" height="80" rx="8" fill="#ea8600" filter="url(#s)"/>
+  <text x="120" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="white">dim_product</text>
+  <line x1="55" y1="162" x2="185" y2="162" stroke="#f5b84d" stroke-width="1"/>
+  <text x="55" y="178" font-size="10" fill="white">product_key, name</text>
+  <text x="55" y="194" font-size="10" fill="#fce4b8">FK category_key</text>
+  <line x1="200" y1="170" x2="300" y2="200" stroke="#9aa0a6" stroke-width="1.5"/>
+
+  <!-- Left-top: category (level 3) -->
+  <rect x="20" y="42" width="130" height="60" rx="6" fill="#ef6c00" filter="url(#s)"/>
+  <text x="85" y="66" text-anchor="middle" font-size="11" font-weight="600" fill="white">category</text>
+  <text x="85" y="82" text-anchor="middle" font-size="9" fill="#ffe0b2">category_key, name</text>
+  <line x1="85" y1="102" x2="100" y2="130" stroke="#9aa0a6" stroke-width="1.5"/>
+
+  <!-- Left-bottom: brand (level 3) -->
+  <rect x="40" y="235" width="130" height="50" rx="6" fill="#ef6c00" filter="url(#s)"/>
+  <text x="105" y="256" text-anchor="middle" font-size="11" font-weight="600" fill="white">brand</text>
+  <text x="105" y="272" text-anchor="middle" font-size="9" fill="#ffe0b2">brand_key, name</text>
+  <line x1="105" y1="235" x2="110" y2="210" stroke="#9aa0a6" stroke-width="1.5"/>
+
+  <!-- Right: dim_store (level 2) -->
+  <rect x="600" y="130" width="160" height="80" rx="8" fill="#7c3aed" filter="url(#s)"/>
+  <text x="680" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="white">dim_store</text>
+  <line x1="615" y1="162" x2="745" y2="162" stroke="#a78bfa" stroke-width="1"/>
+  <text x="615" y="178" font-size="10" fill="white">store_key, name</text>
+  <text x="615" y="194" font-size="10" fill="#d4bffc">FK city_key</text>
+  <line x1="600" y1="170" x2="500" y2="200" stroke="#9aa0a6" stroke-width="1.5"/>
+
+  <!-- Right-top: city (level 3) -->
+  <rect x="630" y="42" width="130" height="60" rx="6" fill="#6d28d9" filter="url(#s)"/>
+  <text x="695" y="66" text-anchor="middle" font-size="11" font-weight="600" fill="white">city</text>
+  <text x="695" y="82" text-anchor="middle" font-size="9" fill="#d4bffc">city_key, name, state</text>
+  <line x1="695" y1="102" x2="690" y2="130" stroke="#9aa0a6" stroke-width="1.5"/>
+
+  <!-- Right-bottom: country (level 4) -->
+  <rect x="650" y="235" width="120" height="50" rx="6" fill="#5b21b6" filter="url(#s)"/>
+  <text x="710" y="256" text-anchor="middle" font-size="11" font-weight="600" fill="white">country</text>
+  <text x="710" y="272" text-anchor="middle" font-size="9" fill="#d4bffc">country_key, name</text>
+  <line x1="710" y1="235" x2="700" y2="210" stroke="#9aa0a6" stroke-width="1.5"/>
+
+  <!-- Top: dim_date (level 2) -->
+  <rect x="300" y="44" width="200" height="70" rx="8" fill="#d93025" filter="url(#s)"/>
+  <text x="400" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="white">dim_date</text>
+  <line x1="318" y1="76" x2="482" y2="76" stroke="#f28b82" stroke-width="1"/>
+  <text x="318" y="92" font-size="10" fill="white">date_key, full_date</text>
+  <text x="318" y="106" font-size="10" fill="#fad2cf">month, quarter, year</text>
+  <line x1="400" y1="114" x2="400" y2="160" stroke="#9aa0a6" stroke-width="1.5"/>
+
+  <!-- Bottom: dim_customer (level 2) -->
+  <rect x="300" y="310" width="200" height="70" rx="8" fill="#34a853" filter="url(#s)"/>
+  <text x="400" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="white">dim_customer</text>
+  <line x1="318" y1="342" x2="482" y2="342" stroke="#5ec97a" stroke-width="1"/>
+  <text x="318" y="358" font-size="10" fill="white">customer_key, name</text>
+  <text x="318" y="372" font-size="10" fill="#b8e6c4">FK segment_key</text>
+  <line x1="400" y1="280" x2="400" y2="310" stroke="#9aa0a6" stroke-width="1.5"/>
+
+  <!-- Bottom-left: segment (level 3) -->
+  <rect x="160" y="330" width="120" height="50" rx="6" fill="#2d8f47" filter="url(#s)"/>
+  <text x="220" y="351" text-anchor="middle" font-size="11" font-weight="600" fill="white">segment</text>
+  <text x="220" y="367" text-anchor="middle" font-size="9" fill="#b8e6c4">segment_key, name</text>
+  <line x1="280" y1="350" x2="300" y2="345" stroke="#9aa0a6" stroke-width="1.5"/>
+
+  <!-- Legend -->
+  <rect x="240" y="400" width="320" height="30" rx="6" fill="white" stroke="#dadce0"/>
+  <rect x="256" y="408" width="10" height="10" rx="2" fill="#1a73e8"/>
+  <text x="272" y="418" font-size="9" fill="#3c4043">Fact</text>
+  <rect x="310" y="408" width="10" height="10" rx="2" fill="#ea8600"/>
+  <text x="326" y="418" font-size="9" fill="#3c4043">Dim (L2)</text>
+  <rect x="380" y="408" width="10" height="10" rx="2" fill="#ef6c00"/>
+  <text x="396" y="418" font-size="9" fill="#3c4043">Sub-dim (L3)</text>
+  <rect x="470" y="408" width="10" height="10" rx="2" fill="#5b21b6"/>
+  <text x="486" y="418" font-size="9" fill="#3c4043">Sub-dim (L4)</text>
+
+  <text x="400" y="435" text-anchor="middle" font-size="9" fill="#9aa0a6">HitaVir Tech — Dimensions branch into sub-tables (normalized)</text>
+</svg>

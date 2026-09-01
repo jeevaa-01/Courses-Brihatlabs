@@ -1,0 +1,171 @@
+---
+title: 'Deleting Files and Directories — rm, rmdir'
+sidebar_position: 5
+description: 'Delete files and directory trees safely with rm, rm -r, rm -i, and rmdir — and learn why there is no Recycle Bin.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Delete files with `rm` and directory trees with `rm -r`
+- Use `rm -i` for confirmation and `rmdir` for empty directories
+- Apply the safety rules that prevent catastrophic deletions
+
+</LearningObjectives>
+
+Deleting in the terminal is **permanent**. There is no Recycle Bin.
+
+### rm — Remove Files
+
+```bash
+cd ~/hitavir-workspace
+touch temp/delete-me.txt
+ls temp/
+```
+
+```bash
+rm temp/delete-me.txt
+ls temp/
+```
+
+The file is gone. Permanently.
+
+### rm with Confirmation
+
+Add `-i` to get a confirmation prompt:
+
+```bash
+touch temp/careful.txt
+rm -i temp/careful.txt
+```
+
+**Expected output:**
+
+```
+rm: remove regular empty file 'temp/careful.txt'?
+```
+
+Type `y` and press Enter to confirm.
+
+### rm -r — Remove Directories
+
+```bash
+mkdir -p temp/test-dir/sub-dir
+touch temp/test-dir/file.txt
+touch temp/test-dir/sub-dir/deep-file.txt
+```
+
+Remove the entire directory tree:
+
+```bash
+rm -r temp/test-dir
+```
+
+Everything inside is deleted.
+
+### rmdir — Remove Empty Directories Only
+
+```bash
+mkdir temp/empty-dir
+rmdir temp/empty-dir
+```
+
+If the directory is not empty, `rmdir` will refuse:
+
+```bash
+mkdir temp/not-empty
+touch temp/not-empty/file.txt
+rmdir temp/not-empty
+```
+
+**Expected output:**
+
+```
+rmdir: failed to remove 'temp/not-empty': Directory not empty
+```
+
+Clean up:
+
+```bash
+rm -r temp/not-empty
+```
+
+### Danger Zone
+
+| Command | Risk Level | What Happens |
+|---------|-----------|-------------|
+| `rm file.txt` | Low | Deletes one file |
+| `rm -r folder/` | Medium | Deletes folder and everything inside |
+| `rm -rf folder/` | HIGH | Force-deletes without any warnings |
+| `rm -rf /` | CATASTROPHIC | Attempts to delete your entire system |
+
+### Safety Rules
+
+1. **Always double-check** the path before pressing Enter
+2. **Use `ls` first** to see what will be deleted
+3. **Use `rm -i`** when unsure
+4. **Never use `rm -rf /`** or `rm -rf *` without absolute certainty
+5. **Make backups** before bulk deletions
+
+:::warning[HitaVir Tech says]
+"The terminal trusts you completely. If you say delete, it deletes — no questions asked (unless you use `-i`). With great power comes great responsibility."
+:::
+
+### File and Directory Management Recap
+
+Excellent! You have mastered file management. Here is what you learned:
+
+- Create directories with `mkdir` and `mkdir -p`
+- Create files with `touch` and `echo`
+- Copy with `cp` and `cp -r`
+- Move and rename with `mv`
+- Delete with `rm`, `rm -r`, and `rmdir`
+- The difference between `>` (overwrite) and `>>` (append)
+
+<KeyTakeaways>
+
+- Terminal deletion is permanent — there is no Recycle Bin
+- `rm -r` removes a folder and everything inside; `rmdir` only removes empty folders
+- `rm -i` asks for confirmation before each deletion — use it when unsure
+- Check `pwd` and `ls` before any destructive command, and never run `rm -rf /`
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What happens when rmdir targets a directory that still has files inside?',
+      options: [
+        'It deletes everything inside',
+        'It refuses with a "Directory not empty" error',
+        'It archives the contents first',
+        'It asks for confirmation, then deletes',
+      ],
+      answer: 1,
+      explanation:
+        'rmdir is the safe option: it only removes empty directories. Use rm -r for a directory with contents.',
+    },
+    {
+      question: 'Which flag makes rm ask before each deletion?',
+      options: ['-f', '-r', '-v', '-i'],
+      answer: 3,
+      explanation:
+        'The -i (interactive) flag prompts for a y/n confirmation before removing each file.',
+    },
+    {
+      question: 'Where do files deleted with rm go?',
+      options: [
+        'The Windows Recycle Bin',
+        'A hidden .trash folder',
+        'Nowhere — they are gone permanently',
+        'An automatic backup folder',
+      ],
+      answer: 2,
+      explanation:
+        'There is no undo in the terminal. Prevention — backups, rm -i, and double-checking paths — is the only protection.',
+    },
+  ]}
+/>
+
+<LessonComplete />

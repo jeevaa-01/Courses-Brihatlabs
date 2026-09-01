@@ -1,0 +1,171 @@
+---
+title: 'Forking and Contributing to Open Source'
+sidebar_position: 2
+description: 'Contribute to projects you do not own — fork, clone, add an upstream remote, open a PR to the original repo, and keep your fork in sync.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Fork a repository and clone your copy
+- Configure `origin` (your fork) and `upstream` (the original)
+- Open a PR back to the original project and keep your fork in sync
+
+</LearningObjectives>
+
+Forking is how you contribute to projects you do not own. It is the gateway to open source.
+
+### The Fork Workflow
+
+```
+1. Fork the repository (creates your copy on GitHub)
+2. Clone your fork locally
+3. Create a branch
+4. Make changes and commit
+5. Push to your fork
+6. Open a Pull Request to the original repo
+```
+
+### Hands-On: Simulate an Open Source Contribution
+
+**Step 1 — Fork a repository**
+
+Go to any public GitHub repository and click the **Fork** button in the top right.
+
+For practice, you can fork: `https://github.com/firstcontributions/first-contributions`
+
+**Step 2 — Clone your fork**
+
+```bash
+git clone https://github.com/YOUR_USERNAME/first-contributions.git
+cd first-contributions
+```
+
+**Step 3 — Add the original repo as upstream**
+
+```bash
+git remote add upstream https://github.com/firstcontributions/first-contributions.git
+git remote -v
+```
+
+**Expected output:**
+
+```
+origin    https://github.com/YOUR_USERNAME/first-contributions.git (fetch)
+origin    https://github.com/YOUR_USERNAME/first-contributions.git (push)
+upstream  https://github.com/firstcontributions/first-contributions.git (fetch)
+upstream  https://github.com/firstcontributions/first-contributions.git (push)
+```
+
+**Step 4 — Create a branch and make changes**
+
+```bash
+git switch -c add-my-name
+echo "HitaVir Tech" >> Contributors.md
+git add Contributors.md
+git commit -m "Add HitaVir Tech to contributors"
+```
+
+**Step 5 — Push to your fork**
+
+```bash
+git push -u origin add-my-name
+```
+
+**Step 6 — Open a Pull Request**
+
+1. Go to your fork on GitHub
+2. Click **Compare & pull request**
+3. Make sure the base repository is the **original** (not your fork)
+4. Add a clear title and description
+5. Click **Create pull request**
+
+### Keeping Your Fork Up to Date
+
+```bash
+git fetch upstream
+git switch main
+git merge upstream/main
+git push origin main
+```
+
+### Open Source Etiquette
+
+| Do | Do Not |
+|----|--------|
+| Read CONTRIBUTING.md first | Submit random PRs without context |
+| Follow the project's code style | Force your preferences |
+| Write clear PR descriptions | Submit PRs with "fixed stuff" |
+| Be patient waiting for reviews | Ping maintainers repeatedly |
+| Say thank you | Take rejection personally |
+
+:::tip[HitaVir Tech says]
+"Contributing to open source is one of the best ways to learn and build your reputation. Start small — fix a typo, improve documentation, or add a test. Every contribution matters."
+:::
+
+### Advanced Level Recap
+
+Great progress! You have completed the Advanced Level. Here is what you learned:
+
+- Pull request workflow and best practices
+- Code review techniques
+- Rebasing vs merging
+- Cherry-picking specific commits
+- Stashing work in progress
+- Tags and releases
+- GitHub Actions for CI/CD
+- Forking and open source contribution
+
+<KeyTakeaways>
+
+- A fork is YOUR copy of someone else's repository on GitHub
+- Convention: `origin` points at your fork, `upstream` at the original project
+- The contribution loop: fork → clone → branch → commit → push to fork → PR to original
+- Sync your fork with `git fetch upstream` + `git merge upstream/main`
+- Read CONTRIBUTING.md before submitting, and keep PR descriptions clear
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In the fork workflow, what does the "upstream" remote point to?',
+      options: [
+        'Your fork on GitHub',
+        'Your local repository',
+        'The original repository you forked from',
+        'The GitHub Actions server',
+      ],
+      answer: 2,
+      explanation:
+        'origin is your fork; upstream is the original project, used to pull in the latest official changes.',
+    },
+    {
+      question: 'How do you update your fork with the latest changes from the original project?',
+      options: [
+        'git fetch upstream, then merge upstream/main into your main',
+        'Delete the fork and re-fork',
+        'git push origin main',
+        'Ask a maintainer to sync it',
+      ],
+      answer: 0,
+      explanation:
+        'Fetching upstream and merging its main into yours keeps the fork current (then push to origin).',
+    },
+    {
+      question: 'When opening a PR from your fork, what must the BASE repository be?',
+      options: [
+        'Your fork',
+        'The original repository',
+        'A brand-new repository',
+        'Any repository you have starred',
+      ],
+      answer: 1,
+      explanation:
+        'The base is where changes should land — the original project. The head is your fork branch.',
+    },
+  ]}
+/>
+
+<LessonComplete />

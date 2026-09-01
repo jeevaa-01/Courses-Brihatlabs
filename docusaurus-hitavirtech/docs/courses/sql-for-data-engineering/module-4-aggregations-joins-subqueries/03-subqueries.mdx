@@ -1,0 +1,227 @@
+---
+title: 'Step 9: Subqueries — scalar, correlated, IN, EXISTS'
+sidebar_position: 3
+description: 'The four subquery shapes — scalar, IN, EXISTS, correlated — plus derived tables, and when each one is the right tool.'
+---
+
+<DurationBadge minutes={20} />
+
+<LearningObjectives>
+
+- Choose between scalar, `IN`, `EXISTS`, and correlated subqueries by intent
+- Reason about the per-row cost of a correlated subquery
+- Use a derived table (subquery in `FROM`) when an aggregate must feed another query
+
+</LearningObjectives>
+
+> *"I've failed over and over and over again in my life. And that is why I succeed."*
+> — Michael Jordan
+
+:::info[HitaVir Tech connection]
+Subqueries bend your mind on the first read. You will write a wrong one, then a slow one, then a clean one — that arc is the whole skill.
+:::
+
+:::tip[Why this matters now]
+Run every example below twice. The second time, change one thing and predict the new output before you press Run.
+:::
+
+### 9.1 — Scalar subquery (returns one value)
+
+```sql
+-- Customers whose signup date is the latest in the table
+SELECT
+    customer_id,
+    full_name,
+    signup_date
+FROM customers
+WHERE signup_date = (SELECT MAX(signup_date) FROM customers);
+```
+
+**Expected output:**
+
+```
++-------------+-----------+-------------+
+| customer_id | full_name | signup_date |
++-------------+-----------+-------------+
+|          30 | Tara Bhat | 2025-12-18  |
++-------------+-----------+-------------+
+```
+
+### 9.2 — IN subquery (returns a list)
+
+```sql
+-- Customers who placed at least one CANCELLED order
+SELECT
+    customer_id,
+    full_name
+FROM customers
+WHERE customer_id IN (
+    SELECT DISTINCT customer_id
+    FROM orders
+    WHERE status = 'CANCELLED'
+)
+ORDER BY customer_id;
+```
+
+**Expected output:**
+
+```
++-------------+----------------+
+| customer_id | full_name      |
++-------------+----------------+
+|           9 | Anjali Desai   |
+|          14 | Rahul Joshi    |
+|          24 | Vinay Kulkarni |
++-------------+----------------+
+```
+
+### 9.3 — EXISTS subquery (returns true/false per row)
+
+```sql
+-- Same answer as 9.2 but using EXISTS
+SELECT
+    c.customer_id,
+    c.full_name
+FROM customers AS c
+WHERE EXISTS (
+    SELECT 1
+    FROM orders AS o
+    WHERE o.customer_id = c.customer_id
+      AND o.status = 'CANCELLED'
+)
+ORDER BY c.customer_id;
+```
+
+:::tip[HitaVir Tech Tip]
+`EXISTS` short-circuits — it stops scanning as soon as it finds the first match. For "does any matching row exist?" use `EXISTS`. For "is this value in this list?" use `IN`.
+:::
+
+### 9.4 — Correlated subquery (refers to outer row)
+
+```sql
+-- Each customer's most recent order date
+SELECT
+    c.customer_id,
+    c.full_name,
+    (SELECT MAX(o.order_date)
+     FROM orders AS o
+     WHERE o.customer_id = c.customer_id) AS last_order_date
+FROM customers AS c
+ORDER BY last_order_date DESC
+LIMIT 5;
+```
+
+**Expected output:**
+
+```
++-------------+----------------+-----------------+
+| customer_id | full_name      | last_order_date |
++-------------+----------------+-----------------+
+|          19 | Lakshmi Menon  | 2026-04-14      |
+|           5 | Kavya Iyer     | 2026-04-13      |
+|           1 | Asha Sharma    | 2026-04-12      |
+|           3 | Priya Patel    | 2026-04-11      |
+|          18 | Suresh Iyengar | 2026-04-10      |
++-------------+----------------+-----------------+
+```
+
+:::info[Pro Insight]
+Correlated subqueries can be slow — the inner query runs once *per outer row*. For tables in the millions, rewrite as a `JOIN ... GROUP BY` or a window function (Step 12). EXPLAIN will tell you which is cheaper.
+:::
+
+### 9.5 — Subquery in FROM (a "derived table")
+
+```sql
+-- Top 3 cities by customer count
+SELECT
+    city,
+    customer_count
+FROM (
+    SELECT
+        city,
+        COUNT(*) AS customer_count
+    FROM customers
+    WHERE city IS NOT NULL
+    GROUP BY city
+) AS city_counts
+ORDER BY customer_count DESC
+LIMIT 3;
+```
+
+**Expected output:**
+
+```
++-----------+----------------+
+| city      | customer_count |
++-----------+----------------+
+| Bengaluru |              3 |
+| Chennai   |              3 |
+| Delhi     |              3 |
++-----------+----------------+
+
+Note: four cities are tied at 3 customers (Bengaluru, Chennai, Delhi, Kochi). Without a deterministic tiebreaker the top-3 selection is non-deterministic — add `, city` to the `ORDER BY` for a stable result.
+```
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Pick a scalar subquery for "compare against one value"
+- ✅ Pick `IN` for "value matches any in a list"
+- ✅ Pick `EXISTS` for "any matching row exists"
+- ✅ Spot a correlated subquery and reason about its cost
+- ✅ Use a derived table (subquery in `FROM`) when an aggregate must feed another query
+
+---
+
+<KeyTakeaways>
+
+- Scalar subquery = compare against one value; `IN` = membership in a list; `EXISTS` = "any matching row?"
+- `EXISTS` short-circuits on the first match — usually the fastest existence check
+- A correlated subquery re-runs once per outer row — fine on small tables, dangerous on millions
+- Derived tables (subqueries in `FROM`) must be aliased and let an aggregate feed another query
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What makes a subquery "correlated"?',
+      options: [
+        'It returns more than one column',
+        'It references a column from the outer query, so it runs once per outer row',
+        'It uses GROUP BY internally',
+        'It appears inside the FROM clause',
+      ],
+      answer: 1,
+      explanation:
+        'The inner query depends on the current outer row (e.g. o.customer_id = c.customer_id), so it cannot be evaluated just once.',
+    },
+    {
+      question: 'For "customers who have at least one cancelled order", which construct short-circuits fastest?',
+      options: [
+        'EXISTS (SELECT 1 FROM orders WHERE …)',
+        'A scalar subquery with MAX()',
+        'CROSS JOIN plus DISTINCT',
+        'ORDER BY with LIMIT 1',
+      ],
+      answer: 0,
+      explanation:
+        'EXISTS stops at the first matching row — it answers "does any row exist?" without scanning the rest.',
+    },
+    {
+      question: 'A correlated subquery is slow on a 50M-row table. What is the standard rewrite?',
+      options: [
+        'Add LIMIT inside the subquery',
+        'Change IN to BETWEEN',
+        'Rewrite as a JOIN … GROUP BY or a window function and compare with EXPLAIN',
+        'Run it in a transaction',
+      ],
+      answer: 2,
+      explanation:
+        'Set-based rewrites evaluate once over the whole table instead of once per row; EXPLAIN confirms which plan is cheaper.',
+    },
+  ]}
+/>
+
+<LessonComplete />

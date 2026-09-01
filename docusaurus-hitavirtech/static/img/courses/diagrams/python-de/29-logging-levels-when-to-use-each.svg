@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 637 258" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="637" height="258" rx="12" fill="#f8f9fa"/>
+  <text x="318" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Logging Levels — When to Use Each</text>
+  <rect x="15" y="40" width="85" height="30" rx="6" fill="#1a73e8"/>
+  <text x="57" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Level</text>
+  <rect x="105" y="40" width="251" height="30" rx="6" fill="#1a73e8"/>
+  <text x="231" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Meaning</text>
+  <rect x="362" y="40" width="259" height="30" rx="6" fill="#1a73e8"/>
+  <text x="492" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Example</text>
+  <rect x="15" y="76" width="85" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">DEBUG</text>
+  <rect x="105" y="76" width="251" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="115" y="94" font-size="12" fill="#1a73e8">Detailed info for developers</text>
+  <rect x="362" y="76" width="259" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="372" y="94" font-size="12" fill="#1a73e8">"Loaded row 42 with values..."</text>
+  <rect x="15" y="108" width="85" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">INFO</text>
+  <rect x="105" y="108" width="251" height="28" rx="4" fill="white"/>
+  <text x="115" y="126" font-size="12" fill="#3c4043">Normal operation milestones</text>
+  <rect x="362" y="108" width="259" height="28" rx="4" fill="white"/>
+  <text x="372" y="126" font-size="12" fill="#3c4043">"Pipeline started", "Loaded 1500 rows"</text>
+  <rect x="15" y="140" width="85" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">WARNING</text>
+  <rect x="105" y="140" width="251" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="115" y="158" font-size="12" fill="#1a73e8">Unexpected but not failure</text>
+  <rect x="362" y="140" width="259" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="372" y="158" font-size="12" fill="#1a73e8">"Skipped 3 invalid records"</text>
+  <rect x="15" y="172" width="85" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">ERROR</text>
+  <rect x="105" y="172" width="251" height="28" rx="4" fill="white"/>
+  <text x="115" y="190" font-size="12" fill="#3c4043">Operation failed but pipeline continues</text>
+  <rect x="362" y="172" width="259" height="28" rx="4" fill="white"/>
+  <text x="372" y="190" font-size="12" fill="#3c4043">"Could not write report.json"</text>
+  <rect x="15" y="204" width="85" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">CRITICAL</text>
+  <rect x="105" y="204" width="251" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="115" y="222" font-size="12" fill="#1a73e8">Pipeline cannot continue</text>
+  <rect x="362" y="204" width="259" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="372" y="222" font-size="12" fill="#1a73e8">"Database is unreachable"</text>
+  <text x="318" y="252" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

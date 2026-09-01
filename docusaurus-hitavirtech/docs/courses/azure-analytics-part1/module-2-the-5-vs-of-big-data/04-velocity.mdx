@@ -1,0 +1,129 @@
+---
+title: 'Velocity'
+sidebar_position: 4
+description: 'The third V — the speed spectrum from nightly batch to sub-millisecond real-time, and how to match pipeline speed to the decision deadline.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Define Velocity and place workloads on the batch-to-real-time spectrum
+- Match required latency to real use cases like fraud detection and dashboards
+- Explain why batch remains the workhorse of real-world analytics
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              THE  3rd  V   -   VELOCITY                      |
+  |              "How fast is the data?"                         |
+  +==============================================================+
+```
+
+### What is Velocity?
+
+🌊 **Velocity** is the speed at which data **arrives**, **moves**, and must be **processed** to deliver value.
+
+### The Velocity Spectrum
+
+| Freshness | Icon | Approach | Example Use Case |
+|-----------|:---:|----------|------------------|
+| Next day | 🐌 | Batch (nightly) | Finance reports |
+| Every hour | 🐇 | Mini-batch | Ops dashboards |
+| Seconds | 🚀 | Streaming | Live pricing |
+| Sub-millisecond | ⚡ | Real-time | Fraud detection, HFT |
+
+### Why Velocity is Hard
+
+| Problem | Solution |
+|---------|----------|
+| Disks too slow | In-memory / caches |
+| Batch SQL too slow | Stream-processing engines |
+| One machine too small | Horizontal auto-scaling |
+| Failures = data loss | Durable logs (Kafka / Event Hubs) |
+
+### Real-World Velocity
+
+| Scenario | Required Latency |
+|----------|------------------|
+| 💳 Credit card fraud | Under 100 ms |
+| 📈 Stock trading | Microseconds |
+| 📱 Social feed | Seconds |
+| 🚚 Delivery tracking | Minutes |
+| 📊 Exec dashboard | Hourly |
+| 🧾 Month close | Daily batch |
+
+### Questions Velocity Forces You to Ask
+
+- 🕒 Do we **really** need real-time, or is 5 minutes fine?
+- 🐌 How do we handle **late-arriving** events?
+- 📈 What if the stream **falls behind** during a spike?
+- 🔁 How do we **replay** events on failure?
+
+:::tip[HitaVir Tech says]
+"Streaming is fashionable. Batch is profitable. 80% of real-world analytics
+runs on batch — don't reach for streaming unless the business truly cannot wait."
+:::
+
+:::info[Velocity in one line]
+Match the pipeline's speed to the decision's deadline — no faster.
+:::
+
+### Preview — Azure Services That Solve Velocity
+
+![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Data Explorer](/img/courses/azure-icons/data-explorer.svg) ![Functions](/img/courses/azure-icons/functions.svg) ![Event Grid](/img/courses/azure-icons/event-grid.svg)
+
+*Coming up in "Azure Services for Velocity".*
+
+<KeyTakeaways>
+
+- Velocity covers how fast data arrives, moves, and must be processed
+- The spectrum runs from nightly batch through mini-batch and streaming to sub-millisecond real-time
+- Durable logs like Kafka / Event Hubs prevent data loss when consumers fail or fall behind
+- Roughly 80% of real-world analytics runs on batch — pick the speed the decision actually needs
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Credit card fraud detection typically requires what latency?',
+      options: [
+        'Under 100 milliseconds',
+        'About one hour',
+        'Next-day batch',
+        'One week',
+      ],
+      answer: 0,
+      explanation:
+        'The transaction must be approved or declined while the card is at the terminal — under 100 ms.',
+    },
+    {
+      question: 'What is the guiding rule for choosing pipeline speed?',
+      options: [
+        'Always build real-time — it future-proofs the platform',
+        'Match the pipeline speed to the decision deadline, no faster',
+        'Always use nightly batch — it is cheapest',
+        'Copy whatever competitors do',
+      ],
+      answer: 1,
+      explanation:
+        'Faster pipelines cost more to build and run. If the decision can wait 5 minutes, a 5-minute pipeline is correct.',
+    },
+    {
+      question: 'What prevents data loss when a stream consumer crashes mid-processing?',
+      options: [
+        'In-memory caches',
+        'Horizontal auto-scaling',
+        'Nightly backups',
+        'Durable logs such as Kafka or Event Hubs that allow replay',
+      ],
+      answer: 3,
+      explanation:
+        'Durable, ordered logs retain events so consumers can replay from where they left off after a failure.',
+    },
+  ]}
+/>
+
+<LessonComplete />

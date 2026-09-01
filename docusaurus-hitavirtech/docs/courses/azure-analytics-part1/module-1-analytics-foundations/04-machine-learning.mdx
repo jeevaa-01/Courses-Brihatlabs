@@ -1,0 +1,120 @@
+---
+title: 'Machine Learning'
+sidebar_position: 4
+description: 'How machine learning differs from traditional programming, the three flavors of ML, and where ML plugs into the analytics maturity ladder.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Contrast traditional programming (rules + data) with machine learning (data + answers)
+- Name the three flavors of ML — supervised, unsupervised, reinforcement — with an example of each
+- Explain why L3-L4 analytics need ML while L1-L2 stop at SQL
+
+</LearningObjectives>
+
+### What is Machine Learning?
+
+🤖 **Machine Learning (ML)** is a branch of AI where algorithms **learn patterns from data** instead of being explicitly programmed.
+
+### Traditional Programming vs Machine Learning
+
+```
+  +-----------------------------+      +-----------------------------+
+  |    TRADITIONAL PROGRAMMING  |      |    MACHINE LEARNING         |
+  |  -------------------------  |      |  -------------------------  |
+  |                             |      |                             |
+  |   Rules + Data              |      |   Data + Answers            |
+  |         |                   |      |         |                   |
+  |         v                   |      |         v                   |
+  |     Program                 |      |    Learned Model            |
+  |         |                   |      |         |                   |
+  |         v                   |      |         v                   |
+  |     Answer                  |      |    Rules (weights)          |
+  |                             |      |                             |
+  |  Human writes the rules.    |      |  Machine learns the rules.  |
+  +-----------------------------+      +-----------------------------+
+```
+
+### The Three Flavors of ML
+
+| Flavor | Icon | Data Needed | Example | Azure Service |
+|--------|:---:|-------------|---------|---------------|
+| **Supervised** | 🎯 | Labeled examples | Spam filter, fraud detection, image classification | 🤖 Azure ML |
+| **Unsupervised** | 🔎 | No labels | Customer segmentation, anomaly detection, topic modeling | 🤖 Azure ML • 💭 AI Language |
+| **Reinforcement** | 🎮 | Reward signals | Game AI, robotics, recommenders | 🤖 Azure ML • 🎯 Personalizer |
+
+### How ML Powers Analytics
+
+```
+  Level  Stops at SQL               Needs ML
+  -----  --------------------       --------------------
+  L1     Descriptive     OK          -
+  L2     Diagnostic      OK          -
+  L3     Predictive                  Machine learning
+  L4     Prescriptive                ML + optimization
+```
+
+:::tip[HitaVir Tech says]
+"ML is not magic — it's statistics at scale. If your analytics foundations are
+shaky, your ML models will be too. Clean data first, cool models second."
+:::
+
+### Preview — Azure ML Services
+
+![ML](/img/courses/azure-icons/ml.svg) ![OpenAI](/img/courses/azure-icons/openai.svg) ![Cognitive Services](/img/courses/azure-icons/cognitive-services.svg) ![AI Search](/img/courses/azure-icons/ai-search.svg) ![Anomaly Detector](/img/courses/azure-icons/anomaly-detector.svg) ![Personalizer](/img/courses/azure-icons/personalizer.svg)
+
+*Coming up in "Azure Services for Value" (L3-L4 analytics).*
+
+<KeyTakeaways>
+
+- Traditional programming: human writes the rules. ML: the machine learns the rules from data
+- Supervised ML learns from labeled examples; unsupervised finds structure without labels; reinforcement learns from rewards
+- L1-L2 analytics stop at SQL; L3 (predictive) and L4 (prescriptive) need ML
+- Clean, trustworthy data is the prerequisite for any useful ML model
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'A spam filter trained on emails already labeled "spam" or "not spam" is an example of which ML flavor?',
+      options: [
+        'Supervised learning',
+        'Unsupervised learning',
+        'Reinforcement learning',
+        'Prescriptive analytics',
+      ],
+      answer: 0,
+      explanation:
+        'Labeled examples (spam / not spam) make it supervised learning — the most common flavor in industry.',
+    },
+    {
+      question: 'What does machine learning produce from "Data + Answers"?',
+      options: [
+        'A database schema',
+        'A dashboard',
+        'A learned model whose weights encode the rules',
+        'A fixed if-else program written by an engineer',
+      ],
+      answer: 2,
+      explanation:
+        'ML inverts traditional programming: instead of a human writing rules, the algorithm learns the rules (weights) from data.',
+    },
+    {
+      question: 'Customer segmentation with no pre-existing labels uses which flavor of ML?',
+      options: [
+        'Supervised learning',
+        'Unsupervised learning',
+        'Reinforcement learning',
+        'Transfer learning',
+      ],
+      answer: 1,
+      explanation:
+        'With no labels, the algorithm discovers natural groupings itself — that is unsupervised learning.',
+    },
+  ]}
+/>
+
+<LessonComplete />

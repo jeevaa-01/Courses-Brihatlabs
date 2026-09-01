@@ -1,0 +1,107 @@
+---
+title: 'Mini Challenges and Exercises'
+sidebar_position: 1
+description: 'Five optional challenges — blind rebuild, teach-it, error classification, elevator pitch, and a production scenario — that convert knowledge into skill.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Complete the blind rebuild of your entire learning system from memory
+- Classify errors and pitch your methodology under time pressure
+- Respond to a realistic production scenario using the debugging protocol
+
+</LearningObjectives>
+
+### Challenge 1 — The Blind Rebuild
+
+```
+Delete your entire learning system:
+  rm -rf ~/hitavir-learning-system
+
+Now rebuild everything from memory.
+Time yourself. Log the result in your rebuild tracker.
+```
+
+### Challenge 2 — Teach It
+
+Find a peer, friend, or family member. Explain in 2 minutes:
+- What the Execute-Understand-Explain cycle is
+- How the Debugging Protocol works
+- Why checkpoint validation matters
+
+If they understand your explanation, you truly know it.
+
+### Challenge 3 — The Error Classification Drill
+
+Without looking at the reference table, classify these errors:
+
+```
+1. "SyntaxError: unexpected EOF while parsing"    → Type: ?
+2. "Connection refused on port 5432"              → Type: ?
+3. "Access Denied for user 'admin'@'localhost'"   → Type: ?
+4. "java.lang.OutOfMemoryError: Java heap space"  → Type: ?
+5. "FileNotFoundError: [Errno 2] No such file"    → Type: ?
+```
+
+### Challenge 4 — The One-Minute Elevator Pitch
+
+Explain to a hiring manager in 60 seconds:
+- How you approach learning new technologies
+- How you debug issues systematically
+- Why your methodology makes you a stronger engineer
+
+Time yourself. If it takes more than 60 seconds, simplify.
+
+### Challenge 5 — The Production Scenario
+
+A teammate sends you this message:
+
+```
+"Spark job keeps failing with OutOfMemory.
+Tried increasing executor memory to 64GB but still fails."
+```
+
+Using the debugging protocol, write your response. What questions would you ask? What would you check first?
+
+**"The restless mind is subdued through steady practice and detachment."** *(Bhagavad Gita 6.35)* — These challenges are optional, but the engineers who do them are the ones who get hired.
+
+<KeyTakeaways>
+
+- The blind rebuild (delete everything, rebuild from memory, time yourself) is the ultimate ownership test
+- If a peer understands your 2-minute explanation, you truly know the concept
+- The production scenario trains you to ask diagnostic questions before changing anything — more memory is not always the fix
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: '"java.lang.OutOfMemoryError: Java heap space" — which error type is this in the classification drill?',
+      options: [
+        'Syntax error',
+        'Connection error',
+        'Permission error',
+        'Resource error',
+      ],
+      answer: 3,
+      explanation:
+        'OutOfMemory and quota-exceeded errors are resource errors — scale up or optimize the workload.',
+    },
+    {
+      question: 'A teammate says a Spark job still OOMs after raising executor memory to 64GB. Following the debugging protocol, what should you do FIRST?',
+      options: [
+        'Ask diagnostic questions — data size, skew, collect() calls — before changing anything else',
+        'Raise executor memory to 128GB',
+        'Restart the cluster and retry',
+        'Rewrite the job in SQL',
+      ],
+      answer: 0,
+      explanation:
+        'STOP and READ/ISOLATE first. Throwing more memory at an unknown root cause (often skew or a driver-side collect) just burns money.',
+    },
+  ]}
+/>
+
+<LessonComplete />

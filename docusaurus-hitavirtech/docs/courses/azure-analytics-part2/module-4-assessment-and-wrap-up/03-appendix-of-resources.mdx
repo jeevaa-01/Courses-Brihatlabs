@@ -1,0 +1,124 @@
+---
+title: 'Appendix of Resources'
+sidebar_position: 3
+description: 'Official Microsoft docs, whitepapers, certifications, hands-on labs, books, and communities to continue after Azure Analytics Part 2.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Find the official docs, whitepapers, and certifications that extend this course
+- Pick one hands-on lab and one book to work through next
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |               RESOURCES  AND  NEXT  STEPS                    |
+  +==============================================================+
+```
+
+### Services Referenced in This Appendix
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Databricks](/img/courses/azure-icons/databricks.svg) ![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Data Explorer](/img/courses/azure-icons/data-explorer.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg) ![ML](/img/courses/azure-icons/ml.svg) ![Data Shares](/img/courses/azure-icons/data-shares.svg)
+
+### Official Microsoft Documentation
+
+| Topic | Icon | Where to Read |
+|-------|:---:|---------------|
+| Azure Data Lake Storage Gen2 | 🪣 | learn.microsoft.com/azure/storage/blobs/data-lake-storage-introduction |
+| Microsoft Purview | 🏗️ | learn.microsoft.com/purview |
+| Azure Data Factory | 🕸️ | learn.microsoft.com/azure/data-factory |
+| Azure Synapse Analytics | 🏛️ | learn.microsoft.com/azure/synapse-analytics |
+| Azure Databricks | 🔥 | learn.microsoft.com/azure/databricks |
+| Azure Event Hubs | 🌊 | learn.microsoft.com/azure/event-hubs |
+| Azure Stream Analytics | 🎯 | learn.microsoft.com/azure/stream-analytics |
+| Azure Data Explorer | 🔬 | learn.microsoft.com/azure/data-explorer |
+| Power BI | 📊 | learn.microsoft.com/power-bi |
+| Azure Machine Learning | 🤖 | learn.microsoft.com/azure/machine-learning |
+| Microsoft Fabric | 🏡 | learn.microsoft.com/fabric |
+
+### Microsoft Whitepapers (Free, Highly Recommended)
+
+| Whitepaper | Icon | Why Read It |
+|------------|:---:|-------------|
+| Azure Well-Architected Framework | 📐 | The canonical design checklist |
+| Cloud Adoption Framework — Data | 🏡 | Governance, operating models |
+| Azure Data Architecture Guide | 🗺️ | Reference diagrams, blessed by MS |
+| Modern Data Warehouse Architecture | 🏛️ | The classic lakehouse blueprint |
+| Microsoft Fabric Whitepaper | 🏡 | Why Fabric, and how it maps to Azure |
+
+### Free Training
+
+| Resource | Icon | Provider |
+|----------|:---:|----------|
+| Microsoft Learn — Azure Data Engineer path | 🎓 | learn.microsoft.com |
+| DP-203 Azure Data Engineer Associate cert | 🎯 | Microsoft Certification |
+| DP-500 / DP-600 Fabric certs | 🏆 | Microsoft Certification |
+| AI-102 Azure AI Engineer cert | 🧠 | Microsoft Certification |
+
+### Hands-on Labs to Try Next
+
+- 🧪 ADF Mapping Data Flow tutorial — visual ETL
+- 🪣 Purview Scan ADLS workshop
+- 🏛️ Synapse Serverless with TPC-H sample dataset
+- 🌊 Event Hubs + Stream Analytics Hello World
+- 📊 Power BI + Direct Lake on Fabric 10-minute demo
+- 🔥 Databricks Delta Lake fundamentals notebook
+
+### Books
+
+| Book | Why |
+|------|-----|
+| *Designing Data-Intensive Applications* — Martin Kleppmann | The single best data engineering book ever written |
+| *The Data Warehouse Toolkit* — Ralph Kimball | Star schemas, dimensional modeling, classics |
+| *Fundamentals of Data Engineering* — Joe Reis | Modern, cloud-era data engineering |
+| *Azure Data Engineering Cookbook* — Ahmad Osama | Practical Azure recipes |
+
+### Community
+
+- 🐦 **#Azure** and **#DataEngineering** hashtags on LinkedIn / X
+- 💬 **r/AZURE** and **r/dataengineering** on Reddit
+- 🎥 **Microsoft Ignite** and **Build** talks on YouTube (free)
+- 🎓 **HitaVir Tech** — stay tuned for Part 3 and capstone workshops
+
+<KeyTakeaways>
+
+- learn.microsoft.com hosts free official docs for every service in this course, plus the Azure Data Engineer path
+- DP-203 (Azure Data Engineer) and DP-600 (Fabric) are the natural certifications after this course
+- *Designing Data-Intensive Applications* and Kimball's *The Data Warehouse Toolkit* are the canonical books
+- Pick one hands-on lab from the list and run it this week while the patterns are fresh
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which certification maps most directly to the Azure data engineering content in this course?',
+      options: [
+        'AZ-900 Azure Fundamentals',
+        'DP-203 Azure Data Engineer Associate',
+        'AI-102 Azure AI Engineer',
+        'SC-200 Security Operations Analyst',
+      ],
+      answer: 1,
+      explanation:
+        'DP-203 covers ADLS, Synapse, ADF, and streaming — the exact services and patterns from Parts 1 and 2. DP-600 extends it to Fabric.',
+    },
+    {
+      question: 'Which book is the classic reference for star schemas and dimensional modeling?',
+      options: [
+        'Fundamentals of Data Engineering — Joe Reis',
+        'Designing Data-Intensive Applications — Martin Kleppmann',
+        'Azure Data Engineering Cookbook — Ahmad Osama',
+        'The Data Warehouse Toolkit — Ralph Kimball',
+      ],
+      answer: 3,
+      explanation:
+        'Kimball literally wrote the book on dimensional modeling — fact tables, dimensions, and the star schemas you met in Module 2.',
+    },
+  ]}
+/>
+
+<LessonComplete />

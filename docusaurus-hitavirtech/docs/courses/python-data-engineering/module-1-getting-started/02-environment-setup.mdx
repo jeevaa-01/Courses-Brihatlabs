@@ -1,0 +1,308 @@
+---
+title: 'Environment Setup'
+sidebar_position: 2
+description: 'Install Python with PATH enabled, set up VS Code, and create a virtual environment with the core data engineering packages.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Install Python with **Add Python to PATH** enabled and verify it with `python --version`
+- Set up VS Code with the Python extension and the Dark+ theme
+- Create and activate a virtual environment, then install pandas, numpy, requests, and pyarrow
+- Capture your dependencies in `requirements.txt`
+
+</LearningObjectives>
+
+**What is an "environment"?**
+
+An environment is the set of tools your code runs inside — Python itself, an editor to write code in, and a sandbox to install libraries. We will set up all three on Windows.
+
+Let us set up a professional Python development environment.
+
+### Step 1 — Install Python
+
+Go to [https://www.python.org/downloads/](https://www.python.org/downloads/) and download the latest Python 3.x installer.
+
+**CRITICAL during installation:**
+
+1. **Check the box** that says **"Add Python to PATH"** (at the bottom of the first screen)
+2. Click **"Install Now"**
+
+**What does "Add to PATH" mean?**
+
+PATH is a list of folders Windows searches when you type a command. If Python is on PATH, typing `python` anywhere in any terminal works. If you skip this, Python will be installed but invisible to your terminal.
+
+If you miss the PATH checkbox, Python commands will not work — reinstall and check it.
+
+### Step 2 — Verify Python Installation
+
+Open **Git Bash** (or Command Prompt) and run:
+
+```bash
+python --version
+```
+
+**Expected output:**
+
+```
+Python 3.12.3
+```
+
+Now check **pip**, Python's package installer (it ships with Python):
+
+```bash
+pip --version
+```
+
+**Expected output:**
+
+```
+pip 24.0 from ... (python 3.12)
+```
+
+**What is pip?**
+
+`pip` is the tool that downloads and installs Python libraries (extra code other people wrote that you can reuse). Think of it like the App Store, but for Python code.
+
+### Step 3 — Install VS Code
+
+VS Code is a free code editor from Microsoft. Download from [https://code.visualstudio.com/](https://code.visualstudio.com/) and install with default settings.
+
+**Why VS Code?**
+
+A code editor is a souped-up Notepad: it color-codes your Python so it is easier to read, catches typos as you type, and runs your scripts with one click.
+
+### Step 4 — Install the Python Extension for VS Code
+
+1. Open VS Code
+2. Press `Ctrl + Shift + X` (Extensions panel)
+3. Search for **"Python"** by Microsoft
+4. Click **Install**
+
+### Step 5 — Set VS Code to the Dark+ Theme
+
+Every code example in this codelab is written and explained against the **Dark+ (default dark)** theme. Set the same theme so what you see on screen matches what you see here.
+
+1. Press `Ctrl + K` then `Ctrl + T` to open the Color Theme picker
+2. Choose **"Dark+ (default dark)"** (or **"Default Dark Modern"** on newer VS Code versions)
+3. Press `Enter` to confirm
+
+Why dark theme for long study sessions? Less eye strain, better contrast on syntax colors, and it matches every screenshot in this codelab.
+
+#### What Your Code Will Look Like in VS Code Dark+
+
+When you paste any Python code from this codelab into a `.py` file in VS Code, the syntax highlighter colors it like this:
+
+![What Your Code Will Look Like in VS Code Dark+](/img/courses/diagrams/python-de/03-what-your-code-will-look-like-in-vs-code-dark.svg)
+
+If your code shows up white-on-black with no colors, the Python extension is probably not active — make sure the file is saved with a `.py` extension and the bottom-right of VS Code shows "Python" as the language mode.
+
+### Step 6 — Create Your Project Folder
+
+```bash
+mkdir -p ~/python-de-learning
+cd ~/python-de-learning
+```
+
+**What did that do?**
+
+`mkdir` makes a new folder. `~` is your home folder (e.g., `C:/Users/YourName`). `cd` moves into the folder. From now on, every file you create lives here.
+
+### Step 7 — Create a Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+**What is a virtual environment, and why?**
+
+A virtual environment (`venv`) is a private sandbox of Python libraries for **this project only**. Different projects need different versions of libraries — without a venv, they would conflict. The venv folder holds its own Python and its own libraries, isolated from everything else.
+
+Activate it:
+
+**Git Bash:**
+
+```bash
+source venv/Scripts/activate
+```
+
+**Command Prompt:**
+
+```cmd
+venv\Scripts\activate
+```
+
+You should see `(venv)` at the beginning of your prompt — that means it is active:
+
+```
+(venv) user@COMPUTER ~/python-de-learning
+$
+```
+
+### Step 8 — Install Essential Packages
+
+```bash
+pip install pandas numpy requests pyarrow
+```
+
+**What did we just install?**
+
+- **pandas** — the spreadsheet-in-Python library every data engineer uses
+- **numpy** — fast number-crunching (pandas is built on top of it)
+- **requests** — for calling APIs to pull data over the internet
+- **pyarrow** — lets pandas read and write **Parquet**, the format used by every modern data platform
+
+Save your dependency list so anyone can recreate your environment:
+
+```bash
+pip freeze > requirements.txt
+cat requirements.txt
+```
+
+**What is requirements.txt?**
+
+`requirements.txt` is a plain-text file listing every library your project uses, with versions. When you share your project, others run `pip install -r requirements.txt` to get the exact same setup.
+
+### Step 9 — Verify Everything Works
+
+Create a test file named **`test_setup.py`**:
+
+```python
+import sys
+import pandas as pd
+import numpy as np
+
+print(f"Python version: {sys.version}")
+print(f"pandas version: {pd.__version__}")
+print(f"numpy version: {np.__version__}")
+print("\nHitaVir Tech - Setup Complete!")
+print("You are ready to learn Python for Data Engineering!")
+```
+
+Run it:
+
+```bash
+python test_setup.py
+```
+
+**Expected output:**
+
+```
+Python version: 3.12.3 (tags/v3.12.3:...)
+pandas version: 2.2.1
+numpy version: 1.26.4
+
+HitaVir Tech - Setup Complete!
+You are ready to learn Python for Data Engineering!
+```
+
+### Your Project Structure So Far
+
+```
+python-de-learning/
+├── venv/              ← Virtual environment (do not edit)
+├── requirements.txt   ← Package list
+└── test_setup.py      ← Setup verification
+```
+
+:::tip[HitaVir Tech says]
+"Always use virtual environments. In the real world, different projects need different package versions. Virtual environments prevent them from conflicting."
+:::
+
+### Common Setup Mistakes
+
+![Common Setup Mistakes](/img/courses/diagrams/python-de/04-common-setup-mistakes.svg)
+
+### Setup Checkpoint — You Should Now Be Able To...
+
+```
++--------------------------------------------------------------+
+|  [ ]  Open a terminal and run `python --version` successfully |
+|  [ ]  Activate a virtual environment and see (venv) prompt    |
+|  [ ]  Run `pip install pandas` without errors                 |
+|  [ ]  Open VS Code and run a .py file with one click          |
+|  [ ]  Recreate this setup on any new Windows machine          |
++--------------------------------------------------------------+
+```
+
+If any box is unchecked, revisit the step above before moving on.
+
+### What You Have Learnt on This Page
+
+By the end of this page you should be able to confidently:
+
+- **Install Python** with PATH enabled and verify with `python --version`
+- Use **pip** to install third-party libraries
+- **Install VS Code**, the Python extension, and switch to **Dark+ (default dark)** theme
+- Create a **virtual environment** (`venv`) and activate it
+- Run `pip install pandas` inside the venv without errors
+- Recreate this entire setup on any new Windows machine
+
+### PEP 8 — Configure Your Editor to Enforce Style Automatically
+
+A great environment is one where **PEP 8 is enforced for you, every save**. Set this up *now* — never type indentation by hand again.
+
+- In VS Code, set **Editor: Tab Size = 4** and **Insert Spaces = true**
+- Search settings for **Render Whitespace** → set to `all` (so tabs vs. spaces are visible)
+- Install the **Black Formatter** and **Flake8** extensions
+- Enable **Format On Save** with Black as the default formatter
+- Group your imports: stdlib → third-party → local, **one blank line between groups**
+
+:::note[Inspiration for the road ahead]
+*"Give me six hours to chop down a tree, and I will spend the first four sharpening the axe."*
+— Abraham Lincoln
+:::
+
+<KeyTakeaways>
+
+- Skipping **Add Python to PATH** is the #1 setup mistake — the terminal cannot find `python` without it
+- `pip` is Python's package installer and ships with Python
+- A venv is a per-project sandbox of libraries — activate it and `(venv)` appears in your prompt
+- `pip freeze > requirements.txt` lets anyone recreate your exact environment
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'You type python --version and Windows says the command is not found. Most likely cause?',
+      options: [
+        'Python needs a reboot to work',
+        '"Add Python to PATH" was not ticked during install',
+        'VS Code is not installed',
+        'pip is missing',
+      ],
+      answer: 1,
+      explanation:
+        'Without the PATH entry the shell cannot locate python.exe. Reinstall with the box ticked and open a new terminal.',
+    },
+    {
+      question: 'What does a virtual environment give you?',
+      options: [
+        'A faster Python interpreter',
+        'Protection from viruses',
+        'A private, per-project set of installed libraries',
+        'A cloud backup of your code',
+      ],
+      answer: 2,
+      explanation:
+        'Different projects need different library versions; a venv isolates them so they never conflict.',
+    },
+    {
+      question: 'Which file lets a teammate recreate your environment with one command?',
+      options: [
+        'requirements.txt',
+        'venv/',
+        'test_setup.py',
+        'settings.json',
+      ],
+      answer: 0,
+      explanation:
+        'pip install -r requirements.txt installs the exact pinned versions you exported with pip freeze.',
+    },
+  ]}
+/>
+
+<LessonComplete />

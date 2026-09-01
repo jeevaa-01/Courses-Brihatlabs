@@ -1,0 +1,131 @@
+---
+title: 'Connect to MySQL Using Workbench'
+sidebar_position: 1
+description: 'Open MySQL Workbench, connect to the Local instance MySQL80 with your root password, and verify with SELECT VERSION().'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Open MySQL Workbench and connect to **Local instance MySQL80** as root
+- Identify the Navigator, query editor, and output panels
+- Verify the connection by running `SELECT VERSION();`
+
+</LearningObjectives>
+
+MySQL Workbench should open automatically after installation. If not, search for **"MySQL Workbench"** in the Windows Start menu.
+
+### Step 1 — Open MySQL Workbench
+
+You will see the Welcome screen with:
+
+- **MySQL Connections** section at the bottom
+- A connection tile called **"Local instance MySQL80"**
+
+### Step 2 — Click the Local Instance
+
+Click on **Local instance MySQL80** (the grey tile showing `root` and `localhost:3306`).
+
+### Step 3 — Enter Your Password
+
+A dialog box appears:
+
+```
+Connect to MySQL Server
+Service: MySQL@localhost:3306
+User: root
+Password: [enter your root password here]
+```
+
+Enter the root password you set during installation.
+
+Check **"Save password in vault"** if you do not want to type it every time.
+
+Click **OK**.
+
+### Step 4 — You Are Connected!
+
+You should now see the MySQL Workbench main interface with:
+
+- **Navigator panel** on the left (schemas, users, etc.)
+- **Query editor** in the center (where you write SQL)
+- **Output panel** at the bottom (query results)
+
+### Verify the Connection
+
+In the query editor, type:
+
+```sql
+SELECT VERSION();
+```
+
+Click the **lightning bolt** icon (or press `Ctrl + Enter`) to run the query.
+
+**Expected output:**
+
+```
++-----------+
+| VERSION() |
++-----------+
+| 8.0.xx    |
++-----------+
+```
+
+If you see a version number, your MySQL is working perfectly!
+
+:::tip[HitaVir Tech says]
+"Seeing the version number is your 'Hello World' moment for databases. It confirms that the server is running, the connection works, and you are ready to write SQL."
+:::
+
+<KeyTakeaways>
+
+- The **Local instance MySQL80** tile connects as `root` to `localhost:3306`
+- **Save password in vault** spares you retyping the root password each session
+- Queries run with the **lightning bolt** icon or `Ctrl + Enter`
+- `SELECT VERSION();` returning `8.0.xx` proves the whole setup works
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which query verifies your Workbench connection is working?',
+      options: [
+        'SELECT VERSION();',
+        'SHOW CONNECTION;',
+        'PING localhost;',
+        'TEST DATABASE;',
+      ],
+      answer: 0,
+      explanation:
+        'SELECT VERSION() returns the server version, proving the server is running and the connection works.',
+    },
+    {
+      question: 'What does the connection tile "Local instance MySQL80" connect to?',
+      options: [
+        'A cloud-hosted MySQL trial server',
+        'root @ localhost on port 3306',
+        'A read-only demo database',
+        'MySQL Shell in X Protocol mode',
+      ],
+      answer: 1,
+      explanation:
+        'The default tile connects as the root user to the MySQL80 service on localhost:3306.',
+    },
+    {
+      question: 'Where do you write SQL in the Workbench main interface?',
+      options: [
+        'The Navigator panel on the left',
+        'The Output panel at the bottom',
+        'The Windows Command Prompt',
+        'The query editor in the center',
+      ],
+      answer: 3,
+      explanation:
+        'The center query editor is where SQL is typed; Navigator lists schemas and Output shows results.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,121 @@
+---
+title: 'Install Python 3.11'
+sidebar_position: 1
+description: 'Install Python 3.11 with PATH configured, core data engineering packages, and a virtual environment.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Install Python 3.11 with **Add to PATH** enabled
+- Install the core data engineering packages (PySpark, pandas, boto3, …)
+- Create and activate a virtual environment
+
+</LearningObjectives>
+
+Python is the primary language for data engineering.
+
+:::warning[Use Python 3.11]
+Use Python **3.11** for best PySpark compatibility. Avoid 3.12+.
+:::
+
+### Step 1 - Download Python
+
+Go to [https://www.python.org/downloads/](https://www.python.org/downloads/)
+
+Download **Python 3.11.x** or use winget:
+
+```powershell
+winget install Python.Python.3.11
+```
+
+### Step 2 - Install Python
+
+:::danger[Critical]
+Check **Add Python to PATH** before clicking Install!
+:::
+
+1. Run the installer
+2. Tick **Add Python 3.11 to PATH**
+3. Click **Install Now**
+
+### Step 3 - Verify
+
+Open a **new** Git Bash window:
+
+```bash
+python --version
+# Python 3.11.x
+
+pip --version
+# pip 23.x from ...
+```
+
+### Step 4 - Install Data Engineering Packages
+
+```bash
+pip install --upgrade pip
+
+pip install pyspark==3.5.1 pandas numpy pyarrow boto3 delta-spark jupyter black flake8 pytest
+```
+
+### Step 5 - Create Virtual Environment (Best Practice)
+
+```bash
+cd /c/hitavirtect_codelabs
+python -m venv .venv
+source .venv/Scripts/activate
+# (.venv) prefix appears in terminal
+```
+
+<KeyTakeaways>
+
+- Python **3.11** (not 3.12+) is the sweet spot for PySpark compatibility
+- Forgetting **Add Python to PATH** is the #1 cause of `python not found`
+- `python -m venv .venv` + `source .venv/Scripts/activate` isolates project dependencies
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why does this course pin Python 3.11 instead of the newest version?',
+      options: [
+        'Best PySpark compatibility — newer versions can break Spark',
+        'Python 3.12 is paid software',
+        '3.11 is the only version with pip',
+        'Windows 11 cannot run Python 3.12',
+      ],
+      answer: 0,
+      explanation:
+        'PySpark lags the newest CPython releases; 3.11 is the safe choice for Spark 3.5.',
+    },
+    {
+      question: 'You installed Python but Git Bash says "python not found". Most likely cause?',
+      options: [
+        '"Add Python to PATH" was not ticked during install',
+        'Git Bash cannot run Python at all',
+        'You must reboot after every install',
+        'Python only works in PowerShell',
+      ],
+      answer: 0,
+      explanation:
+        'Without the PATH entry the shell cannot locate python.exe. Reinstall with the box ticked (and open a NEW terminal).',
+    },
+    {
+      question: 'What indicates your virtual environment is active?',
+      options: [
+        'The (.venv) prefix appears in the terminal prompt',
+        'python --version prints 3.11',
+        'A .venv file opens in VS Code',
+        'pip stops working',
+      ],
+      answer: 0,
+      explanation:
+        'Activation prepends the venv name to your prompt; packages now install into the venv instead of globally.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,251 @@
+---
+title: 'Step 11: Cleaning — NULLs, strings, dates, standardization'
+sidebar_position: 2
+description: 'Find and fix dirty data — COALESCE for NULLs, string normalization, deduplication, and sargable date filters.'
+---
+
+<DurationBadge minutes={25} />
+
+<LearningObjectives>
+
+- Detect dirty rows and replace NULLs with `COALESCE`/`IFNULL`
+- Standardize strings with `LOWER`, `UPPER`, `TRIM`, `SUBSTRING`, and `CONCAT`
+- Deduplicate with `GROUP BY … HAVING COUNT(*) > 1` and keep date filters sargable
+
+</LearningObjectives>
+
+> *"Excellence is not a singular act, but a habit. You are what you repeatedly do."*
+> — Aristotle (commonly paraphrased)
+
+:::info[HitaVir Tech connection]
+Real data is always dirty. Cleaning is not a one-time event — it is a habit baked into every load.
+:::
+
+:::tip[Why this matters now]
+Every cleaning rule below should land in your pipeline as a reusable view or stored function, not a one-off script.
+:::
+
+### 11.1 — Find the dirty rows
+
+```sql
+-- Customers with at least one quality issue
+SELECT
+    customer_id,
+    full_name,
+    email,
+    city
+FROM customers
+WHERE email IS NULL
+   OR city  IS NULL
+   OR email <> LOWER(email)              -- mixed-case email
+   OR city  IN ('bengaluru', 'BLR')      -- bad city spelling
+ORDER BY customer_id;
+```
+
+**Expected output:**
+
+```
++-------------+-----------------+------------------------------+-----------+
+| customer_id | full_name       | email                        | city      |
++-------------+-----------------+------------------------------+-----------+
+|           2 | Ravi Kumar      | ravi.kumar@example.com       | bengaluru |
+|          11 | Meera Rao       | meera.rao@example.com        | BLR       |
+|          14 | Rahul Joshi     | rahul.joshi@example.com      | NULL      |
+|          18 | Suresh Iyengar  | Suresh.IYENGAR@Example.COM   | Bengaluru |
+|          23 | Ritu Agarwal    | NULL                         | Delhi     |
+|          26 | Sanjay Murthy   | sanjay.murthy@example.com    | bengaluru |
++-------------+-----------------+------------------------------+-----------+
+```
+
+### 11.2 — NULL handling: COALESCE and IFNULL
+
+```sql
+-- Show 'unknown' instead of NULL for missing cities or emails
+SELECT
+    customer_id,
+    full_name,
+    COALESCE(email, 'unknown@example.com') AS email,
+    COALESCE(city,  'Unknown')             AS city
+FROM customers
+WHERE customer_id IN (14, 23);
+```
+
+**Expected output:**
+
+```
++-------------+--------------+-------------------------+---------+
+| customer_id | full_name    | email                   | city    |
++-------------+--------------+-------------------------+---------+
+|          14 | Rahul Joshi  | rahul.joshi@example.com | Unknown |
+|          23 | Ritu Agarwal | unknown@example.com     | Delhi   |
++-------------+--------------+-------------------------+---------+
+```
+
+`COALESCE(a, b, c, ...)` returns the first non-NULL argument. `IFNULL(a, b)` is a 2-argument shortcut.
+
+### 11.3 — String standardization
+
+```sql
+-- Normalize emails (trim + lowercase) and cities
+SELECT
+    customer_id,
+    LOWER(TRIM(email))                                        AS email_clean,
+    CASE
+        WHEN UPPER(TRIM(city)) IN ('BENGALURU','BLR','BANGALORE') THEN 'Bengaluru'
+        WHEN UPPER(TRIM(city)) = 'MUMBAI'                          THEN 'Mumbai'
+        ELSE INITCAP_FALLBACK(city)
+    END AS city_clean
+FROM customers
+WHERE customer_id IN (2, 11, 18, 26)
+ORDER BY customer_id;
+```
+
+MySQL has no built-in `INITCAP`. Replace it with a hand-rolled `CONCAT(UPPER(SUBSTRING(city,1,1)), LOWER(SUBSTRING(city,2)))`:
+
+```sql
+SELECT
+    customer_id,
+    LOWER(TRIM(email)) AS email_clean,
+    CASE
+        WHEN UPPER(TRIM(city)) IN ('BENGALURU','BLR','BANGALORE') THEN 'Bengaluru'
+        ELSE CONCAT(
+                UPPER(SUBSTRING(TRIM(city), 1, 1)),
+                LOWER(SUBSTRING(TRIM(city), 2))
+             )
+    END AS city_clean
+FROM customers
+WHERE customer_id IN (2, 11, 18, 26)
+ORDER BY customer_id;
+```
+
+**Expected output:**
+
+```
++-------------+-----------------------------+------------+
+| customer_id | email_clean                 | city_clean |
++-------------+-----------------------------+------------+
+|           2 | ravi.kumar@example.com      | Bengaluru  |
+|          11 | meera.rao@example.com       | Bengaluru  |
+|          18 | suresh.iyengar@example.com  | Bengaluru  |
+|          26 | sanjay.murthy@example.com   | Bengaluru  |
++-------------+-----------------------------+------------+
+```
+
+### 11.4 — Deduplication
+
+```sql
+-- Find rows that share full_name (potential duplicates)
+SELECT
+    full_name,
+    COUNT(*)                       AS occurrences,
+    GROUP_CONCAT(customer_id)      AS customer_ids
+FROM customers
+GROUP BY full_name
+HAVING COUNT(*) > 1;
+```
+
+**Expected output:**
+
+```
++------------+-------------+--------------+
+| full_name  | occurrences | customer_ids |
++------------+-------------+--------------+
+| Ravi Kumar |           2 | 2,29         |
++------------+-------------+--------------+
+```
+
+Picking which row to keep usually requires more than name alone — match on `(LOWER(TRIM(email)))` or business keys. Step 14's capstone shows the production pattern.
+
+### 11.5 — Date parsing
+
+```sql
+-- Extract pieces of a date for grouping
+SELECT
+    YEAR(order_date)   AS yr,
+    MONTH(order_date)  AS mo,
+    COUNT(*)           AS orders_in_month
+FROM orders
+GROUP BY YEAR(order_date), MONTH(order_date)
+ORDER BY yr, mo;
+```
+
+**Expected output:**
+
+```
++------+----+-----------------+
+| yr   | mo | orders_in_month |
++------+----+-----------------+
+| 2026 |  1 |              27 |
+| 2026 |  2 |              28 |
+| 2026 |  3 |              31 |
+| 2026 |  4 |              14 |
++------+----+-----------------+
+```
+
+:::tip[HitaVir Tech Tip]
+Wrapping `order_date` in `YEAR()` or `MONTH()` makes the column non-sargable — any index on `order_date` cannot help. For range queries, prefer `WHERE order_date >= '2026-02-01' AND order_date < '2026-03-01'` over `WHERE MONTH(order_date) = 2`.
+:::
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Find rows with NULLs and replace with `COALESCE`
+- ✅ Standardize strings with `LOWER`, `UPPER`, `TRIM`, `SUBSTRING`, `CONCAT`
+- ✅ Detect duplicates with `GROUP BY ... HAVING COUNT(*) > 1`
+- ✅ Pull `YEAR`, `MONTH`, `DAY` from a `DATE` column
+- ✅ Identify when a function on a column makes a query non-sargable
+
+---
+
+<KeyTakeaways>
+
+- `COALESCE(a, b, …)` returns the first non-NULL argument — the standard NULL-replacement tool
+- Standardize text with `LOWER(TRIM(col))`; canonicalize known variants (`BLR` → `Bengaluru`) with `CASE`
+- Duplicates surface with `GROUP BY … HAVING COUNT(*) > 1`; deciding which row to keep needs business keys
+- Functions wrapped around a filtered column make it non-sargable and defeat its index
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What does COALESCE(email, city, "unknown") return?',
+      options: [
+        'Always "unknown"',
+        'The first non-NULL argument, left to right',
+        'NULL if any argument is NULL',
+        'A concatenation of all three values',
+      ],
+      answer: 1,
+      explanation:
+        'COALESCE walks its arguments in order and returns the first that is not NULL.',
+    },
+    {
+      question: "Why is WHERE MONTH(order_date) = 2 worse than a date-range filter?",
+      options: [
+        'It returns different rows',
+        'MONTH() is only available in MySQL 9',
+        'Wrapping the column in a function makes it non-sargable, so the index on order_date is ignored',
+        'It fails in leap years',
+      ],
+      answer: 2,
+      explanation:
+        'The engine cannot use an index range scan when the column is hidden inside a function; the half-open range keeps the index usable.',
+    },
+    {
+      question: 'MySQL has no INITCAP function. How did this lesson title-case a city?',
+      options: [
+        'CONCAT(UPPER(SUBSTRING(city,1,1)), LOWER(SUBSTRING(city,2)))',
+        'TITLECASE(city)',
+        'CAST(city AS PROPER)',
+        'FORMAT(city, "Aa")',
+      ],
+      answer: 0,
+      explanation:
+        'Uppercase the first character, lowercase the rest, and concatenate — the hand-rolled INITCAP.',
+    },
+  ]}
+/>
+
+<LessonComplete />

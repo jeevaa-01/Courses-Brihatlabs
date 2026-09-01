@@ -1,0 +1,141 @@
+---
+title: 'Analytics'
+sidebar_position: 3
+description: 'What analytics really is, the HitaVir Coffee example, and the four maturity levels — descriptive, diagnostic, predictive, prescriptive.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Define analytics in one sentence — turning raw data into decisions
+- Distinguish the four maturity levels: descriptive, diagnostic, predictive, prescriptive
+- Explain what analytics is NOT (data engineering, only-BI, only-ML)
+
+</LearningObjectives>
+
+### What is Analytics?
+
+📊 **Analytics** is the practice of turning raw data into useful insights that help people make better decisions.
+
+That one line is the whole discipline. SQL queries, dashboards, ML models, data lakes — all of it is just tooling in service of that idea.
+
+### Real-World Example — HitaVir Coffee
+
+Imagine **HitaVir Coffee** — 50 locations across India. Every day, each store generates data:
+
+| Data Stream | Icon | Data Stream | Icon |
+|-------------|:---:|-------------|:---:|
+| Orders | ☕ | Payments | 💰 |
+| Loyalty | 👥 | Inventory | 📦 |
+| Shifts | 🕐 | Equipment | 🌡️ |
+| Deliveries | 🚚 | Reviews | ⭐ |
+
+One transaction alone is meaningless. But aggregate across 50 stores for a year and patterns emerge:
+
+| Observation | Action |
+|-------------|--------|
+| 🐢 Mondays are slowest | 🎯 Launch "Monday BOGO" |
+| 📈 Store #23 sells 2x pastries | 🔍 Copy their layout |
+| 📉 Cappuccinos drop in summer | 🧊 Push cold brew |
+
+That journey — **from raw events to actions** — is analytics.
+
+### The Four Levels of Analytics
+
+```
+  +================================================================+
+  |                                                                |
+  |     L4   PRESCRIPTIVE       "What should we do?"               |
+  |                                                                |
+  |                  ^                                             |
+  |                  |                                             |
+  |     L3   PREDICTIVE         "What will happen?"                |
+  |                                                                |
+  |                  ^                                             |
+  |                  |                                             |
+  |     L2   DIAGNOSTIC         "Why did it happen?"               |
+  |                                                                |
+  |                  ^                                             |
+  |                  |                                             |
+  |     L1   DESCRIPTIVE        "What happened?"                   |
+  |                                                                |
+  +================================================================+
+```
+
+| Level | Icon | Question | Example | Powered By |
+|-------|:---:|----------|---------|------------|
+| **L1 Descriptive** | 📸 | What happened? | "Sold 12,400 cappuccinos" | 🔍 SQL / BI |
+| **L2 Diagnostic** | 🕵️ | Why did it happen? | "Bean shortage hit week 3" | 🔍 SQL + drill-down |
+| **L3 Predictive** | 🔮 | What will happen? | "June sales up 15%" | 🤖 Machine learning |
+| **L4 Prescriptive** | 🎯 | What should we do? | "Order 200kg by May 25" | 🤖 ML + optimization |
+
+Most companies live at L1-L2. **Analytics engineers build the foundation** that makes L3-L4 possible.
+
+### What Analytics Is NOT
+
+- ❌ Not the same as data engineering (that builds pipes — analytics drinks from them)
+- ❌ Not only Business Intelligence (BI is a subset)
+- ❌ Not only Machine Learning (ML is a specialized branch)
+
+:::tip[HitaVir Tech says]
+"Never build a dashboard nobody looks at. Always ask — *what decision will this insight change?* If the answer is 'none', don't build it."
+:::
+
+### Preview — AWS Services Across Analytics Maturity
+
+![Athena](/img/courses/aws-icons/athena.png) ![QuickSight](/img/courses/aws-icons/quicksight.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png) ![Bedrock](/img/courses/aws-icons/bedrock.png)
+
+L1-L2 is **Athena + QuickSight**. L3-L4 adds **SageMaker + Bedrock**.
+
+<KeyTakeaways>
+
+- Analytics = turning raw data into insights that change decisions — everything else is tooling
+- The four maturity levels climb from "what happened" (descriptive) to "what should we do" (prescriptive)
+- L1-L2 run on SQL and BI; L3-L4 need machine learning and optimization
+- If an insight changes no decision, don't build it
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'A dashboard answers "Why did sales drop in week 3?". Which analytics level is that?',
+      options: [
+        'L1 Descriptive',
+        'L2 Diagnostic',
+        'L3 Predictive',
+        'L4 Prescriptive',
+      ],
+      answer: 1,
+      explanation:
+        'Descriptive says WHAT happened; diagnostic digs into WHY. Predictive and prescriptive look forward.',
+    },
+    {
+      question: 'Which levels of analytics typically require machine learning?',
+      options: [
+        'L1 and L2',
+        'Only L1',
+        'All four levels equally',
+        'L3 Predictive and L4 Prescriptive',
+      ],
+      answer: 3,
+      explanation:
+        'Descriptive and diagnostic run on SQL and BI tools; forecasting the future (L3) and recommending actions (L4) need ML and optimization.',
+    },
+    {
+      question: 'According to this lesson, what is the litmus test before building any dashboard?',
+      options: [
+        'Does it use the newest AWS service?',
+        'Can it refresh in real time?',
+        'What decision will this insight change?',
+        'Does it have at least five charts?',
+      ],
+      answer: 2,
+      explanation:
+        'If nobody can name a decision the insight would change, the dashboard should not be built.',
+    },
+  ]}
+/>
+
+<LessonComplete />

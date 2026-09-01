@@ -1,0 +1,151 @@
+---
+title: 'Course Summary'
+sidebar_position: 2
+description: 'Everything you learned in Part 2 — the three architectures, six reference shapes, and what to do next.'
+---
+
+<DurationBadge minutes={4} />
+
+<LearningObjectives>
+
+- Consolidate the three architectures and six reference shapes into one mental map
+- See the upgrade path from Part 1 (ingredients) to Part 2 (recipes)
+- Pick concrete next steps to cement what you learned
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |          CONGRATULATIONS  -  PART 2 DONE!                    |
+  +==============================================================+
+```
+
+### Every Service You Now Know
+
+![S3](/img/courses/aws-icons/s3.png) ![Glacier](/img/courses/aws-icons/glacier.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![EMR](/img/courses/aws-icons/emr.png) ![Glue](/img/courses/aws-icons/glue.png) ![Athena](/img/courses/aws-icons/athena.png) ![Kinesis](/img/courses/aws-icons/kinesis-streams.png) ![Kinesis Firehose](/img/courses/aws-icons/kinesis-firehose.png) ![Lake Formation](/img/courses/aws-icons/lake-formation.png) ![OpenSearch](/img/courses/aws-icons/opensearch.png) ![QuickSight](/img/courses/aws-icons/quicksight.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png) ![Bedrock](/img/courses/aws-icons/bedrock.png) ![DataZone](/img/courses/aws-icons/datazone.png)
+
+### What You Learned
+
+**🪣 Data Lakes**
+
+| Topic | Icon |
+|-------|:---:|
+| What a lake is (schema-on-read) | 📖 |
+| The medallion zones (raw, curated, analytics) | 🥉🥈🥇 |
+| Why lakes become swamps without governance | 🐊 |
+
+**🏛️ Data Warehouses**
+
+| Topic | Icon |
+|-------|:---:|
+| Schema-on-write, columnar, MPP | 📊 |
+| Star schemas (fact + dimensions) | ⭐ |
+| Redshift serverless vs provisioned | 🏛️ |
+| Redshift Spectrum (querying the lake) | 🔭 |
+
+**🏡 Modern Data Architecture (Lake House)**
+
+| Pillar | Icon |
+|--------|:---:|
+| Scalable data lake | 🪣 |
+| Purpose-built engines | 🧰 |
+| Seamless movement (Spectrum, zero-ETL) | 🔀 |
+| Unified governance | 🔐 |
+| Built-in AI / ML | 🤖 |
+
+**🗺️ Six Reference Architectures**
+
+| # | Pattern | Core Service |
+|:-:|---------|--------------|
+| 1 | Batch BI | 🏛️ Redshift + 📊 QuickSight |
+| 2 | Real-Time | 🌊 Kinesis + 🎯 K. Analytics |
+| 3 | Log Observability | 🔎 OpenSearch |
+| 4 | Customer 360 | 🪣 S3 + 🕸️ Glue + 🏛️ Redshift |
+| 5 | ML / Predictive | 🤖 SageMaker + 🪣 S3 |
+| 6 | Data Mesh | 🏗️ Lake Formation + 🧭 DataZone |
+
+### The Mental Upgrade From Part 1 to Part 2
+
+| Part 1 Gave You... | Part 2 Gave You... |
+|--------------------|--------------------|
+| 📏 A diagnostic framework (5 Vs) | 🗺️ Reference architectures |
+| ☁️ One service per V | 🧩 Combinations that scale |
+| 🛠️ A basic S3 → Glue → Athena lab | 🏡 The full Lake House picture |
+| 🎯 What to pick for each bottleneck | 🎯 Which shape fits each real-world problem |
+
+### What To Do Next
+
+1. 🔎 **Draw one of the six reference architectures** for a project you know.
+2. 💬 **Walk a teammate through it** — teaching cements understanding.
+3. 🧪 **Extend the Part 1 lab:** add Glue ETL to move `raw/` → `curated/` as Parquet.
+4. 📚 **Read the AWS Well-Architected Analytics Lens** (link in the Appendix).
+5. 🎓 **Try the free AWS Skill Builder course** to reinforce the concepts in a different voice.
+
+### Keep Learning on This Portal
+
+- 🐍 Level up your transformation skills with the [PySpark course](/courses/pyspark/intro) — the engine behind Glue ETL and EMR
+- 🛠️ Need a local dev environment? Set one up with [Data Engineering Environment Setup on Windows 11](/courses/windows-setup)
+- 🧠 Study smarter with [Learn Like a Top Performer](/courses/learn-like-a-top-performer)
+- 📰 Check the [blog](/blog) and the [course portal home](/) for new releases
+
+### Final Thoughts
+
+```
+  +==============================================================+
+  |                                                              |
+  |   Part 1  =  the 5 Vs  +  one service per V                  |
+  |   Part 2  =  three architectures  +  six reference shapes    |
+  |                                                              |
+  |   Together  =  you can design and defend                     |
+  |               an analytics platform on AWS.                  |
+  |                                                              |
+  +==============================================================+
+```
+
+:::tip[HitaVir Tech says]
+"You just completed the same journey a new hire at a top cloud team makes in their first three months. Keep the cheat sheet, apply the patterns, and your architecture reviews will sound like a 5-year veteran's. Fundamentals compound."
+:::
+
+🎓 Welcome to the Lake House. See you in **Part 3** — hands-on Glue ETL, Redshift loading, and a capstone project.
+
+— **HitaVir Tech** ☁️
+
+<KeyTakeaways>
+
+- Part 2 gave you three architectures (lake, warehouse, Lake House) and six reference shapes
+- Part 1 supplied the ingredients (5 Vs + services); Part 2 supplied the recipes (architectures)
+- The six patterns map every real-world analytics problem to a proven AWS shape
+- Cement the learning: draw one architecture, teach it, and extend the Part 1 lab with Glue ETL
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is the core "mental upgrade" from Part 1 to Part 2?',
+      options: [
+        'From individual services per V to architectures that combine them',
+        'From AWS to a different cloud provider',
+        'From SQL to Python',
+        'From batch processing to only streaming',
+      ],
+      answer: 0,
+      explanation:
+        'Part 1 taught the ingredients (one service per V); Part 2 taught the recipes — three architectures and six reference shapes.',
+    },
+    {
+      question: 'Which pairing is correct for the six reference architectures?',
+      options: [
+        'Batch BI — OpenSearch',
+        'Log Observability — SageMaker',
+        'Data Mesh — Lake Formation + DataZone',
+        'Real-Time — Redshift COPY',
+      ],
+      answer: 2,
+      explanation:
+        'Data Mesh pairs central Lake Formation governance with DataZone discovery over domain-owned S3 data products.',
+    },
+  ]}
+/>
+
+<LessonComplete />

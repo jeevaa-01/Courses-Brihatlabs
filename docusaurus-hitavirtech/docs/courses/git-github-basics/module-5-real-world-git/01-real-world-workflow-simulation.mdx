@@ -1,0 +1,203 @@
+---
+title: 'Real-World Workflow Simulation'
+sidebar_position: 1
+description: 'Simulate a full day-in-the-life developer task — pull, feature branch, code, commit, push, merge, and clean up.'
+---
+
+<DurationBadge minutes={12} />
+
+<LearningObjectives>
+
+- Execute the complete feature-branch workflow from pull to merge
+- Push a feature branch to GitHub and understand where Pull Requests fit
+- Clean up local and remote branches after merging
+
+</LearningObjectives>
+
+Let us simulate what a real developer does every day. This is the **most important exercise** in this codelab.
+
+### The Scenario
+
+You are a Data Engineer at HitaVir Tech. Your manager assigns you a task: "Add a data validation module to our pipeline."
+
+### Step 1 — Pull Latest Changes
+
+Always start by getting the latest code:
+
+```bash
+cd ~/git-learning
+git pull origin main
+```
+
+### Step 2 — Create a Feature Branch
+
+Never work on `main` directly:
+
+```bash
+git checkout -b feature/data-validation
+```
+
+### Step 3 — Write Your Code
+
+```bash
+cat > validator.py << 'EOF'
+"""
+Data Validation Module - HitaVir Tech
+Validates data quality before loading into warehouse
+"""
+
+def validate_not_null(dataframe, columns):
+    """Check that specified columns have no null values"""
+    for col in columns:
+        null_count = dataframe[col].isnull().sum()
+        if null_count > 0:
+            raise ValueError(f"Column '{col}' has {null_count} null values")
+    return True
+
+def validate_unique(dataframe, columns):
+    """Check that specified columns have unique values"""
+    for col in columns:
+        dupes = dataframe[col].duplicated().sum()
+        if dupes > 0:
+            raise ValueError(f"Column '{col}' has {dupes} duplicates")
+    return True
+
+def validate_range(value, min_val, max_val):
+    """Check that a value is within expected range"""
+    if not (min_val <= value <= max_val):
+        raise ValueError(f"Value {value} outside range [{min_val}, {max_val}]")
+    return True
+
+if __name__ == "__main__":
+    print("Data Validator ready!")
+    print("Modules: validate_not_null, validate_unique, validate_range")
+EOF
+```
+
+### Step 4 — Add Tests
+
+```bash
+cat > test_validator.py << 'EOF'
+"""
+Tests for Data Validation Module - HitaVir Tech
+"""
+
+def test_validate_range_pass():
+    from validator import validate_range
+    assert validate_range(5, 1, 10) == True
+    print("PASS: validate_range with valid input")
+
+def test_validate_range_fail():
+    from validator import validate_range
+    try:
+        validate_range(15, 1, 10)
+        print("FAIL: Should have raised ValueError")
+    except ValueError:
+        print("PASS: validate_range correctly rejects out-of-range")
+
+if __name__ == "__main__":
+    test_validate_range_pass()
+    test_validate_range_fail()
+    print("\nAll tests passed!")
+EOF
+```
+
+### Step 5 — Stage and Commit
+
+```bash
+git add validator.py test_validator.py
+git status
+git commit -m "feat: add data validation module with tests
+
+- Add validate_not_null for null checking
+- Add validate_unique for duplicate detection
+- Add validate_range for value range validation
+- Add unit tests for range validation"
+```
+
+### Step 6 — Push the Branch to GitHub
+
+```bash
+git push -u origin feature/data-validation
+```
+
+### Step 7 — Merge to Main
+
+In a real team, you would create a Pull Request on GitHub. For this exercise, merge locally:
+
+```bash
+git checkout main
+git merge feature/data-validation
+git push origin main
+```
+
+### Step 8 — Clean Up
+
+```bash
+git branch -d feature/data-validation
+git push origin --delete feature/data-validation
+```
+
+### The Complete DevOps Workflow
+
+```
+1. git pull              ← Get latest
+2. git checkout -b feat  ← Create branch
+3. (write code)          ← Do your work
+4. git add .             ← Stage changes
+5. git commit -m "..."   ← Save locally
+6. git push              ← Push branch
+7. (create PR on GitHub) ← Request review
+8. (merge PR)            ← After approval
+9. git checkout main     ← Switch back
+10. git pull             ← Get merged changes
+```
+
+> **HitaVir Tech says:** "This workflow is used by every tech company on Earth — from startups to Google. Practice it until it becomes muscle memory. You will do this every single day as a developer."
+
+<KeyTakeaways>
+
+- Every task starts with `git pull` — always work from the latest code
+- Never code directly on `main` — create a `feature/...` branch first
+- Push the branch with `git push -u origin feature/...`; in a real team a Pull Request follows
+- After merging, delete the branch locally (`git branch -d`) and remotely (`git push origin --delete`)
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Your manager assigns you a new task. What is the FIRST Git command you run?',
+      options: [
+        'git pull — get the latest changes before starting',
+        'git commit — save your current state',
+        'git push — upload your old work',
+        'git init — create a fresh repository',
+      ],
+      answer: 0,
+      explanation:
+        'Always start from the latest code. Pulling first prevents working on top of stale files.',
+    },
+    {
+      question: 'In a professional team, which branch should you never code on directly?',
+      options: ['feature/data-validation', 'bugfix/etl-timeout', 'main', 'hotfix/security-patch'],
+      answer: 2,
+      explanation:
+        'main must always stay deployable. All work happens on branches that are merged in via review.',
+    },
+    {
+      question: 'How do you delete the remote copy of a merged feature branch?',
+      options: [
+        'git branch -d feature/data-validation',
+        'git push origin --delete feature/data-validation',
+        'git remote remove feature/data-validation',
+        'Delete the folder in Windows Explorer',
+      ],
+      answer: 1,
+      explanation:
+        'git branch -d removes the LOCAL branch; git push origin --delete removes it from GitHub.',
+    },
+  ]}
+/>
+
+<LessonComplete />

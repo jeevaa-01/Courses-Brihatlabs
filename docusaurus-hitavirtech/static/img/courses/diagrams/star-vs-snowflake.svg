@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 310" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="780" height="310" rx="12" fill="#f8f9fa"/>
+  <text x="390" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Star Schema vs Snowflake Schema</text>
+
+  <!-- Header -->
+  <rect x="20" y="40" width="240" height="30" rx="6" fill="#5f6368"/>
+  <text x="140" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Feature</text>
+  <rect x="265" y="40" width="240" height="30" rx="6" fill="#1a73e8"/>
+  <text x="385" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Star Schema</text>
+  <rect x="510" y="40" width="250" height="30" rx="6" fill="#ea8600"/>
+  <text x="635" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Snowflake Schema</text>
+
+  <!-- Rows -->
+  <rect x="20" y="76" width="240" height="28" rx="4" fill="#e8eaed"/>
+  <text x="32" y="95" font-size="11" font-weight="600" fill="#202124">Dimension structure</text>
+  <rect x="265" y="76" width="240" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="385" y="95" text-anchor="middle" font-size="11" fill="#1a73e8">Flat (denormalized)</text>
+  <rect x="510" y="76" width="250" height="28" rx="4" fill="#fef7e0"/>
+  <text x="635" y="95" text-anchor="middle" font-size="11" fill="#ea8600">Normalized (sub-tables)</text>
+
+  <rect x="20" y="108" width="240" height="28" rx="4" fill="white"/>
+  <text x="32" y="127" font-size="11" font-weight="600" fill="#202124">Number of JOINs</text>
+  <rect x="265" y="108" width="240" height="28" rx="4" fill="white"/>
+  <text x="385" y="127" text-anchor="middle" font-size="11" fill="#3c4043">Fewer</text>
+  <rect x="510" y="108" width="250" height="28" rx="4" fill="white"/>
+  <text x="635" y="127" text-anchor="middle" font-size="11" fill="#3c4043">More</text>
+
+  <rect x="20" y="140" width="240" height="28" rx="4" fill="#e8eaed"/>
+  <text x="32" y="159" font-size="11" font-weight="600" fill="#202124">Query performance</text>
+  <rect x="265" y="140" width="240" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="385" y="159" text-anchor="middle" font-size="11" font-weight="600" fill="#1a73e8">Faster</text>
+  <rect x="510" y="140" width="250" height="28" rx="4" fill="#fef7e0"/>
+  <text x="635" y="159" text-anchor="middle" font-size="11" fill="#ea8600">Slower</text>
+
+  <rect x="20" y="172" width="240" height="28" rx="4" fill="white"/>
+  <text x="32" y="191" font-size="11" font-weight="600" fill="#202124">Storage</text>
+  <rect x="265" y="172" width="240" height="28" rx="4" fill="white"/>
+  <text x="385" y="191" text-anchor="middle" font-size="11" fill="#3c4043">More (redundancy)</text>
+  <rect x="510" y="172" width="250" height="28" rx="4" fill="white"/>
+  <text x="635" y="191" text-anchor="middle" font-size="11" font-weight="600" fill="#ea8600">Less (no redundancy)</text>
+
+  <rect x="20" y="204" width="240" height="28" rx="4" fill="#e8eaed"/>
+  <text x="32" y="223" font-size="11" font-weight="600" fill="#202124">Complexity</text>
+  <rect x="265" y="204" width="240" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="385" y="223" text-anchor="middle" font-size="11" font-weight="600" fill="#1a73e8">Simpler</text>
+  <rect x="510" y="204" width="250" height="28" rx="4" fill="#fef7e0"/>
+  <text x="635" y="223" text-anchor="middle" font-size="11" fill="#ea8600">More complex</text>
+
+  <rect x="20" y="236" width="240" height="28" rx="4" fill="white"/>
+  <text x="32" y="255" font-size="11" font-weight="600" fill="#202124">ETL complexity</text>
+  <rect x="265" y="236" width="240" height="28" rx="4" fill="white"/>
+  <text x="385" y="255" text-anchor="middle" font-size="11" fill="#3c4043">Simpler</text>
+  <rect x="510" y="236" width="250" height="28" rx="4" fill="white"/>
+  <text x="635" y="255" text-anchor="middle" font-size="11" fill="#3c4043">More complex</text>
+
+  <rect x="20" y="268" width="240" height="28" rx="4" fill="#e8eaed"/>
+  <text x="32" y="287" font-size="11" font-weight="600" fill="#202124">Industry preference</text>
+  <rect x="265" y="268" width="240" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="385" y="287" text-anchor="middle" font-size="11" font-weight="600" fill="#1a73e8">Preferred (95% of DWs)</text>
+  <rect x="510" y="268" width="250" height="28" rx="4" fill="#fef7e0"/>
+  <text x="635" y="287" text-anchor="middle" font-size="11" fill="#ea8600">When storage is critical</text>
+
+  <text x="390" y="308" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

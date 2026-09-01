@@ -1,0 +1,453 @@
+---
+title: 'Working with pandas'
+sidebar_position: 3
+description: 'The six-step pandas workflow — load, explore, clean, transform, aggregate, save — that shapes every DataFrame job.'
+---
+
+<DurationBadge minutes={15} />
+
+<LearningObjectives>
+
+- Load CSVs into DataFrames and profile them with `shape`, `dtypes`, `describe()`, and `isnull()`
+- Clean rows with `dropna` and boolean indexing, then add computed columns
+- Aggregate with `groupby(...).agg(...)` and write results with `to_csv`
+
+</LearningObjectives>
+
+**What is pandas?**
+
+pandas is the most-used Python library for working with **tabular data** (rows and columns). Think of it as Excel inside Python — but able to handle millions of rows, perform complex transformations, and integrate with every data tool.
+
+**What is a DataFrame?**
+
+A **DataFrame** is the central pandas object — a table with rows, columns, and an index. Every column has a name and a data type. It is what you get when you load a CSV via `pd.read_csv(...)`.
+
+**Why DE engineers love pandas**
+
+One library handles: loading CSVs/Excel/JSON, cleaning nulls, filtering rows, joining tables, grouping/aggregating, and writing the result back out.
+
+We will learn pandas the same way a real data engineer works — **one step at a time**. Every data job follows the same six steps, and we give each step its own tiny file so you can run it, read the output, and understand it before moving on.
+
+### The pandas Workflow — Six Small Steps
+
+```
+   Part 1        Part 2        Part 3        Part 4         Part 5         Part 6
+   LOAD     ->   EXPLORE  ->   CLEAN    ->   TRANSFORM ->   AGGREGATE  ->  SAVE
+   read_csv      describe()    dropna()      new columns    groupby()      to_csv()
+   the CSV       isnull()      filter rows   price * qty    sum/mean       write file
+```
+
+:::tip[How to read this section]
+type each small file, run it, and look at what prints. Do not rush to the next part until the current one makes sense. Every part stands on its own and can be run by itself.
+:::
+
+### Part 1 — Load a CSV into a DataFrame
+
+**The one-line idea:** `pd.read_csv("file.csv")` reads a CSV file from disk and hands you back a **DataFrame** — a table you can work with in Python.
+
+Once you have a DataFrame, four tiny tools tell you what you are holding:
+
+- `df.shape` — how big is it? Returns `(rows, columns)`
+- `df.columns` — what are the column names?
+- `df.dtypes` — what type is each column (text, integer, float)?
+- `df.head()` — show me the first 5 rows
+
+**`pandas_01_load.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Part 1: Load a CSV
+# ============================================
+import pandas as pd
+
+# Read the CSV file into a DataFrame (a table).
+df = pd.read_csv("sales_raw.csv")
+
+# How big is the table? .shape returns (rows, columns).
+rows, columns = df.shape
+print(f"The table has {rows} rows and {columns} columns")
+
+# What are the column names?
+print(f"Columns: {list(df.columns)}")
+
+# What type is each column? (object = text, int64 = whole, float64 = decimal)
+print("\nColumn types:")
+print(df.dtypes)
+
+# Show the first 5 rows so we can eyeball the data.
+print("\nFirst 5 rows:")
+print(df.head())
+```
+
+Run it:
+
+```bash
+python pandas_01_load.py
+```
+
+:::tip[Try it yourself]
+swap `df.head()` for `df.tail(3)` to see the **last** 3 rows. `head` and `tail` are the first things every data engineer runs on a new file.
+:::
+
+### Part 2 — Explore Your Data
+
+Before you change a single value, you **look** at the data. This is called *profiling*. Three methods answer the questions you always ask first:
+
+- `df.describe()` — min, max, mean, and count for every **numeric** column
+- `df.isnull().sum()` — how many **missing** values are in each column?
+- `df["col"].nunique()` — how many **distinct** values does a column have?
+
+**`pandas_02_explore.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Part 2: Explore the Data
+# ============================================
+import pandas as pd
+
+df = pd.read_csv("sales_raw.csv")
+
+# describe() summarises every numeric column at once.
+print("Numeric summary (min, max, mean, ...):")
+print(df.describe())
+
+# isnull() marks each cell True if it is empty; .sum() counts the Trues.
+print("\nMissing values per column:")
+print(df.isnull().sum())
+
+# nunique() counts how many DIFFERENT values a column holds.
+print(f"\nDistinct products: {df['product'].nunique()}")
+print(f"Distinct regions:  {df['region'].nunique()}")
+
+# min() and max() on a date column give you the date range.
+print(f"Dates from {df['date'].min()} to {df['date'].max()}")
+```
+
+Run it:
+
+```bash
+python pandas_02_explore.py
+```
+
+:::info[Why this matters]
+the `isnull().sum()` line is how you discover dirty data. If `customer` shows 2 missing values, you now know Part 3 has work to do.
+:::
+
+### Part 3 — Clean Messy Data
+
+Real data always has problems: blank cells, zero prices, negative quantities. Cleaning means **removing the rows you cannot trust**. Two tools do almost all of it:
+
+- `df.dropna(subset=[...])` — drop rows that are **empty** in the listed columns
+- **Boolean indexing** — `df[df["price"] > 0]` keeps only the rows where the condition is `True`
+
+**Mental model — boolean indexing keeps the True rows:**
+
+```
+   df["quantity"] > 0   ->   [ True, True, False, True ]
+                                 |     |     |      |
+   df[ ...the mask... ]   keeps row1, row2,  drop,  row4
+```
+
+**`pandas_03_clean.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Part 3: Clean the Data
+# ============================================
+import pandas as pd
+
+df = pd.read_csv("sales_raw.csv")
+print(f"Started with {len(df)} rows")
+
+# 1. Drop rows missing a customer OR a product (we cannot use those).
+df = df.dropna(subset=["customer", "product"])
+print(f"After dropping empty rows: {len(df)} rows")
+
+# 2. Keep only sensible numbers: quantity and price must be positive.
+df = df[df["quantity"] > 0]
+df = df[df["price"] > 0]
+print(f"After removing invalid numbers: {len(df)} rows")
+
+# 3. .copy() makes df our own clean table (avoids a pandas warning later).
+df = df.copy()
+print("\nClean data is ready for the next step.")
+```
+
+Run it:
+
+```bash
+python pandas_03_clean.py
+```
+
+:::info[Why .copy()?]
+After filtering, pandas is unsure whether `df` is the original table or a slice of it. Calling `.copy()` says "this is now its own table" and silences the famous `SettingWithCopyWarning`.
+:::
+
+### Part 4 — Transform: Add New Columns
+
+Transforming means **building new columns** from the ones you already have. The most common transform is arithmetic across two columns, and the second most common is turning a number into a category.
+
+- `df["total"] = df["price"] * df["quantity"]` — pandas multiplies **row by row** automatically
+- `df["col"].apply(some_function)` — run your own function on every value in a column
+
+**`pandas_04_transform.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Part 4: Add New Columns
+# ============================================
+import pandas as pd
+
+
+def price_band(price):
+    """Turn a price into a simple category label."""
+    if price >= 200:
+        return "Premium"
+    if price >= 50:
+        return "Mid"
+    return "Budget"
+
+
+# Steps from Parts 1-3, condensed into 4 lines.
+df = pd.read_csv("sales_raw.csv")
+df = df.dropna(subset=["customer", "product"])
+df = df[(df["quantity"] > 0) & (df["price"] > 0)]
+df = df.copy()
+
+# New column 1: total = price * quantity, rounded to 2 decimals.
+df["total"] = (df["price"] * df["quantity"]).round(2)
+
+# New column 2: a category label, built by our price_band() function.
+df["price_band"] = df["price"].apply(price_band)
+
+# Show just the columns we care about.
+print(df[["order_id", "product", "price", "quantity", "total", "price_band"]])
+```
+
+Run it:
+
+```bash
+python pandas_04_transform.py
+```
+
+:::info[Note on style]
+we used a named function `price_band()` instead of a long inline `lambda`. PEP 8 prefers a real `def` whenever the logic has more than one branch — it is easier to read and to test.
+:::
+
+### Part 5 — Aggregate with `groupby`
+
+Aggregation answers **"what is the total/average per group?"** — revenue per region, orders per product. If you know SQL, `groupby` is exactly `GROUP BY`.
+
+- `df.groupby("region")["total"].sum()` — one number per region
+- `df.groupby("region")["total"].agg(["sum", "count", "mean"])` — several numbers at once
+
+**`pandas_05_aggregate.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Part 5: Group and Summarise
+# ============================================
+import pandas as pd
+
+# Steps from Parts 1-4, condensed.
+df = pd.read_csv("sales_raw.csv")
+df = df.dropna(subset=["customer", "product"])
+df = df[(df["quantity"] > 0) & (df["price"] > 0)].copy()
+df["total"] = (df["price"] * df["quantity"]).round(2)
+
+# Revenue, order count, and average order value PER region.
+by_region = df.groupby("region")["total"].agg(["sum", "count", "mean"]).round(2)
+by_region.columns = ["revenue", "orders", "avg_order"]
+print("Revenue by region:")
+print(by_region)
+
+# Total revenue PER product, biggest first.
+by_product = df.groupby("product")["total"].sum().sort_values(ascending=False)
+print("\nRevenue by product (highest first):")
+print(by_product)
+```
+
+Run it:
+
+```bash
+python pandas_05_aggregate.py
+```
+
+:::tip[Try it yourself]
+change `.agg(["sum", "count", "mean"])` to add `"max"`. You will get a fourth column showing each region's biggest single order.
+:::
+
+### Part 6 — Save Your Results
+
+The last step writes your work back to disk so others can use it. `df.to_csv("file.csv")` does it.
+
+- Use `index=False` for a normal cleaned table (you do not want pandas' row numbers in the file)
+- Keep the index for a `groupby` result (the group label — like `region` — lives in the index)
+
+**`pandas_06_save.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Part 6: Save the Output
+# ============================================
+import pandas as pd
+
+# Steps from Parts 1-5, condensed.
+df = pd.read_csv("sales_raw.csv")
+df = df.dropna(subset=["customer", "product"])
+df = df[(df["quantity"] > 0) & (df["price"] > 0)].copy()
+df["total"] = (df["price"] * df["quantity"]).round(2)
+by_region = df.groupby("region")["total"].sum().round(2)
+
+# Save the cleaned rows. index=False drops pandas' row numbers.
+df.to_csv("sales_pandas_cleaned.csv", index=False)
+print("Saved: sales_pandas_cleaned.csv")
+
+# Save the summary. Keep the index here — it holds the region names.
+by_region.to_csv("region_report.csv")
+print("Saved: region_report.csv")
+
+# A few headline numbers for the console.
+print(f"\nTotal revenue:       ${df['total'].sum():,.2f}")
+print(f"Average order value: ${df['total'].mean():,.2f}")
+```
+
+Run it:
+
+```bash
+python pandas_06_save.py
+```
+
+:::tip[You just built a full pipeline]
+Parts 1-6 are exactly Extract (load) → Transform (clean, build columns, aggregate) → Load (save). Every pandas job you ever write is a longer version of these six steps.
+:::
+
+### pandas Cheat Sheet — The 15 Methods You'll Use Daily
+
+![pandas Cheat Sheet — The 15 Methods You'll Use Daily](/img/courses/diagrams/python-de/30-pandas-cheat-sheet-the-15-methods-you-ll-use-dai.svg)
+
+:::tip[HitaVir Tech says]
+"pandas is to data engineers what a stethoscope is to doctors — you cannot work without it. Learn `read_csv`, `groupby`, `merge`, and `apply`, and you can handle 90% of data tasks."
+:::
+
+### Assignment 7 — Daily Sales Report with pandas
+
+**Goal:** Practice the entire pandas workflow — read, clean, transform, group, save — on the sales dataset.
+
+**The scenario:** The COO wants a daily sales report broken down by date AND region, with one row per (date, region) and revenue ranked.
+
+**Tasks:**
+
+1. Create `assignment_07_pandas.py`.
+2. Read `sales_raw.csv` into a DataFrame `df`.
+3. Print `df.shape`, `df.dtypes`, and `df.isnull().sum()`.
+4. Drop rows where `customer` or `product` is null.
+5. Keep only rows where `quantity > 0` and `price > 0`.
+6. Add columns:
+   - `total = price * quantity` (rounded to 2 decimals)
+   - `is_premium = price > 200` (boolean)
+7. Group by `["date", "region"]` and aggregate `total` with `sum`, `count`, and `mean`. Round to 2 decimals.
+8. Sort the result by `total sum` descending.
+9. Save to `daily_region_report.csv`.
+10. Print the **top 3 (date, region) pairs** by revenue.
+
+**Sample output (top section):**
+
+```text
+DataFrame shape: (10, 7)
+
+Top 3 by revenue:
+  2026-04-02 | West  | $1,999.98 | 1 order  | avg $1,999.98
+  2026-04-01 | North | $1,159.97 | 2 orders | avg   $539.99
+  2026-04-03 | West  |   $449.99 | 1 order  | avg   $449.99
+```
+
+**Success criteria:**
+
+- [ ] Uses `read_csv`, `dropna`, boolean indexing, `assign` or column-add, `groupby` with `agg`, and `to_csv`
+- [ ] Output CSV has multi-column groupby (date + region)
+- [ ] Top-3 print uses formatted strings with thousands separator
+- [ ] No `SettingWithCopyWarning` in the output (use `df = df.copy()` after filtering)
+
+**Stretch goal:** Add a `pivot_table` showing regions as rows and dates as columns, with `total` as the cell values. Save it as `pivot_report.csv`.
+
+### What You Have Learnt on This Page
+
+By the end of this page you should be able to confidently:
+
+- Create a **DataFrame** from a CSV with `pd.read_csv`
+- Inspect data with `head()`, `tail()`, `info()`, `describe()`, `shape`, `dtypes`
+- Clean missing data with `dropna`, `fillna`, and boolean indexing
+- Add and transform columns with `df["new"] = ...` or `df.assign(...)`
+- **Aggregate** with `groupby(...).agg(...)` for sums, means, counts
+- Sort with `sort_values(...)`, slice top-N with `.head(N)`, write with `to_csv`
+
+### PEP 8 — Style Rules to Apply Strictly to pandas Code
+
+pandas one-liners look elegant in tutorials and unreadable in production. Apply these rules every single time you write a DataFrame chain:
+
+- **Break long chains** across multiple lines using `(` `)` parentheses for line continuation
+- Each method on its **own line**, indented one level
+- Always **`df = df.copy()`** after a filter to avoid `SettingWithCopyWarning`
+- Use **double quotes** for column names: `df["price"]`, never `df['price']` mixing
+- Prefer **`.assign()`** for adding columns in a chain (no inplace mutation)
+- Never set `inplace=True` — always reassign: `df = df.dropna()`
+- Constants at top: `INPUT_FILE = "sales.csv"`, `MIN_PRICE = 0`
+
+:::note[Inspiration for the road ahead]
+*"Without data, you're just another person with an opinion."*
+— W. Edwards Deming
+:::
+
+<KeyTakeaways>
+
+- Every pandas job is the same six steps: load → explore → clean → transform → aggregate → save
+- `df.isnull().sum()` is how you discover dirty data before touching it
+- Boolean indexing (`df[df["price"] > 0]`) keeps only the rows where the mask is True
+- Call `.copy()` after filtering to silence `SettingWithCopyWarning`
+- `groupby` is pandas' GROUP BY — one aggregated row per group
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which line answers: how many missing values per column?',
+      options: [
+        'df.describe()',
+        'df.shape',
+        'df.isnull().sum()',
+        'df.head()',
+      ],
+      answer: 2,
+      explanation:
+        'isnull() marks each empty cell True and sum() counts the Trues per column — instant dirty-data report.',
+    },
+    {
+      question: 'What does df[df["quantity"] > 0] do?',
+      options: [
+        'Keeps only the rows where quantity is positive',
+        'Sets negative quantities to zero',
+        'Sorts by quantity',
+        'Deletes the quantity column',
+      ],
+      answer: 0,
+      explanation:
+        'The comparison builds a True/False mask; indexing with it keeps the True rows. This is boolean indexing.',
+    },
+    {
+      question: 'When saving a groupby result with to_csv, why keep the index?',
+      options: [
+        'pandas requires it',
+        'The group labels — like region — live in the index',
+        'It compresses better',
+        'index=False is invalid there',
+      ],
+      answer: 1,
+      explanation:
+        'After groupby, the group key becomes the index. Dropping it would lose the region names from the report.',
+    },
+  ]}
+/>
+
+<LessonComplete />

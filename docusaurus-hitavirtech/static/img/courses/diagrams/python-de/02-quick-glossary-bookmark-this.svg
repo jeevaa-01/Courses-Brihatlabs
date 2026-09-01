@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 655" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="860" height="655" rx="12" fill="#f8f9fa"/>
+  <text x="430" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Quick Glossary — Bookmark This</text>
+  <rect x="15" y="40" width="100" height="30" rx="6" fill="#1a73e8"/>
+  <text x="65" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Term</text>
+  <rect x="120" y="40" width="360" height="30" rx="6" fill="#1a73e8"/>
+  <text x="300" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Plain-English meaning</text>
+  <rect x="485" y="40" width="360" height="30" rx="6" fill="#1a73e8"/>
+  <text x="665" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Used for in Data Engineering</text>
+  <rect x="15" y="76" width="100" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">Script</text>
+  <rect x="120" y="76" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="130" y="94" font-size="12" fill="#1a73e8">A .py file that runs Python code top-to-bottom</text>
+  <rect x="485" y="76" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="495" y="94" font-size="12" fill="#1a73e8">Running an ETL job, cleaning a CSV</text>
+  <rect x="15" y="108" width="100" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" fill="#3c4043">Variable</text>
+  <rect x="120" y="108" width="360" height="28" rx="4" fill="white"/>
+  <text x="130" y="126" font-size="12" fill="#3c4043">A named container for a value</text>
+  <rect x="485" y="108" width="360" height="28" rx="4" fill="white"/>
+  <text x="495" y="126" font-size="12" fill="#3c4043">Holding a record count, file path, status</text>
+  <rect x="15" y="140" width="100" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">Data type</text>
+  <rect x="120" y="140" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="130" y="158" font-size="12" fill="#1a73e8">The kind of value (number, text, true/false)</text>
+  <rect x="485" y="140" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="495" y="158" font-size="12" fill="#1a73e8">Validating that "price" is a number</text>
+  <rect x="15" y="172" width="100" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" fill="#3c4043">Function</text>
+  <rect x="120" y="172" width="360" height="28" rx="4" fill="white"/>
+  <text x="130" y="190" font-size="12" fill="#3c4043">A reusable block of code with a name</text>
+  <rect x="485" y="172" width="360" height="28" rx="4" fill="white"/>
+  <text x="495" y="190" font-size="12" font-family="monospace" fill="#3c4043">extract(), clean(), load()</text>
+  <rect x="15" y="204" width="100" height="43" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="229" font-size="12" font-weight="700" fill="#1a73e8">Argument</text>
+  <rect x="120" y="204" width="360" height="43" rx="4" fill="#e8f0fe"/>
+  <text x="130" y="229" font-size="12" fill="#1a73e8">A value you pass into a function</text>
+  <rect x="485" y="204" width="360" height="43" rx="4" fill="#e8f0fe"/>
+  <text x="495" y="222" font-size="12" font-family="monospace" fill="#1a73e8">read_csv("sales.csv") — the filename is an</text>
+  <text x="495" y="237" font-size="12" font-family="monospace" fill="#1a73e8">argument</text>
+  <rect x="15" y="251" width="100" height="28" rx="4" fill="white"/>
+  <text x="25" y="269" font-size="12" font-weight="700" fill="#3c4043">Return value</text>
+  <rect x="120" y="251" width="360" height="28" rx="4" fill="white"/>
+  <text x="130" y="269" font-size="12" fill="#3c4043">What a function gives back to you</text>
+  <rect x="485" y="251" width="360" height="28" rx="4" fill="white"/>
+  <text x="495" y="269" font-size="12" fill="#3c4043">A cleaned list, a row count, a DataFrame</text>
+  <rect x="15" y="283" width="100" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="301" font-size="12" font-weight="700" fill="#1a73e8">List</text>
+  <rect x="120" y="283" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="130" y="301" font-size="12" fill="#1a73e8">An ordered collection in [ ] brackets</text>
+  <rect x="485" y="283" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="495" y="301" font-size="12" fill="#1a73e8">A list of rows from a CSV</text>
+  <rect x="15" y="315" width="100" height="28" rx="4" fill="white"/>
+  <text x="25" y="333" font-size="12" font-weight="700" fill="#3c4043">Dictionary</text>
+  <rect x="120" y="315" width="360" height="28" rx="4" fill="white"/>
+  <text x="130" y="333" font-size="12" fill="#3c4043">Key-value pairs in { } braces</text>
+  <rect x="485" y="315" width="360" height="28" rx="4" fill="white"/>
+  <text x="495" y="333" font-size="12" fill="#3c4043">One row of data, a config file</text>
+  <rect x="15" y="347" width="100" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="365" font-size="12" font-weight="700" fill="#1a73e8">Loop</text>
+  <rect x="120" y="347" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="130" y="365" font-size="12" fill="#1a73e8">Repeating an action for each item</text>
+  <rect x="485" y="347" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="495" y="365" font-size="12" fill="#1a73e8">Looping over every row in a file</text>
+  <rect x="15" y="379" width="100" height="28" rx="4" fill="white"/>
+  <text x="25" y="397" font-size="12" font-weight="700" fill="#3c4043">Library</text>
+  <rect x="120" y="379" width="360" height="28" rx="4" fill="white"/>
+  <text x="130" y="397" font-size="12" fill="#3c4043">Pre-written Python code you import</text>
+  <rect x="485" y="379" width="360" height="28" rx="4" fill="white"/>
+  <text x="495" y="397" font-size="12" font-family="monospace" fill="#3c4043">pandas, csv, json, logging</text>
+  <rect x="15" y="411" width="100" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="429" font-size="12" font-weight="700" fill="#1a73e8">DataFrame</text>
+  <rect x="120" y="411" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="130" y="429" font-size="12" fill="#1a73e8">A spreadsheet inside Python (from pandas)</text>
+  <rect x="485" y="411" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="495" y="429" font-size="12" fill="#1a73e8">The main object data engineers work with</text>
+  <rect x="15" y="443" width="100" height="43" rx="4" fill="white"/>
+  <text x="25" y="468" font-size="12" font-weight="700" fill="#3c4043">ETL</text>
+  <rect x="120" y="443" width="360" height="43" rx="4" fill="white"/>
+  <text x="130" y="461" font-size="12" fill="#3c4043">Extract → Transform → Load — the standard pipeline</text>
+  <text x="130" y="476" font-size="12" fill="#3c4043">pattern</text>
+  <rect x="485" y="443" width="360" height="43" rx="4" fill="white"/>
+  <text x="495" y="468" font-size="12" fill="#3c4043">Reading raw data, cleaning it, saving the clean version</text>
+  <rect x="15" y="490" width="100" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="508" font-size="12" font-weight="700" fill="#1a73e8">CSV</text>
+  <rect x="120" y="490" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="130" y="508" font-size="12" fill="#1a73e8">Comma-Separated Values — a plain-text spreadsheet</text>
+  <rect x="485" y="490" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="495" y="508" font-size="12" fill="#1a73e8">The most common file format in Data Engineering</text>
+  <rect x="15" y="522" width="100" height="43" rx="4" fill="white"/>
+  <text x="25" y="547" font-size="12" font-weight="700" fill="#3c4043">JSON</text>
+  <rect x="120" y="522" width="360" height="43" rx="4" fill="white"/>
+  <text x="130" y="540" font-size="12" fill="#3c4043">JavaScript Object Notation — text format for nested</text>
+  <text x="130" y="555" font-size="12" fill="#3c4043">data</text>
+  <rect x="485" y="522" width="360" height="43" rx="4" fill="white"/>
+  <text x="495" y="547" font-size="12" fill="#3c4043">API responses, pipeline configs</text>
+  <rect x="15" y="569" width="100" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="587" font-size="12" font-weight="700" fill="#1a73e8">Pipeline</text>
+  <rect x="120" y="569" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="130" y="587" font-size="12" fill="#1a73e8">A sequence of steps that move and transform data</text>
+  <rect x="485" y="569" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="495" y="587" font-size="12" fill="#1a73e8">Your daily sales-data job</text>
+  <rect x="15" y="601" width="100" height="28" rx="4" fill="white"/>
+  <text x="25" y="619" font-size="12" font-weight="700" fill="#3c4043">Log</text>
+  <rect x="120" y="601" width="360" height="28" rx="4" fill="white"/>
+  <text x="130" y="619" font-size="12" fill="#3c4043">A line-by-line record of what your program did</text>
+  <rect x="485" y="601" width="360" height="28" rx="4" fill="white"/>
+  <text x="495" y="619" font-size="12" fill="#3c4043">Debugging failures, audit trails</text>
+  <text x="430" y="649" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

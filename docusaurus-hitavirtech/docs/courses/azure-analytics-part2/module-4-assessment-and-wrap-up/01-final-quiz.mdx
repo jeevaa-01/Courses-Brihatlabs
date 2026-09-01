@@ -1,0 +1,159 @@
+---
+title: 'Final Quiz'
+sidebar_position: 1
+description: 'The graded final quiz for Azure Analytics Part 2 — lakes, warehouses, the lakehouse, and the six patterns. Aim for at least 8 of 10.'
+---
+
+<DurationBadge minutes={7} />
+
+# Final Quiz
+
+### The Services Under Test
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Databricks](/img/courses/azure-icons/databricks.svg) ![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Data Shares](/img/courses/azure-icons/data-shares.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg)
+
+This quiz covers the whole course. **Aim for at least 8 of 10.** If you miss a
+question, revisit the lesson it came from before moving on — these are the same
+questions that show up in every Azure analytics interview.
+
+<Quiz
+  title="Graded final quiz"
+  questions={[
+    {
+      question: 'Which of the following best describes a data lake?',
+      options: [
+        'A database optimized for OLTP workloads',
+        'Centralized storage for raw, varied data at any scale, queried by many engines',
+        'A real-time stream processor',
+        'A managed Kafka cluster',
+      ],
+      answer: 1,
+      explanation:
+        'A lake holds any data in native format; multiple engines (Synapse, Databricks, Power BI, Azure ML) read from it.',
+    },
+    {
+      question: 'Which property is specific to data warehouses, not data lakes?',
+      options: [
+        'Schema-on-read',
+        'Object storage foundation',
+        'Columnar storage with MPP',
+        'Storing raw unstructured data',
+      ],
+      answer: 2,
+      explanation:
+        'Columnar + MPP is the warehouse signature, enabling fast aggregation on billions of rows.',
+    },
+    {
+      question: 'In the medallion pattern, who are the typical readers of the Raw (Bronze) zone?',
+      options: [
+        'Data engineers only',
+        'Analysts and ML engineers',
+        'Business users and BI tools',
+        'External partners',
+      ],
+      answer: 0,
+      explanation:
+        'Raw is untouched source-of-truth bytes for engineers. Curated (Silver) serves analysts and ML engineers; Analytics (Gold) serves business users and BI tools.',
+    },
+    {
+      question: 'In an Azure Modern Data Architecture, which service is the "source of truth" storage layer?',
+      options: [
+        'Azure Synapse Dedicated Pool',
+        'ADLS Gen2 / OneLake',
+        'Cosmos DB',
+        'Azure SQL Database',
+      ],
+      answer: 1,
+      explanation:
+        'ADLS Gen2 (or OneLake in Fabric). Every other analytics engine on Azure reads from it.',
+    },
+    {
+      question: 'What does Synapse Serverless SQL enable?',
+      options: [
+        'Encrypting Synapse at rest',
+        'Training ML models inside Synapse',
+        'Running T-SQL directly against ADLS lake files via OPENROWSET',
+        'Auto-scaling the dedicated pool',
+      ],
+      answer: 2,
+      explanation:
+        'Serverless SQL lets you query lake data from the warehouse — no duplicate storage.',
+    },
+    {
+      question: 'Which service provides unified data catalog, lineage, and policy across ADLS, Synapse, Power BI, and even AWS S3?',
+      options: [
+        'Azure RBAC alone',
+        'Microsoft Purview',
+        'Microsoft Defender for Cloud',
+        'Azure Activity Log',
+      ],
+      answer: 1,
+      explanation:
+        'Azure RBAC is coarse identity; Defender finds PII; Activity Log audits; Purview governs across the whole estate.',
+    },
+    {
+      question: 'A fraud team needs to block bad transactions within 200 ms. Which pattern fits?',
+      options: [
+        'Batch BI (nightly Synapse)',
+        'Real-Time Analytics (Event Hubs + Stream Analytics + Functions)',
+        'Data Mesh',
+        'Log Observability',
+      ],
+      answer: 1,
+      explanation:
+        'Real-time analytics with streaming ingestion plus serverless alerting is the only shape that reacts in milliseconds.',
+    },
+    {
+      question: 'Microsoft Fabric Mirroring between Azure SQL and Fabric eliminates the need to:',
+      options: [
+        'Pay for storage',
+        'Write custom replication pipelines',
+        'Create warehouse tables',
+        'Secure the data',
+      ],
+      answer: 1,
+      explanation:
+        'Mirroring replicates changes automatically — no pipeline code to maintain.',
+    },
+    {
+      question: 'Which service helps non-engineers discover datasets using business terms instead of table names?',
+      options: [
+        'Azure Data Factory',
+        'Microsoft Defender',
+        'Microsoft Purview',
+        'Azure Activity Log',
+      ],
+      answer: 2,
+      explanation:
+        'Purview provides a business-friendly catalog, lineage, and classification.',
+    },
+    {
+      question: 'A company stores 5 years of clickstream JSON in ADLS but has no Purview, no Azure Policy, no quality rules. What is this?',
+      options: [
+        'A modern data lake',
+        'A data swamp',
+        'Data mesh',
+        'Medallion architecture',
+      ],
+      answer: 1,
+      explanation:
+        'No catalog, no governance, no trust — storage alone is not an architecture.',
+    },
+  ]}
+/>
+
+### Score Yourself
+
+| Score | Meaning |
+|:-----:|---------|
+| 9-10 | 🎓 You are ready for production design reviews |
+| 7-8 | 🧠 Solid. Re-read the reference architectures lesson |
+| 5-6 | 📚 Review the three architecture lessons and retake |
+| \< 5 | 🔄 Re-do Part 1 first — the 5 Vs are the foundation |
+
+:::tip[HitaVir Tech says]
+"Don't guess. The questions here are the same ones that show up in every Azure
+analytics interview. Know them cold."
+:::
+
+<LessonComplete />

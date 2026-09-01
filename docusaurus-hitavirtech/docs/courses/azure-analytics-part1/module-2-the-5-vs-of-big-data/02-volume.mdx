@@ -1,0 +1,130 @@
+---
+title: 'Volume'
+sidebar_position: 2
+description: 'The first V — data scale from bytes to zettabytes, why traditional databases break past ~10 TB, and the questions Volume forces you to ask.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Define Volume and read the scale ladder from bytes to zettabytes
+- Explain why single-machine systems break past roughly 1-10 TB
+- List the questions Volume forces every platform team to answer
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              THE  1st  V   -   VOLUME                        |
+  |              "How much data do we have?"                     |
+  +==============================================================+
+```
+
+### What is Volume?
+
+📦 **Volume** is the size of your data — how many bytes, rows, events, or files you must store, move, and process.
+
+### The Scale Ladder
+
+| Unit | Power | What It Holds |
+|------|:---:|---------------|
+| Byte (B) | 1 | A letter |
+| KB | 10^3 | One email |
+| MB | 10^6 | One song |
+| GB | 10^9 | One DVD |
+| TB | 10^12 | One year of company sales |
+| PB | 10^15 | One day of YouTube uploads |
+| EB | 10^18 | All of Netflix streaming |
+| ZB | 10^21 | The entire internet per year |
+
+### Why Volume is Hard
+
+A traditional database runs fine up to ~1-10 TB. Past that, things break:
+
+- 💥 Single disk too small to hold it
+- 💥 Single CPU too slow to scan it in reasonable time
+- 💥 Backups take days
+- 💥 Failures become likely (1-in-1000 → every day)
+- 💥 Cost spirals out of control
+
+At big-data scale, you need **distributed** systems — hundreds of machines sharing the load.
+
+### Real-World Volume
+
+| Company | Daily Volume |
+|---------|--------------|
+| 📱 Instagram | 100M+ photos uploaded |
+| 🛒 Amazon | Billions of events |
+| 🚗 Uber | 10s of TB of trip data |
+| 🎬 Netflix | PB of logs and streams |
+| 🔎 Bing | Unimaginable |
+
+### Questions Volume Forces You to Ask
+
+- 💾 Where do I **store** 500 TB affordably?
+- ⚡ How do I **scan** 10 TB in minutes, not days?
+- 💼 How do I **back up** a multi-PB system?
+- 💰 How do I **afford** this without going bankrupt?
+
+:::tip[HitaVir Tech says]
+"What works at 10 GB catastrophically fails at 10 TB. Always ask — *how does
+this scale at 100x?*"
+:::
+
+:::info[Volume in one line]
+Design for 100× your current data — or rebuild painfully later.
+:::
+
+### Preview — Azure Services That Solve Volume
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Databricks](/img/courses/azure-icons/databricks.svg) ![HDInsight](/img/courses/azure-icons/hdinsight.svg)
+
+*Coming up in "Azure Services for Volume".*
+
+<KeyTakeaways>
+
+- Volume is the sheer size of data — bytes, rows, events, files
+- Traditional single-machine databases work up to ~1-10 TB, then storage, scan speed, backups, and cost all break
+- Big-data scale demands distributed systems — many machines sharing the load
+- Design for 100× your current data volume from day one
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'At roughly what scale does a traditional single-machine database start to break down?',
+      options: [
+        '1-10 GB',
+        '1-10 TB',
+        '1-10 PB',
+        'It never breaks down',
+      ],
+      answer: 1,
+      explanation:
+        'Past ~1-10 TB, single disks, single CPUs, backups, and costs all hit walls — the cue to go distributed.',
+    },
+    {
+      question: 'What is the fundamental architectural answer to big-data Volume?',
+      options: [
+        'Buy one bigger server every year',
+        'Compress everything to ZIP',
+        'Distributed systems — many machines sharing the load',
+        'Delete old data monthly',
+      ],
+      answer: 2,
+      explanation:
+        'Scaling out across hundreds of machines is how big-data systems store and scan what a single machine cannot.',
+    },
+    {
+      question: 'Which unit of the scale ladder is described as "one day of YouTube uploads"?',
+      options: ['Petabyte (PB)', 'Terabyte (TB)', 'Exabyte (EB)', 'Gigabyte (GB)'],
+      answer: 0,
+      explanation:
+        'A petabyte (10^15 bytes) is the ballpark of one day of YouTube uploads; a TB is one year of company sales.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,141 @@
+---
+title: 'Git Best Practices'
+sidebar_position: 2
+description: 'Write conventional commit messages, keep commits small, branch for everything, and never commit secrets.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Write commit messages in the conventional commits format (`feat:`, `fix:`, …)
+- Keep `main` always deployable by branching for every change
+- Protect secrets and generated files with a `.gitignore`
+
+</LearningObjectives>
+
+Follow these rules to write professional-quality Git history.
+
+### 1. Write Meaningful Commit Messages
+
+Use the **conventional commits** format:
+
+```
+type: short description
+
+Longer explanation if needed
+```
+
+| Type | When to Use | Example |
+|------|-------------|---------|
+| `feat:` | New feature | `feat: add user authentication` |
+| `fix:` | Bug fix | `fix: resolve database timeout` |
+| `docs:` | Documentation | `docs: update API reference` |
+| `test:` | Adding tests | `test: add unit tests for ETL` |
+| `refactor:` | Code restructuring | `refactor: optimize query performance` |
+| `chore:` | Maintenance | `chore: update dependencies` |
+
+### 2. Make Small, Focused Commits
+
+| Good | Bad |
+|------|-----|
+| One commit per feature/fix | 50 changed files in one commit |
+| Easy to review and revert | Impossible to understand |
+
+### 3. Use Branches for Everything
+
+```
+main           ← Always deployable
+├── feature/*  ← New features
+├── bugfix/*   ← Bug fixes
+└── hotfix/*   ← Urgent patches
+```
+
+### 4. Never Commit Secrets
+
+Create a `.gitignore` file to exclude sensitive files:
+
+```bash
+cat > .gitignore << 'EOF'
+# Secrets
+.env
+*.key
+*.pem
+credentials.json
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Data files
+*.csv
+*.parquet
+data/
+
+# IDE
+.vscode/
+.idea/
+EOF
+
+git add .gitignore
+git commit -m "chore: add .gitignore for secrets and generated files"
+git push
+```
+
+### 5. Pull Before You Push
+
+```bash
+git pull origin main    # Always do this first
+git push origin main    # Then push your changes
+```
+
+> **HitaVir Tech says:** "Git is a communication tool. Your commit messages, branch names, and history tell a story. Write it for the person who will read it at 3 AM during an outage — that person might be future you."
+
+<KeyTakeaways>
+
+- Conventional commits: `feat:` for features, `fix:` for bugs, `docs:`, `test:`, `refactor:`, `chore:`
+- Small, focused commits are easy to review and easy to revert
+- `main` should always be deployable — all work goes on branches
+- `.gitignore` keeps secrets (`.env`, keys) and generated files out of Git
+- Pull before you push
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Using conventional commits, which prefix fits "resolve database timeout"?',
+      options: ['feat:', 'fix:', 'docs:', 'chore:'],
+      answer: 1,
+      explanation:
+        'It repairs broken behavior, so fix: is correct. feat: is for new features, chore: for maintenance.',
+    },
+    {
+      question: 'Which of these belongs in .gitignore?',
+      options: [
+        'README.md',
+        'Your Python source files',
+        'The tests folder',
+        '.env files and credential keys',
+      ],
+      answer: 3,
+      explanation:
+        'Secrets like .env, *.key, and credentials.json must never be committed — .gitignore keeps them out.',
+    },
+    {
+      question: 'In a professional branching model, what should always be true of main?',
+      options: [
+        'It is always deployable',
+        'It contains experimental code',
+        'It is deleted after each release',
+        'Only managers can read it',
+      ],
+      answer: 0,
+      explanation:
+        'main is the stable, deployable branch. Features, bugfixes, and hotfixes live on their own branches until merged.',
+    },
+  ]}
+/>
+
+<LessonComplete />

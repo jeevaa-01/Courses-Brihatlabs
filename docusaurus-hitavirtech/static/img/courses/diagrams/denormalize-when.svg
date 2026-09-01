@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 260" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="s" x="-2%" y="-2%" width="104%" height="108%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect width="780" height="260" rx="12" fill="#f8f9fa"/>
+  <text x="390" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">When to Denormalize?</text>
+
+  <!-- Header row -->
+  <rect x="20" y="40" width="365" height="32" rx="6" fill="#34a853"/>
+  <text x="202" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Denormalize When</text>
+  <rect x="395" y="40" width="365" height="32" rx="6" fill="#d93025"/>
+  <text x="577" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Do NOT Denormalize When</text>
+
+  <!-- Row 1 -->
+  <rect x="20" y="78" width="365" height="30" rx="4" fill="#e6f4ea"/>
+  <text x="32" y="98" font-size="12" fill="#137333">Building a data warehouse</text>
+  <rect x="395" y="78" width="365" height="30" rx="4" fill="#fce8e6"/>
+  <text x="407" y="98" font-size="12" fill="#a50e0e">Building a transactional system</text>
+
+  <!-- Row 2 -->
+  <rect x="20" y="112" width="365" height="30" rx="4" fill="white"/>
+  <text x="32" y="132" font-size="12" fill="#3c4043">Read-heavy workload (90% reads)</text>
+  <rect x="395" y="112" width="365" height="30" rx="4" fill="white"/>
+  <text x="407" y="132" font-size="12" fill="#3c4043">Write-heavy workload</text>
+
+  <!-- Row 3 -->
+  <rect x="20" y="146" width="365" height="30" rx="4" fill="#e6f4ea"/>
+  <text x="32" y="166" font-size="12" fill="#137333">Query performance is critical</text>
+  <rect x="395" y="146" width="365" height="30" rx="4" fill="#fce8e6"/>
+  <text x="407" y="166" font-size="12" fill="#a50e0e">Data integrity is the top priority</text>
+
+  <!-- Row 4 -->
+  <rect x="20" y="180" width="365" height="30" rx="4" fill="white"/>
+  <text x="32" y="200" font-size="12" fill="#3c4043">Users need fast dashboards</text>
+  <rect x="395" y="180" width="365" height="30" rx="4" fill="white"/>
+  <text x="407" y="200" font-size="12" fill="#3c4043">Application needs real-time updates</text>
+
+  <!-- Row 5 -->
+  <rect x="20" y="214" width="365" height="30" rx="4" fill="#e6f4ea"/>
+  <text x="32" y="234" font-size="12" fill="#137333">Data is loaded in batches</text>
+  <rect x="395" y="214" width="365" height="30" rx="4" fill="#fce8e6"/>
+  <text x="407" y="234" font-size="12" fill="#a50e0e">Data changes frequently</text>
+</svg>

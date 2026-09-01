@@ -1,0 +1,184 @@
+---
+title: 'Resolving Merge Conflicts'
+sidebar_position: 3
+description: 'Create a merge conflict on purpose, read the conflict markers, resolve it by hand, and commit the resolution like a professional.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Explain what causes a merge conflict
+- Read Git's conflict markers and choose a resolution
+- Mark a conflict as resolved with `git add` and `git commit`
+
+</LearningObjectives>
+
+Merge conflicts happen when two branches change the **same line** in the **same file**. Git cannot decide which change to keep, so it asks you.
+
+### Create a Conflict (On Purpose)
+
+**Step 1 — Create two branches from main**
+
+```bash
+git switch main
+git switch -c branch-a
+echo "Color: Blue" > style.txt
+git add style.txt
+git commit -m "Branch A: set color to blue"
+```
+
+```bash
+git switch main
+git switch -c branch-b
+echo "Color: Red" > style.txt
+git add style.txt
+git commit -m "Branch B: set color to red"
+```
+
+**Step 2 — Merge branch-a into main**
+
+```bash
+git switch main
+git merge branch-a
+```
+
+This works fine (fast-forward).
+
+**Step 3 — Now merge branch-b into main**
+
+```bash
+git merge branch-b
+```
+
+**Expected output:**
+
+```
+Auto-merging style.txt
+CONFLICT (add/add): Merge conflict in style.txt
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+### Step 4 — See the Conflict
+
+```bash
+cat style.txt
+```
+
+**Expected output:**
+
+```
+<<<<<<< HEAD
+Color: Blue
+=======
+Color: Red
+>>>>>>> branch-b
+```
+
+This is Git's conflict marker format:
+
+```
+<<<<<<< HEAD        ← Your current branch (main)
+Color: Blue         ← Change from main (via branch-a)
+=======             ← Separator
+Color: Red          ← Change from branch-b
+>>>>>>> branch-b    ← The branch being merged
+```
+
+### Step 5 — Resolve the Conflict
+
+Open `style.txt` in your editor and replace the entire content with your chosen resolution:
+
+```bash
+cat > style.txt << 'EOF'
+Color: Purple
+EOF
+```
+
+We chose "Purple" as a combination of both — this is a common approach.
+
+### Step 6 — Mark as Resolved and Commit
+
+```bash
+git add style.txt
+git commit -m "Resolve merge conflict: choose purple"
+```
+
+### Step 7 — Verify
+
+```bash
+git log --oneline --graph --all
+```
+
+### Clean Up
+
+```bash
+git branch -d branch-a
+git branch -d branch-b
+```
+
+### Conflict Resolution Tips
+
+| Tip | Description |
+|-----|-------------|
+| Read both changes carefully | Understand what each branch intended |
+| Talk to your team | If unsure, ask the person who made the other change |
+| Test after resolving | Make sure the code works after the fix |
+| Use VS Code | It has a built-in merge conflict tool with clickable buttons |
+
+:::tip[HitaVir Tech says]
+"Merge conflicts are NOT errors. They are Git asking for your human judgment. Do not be afraid of them — they are a normal part of teamwork."
+:::
+
+<KeyTakeaways>
+
+- Conflicts happen when two branches change the **same line** in the **same file**
+- Everything between the markers is Git showing you both versions — HEAD above the separator, the incoming branch below
+- Resolve by editing the file to the final content, removing all markers
+- Finish with `git add <file>` and `git commit` to record the resolution
+- Conflicts are normal teamwork, not errors — VS Code has clickable tools for them
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In a conflicted file, what does the content between the HEAD marker and the ======= separator represent?',
+      options: [
+        'The incoming branch version',
+        'The version from your current branch',
+        'The common ancestor version',
+        'Git generated placeholder text',
+      ],
+      answer: 1,
+      explanation:
+        'HEAD marks your current branch side of the conflict; the incoming branch version appears below the ======= separator.',
+    },
+    {
+      question: 'After editing the conflicted file to its final content, what two commands complete the merge?',
+      options: [
+        'git merge --continue and git push',
+        'git restore and git commit',
+        'git add the file, then git commit',
+        'git rebase and git merge',
+      ],
+      answer: 2,
+      explanation:
+        'Staging the resolved file tells Git the conflict is fixed; the commit records the merge result.',
+    },
+    {
+      question: 'What causes a merge conflict?',
+      options: [
+        'Merging any two branches',
+        'Forgetting to push before merging',
+        'Using git switch too often',
+        'Two branches changing the same line of the same file',
+      ],
+      answer: 3,
+      explanation:
+        'Git auto-merges changes to different lines or files. Only competing edits to the same line need human judgment.',
+    },
+  ]}
+/>
+
+<LessonComplete />

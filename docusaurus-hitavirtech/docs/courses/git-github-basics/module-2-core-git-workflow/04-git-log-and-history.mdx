@@ -1,0 +1,152 @@
+---
+title: 'Git Log and History'
+sidebar_position: 4
+description: 'Explore your commit history with git log, --oneline, --graph, git show, and understand what HEAD points to.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Browse full and compact commit history with `git log` and `--oneline`
+- Inspect a single commit with `git show`
+- Understand HEAD as the pointer to your current commit
+
+</LearningObjectives>
+
+Git keeps a complete history of every commit. Let us explore it.
+
+### View Full History
+
+```bash
+git log
+```
+
+**Expected output:**
+
+```
+commit b2c3d4e (HEAD -> main)
+Author: HitaVir Tech <your.email@example.com>
+Date:   Sun Apr 6 10:30:00 2026 +0530
+
+    Add meeting notes
+
+commit a1b2c3d
+Author: HitaVir Tech <your.email@example.com>
+Date:   Sun Apr 6 10:25:00 2026 +0530
+
+    Add application config
+
+commit 9f8e7d6
+Author: HitaVir Tech <your.email@example.com>
+Date:   Sun Apr 6 10:20:00 2026 +0530
+
+    Add three content files
+
+commit 1a2b3c4
+Author: HitaVir Tech <your.email@example.com>
+Date:   Sun Apr 6 10:15:00 2026 +0530
+
+    Initial commit: add README
+```
+
+Press `q` to exit the log viewer.
+
+### Compact View (One Line Per Commit)
+
+```bash
+git log --oneline
+```
+
+**Expected output:**
+
+```
+b2c3d4e (HEAD -> main) Add meeting notes
+a1b2c3d Add application config
+9f8e7d6 Add three content files
+1a2b3c4 Initial commit: add README
+```
+
+### Visual Branch History
+
+```bash
+git log --oneline --graph --all
+```
+
+This shows branches as a graph — very useful when working with multiple branches.
+
+### View a Specific Commit
+
+```bash
+git show 1a2b3c4
+```
+
+Replace with an actual commit hash from your log.
+
+### Understanding HEAD
+
+```
+HEAD → main → latest commit
+```
+
+`HEAD` is a pointer that tells Git which commit you are currently on. It usually points to the latest commit on your current branch.
+
+### Log Options Quick Reference
+
+| Command | What It Shows |
+|---------|-------------|
+| `git log` | Full history with details |
+| `git log --oneline` | Compact one-line history |
+| `git log --oneline --graph` | Visual branch graph |
+| `git log -5` | Last 5 commits only |
+| `git log --author="Name"` | Commits by a specific person |
+| `git show <hash>` | Details of a specific commit |
+
+> **HitaVir Tech says:** "The commit log is your project's autobiography. Write good commit messages and you will never wonder 'what did I change last week?' again."
+
+<KeyTakeaways>
+
+- `git log` shows full history; press `q` to exit the viewer
+- `git log --oneline` gives a compact one-line-per-commit view
+- `git log --oneline --graph --all` draws the branch structure visually
+- HEAD is a pointer to the commit you are currently on (usually the tip of your branch)
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which option makes git log show one compact line per commit?',
+      options: ['--short', '--oneline', '--compact', '--brief'],
+      answer: 1,
+      explanation:
+        'git log --oneline shows the abbreviated hash and message on a single line per commit.',
+    },
+    {
+      question: 'What is HEAD in Git?',
+      options: [
+        'The first commit ever made in the repo',
+        'The remote copy of your repository',
+        'A backup of the main branch',
+        'A pointer to the commit you are currently on',
+      ],
+      answer: 3,
+      explanation:
+        'HEAD points to your current commit — usually the latest commit on the branch you have checked out.',
+    },
+    {
+      question: 'The full git log view has taken over your terminal. How do you exit it?',
+      options: [
+        'Press q',
+        'Press Ctrl + Alt + Delete',
+        'Close Git Bash and reopen it',
+        'Type git exit',
+      ],
+      answer: 0,
+      explanation:
+        'git log opens a pager — pressing q quits it and returns you to the prompt.',
+    },
+  ]}
+/>
+
+<LessonComplete />

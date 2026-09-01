@@ -1,0 +1,194 @@
+---
+title: 'AWS Services for Variety'
+sidebar_position: 3
+description: 'The AWS Variety toolkit — Glue crawlers and catalog, Athena multi-format SQL, and the AI extractors (Rekognition, Textract, Transcribe, Comprehend).'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Explain how Glue crawlers and the Data Catalog give every format one metadata view
+- Query CSV, JSON, and Parquet together with a single Athena SQL statement
+- Pick the right AI extractor — Rekognition, Textract, Transcribe, Comprehend — for each unstructured input
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              AWS  FOR  VARIETY                               |
+  |         "Handle any data format, elegantly."                 |
+  +==============================================================+
+```
+
+### The Variety Lineup
+
+![Glue](/img/courses/aws-icons/glue.png) ![Athena](/img/courses/aws-icons/athena.png) ![DynamoDB](/img/courses/aws-icons/dynamodb.png) ![Rekognition](/img/courses/aws-icons/rekognition.png) ![Textract](/img/courses/aws-icons/textract.png) ![Transcribe](/img/courses/aws-icons/transcribe.png) ![Comprehend](/img/courses/aws-icons/comprehend.png) ![OpenSearch](/img/courses/aws-icons/opensearch.png)
+
+**Glue** • **Athena** • **DynamoDB** • **Rekognition** • **Textract** • **Transcribe** • **Comprehend** • **OpenSearch**
+
+### The Variety Toolkit
+
+| Service | Icon | Purpose |
+|---------|:---:|---------|
+| **Amazon S3** | <img src="aws-icons/s3.png" width="32" height="32" alt="Amazon S3" /> | Holds every format — CSV, JSON, Parquet, images, video |
+| **AWS Glue** | <img src="aws-icons/glue.png" width="32" height="32" alt="AWS Glue" /> | ETL for all formats; crawlers auto-detect schema |
+| **AWS Glue Data Catalog** | <img src="aws-icons/glue-catalog.png" width="32" height="32" alt="Glue Catalog" /> | Metadata layer — one view across formats |
+| **Amazon Athena** | <img src="aws-icons/athena.png" width="32" height="32" alt="Athena" /> | SQL on CSV, JSON, Parquet, ORC, Avro |
+| **Amazon DynamoDB** | <img src="aws-icons/dynamodb.png" width="32" height="32" alt="DynamoDB" /> | NoSQL for flexible docs |
+| **Amazon Rekognition** | <img src="aws-icons/rekognition.png" width="32" height="32" alt="Rekognition" /> | Images / video → structured labels |
+| **Amazon Textract** | <img src="aws-icons/textract.png" width="32" height="32" alt="Textract" /> | PDFs and scans → text and tables |
+| **Amazon Transcribe** | <img src="aws-icons/transcribe.png" width="32" height="32" alt="Transcribe" /> | Speech → text |
+| **Amazon Comprehend** | <img src="aws-icons/comprehend.png" width="32" height="32" alt="Comprehend" /> | NLP: sentiment, entities, topics |
+| **Amazon OpenSearch** | <img src="aws-icons/opensearch.png" width="32" height="32" alt="OpenSearch" /> | Full-text search and log analytics |
+
+### Service Spotlight — AWS Glue
+
+![Glue](/img/courses/aws-icons/glue.png) ![Crawler](/img/courses/aws-icons/glue-crawler.png) ![Catalog](/img/courses/aws-icons/glue-catalog.png) ![DataBrew](/img/courses/aws-icons/glue-databrew.png) ![Data Quality](/img/courses/aws-icons/glue-dq.png)
+
+```
+  +--------------------------------------------------------------+
+  |  AWS  GLUE  -  Serverless ETL + Data Catalog                 |
+  +--------------------------------------------------------------+
+  |  Crawlers     :  Auto-detect schema for new S3 folders       |
+  |  Catalog      :  Central metadata (Athena, Redshift, EMR)    |
+  |  ETL Jobs     :  Python / Spark transformations              |
+  |  DataBrew     :  No-code visual data prep                    |
+  |  Data Quality :  Rule-based DQ checks                        |
+  |                                                              |
+  |  The "nervous system" of your AWS data lake.                 |
+  +--------------------------------------------------------------+
+```
+
+### Glue Flow
+
+```
+  INPUT                                                       OUTPUT
+  -----                                                       ------
+
+  CSV       +                                           +---- Parquet
+  JSON      +---> Crawler ---> Catalog ---> ETL Job ----+     (optimized)
+  Parquet   +              (schema +                    +---- Updated
+  Avro      |               partitions)                        tables
+  Database  +
+```
+
+### Athena — One SQL, Many Formats
+
+```sql
+SELECT *
+FROM   csv_orders
+JOIN   json_customers   USING (customer_id)
+JOIN   parquet_products USING (product_id);
+```
+
+Athena reads **CSV, JSON, Parquet, ORC, Avro** — all via the Glue Catalog. You never leave SQL.
+
+### Unstructured → Structured: The AI Extractor Pipeline
+
+![Rekognition](/img/courses/aws-icons/rekognition.png) ![Textract](/img/courses/aws-icons/textract.png) ![Transcribe](/img/courses/aws-icons/transcribe.png) ![Comprehend](/img/courses/aws-icons/comprehend.png) ![Translate](/img/courses/aws-icons/translate.png)
+
+| Input | Icon | AWS Service | Output |
+|-------|:---:|-------------|--------|
+| Images | 🖼️ | Rekognition | Labels, faces, moderation |
+| PDFs / scans | 📄 | Textract | Extracted text + tables |
+| Audio / voice | 🎤 | Transcribe | Transcripts |
+| Free text | 💬 | Comprehend | Sentiment, entities, topics |
+| Translations | 🌍 | Translate | Languages |
+
+Magic step: **chaos in → structured features out** → then into S3 / Athena / Redshift as normal.
+
+### Real-World Example — E-commerce Review Pipeline
+
+```
+  Customer review (raw text)
+        |
+        v
+  Comprehend  --->  sentiment = negative, topic = shipping
+        |
+        v
+  S3 (enriched records)
+        |
+        v
+  Glue Crawler  --->  Data Catalog
+        |
+        v
+  Athena SQL:   "avg sentiment per product / month"
+        |
+        v
+  QuickSight dashboard for the CX team
+        |
+        v
+  Action:  fix shipping partner in Region X
+```
+
+### Variety Decision Tree
+
+```
+                       What's my data?
+                             |
+      +---------+---------+--+---+---------+---------+
+      |         |         |      |         |         |
+   Tabular   JSON      Images   PDFs   Audio     Free text
+      |         |         |      |         |         |
+      v         v         v      v         v         v
+   S3+Glue+   S3 +      Reko-   Text-   Transcribe  Comprehend
+   Athena     Athena    gnition  tract
+              or DDB
+```
+
+:::tip[HitaVir Tech says]
+"The magic of modern analytics — unstructured data becomes structured features in minutes via AWS AI services. What took PhDs years a decade ago is now an API call."
+:::
+
+<KeyTakeaways>
+
+- Glue crawlers auto-detect schema and the Data Catalog gives every format one metadata view
+- Athena joins CSV, JSON, Parquet, ORC, and Avro in a single SQL statement via the Catalog
+- The AI extractors turn chaos into features: Rekognition (images), Textract (PDFs), Transcribe (audio), Comprehend (text)
+- Once extracted, unstructured data flows through S3 / Athena / QuickSight like any other table
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'You need to pull text and tables out of scanned PDF invoices. Which service?',
+      options: [
+        'Rekognition',
+        'Textract',
+        'Transcribe',
+        'Comprehend',
+      ],
+      answer: 1,
+      explanation:
+        'Textract is the document extractor. Rekognition handles images/video, Transcribe handles speech, Comprehend handles NLP on text.',
+    },
+    {
+      question: 'What lets Athena join a CSV table with a JSON table in one query?',
+      options: [
+        'Converting everything to CSV first',
+        'A DynamoDB index',
+        'The Glue Data Catalog providing schema for both',
+        'An EMR cluster running behind Athena',
+      ],
+      answer: 2,
+      explanation:
+        'The Catalog stores schema and location metadata for each table regardless of format, so Athena can query them uniformly.',
+    },
+    {
+      question: 'What do Glue crawlers do?',
+      options: [
+        'Move data between AWS regions',
+        'Render QuickSight dashboards',
+        'Encrypt S3 buckets',
+        'Auto-detect schema in S3 folders and register tables in the Catalog',
+      ],
+      answer: 3,
+      explanation:
+        'Crawlers scan data in S3, infer columns, types, and partitions, and populate the Glue Data Catalog automatically.',
+    },
+  ]}
+/>
+
+<LessonComplete />

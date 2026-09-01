@@ -1,0 +1,164 @@
+---
+title: 'Your First Commands — pwd, ls, clear'
+sidebar_position: 4
+description: 'Run your first terminal commands — pwd to locate yourself, ls to list files and hidden files, and clear to tidy the screen.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Print your current location with `pwd`
+- List files, details, and hidden files with `ls`, `ls -l`, and `ls -la`
+- Clear a cluttered screen with `clear` or Ctrl + L
+
+</LearningObjectives>
+
+Time to type your first commands! Open Git Bash and follow along.
+
+### pwd — Print Working Directory
+
+This command tells you **where you are** in the file system.
+
+```bash
+pwd
+```
+
+**Expected output:**
+
+```
+/c/Users/YourName
+```
+
+This is your **home directory**. Think of it as your desk — the default location where you start.
+
+**Real-world analogy:** Imagine you are in a building. `pwd` is like asking "What room am I in right now?"
+
+### ls — List Files
+
+This command shows the **files and folders** in your current location.
+
+```bash
+ls
+```
+
+**Expected output (example):**
+
+```
+Desktop  Documents  Downloads  Music  Pictures  Videos
+```
+
+These are the folders inside your home directory.
+
+### ls with Options
+
+Add options to see more details:
+
+```bash
+ls -l
+```
+
+**Expected output:**
+
+```
+drwxr-xr-x 1 user group 0 Apr  5 10:00 Desktop
+drwxr-xr-x 1 user group 0 Apr  5 10:00 Documents
+drwxr-xr-x 1 user group 0 Apr  5 10:00 Downloads
+```
+
+The `-l` flag means "long format" — it shows permissions, owner, size, and date.
+
+```bash
+ls -la
+```
+
+The `-a` flag means "all" — it shows hidden files (files starting with `.`).
+
+**Expected output includes:**
+
+```
+.  ..  .bashrc  .gitconfig  Desktop  Documents  ...
+```
+
+Files starting with `.` are hidden configuration files.
+
+### clear — Clear the Screen
+
+When your terminal gets cluttered:
+
+```bash
+clear
+```
+
+This clears all the text. Your previous commands are not deleted — just scrolled off screen.
+
+**Keyboard shortcut:** Press `Ctrl + L` for the same effect.
+
+### Quick Reference
+
+| Command | What It Does | Analogy |
+|---------|-------------|---------|
+| `pwd` | Show current location | "Where am I?" |
+| `ls` | List files and folders | "What is in this room?" |
+| `ls -l` | List with details | "Show me everything about this room" |
+| `ls -la` | List all including hidden | "Show me everything, even hidden items" |
+| `clear` | Clear the screen | "Clean the whiteboard" |
+
+:::tip[HitaVir Tech says]
+"pwd, ls, and clear are your three best friends. You will use them hundreds of times a day. Type them until they become muscle memory."
+:::
+
+### Common Mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| Typing `PWD` (uppercase) | Linux commands are case-sensitive — use lowercase |
+| Adding spaces in wrong places | `ls -l` not `ls - l` |
+| Forgetting to press Enter | Commands only run when you press Enter |
+
+<KeyTakeaways>
+
+- `pwd` answers "where am I?" — you always start in your home directory
+- `ls -l` adds permissions, size, and date; `ls -la` also reveals dot-prefixed hidden files
+- `clear` (or Ctrl + L) only scrolls output away — nothing is deleted
+- Linux commands are case-sensitive: `pwd` works, `PWD` does not
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which command shows the directory you are currently in?',
+      options: ['ls', 'pwd', 'cd', 'clear'],
+      answer: 1,
+      explanation:
+        'pwd stands for "print working directory" — it prints your current location in the file system.',
+    },
+    {
+      question: 'What does the -a flag in ls -la reveal?',
+      options: [
+        'File sizes only',
+        'Only directories',
+        'Hidden files that start with a dot',
+        'Files sorted alphabetically',
+      ],
+      answer: 2,
+      explanation:
+        'The -a (all) flag includes hidden files such as .bashrc and .gitconfig, which normal ls output skips.',
+    },
+    {
+      question: 'What happens to previous output when you run clear?',
+      options: [
+        'It is permanently deleted',
+        'It is saved to a log file',
+        'The terminal closes and reopens',
+        'It scrolls off screen but is not deleted',
+      ],
+      answer: 3,
+      explanation:
+        'clear just tidies the visible screen — scroll up (or check history) and your earlier output is still there.',
+    },
+  ]}
+/>
+
+<LessonComplete />

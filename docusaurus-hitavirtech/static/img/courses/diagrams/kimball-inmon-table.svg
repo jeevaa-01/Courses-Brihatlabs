@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 400" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="780" height="400" rx="12" fill="#f8f9fa"/>
+  <text x="390" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#202124">Kimball vs Inmon — Comparison</text>
+
+  <rect x="15" y="42" width="200" height="34" rx="6" fill="#5f6368"/>
+  <text x="115" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="white">Feature</text>
+  <rect x="220" y="42" width="265" height="34" rx="6" fill="#1a73e8"/>
+  <text x="352" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="white">Kimball (Bottom-Up)</text>
+  <rect x="490" y="42" width="275" height="34" rx="6" fill="#34a853"/>
+  <text x="627" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="white">Inmon (Top-Down)</text>
+
+  <rect x="15" y="82" width="200" height="32" rx="4" fill="#e8eaed"/>
+  <text x="28" y="103" font-size="12" font-weight="600" fill="#202124">Start point</text>
+  <rect x="220" y="82" width="265" height="32" rx="4" fill="#e8f0fe"/>
+  <text x="352" y="103" text-anchor="middle" font-size="12" fill="#1a73e8">Business process</text>
+  <rect x="490" y="82" width="275" height="32" rx="4" fill="#e6f4ea"/>
+  <text x="627" y="103" text-anchor="middle" font-size="12" fill="#34a853">Enterprise model</text>
+
+  <rect x="15" y="118" width="200" height="32" rx="4" fill="white"/>
+  <text x="28" y="139" font-size="12" font-weight="600" fill="#202124">Central warehouse</text>
+  <rect x="220" y="118" width="265" height="32" rx="4" fill="white"/>
+  <text x="352" y="139" text-anchor="middle" font-size="12" fill="#3c4043">Emerges from marts</text>
+  <rect x="490" y="118" width="275" height="32" rx="4" fill="white"/>
+  <text x="627" y="139" text-anchor="middle" font-size="12" fill="#3c4043">Built first</text>
+
+  <rect x="15" y="154" width="200" height="32" rx="4" fill="#e8eaed"/>
+  <text x="28" y="175" font-size="12" font-weight="600" fill="#202124">Normalization</text>
+  <rect x="220" y="154" width="265" height="32" rx="4" fill="#e8f0fe"/>
+  <text x="352" y="175" text-anchor="middle" font-size="12" font-weight="600" fill="#1a73e8">Denormalized (star)</text>
+  <rect x="490" y="154" width="275" height="32" rx="4" fill="#e6f4ea"/>
+  <text x="627" y="175" text-anchor="middle" font-size="12" font-weight="600" fill="#34a853">Normalized (3NF)</text>
+
+  <rect x="15" y="190" width="200" height="32" rx="4" fill="white"/>
+  <text x="28" y="211" font-size="12" font-weight="600" fill="#202124">Time to first delivery</text>
+  <rect x="220" y="190" width="265" height="32" rx="4" fill="white"/>
+  <text x="352" y="211" text-anchor="middle" font-size="12" fill="#3c4043">Weeks / months</text>
+  <rect x="490" y="190" width="275" height="32" rx="4" fill="white"/>
+  <text x="627" y="211" text-anchor="middle" font-size="12" fill="#3c4043">Months / years</text>
+
+  <rect x="15" y="226" width="200" height="32" rx="4" fill="#e8eaed"/>
+  <text x="28" y="247" font-size="12" font-weight="600" fill="#202124">Complexity</text>
+  <rect x="220" y="226" width="265" height="32" rx="4" fill="#e8f0fe"/>
+  <text x="352" y="247" text-anchor="middle" font-size="12" fill="#1a73e8">Lower</text>
+  <rect x="490" y="226" width="275" height="32" rx="4" fill="#e6f4ea"/>
+  <text x="627" y="247" text-anchor="middle" font-size="12" fill="#34a853">Higher</text>
+
+  <rect x="15" y="262" width="200" height="32" rx="4" fill="white"/>
+  <text x="28" y="283" font-size="12" font-weight="600" fill="#202124">Cost</text>
+  <rect x="220" y="262" width="265" height="32" rx="4" fill="white"/>
+  <text x="352" y="283" text-anchor="middle" font-size="12" fill="#3c4043">Lower initially</text>
+  <rect x="490" y="262" width="275" height="32" rx="4" fill="white"/>
+  <text x="627" y="283" text-anchor="middle" font-size="12" fill="#3c4043">Higher initially</text>
+
+  <rect x="15" y="298" width="200" height="32" rx="4" fill="#e8eaed"/>
+  <text x="28" y="319" font-size="12" font-weight="600" fill="#202124">Flexibility</text>
+  <rect x="220" y="298" width="265" height="32" rx="4" fill="#e8f0fe"/>
+  <text x="352" y="319" text-anchor="middle" font-size="12" fill="#1a73e8">Easier to extend</text>
+  <rect x="490" y="298" width="275" height="32" rx="4" fill="#e6f4ea"/>
+  <text x="627" y="319" text-anchor="middle" font-size="12" fill="#34a853">Harder to change</text>
+
+  <rect x="15" y="334" width="200" height="32" rx="4" fill="white"/>
+  <text x="28" y="355" font-size="12" font-weight="600" fill="#202124">Industry adoption</text>
+  <rect x="220" y="334" width="265" height="32" rx="4" fill="white"/>
+  <text x="352" y="355" text-anchor="middle" font-size="12" fill="#3c4043">More common</text>
+  <rect x="490" y="334" width="275" height="32" rx="4" fill="white"/>
+  <text x="627" y="355" text-anchor="middle" font-size="12" fill="#3c4043">Large enterprises</text>
+
+  <rect x="15" y="370" width="200" height="28" rx="4" fill="#e8eaed"/>
+  <text x="28" y="389" font-size="12" font-weight="600" fill="#202124">Best for</text>
+  <rect x="220" y="370" width="265" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="352" y="389" text-anchor="middle" font-size="12" font-weight="600" fill="#1a73e8">Mid-size, agile teams</text>
+  <rect x="490" y="370" width="275" height="28" rx="4" fill="#e6f4ea"/>
+  <text x="627" y="389" text-anchor="middle" font-size="12" font-weight="600" fill="#34a853">Large regulated orgs</text>
+</svg>

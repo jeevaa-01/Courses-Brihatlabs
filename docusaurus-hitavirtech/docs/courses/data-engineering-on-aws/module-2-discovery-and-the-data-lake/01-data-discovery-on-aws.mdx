@@ -1,0 +1,347 @@
+---
+title: 'How to perform data discovery on AWS'
+sidebar_position: 1
+description: 'Profile unknown data with a Glue crawler, correct the inferred schema, and query the cataloged tables in place with Athena.'
+---
+
+<DurationBadge minutes={50} />
+
+<LearningObjectives>
+
+- Create a least-privilege IAM role for Glue and a catalog database
+- Run a Glue crawler over `raw/` and understand what it does and does not do
+- Inspect the inferred schema and fix wrongly typed columns
+- Configure Athena and profile the cataloged data with SQL
+
+</LearningObjectives>
+
+Right now those raw files are just bytes in a bucket. Nothing in AWS knows they are
+tables, what columns they hold, or what types those columns are. **Data discovery** is
+the work of answering exactly that: profiling unknown data, inferring its structure, and
+recording the result so every later service can read it without guessing.
+
+### The concept visual
+
+The discovery loop — `assets/02-data-discovery-loop.html` in the course materials
+repo — shows the three stages you are about to run as a cycle, plus the
+before-and-after of the schema you will correct.
+
+### Setup: a least-privilege role for Glue
+
+Set your shell variables, then confirm the raw data is present.
+
+```bash
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+BUCKET=hvt-retail-datalake-$ACCOUNT_ID
+aws s3 ls s3://$BUCKET/raw/
+```
+
+The crawler needs an IAM role it can assume to read your bucket and write to the catalog.
+Create a least-privilege role for Glue now.
+
+```bash
+cat > glue-trust.json <<'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": { "Service": "glue.amazonaws.com" },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+
+aws iam create-role \
+  --role-name hvt-retail-glue-crawler-role \
+  --assume-role-policy-document file://glue-trust.json \
+  --tags Key=project,Value=hvt-retail Key=env,Value=dev
+
+aws iam attach-role-policy \
+  --role-name hvt-retail-glue-crawler-role \
+  --policy-arn arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+
+cat > glue-s3-read.json <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:ListBucket"],
+      "Resource": [
+        "arn:aws:s3:::$BUCKET",
+        "arn:aws:s3:::$BUCKET/raw/*"
+      ]
+    }
+  ]
+}
+EOF
+
+aws iam put-role-policy \
+  --role-name hvt-retail-glue-crawler-role \
+  --policy-name hvt-retail-glue-s3-read \
+  --policy-document file://glue-s3-read.json
+```
+
+:::tip[Least privilege from the very first role]
+The managed `AWSGlueServiceRole` covers the catalog actions Glue needs; the inline
+policy grants read access to your bucket and nothing else. That is the security pillar —
+least privilege — from the very first role you create.
+:::
+
+### Create a Glue database
+
+A **Glue Data Catalog** is AWS's central metadata store: it holds the definitions of your
+tables (names, columns, types, locations) without holding the data itself. A **database**
+inside it is just a namespace that groups related tables.
+
+**Console path**
+
+1. Open **AWS Glue**, then under **Data Catalog** choose **Databases**.
+2. Choose **Add database**, name it `hvt_retail_db`, and create it.
+
+**AWS CLI**
+
+```bash
+aws glue create-database \
+  --database-input '{"Name": "hvt_retail_db", "Description": "HitaVir Retail discovery catalog"}'
+
+aws glue get-database --name hvt_retail_db --query 'Database.Name' --output text
+```
+
+:::warning[Underscores, not hyphens]
+Glue and Athena allow lowercase letters, numbers, and underscores only in database and
+table names. Use `hvt_retail_db`, not `hvt-retail-db`. A hyphen here will bite you two
+steps later.
+:::
+
+### Run a crawler over the raw data
+
+A **crawler** is a Glue job that walks a data location, samples the files it finds, and
+writes a proposed table definition into the catalog. Point it at `raw/` and it produces
+one table per CSV, complete with a guessed **schema** (the list of columns and types).
+
+**Console path**
+
+1. In **AWS Glue**, choose **Crawlers**, then **Create crawler**. Name it
+   `hvt-retail-raw-crawler`.
+2. For the data source choose **S3** with path
+   `s3://hvt-retail-datalake-<account-id>/raw/`.
+3. For the IAM role, choose `hvt-retail-glue-crawler-role`.
+4. For the output, choose the `hvt_retail_db` database. Leave the schedule **On demand**,
+   create the crawler, then choose **Run**.
+
+**AWS CLI**
+
+```bash
+aws glue create-crawler \
+  --name hvt-retail-raw-crawler \
+  --role hvt-retail-glue-crawler-role \
+  --database-name hvt_retail_db \
+  --targets "{\"S3Targets\": [{\"Path\": \"s3://$BUCKET/raw/\"}]}" \
+  --tags project=hvt-retail,env=dev
+
+aws glue start-crawler --name hvt-retail-raw-crawler
+```
+
+Watch its state until it returns to `READY` (it moves through `RUNNING` and `STOPPING`
+first), then list the tables it created.
+
+```bash
+aws glue get-crawler --name hvt-retail-raw-crawler --query 'Crawler.State' --output text
+aws glue get-tables --database-name hvt_retail_db --query 'TableList[].Name' --output text
+```
+
+You should see three tables: `orders`, `customers`, and `products`.
+
+### Inspect and fix the inferred schema
+
+CSV files carry no type information, so a crawler infers types by sampling. It often gets
+text right but dates and some numbers wrong. Look at `orders`:
+
+```bash
+aws glue get-table --database-name hvt_retail_db --name orders \
+  --query 'Table.StorageDescriptor.Columns[].{name:Name,type:Type}' \
+  --output table
+```
+
+Three columns are typically wrong: `order_date` came in as `string` but should be `date`;
+`amount` and `unit_price` should be `double`; `quantity` should be `int`.
+
+:::warning[Why the types matter]
+Until these types are fixed, `order_date` cannot be compared as a date and `amount`
+cannot be summed as a number. You would be doing math on text. Fixing the schema is the
+whole point of the discovery loop.
+:::
+
+**Console path**
+
+1. In the `orders` table, choose **Edit schema**.
+2. Change `order_date` to **date**, `amount` and `unit_price` to **double**, and
+   `quantity` to **int**. Save the table.
+
+**AWS CLI**
+
+Editing a column type from the CLI means resending the full table definition. Capture it,
+fix the types, strip the server-managed fields, then update.
+
+```bash
+aws glue get-table --database-name hvt_retail_db --name orders \
+  --query 'Table' > orders-table.json
+
+python - <<'EOF'
+import json
+t = json.load(open("orders-table.json"))
+keep = {k: t[k] for k in ("Name","StorageDescriptor","PartitionKeys","TableType","Parameters") if k in t}
+fix = {"order_date":"date","quantity":"int","unit_price":"double","amount":"double"}
+for c in keep["StorageDescriptor"]["Columns"]:
+    if c["Name"] in fix:
+        c["Type"] = fix[c["Name"]]
+json.dump(keep, open("orders-input.json","w"), indent=2)
+print("wrote orders-input.json")
+EOF
+
+aws glue update-table \
+  --database-name hvt_retail_db \
+  --table-input file://orders-input.json
+```
+
+:::tip[Exercise: fix the other two tables]
+You only need to fix `orders` for the checkpoint. As an exercise, repeat the same edit
+on `customers` (`signup_date` to `date`) and `products` (`unit_price` to `double`,
+`in_stock` to `boolean`). The technique is identical.
+:::
+
+### Set up Athena and explore the data
+
+**Athena** is a serverless query engine that runs standard SQL directly over S3 data,
+using the schema from the Glue catalog. It bills per data scanned and needs one thing
+configured first: a place in S3 to write results.
+
+```bash
+aws s3api put-object --bucket $BUCKET --key athena-results/
+
+aws athena create-work-group \
+  --name hvt-retail-wg \
+  --configuration "ResultConfiguration={OutputLocation=s3://$BUCKET/athena-results/}" \
+  --tags Key=project,Value=hvt-retail Key=env,Value=dev
+```
+
+**Console path**
+
+1. Open **Athena**, then **Query editor**. Under **Settings**, set the query result
+   location to `s3://hvt-retail-datalake-<account-id>/athena-results/`.
+2. Pick `AwsDataCatalog` and the `hvt_retail_db` database, then profile the data:
+
+```sql
+SELECT count(*) AS order_rows FROM hvt_retail_db.orders;
+```
+
+```sql
+SELECT
+  count(DISTINCT customer_id) AS distinct_customers,
+  count(DISTINCT status)      AS distinct_statuses,
+  sum(CASE WHEN amount IS NULL THEN 1 ELSE 0 END) AS null_amounts,
+  min(order_date)             AS first_order,
+  max(order_date)             AS last_order
+FROM hvt_retail_db.orders;
+```
+
+**AWS CLI**
+
+The same query from the CLI is a start-then-fetch pattern:
+
+```bash
+QID=$(aws athena start-query-execution \
+  --query-string "SELECT count(*) AS order_rows FROM hvt_retail_db.orders;" \
+  --work-group hvt-retail-wg \
+  --query-execution-context Database=hvt_retail_db \
+  --query 'QueryExecutionId' --output text)
+
+aws athena get-query-execution --query-execution-id $QID \
+  --query 'QueryExecution.Status.State' --output text
+
+aws athena get-query-results --query-execution-id $QID \
+  --query 'ResultSet.Rows[1].Data[0].VarCharValue' --output text
+```
+
+### Checkpoint: query the cataloged data
+
+```sql
+SELECT count(*) AS order_rows FROM hvt_retail_db.orders;
+```
+
+```text
+order_rows
+----------
+3000
+```
+
+If the row count is `3000`, the discovery loop is complete: the raw CSVs are profiled,
+their schema inferred and corrected, and they are cataloged and queryable. That is the
+foundation every later stage builds on.
+
+### Troubleshooting
+
+- **Crawler ends with `0 tables created`** — the S3 path is wrong or the role cannot read
+  it. Confirm the path ends in `/raw/` and the inline read policy is attached.
+- **`Schema hvt-retail-db does not exist`** — you used a hyphen. Glue and Athena require
+  underscores: the database is `hvt_retail_db`.
+- **Athena `No output location provided`** — set the results location to
+  `s3://<bucket>/athena-results/`.
+- **`update-table` rejects the file with `Unknown field`** — you sent the raw `get-table`
+  output. Use the Python snippet to keep only the input fields.
+
+<KeyTakeaways>
+
+- A crawler samples files and writes **table metadata** to the catalog — the data itself never moves
+- CSV carries no types, so crawlers guess; dates and numbers usually need a manual fix
+- Glue and Athena names take lowercase letters, numbers, and underscores only
+- Athena is schema-on-read: describe once in the catalog, query in place over S3
+- The crawler role gets the managed Glue policy plus S3 read on this one bucket — nothing more
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What does a Glue crawler actually produce when you run it over raw/?',
+      options: [
+        'A cleaned Parquet copy of the data',
+        'Table definitions (schema and location) in the Glue Data Catalog',
+        'A loaded Redshift table',
+        'An Athena query result set',
+      ],
+      answer: 1,
+      explanation:
+        'A crawler infers schema and registers metadata. The rows stay exactly where they are in S3.',
+    },
+    {
+      question: 'Athena rejects your database name hvt-retail-db. Why?',
+      options: [
+        'The name is too long',
+        'Athena databases must start with a capital letter',
+        'Glue and Athena names allow only lowercase letters, numbers, and underscores — no hyphens',
+        'You must create the database in Athena, not Glue',
+      ],
+      answer: 2,
+      explanation:
+        'Hyphens are invalid in Glue/Athena identifiers. Use hvt_retail_db with underscores.',
+    },
+    {
+      question: 'The crawler typed order_date as string. What breaks if you leave it?',
+      options: [
+        'Date comparisons and range filters — you would be doing math on text',
+        'The crawler will refuse to run again',
+        'Athena cannot SELECT the column at all',
+        'S3 rejects new uploads to raw/',
+      ],
+      answer: 0,
+      explanation:
+        'A string column cannot be compared as a date or summed as a number. Correcting inferred types is the point of the discovery loop.',
+    },
+  ]}
+/>
+
+<LessonComplete />

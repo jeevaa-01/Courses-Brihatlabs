@@ -1,0 +1,76 @@
+---
+title: 'Performance Optimization'
+sidebar_position: 2
+description: 'Optimize both your learning throughput (focus, journaling, rebuilds) and your technical stack (Spark, SQL, storage, pipelines).'
+---
+
+<DurationBadge minutes={2} />
+
+<LearningObjectives>
+
+- Diagnose and fix the six learning bottlenecks, from context switching to tutorial dependency
+- Recall the key optimization pattern for each technology in the program (Spark, SQL, storage, pipelines, Databricks)
+
+</LearningObjectives>
+
+### Optimizing Your Learning Performance
+
+| Bottleneck | Optimization |
+|-----------|-------------|
+| Context switching | One codelab per session, no tab switching |
+| Passive reading | Replace with hands-on execution |
+| Fear of errors | Practice intentional error drills weekly |
+| Information overload | Use structured notes template, not free-form |
+| Forgetting | Journal daily, review weekly |
+| Tutorial dependency | Rebuild challenge after every codelab |
+
+### Optimizing Your Technical Performance
+
+As you progress through the program, apply these optimization patterns:
+
+| Technology | Key Optimization |
+|-----------|-----------------|
+| Spark/PySpark | Minimize shuffles, use partitioning, cache wisely |
+| SQL | Use indexes, avoid SELECT *, analyze query plans |
+| Cloud Storage | Use lifecycle policies, right-size storage tiers |
+| Pipelines | Implement incremental loads, avoid full refreshes |
+| Databricks | Use autoscaling clusters, Delta Lake optimization (ZORDER, OPTIMIZE) |
+
+<KeyTakeaways>
+
+- Your learning has bottlenecks just like a pipeline: context switching, passive reading, and tutorial dependency are the big three
+- Each bottleneck has a named fix — one codelab per session, hands-on execution, and the rebuild challenge
+- For Spark specifically: minimize shuffles, partition wisely, and cache only what you reuse
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is the prescribed optimization for the "tutorial dependency" bottleneck?',
+      options: [
+        'Watch tutorials at 2x speed',
+        'The rebuild challenge after every codelab',
+        'Take more detailed notes during tutorials',
+        'Switch to a different tutorial provider',
+      ],
+      answer: 1,
+      explanation:
+        'Rebuilding without the guide converts tutorial familiarity into real, independent skill.',
+    },
+    {
+      question: 'Which is the key Spark/PySpark optimization listed in this lesson?',
+      options: [
+        'Minimize shuffles, use partitioning, cache wisely',
+        'Always use SELECT * for completeness',
+        'Run everything on a single large executor',
+        'Disable the query optimizer',
+      ],
+      answer: 0,
+      explanation:
+        'Shuffles are the most expensive Spark operation; partitioning and judicious caching are the standard levers.',
+    },
+  ]}
+/>
+
+<LessonComplete />

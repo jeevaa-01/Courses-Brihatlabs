@@ -1,0 +1,411 @@
+---
+title: 'Orchestration and automation options'
+sidebar_position: 3
+description: 'Compare the AWS orchestration options, then chain crawler, ETL, and CTAS into a retryable Step Functions workflow triggered daily by EventBridge.'
+---
+
+<DurationBadge minutes={55} />
+
+<LearningObjectives>
+
+- Compare Step Functions, Glue Workflows, MWAA, EventBridge, and Lambda triggers and pick the right one
+- Create a least-privilege IAM role scoped to exactly the resources the state machine touches
+- Build a Step Functions workflow with `.sync` integrations, retries with backoff, and a catch state
+- Schedule the pipeline daily with EventBridge Scheduler and verify an end-to-end run
+
+</LearningObjectives>
+
+So far you have run each piece of the pipeline by hand. That works once. It does not work
+every night while you sleep. **Orchestration** coordinates several steps into one reliable,
+repeatable run, with order, error handling, and retries built in. First compare the AWS
+options, then build the one that fits: a **Step Functions** workflow on a daily
+**EventBridge** schedule.
+
+### The concept visual
+
+The orchestration comparison and workflow state diagram — `assets/04-orchestration-options.html`
+in the course materials repo — show five color-coded cards, each with a one-line "pick
+when", and the crawler, ETL, and CTAS flow with its retry indicators.
+
+### Compare the orchestration options
+
+| Option | What it is | Pick when | Cost at this scale |
+|---|---|---|---|
+| **AWS Step Functions** | Serverless state machine; chains tasks with retry, catch, branching. Service integrations call Glue and Athena with no code. | You want a few AWS services run in order with first-class error handling. **This stage.** | Basically free. |
+| **AWS Glue Workflows** | Chains Glue crawlers and jobs inside Glue. | Every step is a Glue crawler or job. | No workflow charge; pay for Glue runs. |
+| **Amazon MWAA** (managed Airflow) | Python DAGs, large operator ecosystem, rich backfills. | You run many DAGs and your team knows Airflow. | **Not free — bills hourly even when idle.** |
+| **Amazon EventBridge schedule** | A cron or rate timer that fires a target. The trigger, not the workflow. | You need to run a pipeline on a clock. **You add this on top.** | Basically free. |
+| **AWS Lambda trigger** | A short function that reacts to an event and starts work. | A run should start from an event (a new S3 file), not a clock. | Basically free. |
+
+A mental model: **Step Functions** and **Glue Workflows** *are* the workflow;
+**EventBridge** and **Lambda** *start* a workflow; **MWAA** is the heavyweight you grow
+into when one workflow is no longer enough.
+
+:::warning[Do not create an MWAA environment]
+Do **not** create an Amazon MWAA environment for this stage. It bills per hour the moment
+it exists, whether or not a DAG runs. For three steps it is expensive overkill. We compare
+it so you know when to choose it later, not so you provision it now.
+:::
+
+:::tip[The cost-aware default]
+Step Functions for the workflow and EventBridge for the daily trigger is the common,
+cost-aware default for AWS-native data pipelines — operational excellence built on
+serverless.
+:::
+
+### Setup
+
+```bash
+export ACCOUNT_ID=<your-account-id>
+export BUCKET=hvt-retail-datalake-$ACCOUNT_ID
+export AWS_REGION=us-east-1
+
+aws glue get-crawler --name hvt-retail-raw-crawler --query 'Crawler.Name'
+aws glue get-job --job-name hvt-retail-bronze-to-silver --query 'Job.Name'
+aws glue get-database --name hvt_retail_db --query 'Database.Name'
+```
+
+The state machine definition lives at `scripts/stepfunctions_pipeline.asl.json` in the
+course materials repo, written in **Amazon States Language** (ASL). The schedule config is
+at `scripts/eventbridge_daily_schedule.json`. Both contain the placeholder `ACCOUNT_ID`;
+substitute your real id before use.
+
+### Create a least-privilege IAM role for the state machine
+
+A **state machine** needs an **IAM role** to call the services in its definition. Give it
+exactly the permissions it needs and nothing more. Save the trust policy as
+`states-trust.json`:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": { "Service": "states.amazonaws.com" },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+Save the permissions policy as `states-permissions.json` (replace `ACCOUNT_ID`). It allows
+only the crawler, the one Glue job, the Athena CTAS, and the S3 and Glue catalog access
+those need:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "RunCrawler",
+      "Effect": "Allow",
+      "Action": ["glue:StartCrawler", "glue:GetCrawler"],
+      "Resource": "arn:aws:glue:us-east-1:ACCOUNT_ID:crawler/hvt-retail-raw-crawler"
+    },
+    {
+      "Sid": "RunGlueJob",
+      "Effect": "Allow",
+      "Action": ["glue:StartJobRun", "glue:GetJobRun", "glue:BatchStopJobRun"],
+      "Resource": "arn:aws:glue:us-east-1:ACCOUNT_ID:job/hvt-retail-bronze-to-silver"
+    },
+    {
+      "Sid": "AthenaCTAS",
+      "Effect": "Allow",
+      "Action": [
+        "athena:StartQueryExecution",
+        "athena:GetQueryExecution",
+        "athena:StopQueryExecution"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:ACCOUNT_ID:workgroup/hvt-retail-wg"
+    },
+    {
+      "Sid": "GlueCatalogForAthena",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetDatabase", "glue:GetTable", "glue:GetTables",
+        "glue:CreateTable", "glue:GetPartitions"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:ACCOUNT_ID:catalog",
+        "arn:aws:glue:us-east-1:ACCOUNT_ID:database/hvt_retail_db",
+        "arn:aws:glue:us-east-1:ACCOUNT_ID:table/hvt_retail_db/*"
+      ]
+    },
+    {
+      "Sid": "LakeAndResults",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:ListBucket", "s3:GetBucketLocation"],
+      "Resource": [
+        "arn:aws:s3:::hvt-retail-datalake-ACCOUNT_ID",
+        "arn:aws:s3:::hvt-retail-datalake-ACCOUNT_ID/*"
+      ]
+    }
+  ]
+}
+```
+
+```bash
+aws iam create-role \
+  --role-name hvt-retail-states-role \
+  --assume-role-policy-document file://states-trust.json \
+  --tags Key=project,Value=hvt-retail Key=env,Value=dev
+
+aws iam put-role-policy \
+  --role-name hvt-retail-states-role \
+  --policy-name hvt-retail-states-permissions \
+  --policy-document file://states-permissions.json
+
+aws iam get-role --role-name hvt-retail-states-role --query 'Role.Arn' --output text
+```
+
+:::warning[Resist AdministratorAccess]
+It is tempting to attach a broad managed policy like `AdministratorAccess` to "just make
+it work". Don't. A pipeline role that can only touch its own crawler, job, table, and
+bucket cannot be turned into a foothold if the workflow is ever compromised.
+:::
+
+### Create the Step Functions state machine
+
+The definition chains **StartCrawler** (with a wait-and-poll loop so the asynchronous
+crawler finishes first), **StartGlueETL** using the `glue:startJobRun.sync` **service
+integration** (the `.sync` pattern blocks until the run completes), and **AthenaCTAS**
+using `athena:startQueryExecution.sync`. Every task carries a **Retry** block so a
+transient error waits and tries again with **backoff** (each retry waits longer), and a
+**Catch** that routes any unrecoverable error to a single `PipelineFailed` state.
+
+```json
+"StartGlueETL": {
+  "Type": "Task",
+  "Resource": "arn:aws:states:::glue:startJobRun.sync",
+  "Parameters": {
+    "JobName": "hvt-retail-bronze-to-silver",
+    "Arguments": { "--BUCKET.$": "$.bucket" }
+  },
+  "Retry": [
+    {
+      "ErrorEquals": ["Glue.ConcurrentRunsExceededException", "Glue.InternalServiceException"],
+      "IntervalSeconds": 60,
+      "MaxAttempts": 3,
+      "BackoffRate": 2.0
+    }
+  ],
+  "Catch": [
+    { "ErrorEquals": ["States.ALL"], "ResultPath": "$.error", "Next": "PipelineFailed" }
+  ],
+  "Next": "AthenaCTAS"
+}
+```
+
+Substitute your account id, then create the state machine.
+
+**AWS CLI**
+
+```bash
+sed "s/ACCOUNT_ID/$ACCOUNT_ID/g" \
+  scripts/stepfunctions_pipeline.asl.json > /tmp/pipeline.asl.json
+
+ROLE_ARN=$(aws iam get-role --role-name hvt-retail-states-role --query 'Role.Arn' --output text)
+
+aws stepfunctions create-state-machine \
+  --name hvt-retail-pipeline \
+  --definition file:///tmp/pipeline.asl.json \
+  --role-arn "$ROLE_ARN" \
+  --type STANDARD \
+  --tags key=project,value=hvt-retail key=env,value=dev
+
+SM_ARN=$(aws stepfunctions list-state-machines \
+  --query "stateMachines[?name=='hvt-retail-pipeline'].stateMachineArn" --output text)
+echo "$SM_ARN"
+```
+
+**Console path**
+
+1. Open **Step Functions**, **State machines**, **Create state machine**.
+2. Choose **Write your workflow in code**, type **Standard**, paste your substituted
+   definition. The graph should show crawler, ETL, then CTAS.
+3. Name it `hvt-retail-pipeline`, pick the role `hvt-retail-states-role`, add the tags, create.
+
+### Run it once by hand
+
+Prove the workflow runs end to end before scheduling it.
+
+**AWS CLI**
+
+```bash
+aws stepfunctions start-execution \
+  --state-machine-arn "$SM_ARN" \
+  --name "manual-$(date +%Y%m%d-%H%M%S)" \
+  --input "{\"bucket\": \"$BUCKET\"}"
+```
+
+**Console path**
+
+1. Open `hvt-retail-pipeline`, choose **Start execution**.
+2. Paste input `{ "bucket": "hvt-retail-datalake-<your-account-id>" }` and start it.
+3. Watch the crawler, then ETL, then CTAS turn green in turn.
+
+The run takes a few minutes, mostly the Glue job. The crawler poll loop means the graph
+sits on the wait-and-check states briefly before the ETL starts; that is expected.
+
+### Schedule it daily with EventBridge
+
+**EventBridge Scheduler** fires a target on a clock — here once a day at 02:00 UTC. The
+schedule needs its own small IAM role allowed only to start this one state machine. Save
+the trust policy as `scheduler-trust.json`:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": { "Service": "scheduler.amazonaws.com" },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+```bash
+aws iam create-role \
+  --role-name hvt-retail-scheduler-role \
+  --assume-role-policy-document file://scheduler-trust.json \
+  --tags Key=project,Value=hvt-retail Key=env,Value=dev
+
+aws iam put-role-policy \
+  --role-name hvt-retail-scheduler-role \
+  --policy-name hvt-retail-scheduler-start \
+  --policy-document "{
+    \"Version\": \"2012-10-17\",
+    \"Statement\": [{
+      \"Effect\": \"Allow\",
+      \"Action\": \"states:StartExecution\",
+      \"Resource\": \"$SM_ARN\"
+    }]
+  }"
+```
+
+Create the schedule. The config is at `scripts/eventbridge_daily_schedule.json` in the
+course materials repo.
+
+**AWS CLI (EventBridge Scheduler)**
+
+```bash
+sed "s/ACCOUNT_ID/$ACCOUNT_ID/g" \
+  scripts/eventbridge_daily_schedule.json > /tmp/schedule.json
+
+aws scheduler create-schedule --cli-input-json file:///tmp/schedule.json
+```
+
+If you prefer the classic EventBridge rules API, the equivalent is:
+
+```bash
+aws events put-rule \
+  --name hvt-retail-daily-pipeline \
+  --schedule-expression "cron(0 2 * * ? *)" \
+  --state ENABLED
+
+ROLE_ARN=$(aws iam get-role --role-name hvt-retail-scheduler-role --query 'Role.Arn' --output text)
+aws events put-targets \
+  --rule hvt-retail-daily-pipeline \
+  --targets "Id=hvt-pipeline,Arn=$SM_ARN,RoleArn=$ROLE_ARN,Input={\"bucket\":\"$BUCKET\"}"
+```
+
+**Console path**
+
+1. Open **EventBridge**, **Scheduler**, **Schedules**, **Create schedule**. Name it
+   `hvt-retail-daily-pipeline`, recurring cron `cron(0 2 * * ? *)`, timezone **UTC**.
+2. Target **AWS Step Functions StartExecution**, select `hvt-retail-pipeline`, input
+   `{ "bucket": "hvt-retail-datalake-<your-account-id>" }`.
+3. Let it use the `hvt-retail-scheduler-role`, then create.
+
+:::warning[Cron schedules are UTC]
+The cron expression `cron(0 2 * * ? *)` is in **UTC**, not your local time. Set the time
+to land after your source data has arrived for the day.
+:::
+
+### Checkpoint: prove the pipeline succeeded
+
+You do not have to wait until 2 a.m. Confirm the manual run reached `SUCCEEDED` and that
+gold refreshed.
+
+```bash
+EXEC_ARN=$(aws stepfunctions list-executions \
+  --state-machine-arn "$SM_ARN" \
+  --max-results 1 --query 'executions[0].executionArn' --output text)
+
+aws stepfunctions describe-execution \
+  --execution-arn "$EXEC_ARN" \
+  --query '{status: status, started: startDate, stopped: stopDate}'
+
+aws s3 ls "s3://$BUCKET/gold/daily_region_sales/"
+```
+
+You want `"status": "SUCCEEDED"` and fresh Parquet objects under `gold/`. The pipeline ran,
+end to end, unattended.
+
+### Troubleshooting
+
+- **`AccessDeniedException` starting the crawler or job** — the role is missing a
+  permission or a resource ARN does not match. Re-check `states-permissions.json` and
+  re-run `put-role-policy`.
+- **Execution stuck looping on the wait states** — the crawler is still `RUNNING`. A first
+  crawl of a new prefix can take a couple of minutes; this is normal.
+- **Athena CTAS fails with "table already exists"** — drop the gold table first, or have
+  the workflow target a fresh location. For a nightly job, dropping then recreating is fine.
+- **Schedule never fires** — confirm it is `ENABLED` and that `hvt-retail-scheduler-role`
+  has `states:StartExecution` on this exact ARN.
+
+<KeyTakeaways>
+
+- Step Functions and Glue Workflows **are** the workflow; EventBridge and Lambda **start** it; MWAA is the idle-billing heavyweight you grow into
+- The `.sync` service integrations block until a Glue run or Athena query completes — no polling code
+- Retry blocks with backoff absorb transient errors; a Catch on `States.ALL` routes real failures to one place
+- Every role here is scoped to exactly one crawler, one job, one workgroup, one bucket
+- EventBridge cron expressions are UTC
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is the division of labor between Step Functions and EventBridge in this pipeline?',
+      options: [
+        'EventBridge runs the steps; Step Functions schedules them',
+        'They are interchangeable; either can do both jobs',
+        'Step Functions defines what runs in what order; EventBridge decides when it runs',
+        'Step Functions is only for Lambda; EventBridge is only for Glue',
+      ],
+      answer: 2,
+      explanation:
+        'The state machine is the workflow (order, retries, error handling); the schedule is the trigger that starts an execution on a clock.',
+    },
+    {
+      question: 'Why does the track compare Amazon MWAA but tell you NOT to provision it?',
+      options: [
+        'MWAA cannot call Glue jobs',
+        'It bills hourly the moment the environment exists — expensive overkill for a three-step pipeline',
+        'Airflow does not support retries',
+        'MWAA is deprecated',
+      ],
+      answer: 1,
+      explanation:
+        'MWAA is the right tool when you run many DAGs with an Airflow-fluent team. For three ordered steps, serverless Step Functions is effectively free.',
+    },
+    {
+      question: 'What does the .sync suffix in arn:aws:states:::glue:startJobRun.sync buy you?',
+      options: [
+        'The task blocks until the Glue run completes, so the next state sees finished output',
+        'The job runs twice for redundancy',
+        'Glue synchronizes its catalog with Athena',
+        'The state machine runs faster',
+      ],
+      answer: 0,
+      explanation:
+        'The .sync integration pattern waits for the downstream job to finish instead of returning immediately — no hand-rolled poll loop needed for the ETL step.',
+    },
+  ]}
+/>
+
+<LessonComplete />

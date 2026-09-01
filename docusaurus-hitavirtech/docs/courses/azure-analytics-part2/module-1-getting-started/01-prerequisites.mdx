@@ -1,0 +1,92 @@
+---
+title: 'Prerequisites'
+sidebar_position: 1
+description: 'What you need before starting Part 2 — the Part 1 foundations, basic SQL, and why no paid Azure resources are required.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Confirm you have the Part 1 foundations (the 5 Vs + the Azure service toolkit) this course builds on
+- Know exactly what tools and accounts you need — and what following the course costs (nothing)
+
+</LearningObjectives>
+
+### What You Should Know
+
+**Required**
+- ✅ **Part 1 of this course** (5 Vs + Azure services per V)
+- 💻 Laptop with a modern browser
+- ☁️ Azure account (free tier; only for the optional hands-on snippets)
+- 🧮 Basic SQL (SELECT, FROM, JOIN, GROUP BY)
+
+**Helpful**
+- 📝 Completed the Part 1 ADLS → Synapse Serverless lab
+- 📚 Familiarity with JSON / CSV / Parquet / Delta
+
+### Mental Model You Already Have (From Part 1)
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Databricks](/img/courses/azure-icons/databricks.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![AI Vision](/img/courses/azure-icons/ai-vision.svg) ![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Functions](/img/courses/azure-icons/functions.svg) ![Defender](/img/courses/azure-icons/defender.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg) ![ML](/img/courses/azure-icons/ml.svg) ![OpenAI](/img/courses/azure-icons/openai.svg)
+
+```
+  +--------------------------------------------------------------+
+  |   5 Vs framework          Azure service toolkit              |
+  |   -------------------     ------------------------           |
+  |   Volume                  ADLS Gen2, Synapse, Databricks     |
+  |   Variety                 ADF, Synapse, AI Vision, Doc Intel.|
+  |   Velocity                Event Hubs, Stream Analytics, Fn   |
+  |   Veracity                ADF flows, Purview, Defender       |
+  |   Value                   Power BI, Azure ML, OpenAI         |
+  +--------------------------------------------------------------+
+```
+
+In Part 2 we **compose** these services into proven shapes.
+
+### No Paid Resources Required
+
+Part 2 is concept-heavy. Every diagram is annotated with the services you already met in Part 1. The Part 1 hands-on lab is the practical anchor — this course teaches the architectures that scale it up.
+
+:::warning[If you choose to experiment]
+Synapse Dedicated Pools and Databricks can exit the free tier quickly. Use
+serverless modes and delete resource groups the same day.
+:::
+
+<KeyTakeaways>
+
+- Part 1's 5 Vs framework and Azure service toolkit are the required foundation for Part 2
+- Basic SQL is enough — Part 2 is concept-heavy and needs no paid Azure resources
+- If you experiment with Dedicated Pools or Databricks, use serverless modes and delete resource groups the same day
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What background is required before starting Part 2?',
+      options: [
+        'An Azure certification such as DP-203',
+        'Advanced Spark programming experience',
+        'Part 1 of this course plus basic SQL',
+        'A paid Azure subscription with Synapse Dedicated',
+      ],
+      answer: 2,
+      explanation:
+        'Part 2 builds directly on the 5 Vs and service toolkit from Part 1; basic SELECT/JOIN/GROUP BY SQL is the only technical prerequisite.',
+    },
+    {
+      question: 'How much do the core lessons of Part 2 cost to follow?',
+      options: [
+        'They require a Synapse Dedicated Pool (~$1.20/hour)',
+        'Nothing — the course is concept-heavy and uses the Part 1 lab as its practical anchor',
+        'Around $50 of Azure credits',
+        'A Databricks premium workspace subscription',
+      ],
+      answer: 1,
+      explanation:
+        'No new hands-on is required. Only the optional experiments touch billable services — and even then, serverless modes keep you in the free tier.',
+    },
+  ]}
+/>
+
+<LessonComplete />

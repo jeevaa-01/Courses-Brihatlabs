@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 354" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="768" height="354" rx="12" fill="#f8f9fa"/>
+  <text x="384" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Pillar 7 — Programming Recommendations</text>
+  <rect x="15" y="40" width="126" height="30" rx="6" fill="#1a73e8"/>
+  <text x="78" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Topic</text>
+  <rect x="146" y="40" width="293" height="30" rx="6" fill="#1a73e8"/>
+  <text x="293" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">CORRECT</text>
+  <rect x="444" y="40" width="308" height="30" rx="6" fill="#1a73e8"/>
+  <text x="599" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">WRONG</text>
+  <rect x="15" y="76" width="126" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">Compare to None</text>
+  <rect x="146" y="76" width="293" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="156" y="94" font-size="12" font-family="monospace" fill="#1a73e8">if value is None:</text>
+  <rect x="444" y="76" width="308" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="454" y="94" font-size="12" font-family="monospace" fill="#1a73e8">if value == None:</text>
+  <rect x="15" y="108" width="126" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" fill="#3c4043">Type check</text>
+  <rect x="146" y="108" width="293" height="28" rx="4" fill="white"/>
+  <text x="156" y="126" font-size="12" font-family="monospace" fill="#3c4043">if isinstance(x, (int, float)):</text>
+  <rect x="444" y="108" width="308" height="28" rx="4" fill="white"/>
+  <text x="454" y="126" font-size="12" font-family="monospace" fill="#3c4043">if type(x) == int or type(x) == float:</text>
+  <rect x="15" y="140" width="126" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">Empty check</text>
+  <rect x="146" y="140" width="293" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="156" y="158" font-size="12" font-family="monospace" fill="#1a73e8">if not records:</text>
+  <rect x="444" y="140" width="308" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="454" y="158" font-size="12" font-family="monospace" fill="#1a73e8">if len(records) == 0:</text>
+  <rect x="15" y="172" width="126" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" fill="#3c4043">Index loop</text>
+  <rect x="146" y="172" width="293" height="28" rx="4" fill="white"/>
+  <text x="156" y="190" font-size="12" font-family="monospace" fill="#3c4043">for i, record in enumerate(records):</text>
+  <rect x="444" y="172" width="308" height="28" rx="4" fill="white"/>
+  <text x="454" y="190" font-size="12" font-family="monospace" fill="#3c4043">for i in range(len(records)):</text>
+  <rect x="15" y="204" width="126" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" fill="#1a73e8">Parallel walk</text>
+  <rect x="146" y="204" width="293" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="156" y="222" font-size="12" font-family="monospace" fill="#1a73e8">for name, age in zip(names, ages):</text>
+  <rect x="444" y="204" width="308" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="454" y="222" font-size="12" fill="#1a73e8">indexing both lists by i</text>
+  <rect x="15" y="236" width="126" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" fill="#3c4043">Boolean test</text>
+  <rect x="146" y="236" width="293" height="28" rx="4" fill="white"/>
+  <text x="156" y="254" font-size="12" font-family="monospace" fill="#3c4043">if is_valid:</text>
+  <rect x="444" y="236" width="308" height="28" rx="4" fill="white"/>
+  <text x="454" y="254" font-size="12" font-family="monospace" fill="#3c4043">if is_valid == True:</text>
+  <rect x="15" y="268" width="126" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" fill="#1a73e8">String join</text>
+  <rect x="146" y="268" width="293" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="156" y="286" font-size="12" font-family="monospace" fill="#1a73e8">", ".join(items)</text>
+  <rect x="444" y="268" width="308" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="454" y="286" font-size="12" font-family="monospace" fill="#1a73e8">s = ""; for x in items: s += x + ", "</text>
+  <rect x="15" y="300" width="126" height="28" rx="4" fill="white"/>
+  <text x="25" y="318" font-size="12" font-weight="700" fill="#3c4043">Default dict get</text>
+  <rect x="146" y="300" width="293" height="28" rx="4" fill="white"/>
+  <text x="156" y="318" font-size="12" font-family="monospace" fill="#3c4043">config.get("port", 5432)</text>
+  <rect x="444" y="300" width="308" height="28" rx="4" fill="white"/>
+  <text x="454" y="318" font-size="12" font-family="monospace" fill="#3c4043">if "port" in config: ... else: ...</text>
+  <text x="384" y="348" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

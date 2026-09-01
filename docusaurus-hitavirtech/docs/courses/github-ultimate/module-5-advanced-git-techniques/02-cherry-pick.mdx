@@ -1,0 +1,144 @@
+---
+title: 'Cherry-Pick'
+sidebar_position: 2
+description: 'Copy one specific commit to another branch with git cherry-pick — perfect for pulling a critical bug fix out of a messy feature branch.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Identify when cherry-pick beats a full merge
+- Find a commit hash with `git log --oneline`
+- Apply a single commit to another branch with `git cherry-pick`
+
+</LearningObjectives>
+
+Cherry-pick lets you copy a **specific commit** from one branch to another without merging the entire branch.
+
+### When to Use Cherry-Pick
+
+- A bug fix on a feature branch is needed on main immediately
+- You accidentally committed to the wrong branch
+- You need a specific change from a long-running branch
+
+### Hands-On: Cherry-Pick a Commit
+
+**Step 1 — Create a branch with multiple commits**
+
+```bash
+git switch -c feature-experimental
+echo "Experiment 1" > exp1.txt
+git add exp1.txt
+git commit -m "Add experiment 1"
+
+echo "Important fix" > fix.txt
+git add fix.txt
+git commit -m "Critical bug fix"
+
+echo "Experiment 2" > exp2.txt
+git add exp2.txt
+git commit -m "Add experiment 2"
+```
+
+**Step 2 — Find the commit hash for the bug fix**
+
+```bash
+git log --oneline
+```
+
+**Expected output:**
+
+```
+c3d4e5f (HEAD -> feature-experimental) Add experiment 2
+b2c3d4e Critical bug fix
+a1b2c3d Add experiment 1
+```
+
+**Step 3 — Cherry-pick just the bug fix to main**
+
+```bash
+git switch main
+git cherry-pick b2c3d4e
+```
+
+Replace `b2c3d4e` with the actual hash from your output.
+
+**Expected output:**
+
+```
+[main f6g7h8i] Critical bug fix
+ 1 file changed, 1 insertion(+)
+ create mode 100644 fix.txt
+```
+
+**Step 4 — Verify**
+
+```bash
+ls
+git log --oneline -3
+```
+
+The `fix.txt` file is now on main, but `exp1.txt` and `exp2.txt` are not.
+
+### Clean Up
+
+```bash
+git branch -D feature-experimental
+```
+
+:::tip[HitaVir Tech says]
+"Cherry-pick is like copying a single page from a book instead of carrying the whole book. Use it when you need a specific change, not the whole branch."
+:::
+
+<KeyTakeaways>
+
+- `git cherry-pick <hash>` copies ONE commit onto your current branch
+- Use it when a bug fix is trapped on a branch full of unfinished work
+- Find the hash with `git log --oneline` on the source branch
+- The cherry-picked commit becomes a NEW commit with a new hash on the target branch
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'When is cherry-pick the right tool?',
+      options: [
+        'When you want the entire feature branch on main',
+        'When you want to delete a commit',
+        'When you want to rename a branch',
+        'When you need ONE specific commit (e.g., a bug fix) without the rest of the branch',
+      ],
+      answer: 3,
+      explanation:
+        'Cherry-pick copies a single commit. Merging would bring the experiments along with the fix.',
+    },
+    {
+      question: 'From which branch do you RUN git cherry-pick b2c3d4e?',
+      options: [
+        'The branch that contains commit b2c3d4e',
+        'The branch you want the commit copied ONTO (e.g., main)',
+        'Any branch — it does not matter',
+        'A new empty branch',
+      ],
+      answer: 1,
+      explanation:
+        'Cherry-pick applies the named commit to your CURRENT branch, so switch to the destination first.',
+    },
+    {
+      question: 'After cherry-picking the "Critical bug fix" commit to main, what is on main?',
+      options: [
+        'fix.txt only — the experiment files stay on the feature branch',
+        'All three files from the feature branch',
+        'Nothing until you push',
+        'A merge commit joining both branches',
+      ],
+      answer: 0,
+      explanation:
+        'Only the changes introduced by that single commit are copied; the other commits never touch main.',
+    },
+  ]}
+/>
+
+<LessonComplete />

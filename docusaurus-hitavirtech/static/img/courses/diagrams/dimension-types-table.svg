@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 240" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="780" height="240" rx="12" fill="#f8f9fa"/>
+  <text x="390" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#202124">Types of Dimensions</text>
+
+  <rect x="15" y="44" width="140" height="34" rx="6" fill="#5f6368"/>
+  <text x="85" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="white">Type</text>
+  <rect x="160" y="44" width="310" height="34" rx="6" fill="#5f6368"/>
+  <text x="315" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="white">Description</text>
+  <rect x="475" y="44" width="290" height="34" rx="6" fill="#5f6368"/>
+  <text x="620" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="white">Example</text>
+
+  <rect x="15" y="84" width="140" height="34" rx="4" fill="#e8f0fe"/>
+  <text x="85" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#1a73e8">Regular</text>
+  <rect x="160" y="84" width="310" height="34" rx="4" fill="#e8f0fe"/>
+  <text x="315" y="106" text-anchor="middle" font-size="12" fill="#1557b0">Standard descriptive attributes</text>
+  <rect x="475" y="84" width="290" height="34" rx="4" fill="#e8f0fe"/>
+  <text x="620" y="106" text-anchor="middle" font-size="12" fill="#1a73e8">Customer name, product category</text>
+
+  <rect x="15" y="122" width="140" height="34" rx="4" fill="white"/>
+  <text x="85" y="144" text-anchor="middle" font-size="13" font-weight="700" fill="#ea8600">Junk</text>
+  <rect x="160" y="122" width="310" height="34" rx="4" fill="white"/>
+  <text x="315" y="144" text-anchor="middle" font-size="12" fill="#3c4043">Combines low-cardinality flags into one table</text>
+  <rect x="475" y="122" width="290" height="34" rx="4" fill="white"/>
+  <text x="620" y="144" text-anchor="middle" font-size="12" fill="#3c4043">is_online, is_promotion, payment_type</text>
+
+  <rect x="15" y="160" width="140" height="34" rx="4" fill="#ede7f6"/>
+  <text x="85" y="182" text-anchor="middle" font-size="13" font-weight="700" fill="#7c3aed">Degenerate</text>
+  <rect x="160" y="160" width="310" height="34" rx="4" fill="#ede7f6"/>
+  <text x="315" y="182" text-anchor="middle" font-size="12" fill="#6d28d9">Dimension value stored in fact table (no dim table)</text>
+  <rect x="475" y="160" width="290" height="34" rx="4" fill="#ede7f6"/>
+  <text x="620" y="182" text-anchor="middle" font-size="12" fill="#7c3aed">Order number, invoice number</text>
+
+  <rect x="15" y="198" width="140" height="34" rx="4" fill="white"/>
+  <text x="85" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#d93025">Role-playing</text>
+  <rect x="160" y="198" width="310" height="34" rx="4" fill="white"/>
+  <text x="315" y="220" text-anchor="middle" font-size="12" fill="#3c4043">Same dimension used multiple times</text>
+  <rect x="475" y="198" width="290" height="34" rx="4" fill="white"/>
+  <text x="620" y="220" text-anchor="middle" font-size="12" fill="#3c4043">dim_date as order, ship, delivery date</text>
+</svg>

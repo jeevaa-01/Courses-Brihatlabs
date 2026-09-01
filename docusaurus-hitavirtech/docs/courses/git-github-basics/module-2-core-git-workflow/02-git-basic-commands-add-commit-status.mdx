@@ -1,0 +1,205 @@
+---
+title: 'Git Basic Commands — add, commit, status'
+sidebar_position: 2
+description: 'Master the core three-stage Git workflow — working directory, staging area, and repository — with add, commit, and status.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Explain the three stages: working directory, staging area, repository
+- Stage files with `git add` and save them permanently with `git commit -m`
+- Read `git status` at every step to know exactly where your files are
+- Write commit messages that describe what changed and why
+
+</LearningObjectives>
+
+This is the most important section. The core Git workflow has three stages:
+
+```
+┌──────────────────┐     git add     ┌──────────────────┐    git commit    ┌──────────────────┐
+│                  │ ──────────────▶ │                  │ ──────────────▶  │                  │
+│  WORKING DIR     │                 │  STAGING AREA    │                  │  REPOSITORY      │
+│  (your files)    │                 │  (ready to save) │                  │  (saved forever) │
+│                  │ ◀────────────── │                  │                  │                  │
+└──────────────────┘   (edit files)  └──────────────────┘                  └──────────────────┘
+```
+
+### Stage 1 — Working Directory
+
+This is where you create and edit files. Git sees the files but does not track changes automatically.
+
+### Stage 2 — Staging Area
+
+When you run `git add`, files move to the staging area. Think of it as a **packing box** — you put items in the box before shipping.
+
+### Stage 3 — Repository
+
+When you run `git commit`, staged changes are permanently saved in Git's history.
+
+### Hands-On: The Complete Workflow
+
+**Step 1 — Create a file**
+
+```bash
+echo "# Git Learning Project" > README.md
+```
+
+**Step 2 — Check status**
+
+```bash
+git status
+```
+
+**Expected output:**
+
+```
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        README.md
+
+nothing added to commit but untracked files present (use "git add" to track)
+```
+
+Git sees the file but it is **untracked** (shown in red).
+
+**Step 3 — Add the file to staging**
+
+```bash
+git add README.md
+```
+
+**Step 4 — Check status again**
+
+```bash
+git status
+```
+
+**Expected output:**
+
+```
+On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+        new file:   README.md
+```
+
+The file is now **staged** (shown in green). It is ready to be committed.
+
+**Step 5 — Commit the file**
+
+```bash
+git commit -m "Initial commit: add README"
+```
+
+**Expected output:**
+
+```
+[main (root-commit) a1b2c3d] Initial commit: add README
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
+```
+
+**Step 6 — Check status one more time**
+
+```bash
+git status
+```
+
+**Expected output:**
+
+```
+On branch main
+nothing to commit, working tree clean
+```
+
+Your working directory is **clean** — all changes are saved!
+
+### Understanding the Commit Message
+
+```bash
+git commit -m "Initial commit: add README"
+             │   │              │
+             │   │              └── What you did
+             │   └── Type of change
+             └── The -m flag means "message"
+```
+
+Good commit messages follow this pattern:
+
+| Good | Bad |
+|------|-----|
+| "Add user authentication module" | "update" |
+| "Fix data pipeline timeout bug" | "fixed stuff" |
+| "Add unit tests for ETL process" | "changes" |
+
+> **HitaVir Tech says:** "Think of `git add` as putting items in your shopping cart, and `git commit` as clicking the checkout button. You can add and remove items from the cart, but once you check out, the order is placed."
+
+### Common Mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| Forgot `-m` in commit | Git opens an editor — type message, save, close |
+| Committed wrong file | `git reset HEAD~1` to undo last commit |
+| Typo in commit message | `git commit --amend -m "new message"` |
+
+<KeyTakeaways>
+
+- Changes flow **working directory → staging area → repository** via `git add` and `git commit`
+- The staging area is a packing box — you choose exactly what goes into each commit
+- `git status` shows untracked (red) vs staged (green) vs clean states
+- Good commit messages say what you did — "Fix data pipeline timeout bug", not "update"
+- `git commit --amend -m "..."` fixes a typo in your last commit message
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In what order do changes move through Git\'s three stages?',
+      options: [
+        'Repository → staging area → working directory',
+        'Working directory → staging area → repository',
+        'Staging area → working directory → repository',
+        'Working directory → repository → staging area',
+      ],
+      answer: 1,
+      explanation:
+        'You edit in the working directory, git add moves changes to the staging area, and git commit saves them into the repository.',
+    },
+    {
+      question: 'What does the -m flag in git commit -m "message" mean?',
+      options: [
+        'It attaches the commit message inline',
+        'It merges the commit into main',
+        'It marks the commit as major',
+        'It moves the commit to another branch',
+      ],
+      answer: 0,
+      explanation:
+        'The -m flag supplies the commit message directly. Without it, Git opens your configured editor instead.',
+    },
+    {
+      question: 'You made a typo in your last commit message. What is the quickest fix?',
+      options: [
+        'Delete the .git folder and start over',
+        'git reset --hard HEAD~1',
+        'Edit the message on GitHub',
+        'git commit --amend -m "new message"',
+      ],
+      answer: 3,
+      explanation:
+        '--amend rewrites the most recent commit — perfect for fixing a message typo before you push.',
+    },
+  ]}
+/>
+
+<LessonComplete />

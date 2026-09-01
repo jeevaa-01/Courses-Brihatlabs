@@ -1,0 +1,152 @@
+---
+title: 'Final Quiz'
+sidebar_position: 1
+description: 'The graded final quiz for AWS Analytics Part 2 — data lakes, warehouses, the Lake House, and the six patterns. Aim for at least 8 of 10.'
+---
+
+<DurationBadge minutes={7} />
+
+# Final Quiz
+
+### The Services Under Test
+
+![S3](/img/courses/aws-icons/s3.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![Glue](/img/courses/aws-icons/glue.png) ![Athena](/img/courses/aws-icons/athena.png) ![Kinesis](/img/courses/aws-icons/kinesis-streams.png) ![Lake Formation](/img/courses/aws-icons/lake-formation.png) ![DataZone](/img/courses/aws-icons/datazone.png) ![QuickSight](/img/courses/aws-icons/quicksight.png)
+
+This quiz covers the whole course. **Aim for at least 8 of 10.** If you miss a
+question, revisit the lesson it came from before moving on. These are the same
+questions that show up in every AWS analytics interview — know them cold.
+
+<Quiz
+  title="Graded final quiz"
+  questions={[
+    {
+      question: 'Which of the following best describes a data lake?',
+      options: [
+        'A database optimized for OLTP workloads',
+        'Centralized storage for raw, varied data at any scale, queried by many engines',
+        'A real-time stream processor',
+        'A managed Kafka cluster',
+      ],
+      answer: 1,
+      explanation:
+        'A lake holds ANY data in native format; multiple engines (Athena, Redshift, EMR, SageMaker) read from it.',
+    },
+    {
+      question: 'Which property is specific to data warehouses, not data lakes?',
+      options: [
+        'Schema-on-read',
+        'Object storage foundation',
+        'Storing raw unstructured data',
+        'Columnar storage with MPP',
+      ],
+      answer: 3,
+      explanation:
+        'Columnar + MPP is the warehouse signature, enabling fast aggregation on billions of rows.',
+    },
+    {
+      question: 'In the medallion zones, who typically reads the Curated (Silver) zone?',
+      options: [
+        'Analysts and ML engineers',
+        'Data engineers only',
+        'Business users and BI tools',
+        'Nobody — it is write-only',
+      ],
+      answer: 0,
+      explanation:
+        'Raw (Bronze) = data engineers only. Curated (Silver) = analysts and ML engineers. Analytics (Gold) = business users and BI tools.',
+    },
+    {
+      question: 'In an AWS Modern Data Architecture, which service is the "source of truth" storage layer?',
+      options: [
+        'Amazon Redshift',
+        'Amazon DynamoDB',
+        'Amazon S3',
+        'Amazon RDS',
+      ],
+      answer: 2,
+      explanation:
+        'S3 is the centralized lake at the core — every other analytics engine on AWS reads from it.',
+    },
+    {
+      question: 'What does Redshift Spectrum enable?',
+      options: [
+        'Encrypting Redshift at rest',
+        'Running Redshift SQL directly against S3 lake files',
+        'Training ML models inside Redshift',
+        'Auto-scaling the Redshift cluster',
+      ],
+      answer: 1,
+      explanation:
+        'Spectrum lets you query lake data from the warehouse — no duplicate storage.',
+    },
+    {
+      question: 'Which service provides fine-grained (column/row) permissions on the S3 data lake?',
+      options: [
+        'IAM alone',
+        'Amazon Macie',
+        'CloudTrail',
+        'AWS Lake Formation',
+      ],
+      answer: 3,
+      explanation:
+        'IAM provides coarse identity; Macie finds PII; CloudTrail audits; Lake Formation ENFORCES column and row-level access.',
+    },
+    {
+      question: 'A fraud team needs to block bad transactions within 200 ms. Which pattern fits?',
+      options: [
+        'Batch BI (nightly Redshift)',
+        'Data Mesh',
+        'Real-Time Analytics (Kinesis + Kinesis Analytics + Lambda)',
+        'Log Observability',
+      ],
+      answer: 2,
+      explanation:
+        'Sub-second reaction requires real-time analytics with streaming plus serverless alerting.',
+    },
+    {
+      question: 'Zero-ETL between Aurora and Redshift eliminates the need to:',
+      options: [
+        'Write custom replication pipelines',
+        'Pay for storage',
+        'Create Redshift tables',
+        'Secure the data',
+      ],
+      answer: 0,
+      explanation:
+        'Zero-ETL replicates changes automatically — no pipeline code to maintain.',
+    },
+    {
+      question: 'Which service helps non-engineers discover datasets using business terms instead of table names?',
+      options: [
+        'AWS Glue Crawler',
+        'Amazon Macie',
+        'AWS CloudTrail',
+        'Amazon DataZone',
+      ],
+      answer: 3,
+      explanation:
+        'DataZone provides a business-friendly catalog on top of the Glue Catalog.',
+    },
+    {
+      question: 'A company stores 5 years of clickstream JSON in S3 but has no Glue Catalog, no Lake Formation, no quality rules. What is this?',
+      options: [
+        'A modern data lake',
+        'A data swamp',
+        'A data mesh',
+        'A medallion architecture',
+      ],
+      answer: 1,
+      explanation:
+        'No catalog, no governance, no trust — storage alone is not an architecture.',
+    },
+  ]}
+/>
+
+:::tip[Score yourself]
+**9-10** — you are ready for production design reviews. **7-8** — solid; re-read
+the reference architectures lesson. **5-6** — review the three architecture
+lessons in Module 2 and retake. **Below 5** — redo Part 1 first; the 5 Vs are
+the foundation.
+:::
+
+<LessonComplete />

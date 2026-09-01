@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 360" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="780" height="360" rx="12" fill="#f8f9fa"/>
+  <text x="390" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Performance Optimization Checklist</text>
+
+  <rect x="15" y="40" width="170" height="30" rx="6" fill="#1a73e8"/>
+  <text x="100" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Technique</text>
+  <rect x="190" y="40" width="310" height="30" rx="6" fill="#1a73e8"/>
+  <text x="345" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">What It Does</text>
+  <rect x="505" y="40" width="260" height="30" rx="6" fill="#1a73e8"/>
+  <text x="635" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Platform</text>
+
+  <rect x="15" y="76" width="170" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="95" font-size="11" font-weight="600" fill="#1a73e8">Partitioning</text>
+  <rect x="190" y="76" width="310" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="200" y="95" font-size="10" fill="#1a73e8">Splits table by column value (e.g., date)</text>
+  <rect x="505" y="76" width="260" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="635" y="95" text-anchor="middle" font-size="10" font-weight="600" fill="#1a73e8">All platforms</text>
+
+  <rect x="15" y="108" width="170" height="28" rx="4" fill="white"/>
+  <text x="25" y="127" font-size="11" font-weight="600" fill="#3c4043">Clustering</text>
+  <rect x="190" y="108" width="310" height="28" rx="4" fill="white"/>
+  <text x="200" y="127" font-size="10" fill="#3c4043">Co-locates related rows for faster scans</text>
+  <rect x="505" y="108" width="260" height="28" rx="4" fill="white"/>
+  <text x="635" y="127" text-anchor="middle" font-size="10" fill="#3c4043">Snowflake, BigQuery</text>
+
+  <rect x="15" y="140" width="170" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="159" font-size="11" font-weight="600" fill="#1a73e8">Z-ORDER</text>
+  <rect x="190" y="140" width="310" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="200" y="159" font-size="10" fill="#1a73e8">Multi-column clustering for Delta tables</text>
+  <rect x="505" y="140" width="260" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="635" y="159" text-anchor="middle" font-size="10" fill="#1a73e8">Databricks</text>
+
+  <rect x="15" y="172" width="170" height="28" rx="4" fill="white"/>
+  <text x="25" y="191" font-size="11" font-weight="600" fill="#3c4043">Sort keys</text>
+  <rect x="190" y="172" width="310" height="28" rx="4" fill="white"/>
+  <text x="200" y="191" font-size="10" fill="#3c4043">Orders data on disk for range queries</text>
+  <rect x="505" y="172" width="260" height="28" rx="4" fill="white"/>
+  <text x="635" y="191" text-anchor="middle" font-size="10" fill="#3c4043">Redshift</text>
+
+  <rect x="15" y="204" width="170" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="223" font-size="11" font-weight="600" fill="#1a73e8">Compression</text>
+  <rect x="190" y="204" width="310" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="200" y="223" font-size="10" fill="#1a73e8">Reduces storage size and I/O bandwidth</text>
+  <rect x="505" y="204" width="260" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="635" y="223" text-anchor="middle" font-size="10" font-weight="600" fill="#1a73e8">All platforms</text>
+
+  <rect x="15" y="236" width="170" height="28" rx="4" fill="white"/>
+  <text x="25" y="255" font-size="11" font-weight="600" fill="#3c4043">Materialized views</text>
+  <rect x="190" y="236" width="310" height="28" rx="4" fill="white"/>
+  <text x="200" y="255" font-size="10" fill="#3c4043">Pre-computed query results (cached)</text>
+  <rect x="505" y="236" width="260" height="28" rx="4" fill="white"/>
+  <text x="635" y="255" text-anchor="middle" font-size="10" fill="#3c4043">Snowflake, Redshift, BigQuery</text>
+
+  <rect x="15" y="268" width="170" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="287" font-size="11" font-weight="600" fill="#1a73e8">Caching</text>
+  <rect x="190" y="268" width="310" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="200" y="287" font-size="10" fill="#1a73e8">Stores query results in memory</text>
+  <rect x="505" y="268" width="260" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="635" y="287" text-anchor="middle" font-size="10" font-weight="600" fill="#1a73e8">All platforms</text>
+
+  <rect x="15" y="300" width="170" height="28" rx="4" fill="white"/>
+  <text x="25" y="319" font-size="11" font-weight="600" fill="#3c4043">Column pruning</text>
+  <rect x="190" y="300" width="310" height="28" rx="4" fill="white"/>
+  <text x="200" y="319" font-size="10" fill="#3c4043">Only reads needed columns (columnar storage)</text>
+  <rect x="505" y="300" width="260" height="28" rx="4" fill="white"/>
+  <text x="635" y="319" text-anchor="middle" font-size="10" fill="#3c4043">All (columnar)</text>
+
+  <text x="390" y="348" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

@@ -1,0 +1,79 @@
+---
+title: 'Bonus - Self-Assessment'
+sidebar_position: 2
+description: 'Diagnose your own data project with the 5 Vs — five questions to score, find your bottleneck V, and pick the AWS services to study next.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Run a real project through the five diagnostic questions
+- Score each V from 1 (healthy) to 5 (painful) to find your bottleneck
+- Map your bottleneck V to the AWS services worth studying first
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |        DIAGNOSE  YOUR  OWN  PROJECT  WITH  THE  5  Vs         |
+  +==============================================================+
+```
+
+![S3](/img/courses/aws-icons/s3.png) ![Glue](/img/courses/aws-icons/glue.png) ![Athena](/img/courses/aws-icons/athena.png) ![Kinesis](/img/courses/aws-icons/kinesis-streams.png) ![Kinesis Firehose](/img/courses/aws-icons/kinesis-firehose.png) ![Macie](/img/courses/aws-icons/macie.png) ![QuickSight](/img/courses/aws-icons/quicksight.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png)
+
+Think of a data project you work on (or want to build). Run it through these five questions. The V that feels **most stressful** is your bottleneck — that's where to focus first.
+
+| # | Question | Your V | AWS Services to Study |
+|:-:|----------|:------:|-----------------------|
+| 1 | "Do we have somewhere cheap and durable to store everything?" | 📦 Volume | 🪣 S3 • 🧊 Glacier • 🏛️ Redshift |
+| 2 | "Do we have to handle more than one data format?" | 🧩 Variety | 🕸️ Glue • 🔍 Athena • 🤖 Rekognition • 📝 Textract |
+| 3 | "Is the current data freshness good enough for stakeholders?" | 🌊 Velocity | 🌊 Kinesis • 🚒 Firehose • ⚡ Lambda |
+| 4 | "Do stakeholders trust the numbers we publish?" | 🛡️ Veracity | 🧪 DataBrew • 🛡️ Glue DQ • 🕵️ Macie |
+| 5 | "Is anyone actually acting on our outputs?" | 💎 Value | 📊 QuickSight • 🤖 SageMaker • 🎯 Personalize |
+
+Score each V from 1 (healthy) to 5 (painful). The highest score is where a senior engineer should lead the next sprint.
+
+:::tip[Pro Tip]
+"Stacking solutions for Velocity when Veracity is the real problem is the most common and expensive AWS mistake. Diagnose honestly before you build."
+:::
+
+<KeyTakeaways>
+
+- The 5 Vs work as a scoring rubric: rate each from 1 (healthy) to 5 (painful)
+- Your highest-scoring V is the bottleneck — that's where the next sprint should go
+- Each bottleneck V comes with a short list of AWS services to study first
+- The most expensive mistake is solving the wrong V — diagnose before you build
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In the self-assessment, which V should you tackle first?',
+      options: [
+        'Always Volume — storage comes first',
+        'Always Value — outcomes come first',
+        'The V with the highest pain score — your bottleneck',
+        'Whichever V has the newest AWS service',
+      ],
+      answer: 2,
+      explanation:
+        'Score each V from 1 to 5; the highest score marks the bottleneck where a senior engineer should focus the next sprint.',
+    },
+    {
+      question: 'Stakeholders do not trust the numbers your team publishes. Which services should you study first?',
+      options: [
+        'Kinesis, Firehose, Lambda',
+        'DataBrew, Glue Data Quality, Macie',
+        'S3, Glacier, Redshift',
+        'QuickSight, SageMaker, Personalize',
+      ],
+      answer: 1,
+      explanation:
+        'Trust problems are Veracity — the quality and governance toolkit, not more speed or more dashboards.',
+    },
+  ]}
+/>
+
+<LessonComplete />

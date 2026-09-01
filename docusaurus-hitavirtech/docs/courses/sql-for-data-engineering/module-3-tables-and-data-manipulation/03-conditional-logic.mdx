@@ -1,0 +1,237 @@
+---
+title: 'Step 6: Conditional logic — AND, OR, IN, BETWEEN, LIKE, CASE'
+sidebar_position: 3
+description: 'Translate business rules into SQL — boolean operators, IN lists, BETWEEN ranges, LIKE patterns, and CASE-derived columns.'
+---
+
+<DurationBadge minutes={15} />
+
+<LearningObjectives>
+
+- Combine `AND`/`OR`/`NOT` with parentheses to express business rules
+- Filter with `IN`, `BETWEEN` (inclusive), and `LIKE` patterns (`%`, `_`)
+- Derive categorical columns with `CASE WHEN … THEN … ELSE … END`
+
+</LearningObjectives>
+
+> *"The most important property of a program is whether it accomplishes the intention of its user."*
+> — C.A.R. Hoare
+
+:::info[HitaVir Tech connection]
+Conditions are how SQL captures the user's intent — every `AND`, `IN`, and `CASE` is a piece of business logic translated into a row filter or a derived column.
+:::
+
+:::tip[Why this matters now]
+For every condition you write today, say in plain English what business question it answers. If you cannot say it, do not write it.
+:::
+
+### 6.1 — AND, OR, NOT
+
+```sql
+-- Customers from Bengaluru OR Chennai who signed up in 2025
+SELECT
+    customer_id,
+    full_name,
+    city,
+    signup_date
+FROM customers
+WHERE (city = 'Bengaluru' OR city = 'Chennai')
+  AND signup_date >= '2025-01-01'
+  AND signup_date <  '2026-01-01'
+ORDER BY signup_date
+LIMIT 5;
+```
+
+**Expected output:**
+
+```
++-------------+-------------------+-----------+-------------+
+| customer_id | full_name         | city      | signup_date |
++-------------+-------------------+-----------+-------------+
+|           1 | Asha Sharma       | Bengaluru | 2025-08-01  |
+|           5 | Kavya Iyer        | Chennai   | 2025-08-15  |
+|          10 | Karthik Pillai    | Chennai   | 2025-09-09  |
+|          18 | Suresh Iyengar    | Bengaluru | 2025-10-19  |
+|          19 | Lakshmi Menon     | Chennai   | 2025-10-25  |
++-------------+-------------------+-----------+-------------+
+```
+
+Note: rows where `city = 'bengaluru'` or `'BLR'` are excluded — Step 11 fixes that.
+
+### 6.2 — IN: shorthand for many ORs
+
+```sql
+-- Same as ('Bengaluru' OR 'Chennai' OR 'Mumbai'), more readable
+SELECT
+    customer_id,
+    full_name,
+    city
+FROM customers
+WHERE city IN ('Bengaluru', 'Chennai', 'Mumbai')
+ORDER BY city, full_name
+LIMIT 5;
+```
+
+**Expected output:**
+
+```
++-------------+-----------------+-----------+
+| customer_id | full_name       | city      |
++-------------+-----------------+-----------+
+|           1 | Asha Sharma     | Bengaluru |
+|          29 | Ravi Kumar      | Bengaluru |
+|          18 | Suresh Iyengar  | Bengaluru |
+|          10 | Karthik Pillai  | Chennai   |
+|           5 | Kavya Iyer      | Chennai   |
++-------------+-----------------+-----------+
+```
+
+### 6.3 — BETWEEN: inclusive ranges
+
+```sql
+-- Products priced between ₹1000 and ₹3000 inclusive
+SELECT
+    product_id,
+    product_name,
+    unit_price
+FROM products
+WHERE unit_price BETWEEN 1000 AND 3000
+ORDER BY unit_price;
+```
+
+**Expected output:**
+
+```
++------------+---------------------+------------+
+| product_id | product_name        | unit_price |
++------------+---------------------+------------+
+|         12 | Yoga Mat            |    1199.00 |
+|         02 | Wireless Mouse      |    1299.00 |
+|         09 | Desk Lamp           |    1499.00 |
+|         06 | Denim Jeans         |    1799.00 |
+|         11 | Kitchen Knife Set   |    2299.00 |
+|         04 | USB-C Hub           |    2499.00 |
+|         13 | Dumbbell Pair 5kg   |    2499.00 |
++------------+---------------------+------------+
+```
+
+### 6.4 — LIKE: pattern matching
+
+```sql
+-- Customers whose name starts with 'R'
+SELECT
+    customer_id,
+    full_name
+FROM customers
+WHERE full_name LIKE 'R%'
+ORDER BY full_name;
+```
+
+**Expected output:**
+
+```
++-------------+----------------+
+| customer_id | full_name      |
++-------------+----------------+
+|          14 | Rahul Joshi    |
+|           2 | Ravi Kumar     |
+|          29 | Ravi Kumar     |
+|          23 | Ritu Agarwal   |
+|           6 | Rohan Mehta    |
++-------------+----------------+
+```
+
+`%` matches zero or more characters; `_` matches exactly one. `'R%'` = "starts with R", `'%kumar%'` = "contains kumar", `'_avi%'` = "second-to-last char any, then 'avi…'".
+
+### 6.5 — CASE: derive a column from a condition
+
+```sql
+-- Tag every product with a price band
+SELECT
+    product_id,
+    product_name,
+    unit_price,
+    CASE
+        WHEN unit_price < 500              THEN 'Budget'
+        WHEN unit_price BETWEEN 500 AND 5000 THEN 'Mid-range'
+        ELSE                                    'Premium'
+    END AS price_band
+FROM products
+ORDER BY unit_price
+LIMIT 8;
+```
+
+**Expected output:**
+
+```
++------------+---------------------+------------+------------+
+| product_id | product_name        | unit_price | price_band |
++------------+---------------------+------------+------------+
+|         15 | Pen Pack            |     149.00 | Budget     |
+|         14 | Notebook A4         |     199.00 | Budget     |
+|          5 | Cotton T-Shirt      |     599.00 | Mid-range  |
+|         10 | Coffee Mug Set      |     799.00 | Mid-range  |
+|         12 | Yoga Mat            |    1199.00 | Mid-range  |
+|          2 | Wireless Mouse      |    1299.00 | Mid-range  |
+|          9 | Desk Lamp           |    1499.00 | Mid-range  |
+|          6 | Denim Jeans         |    1799.00 | Mid-range  |
++------------+---------------------+------------+------------+
+```
+
+:::tip[HitaVir Tech Tip]
+`CASE` is your Swiss Army knife — bucket numeric ranges, normalize statuses, derive flags, replace nested IF/ELSE in application code with a single SQL expression.
+:::
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Combine `AND`/`OR`/`NOT` with parentheses for clarity
+- ✅ Replace long OR chains with `IN (...)`
+- ✅ Filter ranges with `BETWEEN` (and know it is inclusive on both sides)
+- ✅ Match strings with `LIKE` using `%` and `_`
+- ✅ Derive a categorical column with `CASE WHEN ... THEN ... ELSE ... END`
+
+---
+
+<KeyTakeaways>
+
+- Parenthesize mixed `AND`/`OR` conditions — `AND` binds tighter than `OR`
+- `IN (...)` replaces long `OR` chains and reads like the business rule it encodes
+- `BETWEEN` is inclusive on **both** ends; `LIKE` uses `%` (any run) and `_` (one char)
+- `CASE` derives new columns from conditions — price bands, flags, normalized statuses
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'WHERE unit_price BETWEEN 1000 AND 3000 — is a product priced exactly 3000.00 included?',
+      options: [
+        'No — BETWEEN excludes both endpoints',
+        'No — BETWEEN excludes only the upper endpoint',
+        'Yes — BETWEEN is inclusive on both ends',
+        'Only if the column is DECIMAL',
+      ],
+      answer: 2,
+      explanation:
+        'BETWEEN a AND b means >= a AND <= b. That inclusiveness is why half-open ranges are preferred for dates.',
+    },
+    {
+      question: "Which LIKE pattern matches every name that CONTAINS 'kumar' anywhere?",
+      options: ["'kumar%'", "'%kumar%'", "'_kumar_'", "'kumar'"],
+      answer: 1,
+      explanation:
+        "% matches zero or more characters, so wrapping the term in % on both sides finds it anywhere in the string.",
+    },
+    {
+      question: 'What does CASE return when no WHEN matches and there is no ELSE?',
+      options: ['0', 'An error', 'The first WHEN value', 'NULL'],
+      answer: 3,
+      explanation:
+        'A CASE with no matching branch and no ELSE evaluates to NULL — a common source of silent NULLs in reports.',
+    },
+  ]}
+/>
+
+<LessonComplete />

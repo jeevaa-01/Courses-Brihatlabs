@@ -1,0 +1,143 @@
+---
+title: 'Cheat Sheet - The One-Page Summary'
+sidebar_position: 4
+description: 'The one-page Part 2 cheat sheet — lake, warehouse, and Lake House in 30 seconds each, plus the golden rules.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Compress the entire course into a screenshot-and-keep reference
+- Recall each architecture in 30 seconds and each pattern in one line
+- Internalize the golden rules that keep lakes governed and bills low
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |           AWS  ANALYTICS  -  PART 2  CHEAT  SHEET            |
+  |                  (screenshot and keep)                       |
+  +==============================================================+
+```
+
+### The Lake House Toolbox — At a Glance
+
+![S3](/img/courses/aws-icons/s3.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![Glue](/img/courses/aws-icons/glue.png) ![Athena](/img/courses/aws-icons/athena.png) ![EMR](/img/courses/aws-icons/emr.png) ![Kinesis](/img/courses/aws-icons/kinesis-streams.png) ![OpenSearch](/img/courses/aws-icons/opensearch.png) ![DynamoDB](/img/courses/aws-icons/dynamodb.png) ![Lake Formation](/img/courses/aws-icons/lake-formation.png) ![Macie](/img/courses/aws-icons/macie.png) ![QuickSight](/img/courses/aws-icons/quicksight.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png) ![Bedrock](/img/courses/aws-icons/bedrock.png) ![DataZone](/img/courses/aws-icons/datazone.png)
+
+### 🪣 Data Lake in 30 Seconds
+
+```
+  Store ANY data  --->  S3 (raw | curated | analytics)
+  Schema-on-READ  --->  decided at query time
+  Read by         --->  Athena, Redshift, EMR, SageMaker
+  Governed by     --->  Lake Formation + Glue Catalog
+```
+
+### 🏛️ Data Warehouse in 30 Seconds
+
+```
+  Columnar + MPP  --->  fast aggregation on billions of rows
+  Schema-on-WRITE --->  decided before load
+  Star schema     --->  fact + dimensions
+  AWS service     --->  Amazon Redshift (serverless or RA3)
+```
+
+### 🏡 Modern Data Architecture in 30 Seconds
+
+```
+  One lake  +  many engines  +  one catalog  +  one security model  +  native ML
+```
+
+| Pillar | Icon | Services |
+|--------|:---:|----------|
+| Scalable lake | 🪣 | S3 |
+| Purpose-built engines | 🧰 | Athena, Redshift, EMR, OpenSearch, DynamoDB |
+| Seamless movement | 🔀 | Spectrum, Zero-ETL, Federated query |
+| Unified governance | 🔐 | Lake Formation, IAM, KMS, Macie, CloudTrail |
+| Built-in ML | 🤖 | SageMaker, Redshift ML, Bedrock, Amazon Q |
+
+### 🗺️ The Six Reference Architectures
+
+| # | Pattern | When | Core |
+|:-:|---------|------|------|
+| 1 | Batch BI | Daily dashboards | 🏛️ Redshift + 📊 QuickSight |
+| 2 | Real-Time | Fraud, IoT, live | 🌊 Kinesis + 🎯 Analytics |
+| 3 | Log Obs. | Search production logs | 🔎 OpenSearch |
+| 4 | 360 | Unify customer view | 🪣 S3 + 🕸️ Glue + 🏛️ Redshift |
+| 5 | ML | Predict & personalize | 🤖 SageMaker |
+| 6 | Data Mesh | Enterprise domain ownership | 🏗️ Lake Formation + 🧭 DataZone |
+
+### 🎯 The Golden Rules
+
+- 🪣 **S3 is always the floor.** Never start an analytics platform on anything else.
+- 📚 **No catalog = data swamp.** Glue Catalog + Lake Formation from day one.
+- 🗂️ **Parquet + partitioning** — 10-100× cheaper queries.
+- 🔭 **Use Spectrum** before duplicating lake data into Redshift.
+- 🚀 **Try Zero-ETL** before writing any new replication pipeline.
+- 🛡️ **Enforce data quality at ingest** — not in a dashboard post-mortem.
+- 🗺️ **Map every new project to one of the six patterns** — don't invent a seventh without very good reason.
+- 💰 **Watch the bill weekly** — serverless + lifecycle policies + cleanup.
+
+### 🧠 The One-Sentence Takeaways
+
+- 📦 **Volume** — design for 100× (Part 1).
+- 🧩 **Variety** — structure is created, not found (Part 1).
+- 🌊 **Velocity** — match speed to decisions, no faster (Part 1).
+- 🛡️ **Veracity** — quality rules are pipeline-level (Part 1).
+- 💎 **Value** — start from the decision, work backwards (Part 1).
+- 🪣 **Data Lake** — store everything cheaply, govern strictly (Part 2).
+- 🏛️ **Warehouse** — columnar + MPP + star schema (Part 2).
+- 🏡 **Lake House** — one lake, many engines, one catalog (Part 2).
+
+### 📈 Next Steps
+
+1. Redraw one of the six architectures for a project in your current job.
+2. Extend the Part 1 lab: add a Glue ETL job to convert CSV to Parquet.
+3. Try Redshift Serverless with the sample `tickit` dataset.
+4. Read the AWS Well-Architected Analytics Lens end-to-end.
+5. Move to **Part 3** — Hands-On Lake House (Glue ETL + Redshift + QuickSight capstone).
+
+---
+
+*AWS service icons used in this course are from the official AWS Architecture Icons deck, freely distributed by Amazon Web Services for use in architecture diagrams and educational materials.*
+
+<KeyTakeaways>
+
+- Lake = schema-on-read on S3; Warehouse = columnar + MPP + star schema; Lake House = one lake, many engines, one catalog
+- S3 is always the floor, and no catalog means data swamp — the two non-negotiable rules
+- Parquet + partitioning cuts query costs 10-100×; Spectrum and Zero-ETL prevent data duplication
+- Map every new project to one of the six patterns before choosing services
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'According to the golden rules, what should you try BEFORE duplicating lake data into Redshift?',
+      options: [
+        'Buying a bigger cluster',
+        'Redshift Spectrum',
+        'Exporting to CSV',
+        'Switching to DynamoDB',
+      ],
+      answer: 1,
+      explanation:
+        'Spectrum lets warehouse SQL read lake files in place — duplicate storage is a last resort.',
+    },
+    {
+      question: 'Why do the golden rules insist on Parquet plus partitioning in the lake?',
+      options: [
+        'It is the only format Athena supports',
+        'It makes files human-readable',
+        'Queries become 10-100× cheaper by scanning less data',
+        'It encrypts data automatically',
+      ],
+      answer: 2,
+      explanation:
+        'Columnar Parquet plus partition pruning means engines scan only the bytes they need, slashing cost and latency.',
+    },
+  ]}
+/>
+
+<LessonComplete />

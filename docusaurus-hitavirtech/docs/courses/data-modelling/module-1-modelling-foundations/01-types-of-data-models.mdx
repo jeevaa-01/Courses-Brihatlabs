@@ -1,0 +1,129 @@
+---
+title: 'Types of Data Models'
+sidebar_position: 1
+description: 'The three levels of data modelling — conceptual, logical, and physical — and when to use each in a real project.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Distinguish the conceptual, logical, and physical levels of data modelling
+- Identify which artifacts belong at each level (entities, keys, data types)
+- Choose the right modelling level for each phase of a project
+
+</LearningObjectives>
+
+There are three levels of data modelling, each with increasing detail.
+
+### The Three Levels
+
+![Three Levels of Data Modelling](/img/courses/diagrams/three-levels.svg)
+
+### Conceptual Data Model
+
+The **what** — identifies entities and relationships at the highest level. No columns, no data types.
+
+**Example — E-commerce system:**
+
+| Entity | Relationship | Entity |
+|--------|-------------|--------|
+| **CUSTOMER** | --has--> | **ORDER** |
+| **ORDER** | --has--> | **PRODUCT** |
+| **CUSTOMER** | --writes--> | **REVIEW** |
+| **PRODUCT** | --receives--> | **REVIEW** |
+
+**When to use:** Early project planning, business requirement gathering, stakeholder communication.
+
+### Logical Data Model
+
+The **how** — defines tables, columns, primary keys, foreign keys, and relationships. No data types yet.
+
+**Example — Order entity expanded:**
+
+![ORDER Logical Model](/img/courses/diagrams/logical-model-order.svg)
+
+**When to use:** Database design phase, team alignment on structure, documentation.
+
+### Physical Data Model
+
+The **where and how exactly** — includes data types, constraints, indexes, partitioning, storage format.
+
+```sql
+CREATE TABLE orders (
+    order_id        BIGINT          NOT NULL AUTO_INCREMENT,
+    customer_id     INT             NOT NULL,
+    product_id      INT             NOT NULL,
+    order_date      DATE            NOT NULL,
+    quantity        SMALLINT        NOT NULL DEFAULT 1,
+    unit_price      DECIMAL(10,2)   NOT NULL,
+    total_amount    DECIMAL(12,2)   GENERATED ALWAYS AS (quantity * unit_price),
+    order_status    VARCHAR(20)     NOT NULL DEFAULT 'PENDING',
+    created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (order_id),
+    INDEX idx_customer (customer_id),
+    INDEX idx_date (order_date),
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+) PARTITION BY RANGE (YEAR(order_date));
+```
+
+### Comparison
+
+![Model Comparison](/img/courses/diagrams/model-comparison.svg)
+
+:::tip[HitaVir Tech says]
+"In enterprise projects, you always start with conceptual, refine to logical, then implement physical. Skipping steps is how data platforms become unmaintainable."
+:::
+
+<KeyTakeaways>
+
+- **Conceptual** = entities and relationships only — the "what", for stakeholders
+- **Logical** = tables, columns, and keys — the "how", for database design
+- **Physical** = data types, indexes, and partitioning — the exact implementation
+- Always refine conceptual → logical → physical; skipping levels creates unmaintainable platforms
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'A diagram shows CUSTOMER, ORDER, and PRODUCT boxes with arrows between them but no columns. Which level is this?',
+      options: [
+        'Physical data model',
+        'Conceptual data model',
+        'Logical data model',
+        'Star schema',
+      ],
+      answer: 1,
+      explanation:
+        'Entities and relationships with no columns or data types is the conceptual level — perfect for early planning and stakeholder communication.',
+    },
+    {
+      question: 'At which level do data types, indexes, and partitioning first appear?',
+      options: [
+        'Conceptual',
+        'Logical',
+        'Physical',
+        'They appear at every level',
+      ],
+      answer: 2,
+      explanation:
+        'The physical model is the implementation blueprint: exact types (DECIMAL(10,2)), constraints, indexes, and PARTITION BY clauses.',
+    },
+    {
+      question: 'Your team agrees on tables, columns, and foreign keys but has not chosen data types yet. Which level are you working at?',
+      options: [
+        'Logical',
+        'Conceptual',
+        'Physical',
+        'Operational',
+      ],
+      answer: 0,
+      explanation:
+        'The logical model defines structure (tables, columns, PK/FK relationships) without committing to platform-specific data types.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,790 @@
+---
+title: 'File Handling — CSV, JSON, Parquet, and Text'
+sidebar_position: 1
+description: 'Read and write CSV, JSON, text logs, and Parquet — with utf-8 encoding, DictReader/DictWriter, and three real Kaggle datasets.'
+---
+
+<DurationBadge minutes={22} />
+
+<LearningObjectives>
+
+- Read and write CSV with `csv.DictReader` / `csv.DictWriter` inside `with open(...)` blocks
+- Move between JSON files, strings, and Python dicts with `load` / `loads` / `dump` / `dumps`
+- Stream log files line by line without loading them into memory
+- Convert real datasets between CSV, JSON, and Parquet with pandas
+
+</LearningObjectives>
+
+**Why file handling matters in DE**
+
+Every data pipeline starts and ends with a file. You read raw data **from** a file, transform it, and write the cleaned result **to** another file. The two formats you will use 95% of the time are CSV and JSON.
+
+**Quick definitions:**
+
+- **CSV (Comma-Separated Values)** — a plain-text spreadsheet. Each line is a row; commas separate the columns.
+- **JSON (JavaScript Object Notation)** — a text format for structured/nested data. Looks like Python dictionaries.
+- **Parquet** — a compact, **columnar** binary format used by every modern data platform (Spark, Databricks, BigQuery). Smaller and faster than CSV for large data.
+- **Log file** — a plain-text file where every line is a timestamped event (used for debugging).
+
+We learn each format in its own small file — first **CSV**, then **JSON**, then **text/log** — and because real pipelines combine formats, we add a **mix** example: CSV in, JSON out. Then we **level up to three real public datasets** from Kaggle and add **Parquet**, the format you will meet on every data team.
+
+### Create Sample Data Files
+
+**`create_sample_data.py`**
+
+```python
+"""
+HitaVir Tech - Create sample data files for practice
+"""
+import csv
+import json
+
+# --- Create CSV file ---
+sales_data = [
+    ["order_id", "customer", "product", "quantity", "price", "date", "region"],
+    [1001, "Alice Johnson", "Laptop", 1, 999.99, "2026-04-01", "North"],
+    [1002, "Bob Smith", "Mouse", 5, 29.99, "2026-04-01", "South"],
+    [1003, "Charlie Brown", "Keyboard", 2, 79.99, "2026-04-01", "North"],
+    [1004, "", "Monitor", 1, 449.99, "2026-04-02", "East"],
+    [1005, "Diana Prince", "Laptop", 2, 999.99, "2026-04-02", "West"],
+    [1006, "Eve Wilson", "", 3, 29.99, "2026-04-02", "South"],
+    [1007, "Frank Miller", "Keyboard", 0, 79.99, "2026-04-03", "North"],
+    [1008, "Grace Lee", "Headphones", 1, 149.99, "2026-04-03", "East"],
+    [1009, "Henry Davis", "Monitor", 1, 449.99, "2026-04-03", "West"],
+    [1010, "Ivy Chen", "Laptop", 1, -999.99, "2026-04-03", "North"],
+]
+
+with open("sales_raw.csv", "w", encoding="utf-8", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerows(sales_data)
+print("Created: sales_raw.csv")
+
+# --- Create JSON config ---
+config = {
+    "pipeline_name": "HitaVir Sales ETL",
+    "version": "1.0.0",
+    "source": {
+        "type": "csv",
+        "path": "sales_raw.csv"
+    },
+    "rules": {
+        "max_null_percent": 0.05,
+        "min_quantity": 1,
+        "min_price": 0.01
+    },
+    "output": {
+        "path": "sales_cleaned.csv",
+        "report_path": "pipeline_report.json"
+    }
+}
+
+with open("pipeline_config.json", "w", encoding="utf-8") as f:
+    json.dump(config, f, indent=2)
+print("Created: pipeline_config.json")
+
+# --- Create log file ---
+logs = """[2026-04-05 08:00:01] INFO: Pipeline started
+[2026-04-05 08:00:02] INFO: Loading sales_raw.csv
+[2026-04-05 08:00:03] WARNING: Found 2 records with missing customer names
+[2026-04-05 08:00:04] ERROR: Record 1010 has negative price
+[2026-04-05 08:00:05] INFO: Cleaned 10 records, 2 rejected
+[2026-04-05 08:00:06] INFO: Pipeline completed in 5.2s
+"""
+
+with open("pipeline.log", "w", encoding="utf-8") as f:
+    f.write(logs)
+print("Created: pipeline.log")
+
+print("\nAll sample files created successfully!")
+```
+
+Run it:
+
+```bash
+python create_sample_data.py
+```
+
+**What is the with-open block?**
+
+`with open(...) as f:` is the **safe way** to open files in Python. The `with` block automatically closes the file when you are done — even if an error happens inside. This prevents the "file left open and locked" bug.
+
+### CSV — Part 1: Read a CSV File
+
+**What is `csv.DictReader`?**
+
+`csv.DictReader` reads each row of a CSV as a **dictionary** keyed by the header names. Instead of remembering "column 4 is price," you write `row["price"]` — cleaner, safer, easier.
+
+**Best practice up front:** always pass `encoding="utf-8"` so the same code works on Windows, Mac, and Linux.
+
+**`file_csv_read.py`**
+
+```python
+# ============================================
+# HitaVir Tech - CSV Part 1: Read a CSV
+# ============================================
+import csv
+
+# DictReader turns every row into a dict keyed by the header line.
+records = []
+with open("sales_raw.csv", "r", encoding="utf-8") as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        records.append(row)
+
+print(f"Loaded {len(records)} records")
+
+# Look at the first 3 rows. Note: every value is TEXT at this point.
+print("\nFirst 3 rows:")
+for record in records[:3]:
+    print(f"  Order {record['order_id']}: "
+          f"{record['customer']} bought "
+          f"{record['quantity']}x {record['product']}")
+```
+
+Run it:
+
+```bash
+python file_csv_read.py
+```
+
+:::tip[Remember]
+a CSV cell is always read as a **string**. `record["price"]` is `"999.99"` (text), not `999.99` (a number). You convert it with `float(...)` or `int(...)` before doing maths — exactly what the Mix example below does.
+:::
+
+### CSV — Part 2: Write a CSV File
+
+`csv.DictWriter` is the mirror image of `DictReader`: you give it a list of dictionaries and the column order, and it writes the header plus one row per dict.
+
+**Two best practices for writing CSV on Windows:**
+
+- `newline=""` stops Windows from inserting a blank line between every row.
+- `encoding="utf-8"` keeps names with accents or symbols intact.
+
+**`file_csv_write.py`**
+
+```python
+# ============================================
+# HitaVir Tech - CSV Part 2: Write a CSV
+# ============================================
+import csv
+
+# Each row is one dictionary. The keys match the columns we want.
+rows = [
+    {"product": "Laptop", "region": "North", "total": 999.99},
+    {"product": "Mouse", "region": "South", "total": 149.95},
+    {"product": "Monitor", "region": "West", "total": 449.99},
+]
+
+# fieldnames sets BOTH the column order and the header line.
+fieldnames = ["product", "region", "total"]
+
+with open("summary.csv", "w", encoding="utf-8", newline="") as f:
+    writer = csv.DictWriter(f, fieldnames=fieldnames)
+    writer.writeheader()      # writes the line: product,region,total
+    writer.writerows(rows)    # writes one line per dictionary
+
+print("Saved: summary.csv")
+```
+
+Run it:
+
+```bash
+python file_csv_write.py
+```
+
+:::tip[Try it yourself]
+open `summary.csv` in Excel or a text editor. You should see a clean header row and three data rows, with no blank lines in between — that is the `newline=""` doing its job.
+:::
+
+#### CSV File Mode Cheat Sheet
+
+![CSV File Mode Cheat Sheet](/img/courses/diagrams/python-de/26-csv-file-mode-cheat-sheet.svg)
+
+### JSON — Part 1: Read a JSON File
+
+:::info[JSON ↔ Python dictionary]
+JSON is text on disk; a Python dict lives in memory. `json.load()` turns a JSON **file** into a dict. `json.loads()` (with an `s`) turns a JSON **string** into a dict.
+:::
+
+**`file_json_read.py`**
+
+```python
+# ============================================
+# HitaVir Tech - JSON Part 1: Read JSON
+# ============================================
+import json
+
+# json.load() reads a JSON FILE and hands back a Python dict.
+with open("pipeline_config.json", "r", encoding="utf-8") as f:
+    config = json.load(f)
+
+# Nested values are reached with chained keys.
+print(f"Pipeline:   {config['pipeline_name']}")
+print(f"Version:    {config['version']}")
+print(f"Source:     {config['source']['path']}")
+print(f"Max null %: {config['rules']['max_null_percent']}")
+
+# json.loads() reads JSON from a STRING instead of a file.
+raw_text = '{"name": "Asha", "age": 25}'
+person = json.loads(raw_text)
+print(f"\nFrom a string: {person['name']} is {person['age']}")
+```
+
+Run it:
+
+```bash
+python file_json_read.py
+```
+
+:::tip[Memory aid]
+the `s` in `loads`/`dumps` stands for **string**. No `s` (`load`/`dump`) means **file**.
+:::
+
+### JSON — Part 2: Write a JSON File
+
+`json.dump()` writes a dict to a file. Always pass `indent=2` — it makes the file readable by humans and produces clean line-by-line diffs in Git.
+
+**`file_json_write.py`**
+
+```python
+# ============================================
+# HitaVir Tech - JSON Part 2: Write JSON
+# ============================================
+import json
+
+# A nested dict is exactly what a JSON report looks like.
+report = {
+    "pipeline": "HitaVir Sales ETL",
+    "run_date": "2026-04-05",
+    "status": "completed",
+    "metrics": {
+        "cleaned_records": 7,
+        "rejected_records": 3,
+        "total_revenue": 4339.89,
+    },
+}
+
+# json.dump() writes the dict to a FILE. indent=2 = readable output.
+with open("pipeline_report.json", "w", encoding="utf-8") as f:
+    json.dump(report, f, indent=2)
+
+print("Saved: pipeline_report.json")
+
+# json.dumps() returns JSON as a STRING (handy for printing/logging).
+preview = json.dumps(report["metrics"], indent=2)
+print(f"\nMetrics as a string:\n{preview}")
+```
+
+Run it:
+
+```bash
+python file_json_write.py
+```
+
+#### JSON Function Cheat Sheet
+
+![JSON Function Cheat Sheet](/img/courses/diagrams/python-de/27-json-function-cheat-sheet.svg)
+
+### Text — Read a Text / Log File
+
+A log file is plain text: one event per line. To read it, we loop the file **line by line**.
+
+**Best practice — loop the file directly:** writing `for line in f:` reads one line at a time and works even on a 10 GB log. The older `f.readlines()` loads the *whole* file into memory at once, which crashes on big files. Prefer the loop.
+
+**`file_text_read.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Text: Read a Log File
+# ============================================
+
+info_count = 0
+warning_count = 0
+errors = []
+
+# Looping the file reads it one line at a time (memory-friendly).
+with open("pipeline.log", "r", encoding="utf-8") as f:
+    for line in f:
+        line = line.strip()       # drop the trailing newline + spaces
+        if not line:
+            continue              # skip blank lines
+        if "INFO:" in line:
+            info_count += 1
+        elif "WARNING:" in line:
+            warning_count += 1
+        elif "ERROR:" in line:
+            errors.append(line)
+
+print(f"INFO messages:    {info_count}")
+print(f"WARNING messages: {warning_count}")
+print(f"ERROR messages:   {len(errors)}")
+
+# Show the full text of any error lines we found.
+for error in errors:
+    print(f"  -> {error}")
+```
+
+Run it:
+
+```bash
+python file_text_read.py
+```
+
+### Mix — CSV In, JSON Out (the real pipeline)
+
+This is the single most common file-handling task in a real job: **read a CSV, clean and summarise it, write a JSON report.** It ties CSV and JSON together and shows the full set of best practices in one place.
+
+**Best practices on display here:**
+
+- `pathlib.Path` for file paths, kept in **UPPER_SNAKE_CASE constants** at the top
+- `encoding="utf-8"` on every single `open(...)`
+- Small, named **functions** instead of one long script
+- A `try / except FileNotFoundError` so a missing file gives a helpful message, not a crash
+- `json.dump(..., indent=2)` for a readable, diff-friendly file
+- **Reading the file back** to prove it is valid before we trust it
+- The `if __name__ == "__main__":` guard
+
+**`file_mix_csv_to_json.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Mix: CSV In -> JSON Out
+# Read a CSV, clean + summarise, write a JSON report.
+# ============================================
+import csv
+import json
+from collections import defaultdict
+from pathlib import Path
+
+# Best practice: paths live in constants, built with pathlib.Path.
+INPUT_CSV = Path("sales_raw.csv")
+OUTPUT_JSON = Path("region_summary.json")
+
+
+def load_clean_sales(path):
+    """Read the CSV and return a list of valid sale dicts."""
+    sales = []
+    with open(path, "r", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            # Skip rows that are missing a customer or a product.
+            if not row["customer"] or not row["product"]:
+                continue
+            quantity = int(row["quantity"])    # text -> whole number
+            price = float(row["price"])        # text -> decimal
+            # Skip impossible numbers.
+            if quantity <= 0 or price <= 0:
+                continue
+            sales.append({
+                "region": row["region"],
+                "total": round(quantity * price, 2),
+            })
+    return sales
+
+
+def revenue_by_region(sales):
+    """Add up revenue per region, sorted by region name."""
+    totals = defaultdict(float)
+    for sale in sales:
+        totals[sale["region"]] += sale["total"]
+    # Rebuild as a normal dict in sorted order -> tidy JSON.
+    return {region: round(totals[region], 2) for region in sorted(totals)}
+
+
+def main():
+    # Best practice: handle a missing input file gracefully.
+    try:
+        sales = load_clean_sales(INPUT_CSV)
+    except FileNotFoundError:
+        print(f"Input file not found: {INPUT_CSV}")
+        print("Run 'python create_sample_data.py' first, then retry.")
+        return
+
+    by_region = revenue_by_region(sales)
+    report = {
+        "report_date": "2026-04-30",
+        "currency": "USD",
+        "by_region": by_region,
+        "total": round(sum(by_region.values()), 2),
+    }
+
+    # Write the JSON report.
+    with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
+        json.dump(report, f, indent=2)
+    print(f"Wrote {OUTPUT_JSON}")
+
+    # Best practice: read it back to confirm the file is valid JSON.
+    with open(OUTPUT_JSON, "r", encoding="utf-8") as f:
+        check = json.load(f)
+    print(f"Verified - total revenue: ${check['total']:,.2f}")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Run it:
+
+```bash
+python file_mix_csv_to_json.py
+```
+
+:::tip[This is the Assignment 5 pattern]
+Learn this shape — read CSV → validate → group → write JSON → read back to verify — then prove you own it by completing Assignment 5 below in the exact output format it asks for.
+:::
+
+### Level Up — Real-World Datasets (CSV, JSON, Parquet)
+
+So far we practised on small files we made ourselves. Now let us use **three real public datasets** from Kaggle — the larger, messier data you meet on the job — and add a new format every data engineer must know: **Parquet**.
+
+:::info[A real-world truth]
+almost all data arrives as **CSV** first. Converting it to **JSON** (for APIs and dashboards) and to **Parquet** (for fast analytics storage) is daily work. So even though all three datasets ship as CSV, we will **read one as CSV**, **convert one to JSON**, and **convert one to Parquet** — exactly the moves you make on a real team.
+:::
+
+**The three datasets:**
+
+| Format | Dataset | What it holds |
+|---|---|---|
+| CSV | [AI Impact on Students](https://www.kaggle.com/datasets/laveshjadon/ai-impact-on-students) | 50,000 students: GenAI usage vs GPA and burnout |
+| JSON | [LLM Benchmark Comparison](https://www.kaggle.com/datasets/uzmaakhtar/llm-benchmark-comparison) | benchmark scores for frontier LLMs |
+| Parquet | [Election to Assembly Constituencies 2026](https://www.kaggle.com/datasets/sankha1998/general-election-to-assembly-constituencies-2026) | round-wise vote counts by constituency |
+
+#### Step 0 — Get the Datasets
+
+You need a free Kaggle account. There are two ways to download.
+
+**Option A — Manual (easiest):**
+
+1. Open each link above and click **Download** (top-right). You get a `.zip`.
+2. Unzip all three into a `data/` folder next to your scripts.
+3. The AI dataset file is named `ai_student_impact_dataset (1).csv` — rename it to `ai_student_impact.csv`. (Clean file names lead to clean code.)
+
+**Option B — Kaggle CLI (scriptable):**
+
+```bash
+pip install kaggle
+# Create an API token at Kaggle -> Account -> "Create New Token",
+# then save the downloaded kaggle.json into ~/.kaggle/
+kaggle datasets download -d laveshjadon/ai-impact-on-students -p data --unzip
+kaggle datasets download -d uzmaakhtar/llm-benchmark-comparison -p data --unzip
+kaggle datasets download -d sankha1998/general-election-to-assembly-constituencies-2026 -p data --unzip
+```
+
+**Install the Parquet engine** — pandas needs `pyarrow` to read and write Parquet:
+
+```bash
+pip install pandas pyarrow
+```
+
+Your project folder should now look like this:
+
+```
+your-project/
+├── data/
+│   ├── ai_student_impact.csv
+│   ├── 03_standard_llm_benchmarks.csv
+│   └── result_round_wise_counting_westbengal.csv
+├── real_01_csv.py
+├── real_02_json.py
+└── real_03_parquet.py
+```
+
+:::info[Why pandas now?]
+The `csv` and `json` modules from earlier are perfect for small files and line-by-line streaming. But real datasets are big and wide, so from here we use **pandas** — the right tool once data grows.
+:::
+
+#### Real CSV — AI Impact on Students
+
+A real CSV with **50,000 rows and 16 columns**. We read it, then ask three everyday questions: did GPA change, how is burnout spread, and which major scores highest?
+
+**`real_01_csv.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Real CSV: AI Impact on Students
+# ============================================
+import pandas as pd
+from pathlib import Path
+
+CSV_PATH = Path("data/ai_student_impact.csv")
+
+# Read the 50,000-row dataset into a DataFrame.
+df = pd.read_csv(CSV_PATH)
+
+# 1. How big is it, and what are the columns?
+print(f"Rows: {len(df):,}   Columns: {df.shape[1]}")
+print(f"Columns: {list(df.columns)}")
+
+# 2. Did GPA change after using GenAI? Compare the two GPA columns.
+print(f"\nAverage GPA before: {df['Pre_Semester_GPA'].mean():.2f}")
+print(f"Average GPA after:  {df['Post_Semester_GPA'].mean():.2f}")
+
+# 3. How many students fall into each burnout level?
+#    value_counts() tallies how often each label appears.
+print("\nBurnout risk level counts:")
+print(df["Burnout_Risk_Level"].value_counts())
+
+# 4. Which major has the highest average post-semester GPA?
+by_major = (
+    df.groupby("Major_Category")["Post_Semester_GPA"]
+    .mean()
+    .round(2)
+    .sort_values(ascending=False)
+)
+print("\nAverage post-semester GPA by major:")
+print(by_major)
+```
+
+Run it:
+
+```bash
+python real_01_csv.py
+```
+
+:::tip[Try it yourself]
+add a line that prints the average `Weekly_GenAI_Hours` for students whose `Burnout_Risk_Level` is `"High"`. (Hint: filter first — `df[df["Burnout_Risk_Level"] == "High"]` — then take the column mean.)
+:::
+
+#### Real JSON — LLM Benchmarks (CSV → JSON, then read)
+
+This dataset ships as CSV, but dashboards and web APIs expect **JSON**. So we convert it once with pandas, then read the JSON back the way an API would.
+
+`df.to_json(path, orient="records")` writes a **list of objects** — one JSON object per row — which is the shape almost every API uses.
+
+**`real_02_json.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Real JSON: LLM Benchmarks
+# Convert a CSV to JSON, then read the JSON.
+# ============================================
+import json
+import pandas as pd
+from pathlib import Path
+
+CSV_PATH = Path("data/03_standard_llm_benchmarks.csv")
+JSON_PATH = Path("data/llm_benchmarks.json")
+
+# --- Convert CSV -> JSON ---
+# orient="records" => a list of {column: value} objects (the API shape).
+df = pd.read_csv(CSV_PATH)
+df.to_json(JSON_PATH, orient="records", indent=2)
+print(f"Wrote {len(df)} models to {JSON_PATH}")
+
+# --- Read the JSON back with the stdlib json module ---
+with open(JSON_PATH, "r", encoding="utf-8") as f:
+    models = json.load(f)        # -> a list of dicts
+
+# Keep only models that have an MMLU score, then rank by it.
+scored = [m for m in models if m.get("MMLU_pct") is not None]
+top = sorted(scored, key=lambda m: m["MMLU_pct"], reverse=True)[:5]
+
+print("\nTop 5 models by MMLU score:")
+for model in top:
+    print(f"  {model['model_name']:25} "
+          f"{model['MMLU_pct']:.1f}%  ({model['organization']})")
+```
+
+Run it:
+
+```bash
+python real_02_json.py
+```
+
+:::tip[Shortcut]
+pandas can also read JSON straight into a DataFrame with `pd.read_json("data/llm_benchmarks.json")`. We used the `json` module here so you can see the raw list of dicts an API would hand you.
+:::
+
+#### What Is Parquet — and Why Data Teams Love It
+
+**Parquet** stores data **column by column** in a compressed binary block, where CSV stores it **row by row** as plain text. That one difference gives Parquet three superpowers:
+
+- **Smaller** — columns of similar values compress well (often **5–10× smaller** than CSV on large data)
+- **Faster** — you can read **only the columns you need** and skip the rest
+- **Typed** — it remembers that `votes_total` is an integer, so there is no text re-parsing
+
+It is the default storage format of modern data lakes — Spark, Databricks, AWS Athena, and BigQuery all speak Parquet.
+
+![CSV vs JSON vs Parquet](/img/courses/diagrams/python-de/36-csv-vs-json-vs-parquet.svg)
+
+#### Real Parquet — Election 2026 (CSV → Parquet, then read)
+
+We convert the election CSV to Parquet, compare the file sizes, then show Parquet's headline trick: **reading only the columns you need.**
+
+**`real_03_parquet.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Real Parquet: Election 2026
+# Convert a CSV to Parquet, then read it back.
+# ============================================
+import pandas as pd
+from pathlib import Path
+
+CSV_PATH = Path("data/result_round_wise_counting_westbengal.csv")
+PARQUET_PATH = Path("data/wb_results.parquet")
+
+# --- Convert CSV -> Parquet (uses the pyarrow engine) ---
+df = pd.read_csv(CSV_PATH)
+df.to_parquet(PARQUET_PATH, index=False)
+
+# Compare the two file sizes on disk.
+csv_kb = CSV_PATH.stat().st_size / 1024
+parquet_kb = PARQUET_PATH.stat().st_size / 1024
+print(f"CSV size:     {csv_kb:8.1f} KB")
+print(f"Parquet size: {parquet_kb:8.1f} KB")
+
+# --- Read back ONLY the columns we need (a Parquet superpower) ---
+# A CSV read must scan every column; Parquet reads just these two.
+votes = pd.read_parquet(PARQUET_PATH, columns=["party", "votes_total"])
+
+# Total votes per party, biggest first.
+by_party = (
+    votes.groupby("party")["votes_total"].sum().sort_values(ascending=False)
+)
+print("\nTotal votes by party:")
+print(by_party)
+```
+
+Run it:
+
+```bash
+python real_03_parquet.py
+```
+
+:::info[Honest note on size]
+on a *tiny* file Parquet can look **bigger** than CSV, because it adds a small schema header. The savings only show up at scale — on the full multi-thousand-row election data, the Parquet file is several times smaller. Even when the size is similar, Parquet still wins on **speed** and on **reading only the columns you ask for**.
+:::
+
+:::tip[HitaVir Tech says]
+"CSV is how data is shared, JSON is how data travels between services, and Parquet is how data is stored for analytics. A data engineer fluently converts between all three — and you just did."
+:::
+
+:::tip[HitaVir Tech says]
+"File handling is where theory meets reality. Every data pipeline starts with reading a file and ends with writing a file. CSV and JSON are the two formats you will use most — and the `with open(...)` block with `encoding='utf-8'` is the habit that keeps them reliable."
+:::
+
+### Assignment 5 — CSV to JSON Region Report
+
+**Goal:** Read a CSV, transform the data, and write a JSON summary — the most common file-handling task in real pipelines.
+
+**The scenario:** Finance asked for a daily JSON file showing total revenue per region. They will load the JSON into their dashboard.
+
+**Tasks:**
+
+1. Make sure `sales_raw.csv` exists in your working folder (if not, run `python create_sample_data.py` from the codelab).
+2. Create `assignment_05_files.py`.
+3. Read `sales_raw.csv` using `csv.DictReader`.
+4. Skip records that have empty `customer` or empty `product` (these are bad rows).
+5. Convert `quantity` and `price` to numbers, compute `total = quantity * price`.
+6. Skip records where `quantity <= 0` or `price <= 0`.
+7. Group by `region`, summing the `total`.
+8. Write the result to `region_summary.json` with `indent=2`. Format:
+
+```json
+{
+  "report_date": "2026-04-30",
+  "currency": "USD",
+  "by_region": {
+    "East":  599.98,
+    "North": 4079.95,
+    "South": 149.95,
+    "West":  1449.98
+  },
+  "total": 6279.86
+}
+```
+
+9. After writing the file, read it back with `json.load()` and print "Report verified — total: $X.XX" using the value from the loaded file.
+
+**Success criteria:**
+
+- [ ] Uses `csv.DictReader` with `with open(...)`
+- [ ] Uses `json.dump(..., indent=2)`
+- [ ] Skips rows with empty fields and non-positive numbers
+- [ ] JSON file is valid (re-readable by `json.load`)
+- [ ] Regions appear in alphabetical order in the output
+
+**Stretch goal:** Also write a `rejected_records.csv` containing every skipped row with a new column `reason` explaining why it was rejected.
+
+### What You Have Learnt on This Page
+
+By the end of this page you should be able to confidently:
+
+- Read CSV files with `csv.reader` and `csv.DictReader`
+- Write CSV files with `csv.writer` and `csv.DictWriter` (header + rows)
+- Read and write **JSON** with `json.load`, `json.loads`, `json.dump`, `json.dumps`
+- Use the **`with open(...)` context manager** so files always close
+- Set the right **encoding** (`encoding="utf-8"`) and `newline=""` on Windows
+- Append to **log/text files** for audit trails
+- Load real-world datasets with **pandas** (`pd.read_csv`) and profile them
+- Convert between formats: **CSV → JSON** (`to_json`) and **CSV → Parquet** (`to_parquet`)
+- Read **Parquet** with `pd.read_parquet`, selecting only the columns you need
+
+### PEP 8 — Style Rules to Apply Strictly to File I/O
+
+Files are the boundary of every pipeline. Boundary code that breaks PEP 8 turns into the world's worst on-call ticket. Apply these rules every single time you touch a file:
+
+- **Always** use `with open(...) as f:` — never manual `open()` then `f.close()`
+- Always pass **`encoding="utf-8"`** explicitly (Windows defaults bite)
+- Group imports correctly — `csv`, `json`, `pathlib` are stdlib (Group 1)
+- Prefer **`pathlib.Path`** over `os.path` string-joining (modern + cross-platform)
+- Use `json.dump(obj, f, indent=2)` so output is **diff-friendly**
+- Keep file paths in **constants at the top**: `INPUT_PATH = Path("data/sales.csv")`
+
+:::note[Inspiration for the road ahead]
+*"Data is the new oil. It is valuable, but if unrefined it cannot really be used."*
+— Clive Humby
+:::
+
+<KeyTakeaways>
+
+- `with open(..., encoding="utf-8")` is the non-negotiable habit; add `newline=""` when writing CSV on Windows
+- Every CSV cell arrives as a **string** — convert with `int()`/`float()` before doing maths
+- The `s` in `loads`/`dumps` means *string*; `load`/`dump` work on files
+- Loop a file object directly (`for line in f:`) to stay memory-friendly on huge logs
+- Parquet is columnar, compressed, and typed — the storage format of modern data lakes
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'json.load() vs json.loads() — what is the difference?',
+      options: [
+        'They are aliases',
+        'loads is the async version',
+        'load only parses strings',
+        'load reads a file object; loads parses a string',
+      ],
+      answer: 3,
+      explanation:
+        'The trailing "s" stands for string. json.load(f) reads a file; json.loads(text) parses a string.',
+    },
+    {
+      question: 'Why does the course read big files with "for line in f:" instead of f.readlines()?',
+      options: [
+        'Looping reads one line at a time, so a 10 GB log never fills memory',
+        'readlines() is deprecated',
+        'Loops are prettier',
+        'readlines() skips blank lines',
+      ],
+      answer: 0,
+      explanation:
+        'readlines() loads the entire file into a list at once; iterating the file object streams it line by line.',
+    },
+    {
+      question: 'Which claim about Parquet is TRUE?',
+      options: [
+        'It is a plain-text row format',
+        'It cannot store integers',
+        'It is columnar, so you can read only the columns you need',
+        'It is always larger than CSV',
+      ],
+      answer: 2,
+      explanation:
+        'Parquet stores data column by column with compression and types — smaller and faster at scale, and you can read selected columns only.',
+    },
+  ]}
+/>
+
+<LessonComplete />

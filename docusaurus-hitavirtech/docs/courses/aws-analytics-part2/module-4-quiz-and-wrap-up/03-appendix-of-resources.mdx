@@ -1,0 +1,128 @@
+---
+title: 'Appendix of Resources'
+sidebar_position: 3
+description: 'Official AWS docs, whitepapers, free training, hands-on labs, books, and communities to continue after Part 2.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Know where the official AWS documentation lives for every Part 2 service
+- Pick the right whitepapers, labs, and books for your next study phase
+- Find communities that share real-world data engineering experience
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |               RESOURCES  AND  NEXT  STEPS                    |
+  +==============================================================+
+```
+
+### Services Referenced in This Appendix
+
+![S3](/img/courses/aws-icons/s3.png) ![Glue](/img/courses/aws-icons/glue.png) ![Athena](/img/courses/aws-icons/athena.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![Kinesis](/img/courses/aws-icons/kinesis-streams.png) ![OpenSearch](/img/courses/aws-icons/opensearch.png) ![QuickSight](/img/courses/aws-icons/quicksight.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png) ![Lake Formation](/img/courses/aws-icons/lake-formation.png) ![DataZone](/img/courses/aws-icons/datazone.png)
+
+### Official AWS Documentation
+
+| Topic | Icon | Where to Read |
+|-------|:---:|---------------|
+| Amazon S3 | 🪣 | docs.aws.amazon.com/s3 |
+| AWS Lake Formation | 🏗️ | docs.aws.amazon.com/lake-formation |
+| AWS Glue | 🕸️ | docs.aws.amazon.com/glue |
+| Amazon Athena | 🔍 | docs.aws.amazon.com/athena |
+| Amazon Redshift | 🏛️ | docs.aws.amazon.com/redshift |
+| Amazon Kinesis | 🌊 | docs.aws.amazon.com/kinesis |
+| Amazon OpenSearch | 🔎 | docs.aws.amazon.com/opensearch-service |
+| Amazon QuickSight | 📊 | docs.aws.amazon.com/quicksight |
+| Amazon SageMaker | 🤖 | docs.aws.amazon.com/sagemaker |
+| Amazon DataZone | 🧭 | docs.aws.amazon.com/datazone |
+
+### AWS Whitepapers (Free, Highly Recommended)
+
+| Whitepaper | Icon | Why Read It |
+|------------|:---:|-------------|
+| AWS Well-Architected Framework — Analytics Lens | 📐 | The canonical design checklist |
+| Modern Data Architecture on AWS | 🏡 | The lake house, explained by AWS itself |
+| Data Analytics Lens — Reference Architectures | 🗺️ | AWS-blessed reference diagrams |
+| Building a Data Lake on AWS | 🪣 | Zone design, governance patterns |
+| Streaming Data Solutions | 🌊 | Choosing between Kinesis, MSK, Firehose |
+
+### Free Training
+
+| Resource | Icon | Provider |
+|----------|:---:|----------|
+| AWS Skill Builder — Analytics Learning Plan | 🎓 | aws.amazon.com/training |
+| AWS Solutions Architect — Associate path | 🎯 | AWS Training |
+| AWS Data Analytics Specialty certification | 🏆 | AWS Certification |
+
+### Hands-on Labs to Try Next
+
+- 🧪 AWS Glue Studio tutorial — visual ETL
+- 🪣 Lake Formation Getting Started workshop
+- 🏛️ Redshift Serverless Getting Started
+- 🌊 Kinesis Data Streams Hello World
+- 📊 QuickSight 10-minute demo
+
+### Books
+
+| Book | Why |
+|------|-----|
+| *Designing Data-Intensive Applications* — Martin Kleppmann | The single best data engineering book ever written |
+| *The Data Warehouse Toolkit* — Ralph Kimball | Star schemas, dimensional modeling, classics |
+| *Fundamentals of Data Engineering* — Joe Reis | Modern, cloud-era data engineering |
+
+### Community
+
+- 🐦 **#AWS** and **#DataEngineering** hashtags on LinkedIn / X
+- 💬 **r/dataengineering** on Reddit — real-world war stories
+- 🎥 **AWS re:Invent** talks on YouTube (free)
+- 🎓 **HitaVir Tech** — stay tuned for Part 3 and capstone workshops
+
+### More on This Portal
+
+- 🐍 [PySpark course](/courses/pyspark/intro) — hands-on Spark, the engine behind Glue and EMR
+- 🛠️ [Windows 11 environment setup](/courses/windows-setup) — local Python, Spark, and Docker
+- 🗄️ [MySQL Workbench setup](/courses/mysql-workbench-setup) — practice the SQL this course assumes
+- 📰 [Blog](/blog) — announcements and deep dives
+
+<KeyTakeaways>
+
+- Official AWS docs follow one URL shape: docs.aws.amazon.com/(service)
+- The Well-Architected Analytics Lens and Modern Data Architecture whitepapers are the canonical follow-ups
+- Free hands-on labs exist for Glue Studio, Lake Formation, Redshift Serverless, Kinesis, and QuickSight
+- Kleppmann, Kimball, and Reis are the three books that deepen everything in this course
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which whitepaper is described as "the canonical design checklist" for analytics on AWS?',
+      options: [
+        'Streaming Data Solutions',
+        'AWS Well-Architected Framework — Analytics Lens',
+        'Building a Data Lake on AWS',
+        'Zero-ETL Explained',
+      ],
+      answer: 1,
+      explanation:
+        'The Well-Architected Analytics Lens is the checklist architects use to review analytics designs.',
+    },
+    {
+      question: 'Which book is the classic reference for star schemas and dimensional modeling?',
+      options: [
+        'Designing Data-Intensive Applications — Kleppmann',
+        'Fundamentals of Data Engineering — Reis',
+        'The Data Warehouse Toolkit — Kimball',
+        'The Phoenix Project',
+      ],
+      answer: 2,
+      explanation:
+        'Kimball’s Data Warehouse Toolkit defined dimensional modeling — facts, dimensions, and star schemas.',
+    },
+  ]}
+/>
+
+<LessonComplete />

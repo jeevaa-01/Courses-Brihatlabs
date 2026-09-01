@@ -1,0 +1,288 @@
+---
+title: 'Real-World Enterprise Case Study'
+sidebar_position: 1
+description: 'Design a complete Insurance Claims Data Platform — star schema Gold layer, fraud analytics, and a production-grade PySpark SCD Type 2.'
+---
+
+<DurationBadge minutes={15} />
+
+<LearningObjectives>
+
+- Translate business requirements into a Gold-layer star schema design
+- Combine transaction and accumulating snapshot fact tables in one platform
+- Implement a reusable, production-grade SCD Type 2 function in PySpark
+
+</LearningObjectives>
+
+Let us build a complete **Insurance Claims Data Platform** — the kind of project you would deliver at a real company.
+
+### Business Problem
+
+HitaVir Insurance needs to:
+
+- Track all policy and claim information
+- Analyze claim processing times
+- Detect fraud patterns
+- Generate regulatory reports
+- Provide self-service analytics
+
+### Source Systems and Data Flow
+
+![Case Study Sources](/img/courses/diagrams/case-study-sources.svg)
+
+### Gold Layer — Star Schema Design
+
+```sql
+-- === DIMENSION TABLES ===
+
+CREATE TABLE dim_policy (
+    policy_key          INT PRIMARY KEY,
+    policy_number       VARCHAR(20),
+    policy_type         VARCHAR(30),     -- Auto, Home, Life, Health
+    coverage_amount     DECIMAL(15,2),
+    premium_amount      DECIMAL(10,2),
+    deductible          DECIMAL(10,2),
+    start_date          DATE,
+    end_date            DATE,
+    status              VARCHAR(20),
+    effective_date      DATE,
+    expiry_date         DATE DEFAULT '9999-12-31',
+    is_current          BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE dim_claimant (
+    claimant_key        INT PRIMARY KEY,
+    customer_id         VARCHAR(20),
+    full_name           VARCHAR(100),
+    date_of_birth       DATE,
+    gender              VARCHAR(10),
+    city                VARCHAR(50),
+    state               VARCHAR(50),
+    risk_score          SMALLINT,
+    effective_date      DATE,
+    expiry_date         DATE DEFAULT '9999-12-31',
+    is_current          BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE dim_adjuster (
+    adjuster_key        INT PRIMARY KEY,
+    adjuster_id         VARCHAR(20),
+    adjuster_name       VARCHAR(100),
+    specialization      VARCHAR(50),
+    experience_years    INT,
+    region              VARCHAR(30)
+);
+
+CREATE TABLE dim_claim_type (
+    claim_type_key      INT PRIMARY KEY,
+    claim_category      VARCHAR(30),
+    claim_sub_category  VARCHAR(50),
+    severity_level      VARCHAR(10),
+    avg_processing_days INT
+);
+
+-- === FACT TABLES ===
+
+-- Transaction fact: One row per claim
+CREATE TABLE fact_claims (
+    claim_key           BIGINT PRIMARY KEY,
+    date_filed_key      INT,
+    date_closed_key     INT,
+    policy_key          INT,
+    claimant_key        INT,
+    adjuster_key        INT,
+    claim_type_key      INT,
+    claim_amount        DECIMAL(12,2),
+    approved_amount     DECIMAL(12,2),
+    paid_amount         DECIMAL(12,2),
+    deductible_applied  DECIMAL(10,2),
+    num_documents       INT,
+    processing_days     INT,
+    is_fraud_flagged    BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (date_filed_key)  REFERENCES dim_date(date_key),
+    FOREIGN KEY (policy_key)      REFERENCES dim_policy(policy_key),
+    FOREIGN KEY (claimant_key)    REFERENCES dim_claimant(claimant_key),
+    FOREIGN KEY (adjuster_key)    REFERENCES dim_adjuster(adjuster_key),
+    FOREIGN KEY (claim_type_key)  REFERENCES dim_claim_type(claim_type_key)
+);
+
+-- Accumulating snapshot: Claim lifecycle tracking
+CREATE TABLE fact_claim_pipeline (
+    claim_key           BIGINT PRIMARY KEY,
+    policy_key          INT,
+    claimant_key        INT,
+    filed_date_key      INT,
+    acknowledged_date_key INT,
+    investigation_date_key INT,
+    assessment_date_key INT,
+    approval_date_key   INT,
+    payment_date_key    INT,
+    denial_date_key     INT,
+    claim_amount        DECIMAL(12,2),
+    current_stage       VARCHAR(30),
+    days_in_pipeline    INT
+);
+```
+
+### Sample Analytics Queries
+
+```sql
+-- Claims by region and type
+SELECT
+    cl.state AS claimant_state,
+    ct.claim_category,
+    COUNT(*) AS total_claims,
+    SUM(f.claim_amount) AS total_claimed,
+    SUM(f.paid_amount) AS total_paid,
+    ROUND(AVG(f.processing_days), 1) AS avg_processing_days,
+    ROUND(SUM(f.paid_amount) / SUM(f.claim_amount) * 100, 1) AS payout_ratio
+FROM fact_claims f
+JOIN dim_claimant cl ON f.claimant_key = cl.claimant_key
+JOIN dim_claim_type ct ON f.claim_type_key = ct.claim_type_key
+JOIN dim_date d ON f.date_filed_key = d.date_key
+WHERE d.year = 2026 AND cl.is_current = TRUE
+GROUP BY cl.state, ct.claim_category
+ORDER BY total_claimed DESC;
+
+-- Fraud detection: Claims exceeding 2x average by type
+WITH claim_stats AS (
+    SELECT
+        claim_type_key,
+        AVG(claim_amount) AS avg_claim,
+        STDDEV(claim_amount) AS std_claim
+    FROM fact_claims
+    GROUP BY claim_type_key
+)
+SELECT
+    f.claim_key,
+    cl.full_name,
+    ct.claim_category,
+    f.claim_amount,
+    cs.avg_claim,
+    ROUND((f.claim_amount - cs.avg_claim) / cs.std_claim, 2) AS z_score
+FROM fact_claims f
+JOIN dim_claimant cl ON f.claimant_key = cl.claimant_key
+JOIN dim_claim_type ct ON f.claim_type_key = ct.claim_type_key
+JOIN claim_stats cs ON f.claim_type_key = cs.claim_type_key
+WHERE (f.claim_amount - cs.avg_claim) / cs.std_claim > 2
+ORDER BY z_score DESC;
+```
+
+### PySpark SCD Type 2 Implementation
+
+```python
+from pyspark.sql.functions import *
+from pyspark.sql.types import *
+from delta.tables import DeltaTable
+
+def apply_scd_type2(spark, target_table, source_df, key_column, tracked_columns):
+    """
+    Generic SCD Type 2 implementation for any dimension table.
+    HitaVir Tech — Production-grade pattern.
+    """
+
+    target = DeltaTable.forName(spark, target_table)
+
+    # Identify changes
+    join_condition = f"target.{key_column} = source.{key_column} AND target.is_current = TRUE"
+    change_condition = " OR ".join([
+        f"target.{col} <> source.{col}" for col in tracked_columns
+    ])
+
+    # Step 1: Expire changed records
+    target.alias("target").merge(
+        source_df.alias("source"),
+        join_condition
+    ).whenMatchedUpdate(
+        condition=change_condition,
+        set={
+            "expiry_date": current_date(),
+            "is_current": lit(False)
+        }
+    ).whenNotMatchedInsertAll().execute()
+
+    # Step 2: Insert new versions for changed records
+    changed = (source_df.alias("s")
+        .join(
+            spark.read.table(target_table)
+                .filter(col("is_current") == False)
+                .filter(col("expiry_date") == current_date())
+                .alias("t"),
+            col(f"s.{key_column}") == col(f"t.{key_column}")
+        )
+        .select("s.*")
+        .withColumn("effective_date", current_date())
+        .withColumn("expiry_date", lit("9999-12-31").cast("date"))
+        .withColumn("is_current", lit(True))
+    )
+
+    changed.write.format("delta").mode("append").saveAsTable(target_table)
+
+    return changed.count()
+
+# Usage
+changes = apply_scd_type2(
+    spark,
+    target_table="gold.dim_claimant",
+    source_df=silver_customers,
+    key_column="customer_id",
+    tracked_columns=["full_name", "city", "state", "risk_score"]
+)
+print(f"SCD Type 2 applied: {changes} records versioned")
+```
+
+:::tip[HitaVir Tech says]
+"This case study is the kind of project you will build in your first 3 months as a Data Engineer at an insurance company. Save this code — you will use it."
+:::
+
+<KeyTakeaways>
+
+- Real platforms combine both fact types: a transaction fact (fact_claims) plus an accumulating snapshot (fact_claim_pipeline)
+- Dimensions with effective_date / expiry_date / is_current are SCD Type 2-ready from day one
+- Fraud analytics can be plain SQL: z-scores over claim amounts per claim type
+- A generic PySpark SCD Type 2 function (MERGE to expire + append new versions) is reusable across every dimension
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why does the platform have BOTH fact_claims and fact_claim_pipeline?',
+      options: [
+        'One is a backup of the other',
+        'fact_claims records each claim event; fact_claim_pipeline tracks lifecycle milestones in one updatable row',
+        'Regulators require two copies of every fact',
+        'fact_claim_pipeline stores the dimensions',
+      ],
+      answer: 1,
+      explanation:
+        'They serve different grains: a transaction fact for claim metrics, and an accumulating snapshot for stage-by-stage lifecycle analysis.',
+    },
+    {
+      question: 'In the fraud query, what does a z_score above 2 indicate?',
+      options: [
+        'The claim was filed twice',
+        'The claimant has two policies',
+        'The claim was approved in under 2 days',
+        'The claim amount is more than 2 standard deviations above the average for its type',
+      ],
+      answer: 3,
+      explanation:
+        'The CTE computes mean and standard deviation per claim type; claims far above the mean are flagged as fraud candidates.',
+    },
+    {
+      question: 'In the PySpark apply_scd_type2 function, what does Step 1 (the MERGE) do?',
+      options: [
+        'Expires current rows whose tracked columns changed, and inserts brand-new keys',
+        'Deletes all expired rows',
+        'Rebuilds the dimension from scratch',
+        'Aggregates the fact table into the Gold layer',
+      ],
+      answer: 0,
+      explanation:
+        'The MERGE sets expiry_date and is_current = FALSE on changed current rows and inserts records with no match; Step 2 then appends the new versions.',
+    },
+  ]}
+/>
+
+<LessonComplete />

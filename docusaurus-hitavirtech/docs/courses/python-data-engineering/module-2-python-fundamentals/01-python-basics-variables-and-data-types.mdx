@@ -1,0 +1,391 @@
+---
+title: 'Python Basics — Variables and Data Types'
+sidebar_position: 1
+description: 'Variables, the five core data types, type conversion, operators, and f-strings — the vocabulary of every Python script.'
+---
+
+<DurationBadge minutes={12} />
+
+<LearningObjectives>
+
+- Store values in variables using the five core data types: `str`, `int`, `float`, `bool`, and `None`
+- Inspect types with `type()` and convert with `int()`, `float()`, and `str()`
+- Apply arithmetic, comparison, and logical operators
+- Build readable output with f-strings and format specs like `{x:,}` and `{x:.2f}`
+
+</LearningObjectives>
+
+**What is a variable?**
+
+A variable is a **name that points to a value**. Think of it as a labeled box: you write a label on the box (the variable name), put something inside (the value), and later refer to the box by its label.
+
+Example: `total_records = 15000` means "make a labeled box named `total_records` and put the number 15000 inside it."
+
+**What is a data type?**
+
+The data type tells Python **what kind of value** is in the box — a number, some text, a true/false flag, etc. Python figures this out automatically when you assign a value.
+
+### Visual Mental Model — Variables in Memory
+
+```
+        Your code                   What Python does in memory
+        ---------                   --------------------------
+
+   pipeline_name = "Sales ETL"
+                                    +-----------------+      +-----------+
+   total_records = 15000            | pipeline_name   | ---> | "Sales ETL"|
+                                    +-----------------+      +-----------+
+   success_rate  = 99.7
+                                    +-----------------+      +-----------+
+   is_production = True             | total_records   | ---> |   15000   |
+                                    +-----------------+      +-----------+
+                                    +-----------------+      +-----------+
+                                    | success_rate    | ---> |   99.7    |
+                                    +-----------------+      +-----------+
+                                    +-----------------+      +-----------+
+                                    | is_production   | ---> |   True    |
+                                    +-----------------+      +-----------+
+
+           NAME (label)                         VALUE (the data)
+```
+
+The variable name is a sticker on a box. Python remembers which box each sticker is attached to.
+
+Let us write real Python code. Create a new file for each section.
+
+### The Five Core Data Types You Use Every Day in Data Engineering
+
+![The Five Core Data Types You Use Every Day in Data Engineering](/img/courses/diagrams/python-de/11-the-five-core-data-types-you-use-every-day-in-da.svg)
+
+### Variables — Storing Data
+
+:::tip[How to follow the code in this codelab]
+every example shows a **filename in bold** followed by the code. Create a new file with that exact name in your project folder, paste in the code, then run the `Run it:` command shown below it. Working through each file by hand — rather than copy-pasting blindly — is what builds real fluency.
+:::
+
+**`basics_variables.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Python Variables & Data Types
+# ============================================
+# A variable is a labelled box that stores a value.
+# Below we describe one person using all five core types.
+
+# --- String (str): text, always written inside quotes ---
+name = "Asha"
+city = "Bangalore"
+
+print(f"Name: {name}")
+print(f"City: {city}")
+
+# --- Integer (int): whole numbers, no decimal point ---
+age = 25
+birth_year = 2001
+
+print(f"\nAge: {age}")
+print(f"Born in: {birth_year}")
+
+# --- Float (float): numbers that have a decimal point ---
+height_m = 1.65
+wallet = 250.75
+
+print(f"\nHeight: {height_m} m")
+print(f"Money in wallet: {wallet}")
+
+# --- Boolean (bool): a yes/no answer, either True or False ---
+is_student = True
+has_license = False
+
+print(f"\nIs a student? {is_student}")
+print(f"Has a driving licence? {has_license}")
+
+# --- None: 'no value yet', like a blank field on a form ---
+middle_name = None
+print(f"\nMiddle name: {middle_name}")
+```
+
+Run it:
+
+```bash
+python basics_variables.py
+```
+
+**Expected output:**
+
+```
+Name: Asha
+City: Bangalore
+
+Age: 25
+Born in: 2001
+
+Height: 1.65 m
+Money in wallet: 250.75
+
+Is a student? True
+Has a driving licence? False
+
+Middle name: None
+```
+
+**What is an f-string?**
+
+An f-string (formatted string) is text starting with `f"..."` that lets you drop variables straight into the text using `{ }`. Example: `f"Age: {age}"` becomes `"Age: 25"`. This is the modern, recommended way to build strings in Python.
+
+### Naming Rules for Variables
+
+![Naming Rules for Variables](/img/courses/diagrams/python-de/12-naming-rules-for-variables.svg)
+
+### Type Checking and Conversion
+
+**What is type conversion?**
+
+Often a value comes in one type but you need it in another. The most common case: anything a user types, or any value read from a file, arrives as **text**. Before you can do maths with `"25"`, you must convert it to the number `25`. That is type conversion.
+
+**`basics_types.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Checking and Converting Types
+# ============================================
+
+# --- type() tells you what kind of value you have ---
+age = 25
+name = "Asha"
+is_student = True
+
+print(f"age is a {type(age)}")               # <class 'int'>
+print(f"name is a {type(name)}")             # <class 'str'>
+print(f"is_student is a {type(is_student)}")  # <class 'bool'>
+
+# --- Text to integer: needed when a number arrives as text ---
+typed_age = "25"            # this is text, not a number
+real_age = int(typed_age)   # convert text -> integer
+print(f"\nNext year you will be {real_age + 1}")
+
+# --- Number to text: so you can join it into a sentence ---
+apples = 7
+message = "I have " + str(apples) + " apples"
+print(message)
+
+# --- Text to float: for prices or measurements ---
+price_text = "49.99"
+price = float(price_text)
+print(f"Price with tax: {price * 1.1:.2f}")
+```
+
+Run it:
+
+```bash
+python basics_types.py
+```
+
+### Operators
+
+**What is an operator?**
+
+An operator is a symbol that performs an action on values: `+` adds, `==` compares, `and` combines two truths. Operators are how you do math, compare data, and check conditions in your pipeline.
+
+**`basics_operators.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Operators
+# ============================================
+
+# --- Arithmetic operators: everyday maths ---
+slices = 8 + 4         # add: two pizzas             -> 12
+left = 10 - 3          # subtract: ate 3 sweets      -> 7
+ticket_cost = 3 * 250  # multiply: 3 movie tickets   -> 750
+each_pays = 1000 / 4   # divide (gives a decimal)    -> 250.0
+full_boxes = 26 // 6   # floor division: whole boxes -> 4
+eggs_left = 26 % 6     # modulo: the remainder       -> 2
+area = 5 ** 2          # power: 5 squared            -> 25
+
+print(f"Total slices: {slices}")
+print(f"Sweets left: {left}")
+print(f"Ticket cost: {ticket_cost}")
+print(f"Each person pays: {each_pays}")
+print(f"Full boxes of 6: {full_boxes}")
+print(f"Eggs left over: {eggs_left}")
+print(f"5 squared: {area}")
+
+# --- Comparison operators: ask a question, get True or False ---
+age = 20
+print(f"\nOld enough to vote (>= 18)? {age >= 18}")  # True
+print(f"Is exactly 20? {age == 20}")                 # True
+print(f"Is not a teenager (!= 13)? {age != 13}")     # True
+
+# --- Logical operators: combine yes/no conditions ---
+is_weekend = True
+is_sunny = False
+
+print(f"\nGo to the beach? {is_weekend and is_sunny}")  # False
+print(f"Do something today? {is_weekend or is_sunny}")  # True
+print(f"Stay indoors? {not is_sunny}")                  # True
+```
+
+Run it:
+
+```bash
+python basics_operators.py
+```
+
+#### Operator Cheat Sheet
+
+![Operator Cheat Sheet](/img/courses/diagrams/python-de/13-operator-cheat-sheet.svg)
+
+### User Input
+
+**`basics_input.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Getting Input From the User
+# ============================================
+
+# input() shows a question and waits for the user to type something.
+# Whatever they type always comes back as text (a string).
+name = input("What is your name? ")
+age_text = input("How old are you? ")
+
+# Convert the age text to a number so we can do maths with it.
+age = int(age_text)
+
+print(f"\nHello, {name}!")
+print(f"Next year you will be {age + 1} years old.")
+```
+
+Run it:
+
+```bash
+python basics_input.py
+```
+
+:::tip[HitaVir Tech says]
+"In data engineering, you rarely use `input()`. Instead, you read from files, databases, and APIs. But understanding input/output flow is fundamental to programming."
+:::
+
+### Assignment 1 — Pipeline Stats Calculator
+
+**Goal:** Practice every data type, type conversion, operators, and f-strings by building a small pipeline reporter.
+
+**The scenario:** HitaVir Tech's overnight sales pipeline finished. Your job is to write a script that prints a clean stats summary the on-call engineer can read in 5 seconds.
+
+**Tasks:**
+
+1. Open VS Code and create a new file: `assignment_01_basics.py`.
+2. Define these variables (use the right data type for each):
+   - `pipeline_name` = `"HitaVir Sales ETL"`
+   - `total_records` = `50000`
+   - `failure_rate` = `0.023`
+   - `is_production` = `True`
+   - `last_error` = `None`
+3. Compute `failed_records` = `total_records * failure_rate` (cast to `int`).
+4. Compute `success_rate` = `(1 - failure_rate) * 100`.
+5. Print this exact format using f-strings:
+
+```text
+============================================
+  HitaVir Tech - Pipeline Stats
+============================================
+Pipeline       : HitaVir Sales ETL
+Mode           : PRODUCTION
+Records read   : 50,000
+Failed records : 1,150
+Success rate   : 97.7%
+Last error     : None
+============================================
+```
+
+**Success criteria:**
+
+- [ ] All 5 data types used (str, int, float, bool, None)
+- [ ] Numbers use thousands separator (`{x:,}`)
+- [ ] Success rate has 1 decimal place (`{x:.1f}`)
+- [ ] "PRODUCTION" or "DEVELOPMENT" picked from `is_production` using a conditional
+- [ ] Output matches the format above exactly
+
+**Stretch goal:** Read each value with `input()` and convert the strings to the right types before printing.
+
+### What You Have Learnt on This Page
+
+By the end of this page you should be able to confidently:
+
+- Define **variables** and assign values of the **5 core data types** — `str`, `int`, `float`, `bool`, `None`
+- Use `type()` to inspect a value and convert types with `int()`, `float()`, `str()`
+- Apply **arithmetic, comparison, logical, membership, and identity operators**
+- Build readable strings with **f-strings** (`f"Total: {x:,}"`) and format numbers (`{x:.2f}`, `{x:,}`)
+- Read user input with `input()` and convert it to the right type
+
+### PEP 8 — Style Rules to Apply Strictly to Variables and Types
+
+Professional Python coders **never** name a variable like `TotalRecords` or `data1`. Apply these rules every single time you declare a value:
+
+- **Variable names** → `snake_case` (e.g., `total_records`, `pipeline_name`) — never `camelCase` or `PascalCase`
+- **Constants** → `UPPER_SNAKE_CASE` (e.g., `MAX_RETRIES = 3`)
+- **Be descriptive** — `customer_email`, never `x` or `tmp`
+- **Spaces around `=`** for normal assignment: `total = 1500` (not `total=1500`)
+- **No spaces around `=`** in function default args: `def f(x=10):` (not `def f(x = 10):`)
+- **Prefer "double quotes"** for strings (Black's standard)
+- **Prefer f-strings** over `+` concatenation or `%` formatting
+- **Use `is None` / `is not None`** — never `== None`
+
+:::note[Inspiration for the road ahead]
+*"Simple is better than complex. Complex is better than complicated."*
+— Tim Peters, *The Zen of Python*
+:::
+
+<KeyTakeaways>
+
+- A variable is a labeled box; Python infers its type from the value
+- Values read from files or `input()` always arrive as **text** — convert before doing maths
+- `//` is floor division, `%` is the remainder, `**` is power
+- f-strings (`f"Total: {x:,.2f}"`) are the modern standard for building strings
+- `None` means no value yet — test it with `is None`
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'A user typed "25" into input(). What must you do before adding 1 to it?',
+      options: [
+        'Nothing — Python adds automatically',
+        'Convert it with int() first',
+        'Call str() on it',
+        'Wrap it in a list',
+      ],
+      answer: 1,
+      explanation:
+        'input() always returns a string. int("25") turns it into a number you can do maths with.',
+    },
+    {
+      question: 'What does 26 % 6 evaluate to?',
+      options: [
+        '4',
+        '4.33',
+        '6',
+        '2',
+      ],
+      answer: 3,
+      explanation:
+        '% is the modulo operator — the remainder after division. 26 divided by 6 is 4 remainder 2.',
+    },
+    {
+      question: 'Which literal is a float?',
+      options: [
+        '99.7',
+        '"99.7"',
+        '997',
+        'True',
+      ],
+      answer: 0,
+      explanation:
+        'A float has a decimal point. "99.7" in quotes is a string, 997 is an int, True is a bool.',
+    },
+  ]}
+/>
+
+<LessonComplete />

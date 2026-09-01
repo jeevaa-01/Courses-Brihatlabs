@@ -1,0 +1,74 @@
+---
+title: About this course
+sidebar_position: 0
+slug: /courses/sql-for-data-engineering
+description: Go from zero SQL to production-ready Data Engineering SQL with MySQL 8.0 — DDL, DML, joins, window functions, optimization, and a star-schema capstone.
+---
+
+# SQL for Data Engineering: Beginner to Expert
+
+**Instructor:** HitaVir Tech · **Level:** Beginner to Advanced · **Estimated total:** ~7 hours · **7 modules · 23 lessons**
+
+This course takes you from zero SQL to production-ready Data Engineering SQL
+using **MySQL 8.0** on Windows. You will work end-to-end with a single realistic
+e-commerce dataset called `hitavir_sales` — customers, products, orders, and
+order items — and use it for every example, every challenge, and the final
+star-schema capstone. By the end you can write the kind of SQL that ships in
+real ETL and reporting pipelines.
+
+Every concept is runnable. Every query is followed by its expected output as an
+ASCII table. Every lesson ends with a checkpoint so you know exactly what you
+should see before moving on.
+
+<LearningObjectives>
+
+- Read and write MySQL 8.0 SQL fluently — DDL, DML, and analytical queries
+- Design tables with constraints, use all five join types, subqueries, window functions, CTEs, and recursive CTEs
+- Clean real-world data (NULLs, strings, dates, duplicates) and tune queries with `EXPLAIN` and indexes
+- Build a star schema and an end-to-end daily sales-reporting pipeline, then connect it to Python, Airflow, Spark SQL, and Databricks
+
+</LearningObjectives>
+
+## What you'll build
+
+A continuous dataset called `hitavir_sales`, seeded once in Module 2 and reused
+for every later lesson. The capstone extends it into a working sales-reporting
+pipeline: staging → cleaning → star schema (`fact_sales`, `dim_customer`,
+`dim_product`) → `daily_sales_summary` → indexed performance tuning with
+EXPLAIN before/after. Along the way you accumulate a reproducible setup script,
+50+ runnable example queries, and five graded challenges with worked solutions.
+
+## Prerequisites
+
+- Windows 10 or 11 with administrator rights
+- ~2 GB free disk space and an internet connection
+- Comfort opening a terminal and saving a file
+- **No prior SQL knowledge** — you start from `SELECT 1;`
+
+If you have not installed MySQL Server and MySQL Workbench yet, the
+[MySQL Workbench Setup course](/courses/mysql-workbench-setup) walks through the
+installation in detail — Module 2 of this course covers the same install more
+briefly and adds the seed data.
+
+## Syllabus
+
+| Module | Lessons | Time |
+|--------|---------|------|
+| **1 · SQL Foundations** | SQL in Data Engineering · SQL style guide · Logical query execution order | ~30 min |
+| **2 · Setup & First Queries** | MySQL Server, Workbench & seed data · SELECT, WHERE, ORDER BY, LIMIT | ~35 min |
+| **3 · Tables & Data Manipulation** | CREATE TABLE, types & constraints · INSERT, UPDATE, DELETE · Conditional logic | ~50 min |
+| **4 · Aggregations, Joins & Subqueries** | COUNT/SUM/AVG, GROUP BY, HAVING · Five join types · Subqueries | ~70 min |
+| **5 · Advanced SQL & Data Cleaning** | Views, indexes, temp tables · Cleaning NULLs/strings/dates · Window functions & CTEs | ~80 min |
+| **6 · Optimization, Capstone & Production SQL** | EXPLAIN & indexing · Star-schema capstone · Best practices · Debugging · Tool integration | ~105 min |
+| **7 · Challenges & Wrap-Up** | Five graded challenges · Next steps · Repository structure · Final quiz | ~45 min |
+
+:::tip[How to take this course]
+Work through the lessons **in order** — the `hitavir_sales` schema is seeded in
+Module 2 and every later example queries it. If you already have MySQL Server
+8.0+ and Workbench installed, you can skim the install steps, but **run the
+seed script in Module 2 first**, otherwise later examples will reference tables
+you do not yet have. Each lesson ends with a short knowledge check and a
+**Mark lesson as complete** button so you can track where you left off.
+:::
+
+Ready? Start with [Step 1: SQL in Data Engineering](/courses/sql-for-data-engineering/module-1-sql-foundations/sql-in-data-engineering).

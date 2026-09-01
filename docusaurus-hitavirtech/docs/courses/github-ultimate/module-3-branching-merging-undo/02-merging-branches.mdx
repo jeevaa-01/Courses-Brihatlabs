@@ -1,0 +1,178 @@
+---
+title: 'Merging Branches'
+sidebar_position: 2
+description: 'Bring branch work back into main — fast-forward merges, three-way merge commits, visualizing history with git log --graph, and branch cleanup.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Perform a fast-forward merge and a three-way merge
+- Explain when Git creates a merge commit
+- Visualize branch history with `git log --oneline --graph --all`
+
+</LearningObjectives>
+
+Once you finish work on a branch, you merge it back into `main`.
+
+### Fast-Forward Merge
+
+When `main` has no new commits since the branch was created, Git simply moves the pointer forward.
+
+**Step 1 — Make sure you are on main**
+
+```bash
+git switch main
+```
+
+**Step 2 — Merge the feature branch**
+
+```bash
+git merge feature-homepage
+```
+
+**Expected output:**
+
+```
+Updating a1b2c3d..d4e5f6g
+Fast-forward
+ index.html | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 index.html
+```
+
+**Step 3 — Verify**
+
+```bash
+ls
+```
+
+**Expected output:**
+
+```
+README.md  about.txt  index.html  project.txt
+```
+
+The `index.html` from the feature branch is now on `main`.
+
+### Merge Commit (Three-Way Merge)
+
+When both branches have new commits, Git creates a **merge commit**.
+
+**Step 1 — Create and work on a new branch**
+
+```bash
+git switch -c feature-skills
+echo "Skills: Git, Python, SQL" > skills.txt
+git add skills.txt
+git commit -m "Add skills file"
+```
+
+**Step 2 — Switch to main and make a different change**
+
+```bash
+git switch main
+echo "Last updated: 2026" >> README.md
+git add README.md
+git commit -m "Update README with year"
+```
+
+**Step 3 — Merge**
+
+```bash
+git merge feature-skills
+```
+
+Git opens your editor for a merge commit message. Save and close the editor.
+
+**Expected output:**
+
+```
+Merge made by the 'ort' strategy.
+ skills.txt | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 skills.txt
+```
+
+### Visualize the History
+
+```bash
+git log --oneline --graph --all
+```
+
+**Expected output:**
+
+```
+*   f7g8h9i (HEAD -> main) Merge branch 'feature-skills'
+|\
+| * e6f7g8h (feature-skills) Add skills file
+* | d5e6f7g Update README with year
+|/
+* d4e5f6g Add homepage HTML
+* ...
+```
+
+### Clean Up Merged Branches
+
+```bash
+git branch -d feature-homepage
+git branch -d feature-skills
+```
+
+:::tip[HitaVir Tech says]
+"Fast-forward merge is like an express lane — clean and simple. A three-way merge is like merging two lanes of traffic — Git handles it, but there might be conflicts."
+:::
+
+<KeyTakeaways>
+
+- Always switch to the **target** branch (usually `main`) before merging
+- A **fast-forward** merge just moves the pointer when `main` has no new commits
+- When both branches have new commits, Git creates a **merge commit** (three-way merge)
+- `git log --oneline --graph --all` draws the branch structure in your terminal
+- Delete merged branches with `git branch -d` to keep the repository tidy
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'When does Git perform a fast-forward merge?',
+      options: [
+        'When the target branch has no new commits since the feature branch was created',
+        'Whenever you pass the --fast flag',
+        'When both branches changed the same file',
+        'Only on GitHub, never locally',
+      ],
+      answer: 0,
+      explanation:
+        'If main has not moved, Git can simply slide the main pointer forward to the feature branch tip — no merge commit needed.',
+    },
+    {
+      question: 'Both main and feature-skills have new commits. What happens when you merge?',
+      options: [
+        'Git refuses to merge',
+        'Git deletes the older commits',
+        'Git creates a merge commit combining both histories',
+        'Git fast-forwards main',
+      ],
+      answer: 2,
+      explanation:
+        'With divergent histories Git performs a three-way merge and records the result in a new merge commit.',
+    },
+    {
+      question: 'Before running git merge feature-homepage, where should you be?',
+      options: [
+        'On the feature-homepage branch',
+        'On the branch you want to merge INTO (e.g., main)',
+        'In a detached HEAD state',
+        'It does not matter',
+      ],
+      answer: 1,
+      explanation:
+        'git merge brings the named branch into your CURRENT branch, so you must first switch to the target branch.',
+    },
+  ]}
+/>
+
+<LessonComplete />

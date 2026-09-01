@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 708 450" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="708" height="450" rx="12" fill="#f8f9fa"/>
+  <text x="354" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Function Types Summary</text>
+  <rect x="15" y="40" width="107" height="30" rx="6" fill="#1a73e8"/>
+  <text x="68" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Type</text>
+  <rect x="127" y="40" width="226" height="30" rx="6" fill="#1a73e8"/>
+  <text x="240" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Syntax</text>
+  <rect x="359" y="40" width="334" height="30" rx="6" fill="#1a73e8"/>
+  <text x="526" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">When to Use in Data Engineering</text>
+  <rect x="15" y="76" width="107" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">Basic</text>
+  <rect x="127" y="76" width="226" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="137" y="94" font-size="12" font-family="monospace" fill="#1a73e8">def func():</text>
+  <rect x="359" y="76" width="334" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="369" y="94" font-size="12" fill="#1a73e8">Simple, single-purpose tasks</text>
+  <rect x="15" y="108" width="107" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" fill="#3c4043">With params</text>
+  <rect x="127" y="108" width="226" height="28" rx="4" fill="white"/>
+  <text x="137" y="126" font-size="12" font-family="monospace" fill="#3c4043">def func(a, b):</text>
+  <rect x="359" y="108" width="334" height="28" rx="4" fill="white"/>
+  <text x="369" y="126" font-size="12" fill="#3c4043">Configurable behavior</text>
+  <rect x="15" y="140" width="107" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">With defaults</text>
+  <rect x="127" y="140" width="226" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="137" y="158" font-size="12" font-family="monospace" fill="#1a73e8">def func(a, b=10):</text>
+  <rect x="359" y="140" width="334" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="369" y="158" font-size="12" fill="#1a73e8">Sensible fallbacks</text>
+  <rect x="15" y="172" width="107" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">*args</text>
+  <rect x="127" y="172" width="226" height="28" rx="4" fill="white"/>
+  <text x="137" y="190" font-size="12" font-family="monospace" fill="#3c4043">def func(*args):</text>
+  <rect x="359" y="172" width="334" height="28" rx="4" fill="white"/>
+  <text x="369" y="190" font-size="12" fill="#3c4043">Unknown number of inputs (file lists, tables)</text>
+  <rect x="15" y="204" width="107" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">kwargs</text>
+  <rect x="127" y="204" width="226" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="137" y="222" font-size="12" font-family="monospace" fill="#1a73e8">def func(kwargs):</text>
+  <rect x="359" y="204" width="334" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="369" y="222" font-size="12" fill="#1a73e8">Flexible config options (DB connections, settings)</text>
+  <rect x="15" y="236" width="107" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" fill="#3c4043">Combined</text>
+  <rect x="127" y="236" width="226" height="28" rx="4" fill="white"/>
+  <text x="137" y="254" font-size="12" font-family="monospace" fill="#3c4043">def func(a, *args, kwargs):</text>
+  <rect x="359" y="236" width="334" height="28" rx="4" fill="white"/>
+  <text x="369" y="254" font-size="12" fill="#3c4043">Maximum flexibility (frameworks, libraries)</text>
+  <rect x="15" y="268" width="107" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" fill="#1a73e8">Lambda</text>
+  <rect x="127" y="268" width="226" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="137" y="286" font-size="12" font-family="monospace" fill="#1a73e8">lambda x: x * 2</text>
+  <rect x="359" y="268" width="334" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="369" y="286" font-size="12" fill="#1a73e8">Quick inline transformations (sort keys, map/filter)</text>
+  <rect x="15" y="300" width="107" height="28" rx="4" fill="white"/>
+  <text x="25" y="318" font-size="12" font-weight="700" fill="#3c4043">Nested</text>
+  <rect x="127" y="300" width="226" height="28" rx="4" fill="white"/>
+  <text x="137" y="318" font-size="12" font-family="monospace" fill="#3c4043">def outer(): def inner():</text>
+  <rect x="359" y="300" width="334" height="28" rx="4" fill="white"/>
+  <text x="369" y="318" font-size="12" fill="#3c4043">Factory pattern, closures (custom cleaners)</text>
+  <rect x="15" y="332" width="107" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="350" font-size="12" font-weight="700" fill="#1a73e8">Recursive</text>
+  <rect x="127" y="332" width="226" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="137" y="350" font-size="12" font-family="monospace" fill="#1a73e8">def func(): func()</text>
+  <rect x="359" y="332" width="334" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="369" y="350" font-size="12" fill="#1a73e8">Tree structures, nested JSON flattening</text>
+  <rect x="15" y="364" width="107" height="28" rx="4" fill="white"/>
+  <text x="25" y="382" font-size="12" font-weight="700" fill="#3c4043">Generator</text>
+  <rect x="127" y="364" width="226" height="28" rx="4" fill="white"/>
+  <text x="137" y="382" font-size="12" font-family="monospace" fill="#3c4043">def func(): yield x</text>
+  <rect x="359" y="364" width="334" height="28" rx="4" fill="white"/>
+  <text x="369" y="382" font-size="12" fill="#3c4043">Memory-efficient batch processing</text>
+  <rect x="15" y="396" width="107" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="414" font-size="12" font-weight="700" fill="#1a73e8">Decorator</text>
+  <rect x="127" y="396" width="226" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="137" y="414" font-size="12" font-family="monospace" fill="#1a73e8">@decorator</text>
+  <rect x="359" y="396" width="334" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="369" y="414" font-size="12" fill="#1a73e8">Cross-cutting concerns (logging, timing, retry)</text>
+  <text x="354" y="444" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

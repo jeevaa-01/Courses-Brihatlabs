@@ -1,0 +1,297 @@
+---
+title: 'Control Flow — Making Decisions'
+sidebar_position: 2
+description: 'Branch with if/elif/else and repeat with for and while loops — plus break and continue for real pipeline gating logic.'
+---
+
+<DurationBadge minutes={12} />
+
+<LearningObjectives>
+
+- Branch pipeline logic with `if` / `elif` / `else`
+- Loop over collections with `for` and repeat until a condition flips with `while`
+- Stop early with `break` and skip bad records with `continue`
+
+</LearningObjectives>
+
+**What is "control flow"?**
+
+Control flow is how Python decides **which lines of code to run, and how many times to run them**. Without control flow, Python just runs everything top-to-bottom, once. With it, your script can make decisions (`if-else`) and repeat work (`for`, `while`).
+
+Real-life analogy: when you cook, your recipe says "if the water is boiling, add the pasta. Repeat stirring every 30 seconds for 8 minutes." Those `if`s and `repeats` are control flow.
+
+Data pipelines constantly make decisions: Is the data valid? Should we retry? Which path to take? Control flow is how you express that logic.
+
+### `if-else` — Conditional Logic
+
+**What is the if-else statement?**
+
+`if` runs a block of code **only when a condition is true**. `elif` ("else if") checks another condition. `else` is the fallback when nothing else matched.
+
+Real-life analogy: "If it is raining, take an umbrella. Else if it is hot, wear sunglasses. Else, just go."
+
+**`control_if.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Control Flow: if / elif / else
+# ============================================
+
+# --- Example 1: Did the student pass? (simple if / else) ---
+score = 72
+
+if score >= 40:
+    print(f"Score {score}: PASS")
+else:
+    print(f"Score {score}: FAIL")
+
+# --- Example 2: Turn a score into a grade (if / elif / else) ---
+# Python checks each condition top to bottom and stops at the FIRST
+# one that is True.
+print("\n--- Grade ---")
+marks = 85
+
+if marks >= 90:
+    grade = "A"
+elif marks >= 75:
+    grade = "B"
+elif marks >= 50:
+    grade = "C"
+else:
+    grade = "Fail"
+
+print(f"Marks {marks} -> Grade {grade}")
+
+# --- Example 3: Decide what to do based on the weather ---
+print("\n--- What to do today ---")
+weather = "rainy"
+
+if weather == "rainy":
+    print("Take an umbrella")
+elif weather == "sunny":
+    print("Wear sunglasses")
+else:
+    print("Looks like a normal day, just head out")
+```
+
+Run it:
+
+```bash
+python control_if.py
+```
+
+:::warning[Pay attention to indentation!]
+Python uses 4 spaces of indentation to know what code is "inside" the `if`. Mixing tabs and spaces, or wrong indentation, is the #1 beginner error.
+:::
+
+### Loops — Processing Data
+
+**What is a loop?**
+
+A loop runs the same block of code **multiple times** — once per item. Without loops, processing 10 million CSV rows would mean writing 10 million lines of code. With a loop, you write the row-handling code once.
+
+Two kinds of loops:
+- **`for` loop** — repeats once for each item in a collection ("for each row in the file…")
+- **`while` loop** — repeats as long as a condition is true ("while not connected, retry…")
+
+**`control_loops.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Control Flow: Loops
+# ============================================
+
+# --- for loop: do something once for EACH item in a list ---
+print("--- Greeting friends ---")
+friends = ["Asha", "Ravi", "Meena", "John"]
+
+for friend in friends:
+    print(f"Hello, {friend}!")
+
+# --- for loop with range(): repeat a fixed number of times ---
+# range(1, 6) gives the numbers 1, 2, 3, 4, 5 (6 is not included).
+print("\n--- The 7 times table ---")
+for number in range(1, 6):
+    print(f"7 x {number} = {7 * number}")
+
+# --- Adding things up inside a loop ---
+print("\n--- Total shopping bill ---")
+prices = [120, 75, 200, 50]
+total = 0
+for price in prices:
+    total += price          # add each price to the running total
+print(f"Total to pay: {total}")
+
+# --- while loop: keep repeating WHILE a condition is true ---
+# Count down from 3, like a rocket launch.
+print("\n--- Countdown ---")
+count = 3
+while count > 0:
+    print(f"{count}...")
+    count -= 1              # subtract 1 each time, or it loops forever!
+print("Lift off!")
+
+# --- break and continue ---
+# break    = stop the loop right now
+# continue = skip the rest of THIS turn and go to the next item
+print("\n--- Checking the shopping list ---")
+shopping = ["milk", "eggs", "candy", "bread", "END", "rice"]
+
+for item in shopping:
+    if item == "END":
+        print("Reached the end marker. Stopping.")
+        break               # leave the loop completely
+    if item == "candy":
+        print("Skipping candy (too much sugar!)")
+        continue            # jump straight to the next item
+    print(f"Buying: {item}")
+```
+
+Run it:
+
+```bash
+python control_loops.py
+```
+
+:::tip[HitaVir Tech says]
+"In data engineering, loops process records, retry failed connections, and iterate through batches. The `for` loop is your workhorse. The `while` loop is your retry mechanism. Master both."
+:::
+
+### Assignment 2 — Data Quality Gate
+
+**Goal:** Build a "data quality gate" that decides which records can flow into the warehouse and which must be quarantined.
+
+**The scenario:** A daily extract from the upstream system contains some bad records. Before loading, you must inspect every record and route it.
+
+**Tasks:**
+
+1. Create `assignment_02_control.py`.
+2. Use this input list (paste it into your file):
+
+```python
+records = [
+    {"id": 1, "value": 100,  "region": "North"},
+    {"id": 2, "value": -50,  "region": "South"},
+    {"id": 3, "value": 200,  "region": "INVALID"},
+    {"id": 4, "value": None, "region": "East"},
+    {"id": 5, "value": 75,   "region": "West"},
+    {"id": 6, "value": 320,  "region": "North"},
+    {"id": 7, "value": 0,    "region": "South"},
+]
+VALID_REGIONS = ["North", "South", "East", "West"]
+```
+
+3. Loop through each record and apply these rules **in this order**:
+   - If `value` is `None` -> log `"SKIP id={id}: null value"` and `continue`
+   - If `value` is less than or equal to `0` -> log `"SKIP id={id}: non-positive value"` and `continue`
+   - If `region` is not in `VALID_REGIONS` -> log `"SKIP id={id}: invalid region '{region}'"` and `continue`
+   - Otherwise print `"PASS id={id}: ${value} ({region})"` and add to a `valid` list
+4. After the loop, print a one-line summary: `"Valid: X | Skipped: Y"`.
+
+**Expected output (last lines):**
+
+```text
+PASS id=1: $100 (North)
+SKIP id=2: non-positive value
+SKIP id=3: invalid region 'INVALID'
+SKIP id=4: null value
+PASS id=5: $75 (West)
+PASS id=6: $320 (North)
+SKIP id=7: non-positive value
+Valid: 3 | Skipped: 4
+```
+
+**Success criteria:**
+
+- [ ] Uses `if`, `elif`, and `else`
+- [ ] Uses `for` over the list
+- [ ] Uses `continue` to skip bad rows
+- [ ] Uses `in` to check region membership
+- [ ] Final summary numbers are correct: 3 valid, 4 skipped
+
+**Stretch goal:** Wrap the rules in a `while` loop that retries the whole batch up to 3 times if any record was skipped (simulating a flaky upstream).
+
+### Control-Flow Cheat Sheet
+
+![Control-Flow Cheat Sheet](/img/courses/diagrams/python-de/14-control-flow-cheat-sheet.svg)
+
+### What You Have Learnt on This Page
+
+By the end of this page you should be able to confidently:
+
+- Branch logic with **`if` / `elif` / `else`** based on data quality, environment, and thresholds
+- Loop over a list of rows with **`for ... in`**
+- Use **`for ... in range(n)`** for fixed-count batches
+- Repeat work until a condition flips with **`while`** (e.g., retry until connected)
+- Stop early with **`break`** and skip an iteration with **`continue`**
+- Combine conditions with **`and`, `or`, `not`** for pipeline gating
+
+### PEP 8 — Style Rules to Apply Strictly to Control Flow
+
+Bad indentation in a `for` or `if` block does not just look ugly — it can change the meaning of your program. Apply these rules every single time you write a control-flow block:
+
+- **Indent block contents with exactly 4 spaces** (never tabs, never 2 spaces)
+- One **blank line** before and after each logical block to aid readability
+- Use **`is None`** for null checks, never `== None`
+- Use **`if not records:`** to check for empty collections, never `if len(records) == 0:`
+- Use **`if x in {a, b, c}:`** for multi-value membership instead of chained `or`
+- Use **`enumerate(items)`** when you need both index and value — never `range(len(items))`
+- Avoid deeply nested blocks (more than 3 levels) — extract into a helper function instead
+
+:::note[Inspiration for the road ahead]
+*"Flat is better than nested. Sparse is better than dense."*
+— Tim Peters, *The Zen of Python*
+:::
+
+<KeyTakeaways>
+
+- Python checks `if`/`elif` conditions top to bottom and runs only the **first** True branch
+- The `for` loop is your record processor; the `while` loop is your retry mechanism
+- `break` leaves the loop entirely; `continue` jumps to the next item
+- A `while` loop must change its condition inside the body or it runs forever
+- Indentation defines what is inside a block — 4 spaces, always
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In the quality-gate loop, what does continue do when a record has a null value?',
+      options: [
+        'Stops the whole loop',
+        'Retries the same record',
+        'Skips the rest of this iteration and moves to the next record',
+        'Raises an exception',
+      ],
+      answer: 2,
+      explanation:
+        'continue abandons the current iteration only — the loop carries on with the next record.',
+    },
+    {
+      question: 'marks = 85 runs through if marks >= 90 / elif marks >= 75 / elif marks >= 50. Which branch wins?',
+      options: [
+        'elif marks >= 75 — the first condition that is True',
+        'if marks >= 90',
+        'elif marks >= 50',
+        'The else fallback',
+      ],
+      answer: 0,
+      explanation:
+        'Python stops at the FIRST True condition. 85 fails >= 90, passes >= 75, so grade B is assigned and the rest is skipped.',
+    },
+    {
+      question: 'Which construct keeps retrying a flaky connection until it succeeds?',
+      options: [
+        'A for loop over range',
+        'A while loop with a condition',
+        'A break statement',
+        'An if/else chain',
+      ],
+      answer: 1,
+      explanation:
+        'while not connected: retry() repeats as long as the condition holds — the classic retry mechanism.',
+    },
+  ]}
+/>
+
+<LessonComplete />

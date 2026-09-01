@@ -1,0 +1,110 @@
+---
+title: "Databricks Free Edition Setup"
+description: "Create your free serverless Databricks workspace, volume, and BASE_PATH."
+tags: [databricks, setup]
+---
+
+# Databricks Free Edition Setup (Recommended)
+
+*⏱ Estimated time: 30 minutes*
+
+:::tip[Recommended platform]
+
+This course uses **Databricks Free Edition** instead of a local Spark installation. Free Edition replaced the legacy Databricks Community Edition, which was retired in 2025. It gives learners an industry-standard, serverless Spark environment without installing Java or Apache Spark locally.
+
+:::
+
+### Create a free account
+
+1. Visit: https://www.databricks.com/learn/free-edition
+2. Sign up with your email, Google, or Microsoft account.
+3. Verify your email and log in to your workspace.
+
+Your workspace includes serverless compute and default storage. There is no cluster to create, size, or manage.
+
+### Create a notebook
+
+1. Click **New > Notebook**.
+2. Language: **Python**.
+3. In the compute selector at the top right, click **Connect** and choose **Serverless**. Running the first cell also starts serverless compute automatically.
+
+### Verify PySpark
+
+Run:
+
+```python
+spark.version
+```
+
+Expected output resembles:
+
+```text
+'4.x.x'
+```
+
+(The Spark version depends on the current serverless environment.)
+
+Run:
+
+```python
+data = [("Laptop", 2, 65000)]
+df = spark.createDataFrame(data, ["product", "quantity", "unit_price"])
+display(df)
+```
+
+:::tip[💡 HitaVir Tech Tip]
+
+In Databricks notebooks, `display(df)` renders interactive tables and charts. `df.show()` prints plain text and works in every Spark environment. This course uses `show()` so the same code also runs locally.
+
+:::
+
+### Create a volume for course data
+
+Free Edition stores files in Unity Catalog volumes. Create one volume for this course by running the following in a notebook cell:
+
+```sql
+%sql
+CREATE VOLUME IF NOT EXISTS workspace.default.hitavir;
+```
+
+### Set the base path
+
+All file paths in this course are built from a single `BASE_PATH` variable so that the same code runs on Databricks or locally.
+
+<Tabs groupId="env">
+<TabItem value="databricks" label="🧱 Databricks" default>
+
+```python
+BASE_PATH = "/Volumes/workspace/default/hitavir"
+```
+
+</TabItem>
+<TabItem value="local" label="🪟 Local Windows">
+
+```python
+BASE_PATH = "data"
+```
+
+</TabItem>
+</Tabs>
+
+Run the matching line once at the top of your notebook or script before the file examples.
+
+### Serverless differences to know
+
+- Compute starts automatically and scales for you.
+- The RDD API (for example `df.rdd.getNumPartitions()`) and `spark.sparkContext` are not available on serverless compute. Snippets that use them are marked as local or classic-cluster only.
+- Adaptive Query Execution is enabled, and many Spark configurations are managed for you.
+- Never call `spark.stop()` on Databricks. The platform manages the session lifecycle.
+
+:::tip[💡 HitaVir Tech Tip]
+
+Databricks Free Edition already provides a configured, serverless Spark environment, so you can focus on learning PySpark instead of installation.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+The same notebooks can later run on paid Databricks workspaces with minimal or no code changes.
+
+:::

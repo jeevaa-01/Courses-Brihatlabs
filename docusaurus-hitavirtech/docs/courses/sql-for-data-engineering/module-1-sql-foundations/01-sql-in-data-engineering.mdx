@@ -1,0 +1,139 @@
+---
+title: 'Step 1: SQL in Data Engineering'
+sidebar_position: 1
+description: 'Where SQL sits in Data Engineering — OLTP vs OLAP, the ETL pipeline, and why this course uses MySQL 8.0.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Explain OLTP vs OLAP and name flagship products in each category
+- Describe where SQL sits in an ETL pipeline, from sources to warehouse
+- Justify why this course uses MySQL 8.0 specifically
+
+</LearningObjectives>
+
+> *"A relational database is a set of relations."*
+> — E.F. Codd
+
+:::info[HitaVir Tech connection]
+SQL exists because Codd proved in 1970 that organizing data into relations (tables) is more powerful than any other shape — and 50+ years later, every Data Engineer still earns a living off that idea.
+:::
+
+:::tip[Why this matters now]
+Spend the next 10 minutes building a clear mental model of OLTP vs OLAP. Every architectural decision you make later traces back to this one distinction.
+:::
+
+### What is SQL?
+
+SQL (Structured Query Language) is the language for talking to relational databases. In Data Engineering you will use it for two very different jobs:
+
+1. **OLTP** (Online Transaction Processing) — small, fast operations on a few rows: a checkout, a login, an inventory update. MySQL, PostgreSQL, and Oracle dominate here.
+2. **OLAP** (Online Analytical Processing) — big, scan-heavy queries that summarize millions of rows: yesterday's revenue by region, customer churn, top products. Snowflake, BigQuery, and Redshift dominate here.
+
+### OLTP vs OLAP at a glance
+
+| Dimension     | OLTP                          | OLAP                              |
+|---------------|-------------------------------|-----------------------------------|
+| Workload      | Many small transactions       | Few large scans                   |
+| Rows / query  | 1–100                         | thousands to millions             |
+| Latency goal  | milliseconds                  | seconds to minutes                |
+| Schema        | Highly normalized (3NF)       | Star / snowflake (dimensional)    |
+| Example       | "Place this order"            | "Total revenue by region last Q"  |
+| Tool examples | MySQL, PostgreSQL, Oracle     | Snowflake, BigQuery, Redshift     |
+
+### Where SQL sits in an ETL pipeline
+
+```
++------------+      +-----------+      +------------+      +-----------+
+|  Sources   | ---> |  Staging  | ---> | Transform  | ---> | Warehouse |
+| (CSV, API, |      |   (raw    |      |  (clean,   |      |  (star    |
+|  OLTP DB)  |      |   copy)   |      |  validate) |      |   schema) |
++------------+      +-----------+      +------------+      +-----------+
+                          ^                  ^                   ^
+                          |                  |                   |
+                          +------ SQL is the language at every box ---+
+```
+
+You will write SQL inside Airflow tasks, dbt models, Spark notebooks, Python scripts, and BI tools. It is the lingua franca.
+
+:::tip[HitaVir Tech Tip]
+If you can write clean SQL, every other tool — Airflow, dbt, Spark — becomes a thin wrapper around that skill. Invest in SQL first.
+:::
+
+:::info[Pro Insight]
+In production, roughly 80% of Data Engineering work is SQL or SQL-adjacent. Even teams running PySpark or Scala still spend most of their day writing `SELECT`, `JOIN`, and `GROUP BY`. The languages above SQL are noise; SQL is the signal.
+:::
+
+### Why MySQL 8.0?
+
+MySQL is the most widely used open-source relational database in the world. Picking it for this codelab means:
+
+- Free, runs natively on Windows, macOS, and Linux
+- Modern: window functions, CTEs, and recursive CTEs since 8.0
+- Syntax that transfers cleanly to PostgreSQL, Snowflake, and BigQuery
+- Massive community — every error you will hit has a Stack Overflow answer
+
+### ✅ Checkpoint
+
+Before moving on, you should be able to:
+
+- ✅ Explain OLTP vs OLAP in one sentence each
+- ✅ Name at least one product in each category
+- ✅ Describe where SQL sits in an ETL pipeline
+- ✅ Explain why this codelab uses MySQL 8.0 specifically
+
+---
+
+<KeyTakeaways>
+
+- **OLTP** handles many small, fast transactions (MySQL, PostgreSQL); **OLAP** handles few large analytical scans (Snowflake, BigQuery, Redshift)
+- SQL is the language at every stage of an ETL pipeline — sources, staging, transform, and warehouse
+- Roughly 80% of production Data Engineering work is SQL or SQL-adjacent
+- MySQL 8.0 is free, modern (window functions, CTEs), and its syntax transfers cleanly to PostgreSQL, Snowflake, and BigQuery
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: '"Total revenue by region last quarter" is a classic example of which workload?',
+      options: [
+        'OLTP — it updates a few rows quickly',
+        'OLAP — it scans and summarizes many rows',
+        'Neither — SQL cannot answer it',
+        'OLTP — because it runs on MySQL',
+      ],
+      answer: 1,
+      explanation:
+        'Scan-heavy summaries over thousands-to-millions of rows are OLAP workloads, the domain of Snowflake, BigQuery, and Redshift.',
+    },
+    {
+      question: 'Which schema style dominates OLTP systems?',
+      options: [
+        'Star schema',
+        'Snowflake schema',
+        'Highly normalized (3NF)',
+        'One wide denormalized table',
+      ],
+      answer: 2,
+      explanation:
+        'OLTP systems normalize heavily (3NF) to keep small transactional writes fast and consistent; warehouses use dimensional (star/snowflake) schemas.',
+    },
+    {
+      question: 'Why does this course pick MySQL 8.0 rather than an older MySQL?',
+      options: [
+        'Older versions cannot run SELECT statements',
+        '8.0 added window functions, CTEs, and recursive CTEs',
+        '8.0 is the only version that runs on Windows',
+        'MySQL 8.0 is a cloud-only warehouse',
+      ],
+      answer: 1,
+      explanation:
+        'Window functions and (recursive) CTEs arrived in MySQL 8.0 — this course relies on them in the advanced modules.',
+    },
+  ]}
+/>
+
+<LessonComplete />

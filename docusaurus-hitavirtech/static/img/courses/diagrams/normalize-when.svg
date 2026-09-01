@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 250" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="s" x="-2%" y="-2%" width="104%" height="108%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect width="780" height="250" rx="12" fill="#f8f9fa"/>
+  <text x="390" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">When to Use Normalization</text>
+
+  <!-- Header row -->
+  <rect x="20" y="40" width="460" height="32" rx="6" fill="#5f6368"/>
+  <text x="250" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Scenario</text>
+  <rect x="485" y="40" width="275" height="32" rx="6" fill="#5f6368"/>
+  <text x="622" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Normalize?</text>
+
+  <!-- Row 1 -->
+  <rect x="20" y="78" width="460" height="30" rx="4" fill="#e8eaed"/>
+  <text x="32" y="98" font-size="12" font-weight="600" fill="#202124">OLTP / transactional database</text>
+  <rect x="485" y="78" width="275" height="30" rx="4" fill="#e6f4ea"/>
+  <rect x="497" y="83" width="80" height="20" rx="10" fill="#34a853"/>
+  <text x="537" y="97" text-anchor="middle" font-size="11" font-weight="700" fill="white">Yes (3NF)</text>
+
+  <!-- Row 2 -->
+  <rect x="20" y="112" width="460" height="30" rx="4" fill="white"/>
+  <text x="32" y="132" font-size="12" font-weight="600" fill="#202124">Data warehouse fact tables</text>
+  <rect x="485" y="112" width="275" height="30" rx="4" fill="white"/>
+  <rect x="497" y="117" width="120" height="20" rx="10" fill="#d93025"/>
+  <text x="557" y="131" text-anchor="middle" font-size="11" font-weight="700" fill="white">No (denormalize)</text>
+
+  <!-- Row 3 -->
+  <rect x="20" y="146" width="460" height="30" rx="4" fill="#e8eaed"/>
+  <text x="32" y="166" font-size="12" font-weight="600" fill="#202124">Data warehouse dimension tables</text>
+  <rect x="485" y="146" width="275" height="30" rx="4" fill="#fef7e0"/>
+  <rect x="497" y="151" width="68" height="20" rx="10" fill="#e8710a"/>
+  <text x="531" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="white">Partially</text>
+
+  <!-- Row 4 -->
+  <rect x="20" y="180" width="460" height="30" rx="4" fill="white"/>
+  <text x="32" y="200" font-size="12" font-weight="600" fill="#202124">Application backend</text>
+  <rect x="485" y="180" width="275" height="30" rx="4" fill="white"/>
+  <rect x="497" y="185" width="80" height="20" rx="10" fill="#34a853"/>
+  <text x="537" y="199" text-anchor="middle" font-size="11" font-weight="700" fill="white">Yes (3NF)</text>
+
+  <!-- Row 5 -->
+  <rect x="20" y="214" width="460" height="30" rx="4" fill="#e8eaed"/>
+  <text x="32" y="234" font-size="12" font-weight="600" fill="#202124">Reporting layer</text>
+  <rect x="485" y="214" width="275" height="30" rx="4" fill="#fce8e6"/>
+  <rect x="497" y="219" width="120" height="20" rx="10" fill="#d93025"/>
+  <text x="557" y="233" text-anchor="middle" font-size="11" font-weight="700" fill="white">No (denormalize)</text>
+</svg>

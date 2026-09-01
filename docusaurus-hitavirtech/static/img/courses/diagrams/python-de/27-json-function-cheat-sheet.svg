@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 586 226" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="586" height="226" rx="12" fill="#f8f9fa"/>
+  <text x="293" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">JSON Function Cheat Sheet</text>
+  <rect x="15" y="40" width="174" height="30" rx="6" fill="#1a73e8"/>
+  <text x="102" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Function</text>
+  <rect x="194" y="40" width="112" height="30" rx="6" fill="#1a73e8"/>
+  <text x="251" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Direction</text>
+  <rect x="312" y="40" width="259" height="30" rx="6" fill="#1a73e8"/>
+  <text x="442" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Source/Destination</text>
+  <rect x="15" y="76" width="174" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">json.load(file)</text>
+  <rect x="194" y="76" width="112" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="204" y="94" font-size="12" fill="#1a73e8">JSON → Python</text>
+  <rect x="312" y="76" width="259" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="322" y="94" font-size="12" fill="#1a73e8">Read from a file object</text>
+  <rect x="15" y="108" width="174" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">json.loads(string)</text>
+  <rect x="194" y="108" width="112" height="28" rx="4" fill="white"/>
+  <text x="204" y="126" font-size="12" fill="#3c4043">JSON → Python</text>
+  <rect x="312" y="108" width="259" height="28" rx="4" fill="white"/>
+  <text x="322" y="126" font-size="12" fill="#3c4043">Read from a string (note the s = string)</text>
+  <rect x="15" y="140" width="174" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">json.dump(obj, file)</text>
+  <rect x="194" y="140" width="112" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="204" y="158" font-size="12" fill="#1a73e8">Python → JSON</text>
+  <rect x="312" y="140" width="259" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="322" y="158" font-size="12" fill="#1a73e8">Write to a file object</text>
+  <rect x="15" y="172" width="174" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">json.dumps(obj)</text>
+  <rect x="194" y="172" width="112" height="28" rx="4" fill="white"/>
+  <text x="204" y="190" font-size="12" fill="#3c4043">Python → JSON</text>
+  <rect x="312" y="172" width="259" height="28" rx="4" fill="white"/>
+  <text x="322" y="190" font-size="12" fill="#3c4043">Convert to a string</text>
+  <text x="293" y="220" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

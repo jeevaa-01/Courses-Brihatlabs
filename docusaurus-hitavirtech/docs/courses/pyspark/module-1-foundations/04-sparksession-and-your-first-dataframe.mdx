@@ -1,0 +1,228 @@
+---
+title: "SparkSession and Your First DataFrame"
+description: "SparkSession and Your First DataFrame — HitaVir Tech PySpark for Data Engineering."
+---
+
+# SparkSession and Your First DataFrame
+
+*⏱ Estimated time: 50 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Use the ready `spark` session on Databricks and create one locally with `getOrCreate()`.
+- Build a DataFrame from Python data and inspect its rows, columns, and schema.
+- Explain when calling `spark.stop()` is appropriate — and when it is not.
+
+:::
+
+### Create a SparkSession
+
+<Tabs groupId="env">
+<TabItem value="databricks" label="🧱 Databricks" default>
+
+Skip this step — every notebook already provides a ready SparkSession named `spark`.
+
+</TabItem>
+<TabItem value="local" label="🪟 Local Python">
+
+```python
+from pyspark.sql import SparkSession
+
+spark = (
+    SparkSession.builder
+    .appName("HitaVirTechDataFrameBasics")
+    .master("local[*]")
+    .config("spark.sql.shuffle.partitions", "4")
+    .getOrCreate()
+)
+```
+
+</TabItem>
+</Tabs>
+
+`getOrCreate()` returns an existing session when one is already running instead of creating a duplicate.
+
+### Create a DataFrame from Python data
+
+```python
+sales_data = [
+    ("T001", "Laptop", 2, 65000.0),
+    ("T002", "Monitor", 3, 15000.0),
+    ("T003", "Keyboard", 5, 2000.0),
+]
+
+columns = [
+    "transaction_id",
+    "product",
+    "quantity",
+    "unit_price",
+]
+
+sales_df = spark.createDataFrame(sales_data, columns)
+sales_df.show()
+```
+
+Expected output:
+
+```text
++--------------+--------+--------+----------+
+|transaction_id| product|quantity|unit_price|
++--------------+--------+--------+----------+
+|          T001|  Laptop|       2|   65000.0|
+|          T002| Monitor|       3|   15000.0|
+|          T003|Keyboard|       5|    2000.0|
++--------------+--------+--------+----------+
+```
+
+### Inspect schema
+
+```python
+sales_df.printSchema()
+```
+
+Expected output:
+
+```text
+root
+ |-- transaction_id: string (nullable = true)
+ |-- product: string (nullable = true)
+ |-- quantity: long (nullable = true)
+ |-- unit_price: double (nullable = true)
+```
+
+### Inspect columns
+
+```python
+print(sales_df.columns)
+```
+
+Expected output:
+
+```text
+['transaction_id', 'product', 'quantity', 'unit_price']
+```
+
+### Count rows
+
+```python
+print(sales_df.count())
+```
+
+Expected output:
+
+```text
+3
+```
+
+### Show selected columns
+
+```python
+sales_df.select(
+    "transaction_id",
+    "product"
+).show()
+```
+
+### Stop Spark (local only)
+
+```python
+spark.stop()
+```
+
+:::warning[Databricks]
+
+never call `spark.stop()`. The platform manages the session lifecycle, and stopping it breaks the notebook until compute reattaches.
+
+:::
+
+### ✅ Checkpoint
+
+Run the cells in a Databricks notebook, or locally create `first_dataframe.py` and run:
+
+```powershell
+python first_dataframe.py
+```
+
+You should see:
+
+- Three rows.
+- Four columns.
+- A valid schema.
+
+### 🛠️ Exercise
+
+Create a DataFrame with:
+
+```text
+employee_id, employee_name, department
+```
+
+Use three sample rows.
+
+<details>
+<summary>Show solution</summary>
+
+```python
+employees = [
+    (1, "Asha", "Data Engineering"),
+    (2, "Ravi", "Analytics"),
+    (3, "Meera", "Platform"),
+]
+
+employee_df = spark.createDataFrame(
+    employees,
+    ["employee_id", "employee_name", "department"]
+)
+
+employee_df.show()
+employee_df.printSchema()
+```
+
+</details>
+
+<Quiz
+  questions={[
+  {
+    "question": "In a Databricks notebook, the SparkSession:",
+    "options": [
+      "Must be built manually with the builder",
+      "Already exists as the variable `spark`",
+      "Requires a cluster restart to create"
+    ],
+    "answer": 1,
+    "explanation": "Databricks provides a managed session in every notebook."
+  },
+  {
+    "question": "With `createDataFrame` and no schema, an integer column like `quantity` is inferred as:",
+    "options": [
+      "int",
+      "long",
+      "string"
+    ],
+    "answer": 1,
+    "explanation": "Python integers infer to Spark `long` (shown as `bigint` in `simpleString()`)."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- Always inspect both sample rows and the schema after creating or reading a DataFrame.
+- `getOrCreate()` reuses an existing session instead of duplicating it.
+- Never stop the managed session on Databricks.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Always inspect both sample rows and schema after creating or reading a DataFrame.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Avoid relying on schema inference for production pipelines. Explicit schemas improve correctness and performance.
+
+:::

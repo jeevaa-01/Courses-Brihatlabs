@@ -1,0 +1,269 @@
+---
+title: 'Step 12: Window functions, CTEs, and recursive CTEs'
+sidebar_position: 3
+description: 'Running totals, rankings, LAG/LEAD deltas, multi-CTE pipelines, and recursive CTEs for date series and hierarchies.'
+---
+
+<DurationBadge minutes={35} />
+
+<LearningObjectives>
+
+- Compute running totals with `SUM() OVER (PARTITION BY … ORDER BY …)`
+- Choose correctly between `ROW_NUMBER`, `RANK`, and `DENSE_RANK`, and use `LAG`/`LEAD` for period-over-period deltas
+- Chain CTEs in one `WITH` statement and generate sequences with recursive CTEs
+
+</LearningObjectives>
+
+> *"It's the unknown we fear when we look upon death and darkness, nothing more."*
+> — Albus Dumbledore
+
+:::info[HitaVir Tech connection]
+Window functions and recursive CTEs feel like dark magic — until you write three of each. After that they are the most expressive tools in your kit.
+:::
+
+:::tip[Why this matters now]
+Read every example below twice. The unknown becomes obvious only on the second pass.
+:::
+
+### 12.1 — Window functions: aggregate without collapsing rows
+
+```sql
+-- Each delivered line + the customer's running total in date order
+SELECT
+    o.order_date,
+    c.full_name,
+    oi.line_amount,
+    SUM(oi.line_amount) OVER (
+        PARTITION BY c.customer_id
+        ORDER BY o.order_date, o.order_id
+    ) AS running_total
+FROM order_items AS oi
+JOIN orders    AS o ON o.order_id    = oi.order_id
+JOIN customers AS c ON c.customer_id = o.customer_id
+WHERE c.customer_id = 1
+ORDER BY o.order_date, o.order_id;
+```
+
+**Expected output (first 5 rows):**
+
+```
++------------+--------------+-------------+---------------+
+| order_date | full_name    | line_amount | running_total |
++------------+--------------+-------------+---------------+
+| 2026-01-03 | Asha Sharma  |    89999.00 |      89999.00 |
+| 2026-01-03 | Asha Sharma  |     1299.00 |      91298.00 |
+| 2026-01-03 | Asha Sharma  |     4998.00 |      96296.00 |
+| 2026-01-10 | Asha Sharma  |    89999.00 |     186295.00 |
+| 2026-01-10 | Asha Sharma  |     2499.00 |     188794.00 |
++------------+--------------+-------------+---------------+
+```
+
+`PARTITION BY c.customer_id` resets the window per customer; `ORDER BY` controls the running-sum order.
+
+### 12.2 — Ranking functions
+
+```sql
+-- Rank products by revenue inside each category
+SELECT
+    p.category,
+    p.product_name,
+    SUM(oi.line_amount)                                         AS revenue,
+    RANK() OVER (PARTITION BY p.category ORDER BY SUM(oi.line_amount) DESC) AS revenue_rank
+FROM order_items AS oi
+JOIN orders   AS o ON o.order_id   = oi.order_id
+JOIN products AS p ON p.product_id = oi.product_id
+WHERE o.status = 'DELIVERED'
+GROUP BY p.category, p.product_name
+ORDER BY p.category, revenue_rank;
+```
+
+**Expected output (sample):**
+
+```
++-------------+---------------------+------------+--------------+
+| category    | product_name        | revenue    | revenue_rank |
++-------------+---------------------+------------+--------------+
+| Apparel     | Denim Jeans         |   35980.00 |            1 |
+| Apparel     | Cotton T-Shirt      |   28153.00 |            2 |
+| Electronics | Laptop Pro 14       | 1259986.00 |            1 |
+| Electronics | Mechanical Keyboard |   59988.00 |            2 |
+| Electronics | USB-C Hub           |   47481.00 |            3 |
+| Electronics | Wireless Mouse      |   27279.00 |            4 |
++-------------+---------------------+------------+--------------+
+```
+
+`ROW_NUMBER()` gives unique sequential numbers, `RANK()` gives ties the same rank with gaps (1, 1, 3), `DENSE_RANK()` no gaps (1, 1, 2).
+
+### 12.3 — LAG and LEAD: peek at previous / next rows
+
+```sql
+-- Day-over-day change in delivered revenue
+WITH daily_revenue AS (
+    SELECT
+        o.order_date,
+        SUM(oi.line_amount) AS revenue
+    FROM orders     AS o
+    JOIN order_items AS oi ON oi.order_id = o.order_id
+    WHERE o.status = 'DELIVERED'
+    GROUP BY o.order_date
+)
+SELECT
+    order_date,
+    revenue,
+    LAG(revenue) OVER (ORDER BY order_date) AS prev_day_revenue,
+    revenue - LAG(revenue) OVER (ORDER BY order_date) AS day_over_day_change
+FROM daily_revenue
+ORDER BY order_date
+LIMIT 5;
+```
+
+**Expected output:**
+
+```
++------------+-----------+------------------+---------------------+
+| order_date | revenue   | prev_day_revenue | day_over_day_change |
++------------+-----------+------------------+---------------------+
+| 2026-01-03 |  96296.00 |             NULL |                NULL |
+| 2026-01-04 |   3596.00 |         96296.00 |           -92700.00 |
+| 2026-01-05 |   6892.00 |          3596.00 |             3296.00 |
+| 2026-01-06 |  15997.00 |          6892.00 |             9105.00 |
+| 2026-01-08 |   5942.00 |         15997.00 |           -10055.00 |
++------------+-----------+------------------+---------------------+
+```
+
+### 12.4 — CTE: name a subquery, read top-down
+
+```sql
+-- Top customers' share of total revenue
+WITH delivered AS (
+    SELECT
+        o.customer_id,
+        SUM(oi.line_amount) AS revenue
+    FROM orders     AS o
+    JOIN order_items AS oi ON oi.order_id = o.order_id
+    WHERE o.status = 'DELIVERED'
+    GROUP BY o.customer_id
+),
+totals AS (
+    SELECT SUM(revenue) AS company_revenue FROM delivered
+)
+SELECT
+    d.customer_id,
+    c.full_name,
+    d.revenue,
+    ROUND(100.0 * d.revenue / t.company_revenue, 2) AS pct_of_total
+FROM delivered AS d
+CROSS JOIN totals AS t
+JOIN customers AS c ON c.customer_id = d.customer_id
+ORDER BY d.revenue DESC
+LIMIT 5;
+```
+
+**Expected output:**
+
+```
++-------------+----------------+-------------+--------------+
+| customer_id | full_name      | revenue     | pct_of_total |
++-------------+----------------+-------------+--------------+
+|           1 | Asha Sharma    |   317478.00 |        17.93 |
+|          30 | Tara Bhat      |   203293.00 |        11.48 |
+|           4 | Arjun Reddy    |   197292.00 |        11.14 |
+|           3 | Priya Patel    |   129286.00 |         7.30 |
+|           9 | Anjali Desai   |   105687.00 |         5.97 |
++-------------+----------------+-------------+--------------+
+```
+
+### 12.5 — Recursive CTE: hierarchies, sequences, gap-filling
+
+```sql
+-- Generate every date in Q1 2026 (gap-filling for reports)
+WITH RECURSIVE date_series AS (
+    SELECT DATE '2026-01-01' AS d
+    UNION ALL
+    SELECT d + INTERVAL 1 DAY
+    FROM date_series
+    WHERE d + INTERVAL 1 DAY <= '2026-03-31'
+)
+SELECT
+    d.d AS report_date,
+    COALESCE(SUM(oi.line_amount), 0) AS revenue
+FROM date_series AS d
+LEFT JOIN orders     AS o ON o.order_date = d.d AND o.status = 'DELIVERED'
+LEFT JOIN order_items AS oi ON oi.order_id = o.order_id
+GROUP BY d.d
+ORDER BY d.d
+LIMIT 5;
+```
+
+**Expected output:**
+
+```
++-------------+----------+
+| report_date | revenue  |
++-------------+----------+
+| 2026-01-01  |     0.00 |
+| 2026-01-02  |     0.00 |
+| 2026-01-03  | 96296.00 |
+| 2026-01-04  |  3596.00 |
+| 2026-01-05  |  6892.00 |
++-------------+----------+
+```
+
+:::info[Pro Insight]
+Recursive CTEs are how you flatten an org chart, walk a parts-of-a-product BOM, or build a calendar dimension. MySQL caps recursion at 1000 levels by default — raise with `SET cte_max_recursion_depth = 10000;` if you need more.
+:::
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Use `SUM() OVER (PARTITION BY … ORDER BY …)` for running totals
+- ✅ Pick `ROW_NUMBER` vs `RANK` vs `DENSE_RANK` correctly
+- ✅ Use `LAG` / `LEAD` for period-over-period deltas
+- ✅ Stack multiple CTEs with commas in a single `WITH` statement
+- ✅ Generate a date series with a recursive CTE
+
+---
+
+<KeyTakeaways>
+
+- Window functions aggregate **without collapsing rows** — every row keeps its detail plus the window result
+- `PARTITION BY` resets the window per group; `ORDER BY` inside `OVER` controls running order
+- `ROW_NUMBER` is always unique; `RANK` leaves gaps after ties (1, 1, 3); `DENSE_RANK` does not (1, 1, 2)
+- `LAG`/`LEAD` read neighboring rows — the standard tool for day-over-day deltas
+- Recursive CTEs generate sequences and walk hierarchies; MySQL caps depth at 1000 by default
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'How does SUM(x) OVER (PARTITION BY customer_id ORDER BY order_date) differ from GROUP BY customer_id?',
+      options: [
+        'It is identical, just slower',
+        'It returns one row per customer with the grand total',
+        'Every detail row is kept, each carrying its running total so far',
+        'It only works on DECIMAL columns',
+      ],
+      answer: 2,
+      explanation:
+        'Window functions do not collapse rows — each order line remains, annotated with the cumulative sum up to that row.',
+    },
+    {
+      question: 'Three products tie for first place. Which function numbers them 1, 1, 1, then gives the next product 2?',
+      options: ['ROW_NUMBER()', 'RANK()', 'DENSE_RANK()', 'NTILE(4)'],
+      answer: 2,
+      explanation:
+        'DENSE_RANK has no gaps after ties. RANK would jump to 4; ROW_NUMBER would arbitrarily order the tied rows 1, 2, 3.',
+    },
+    {
+      question: 'What does LAG(revenue) OVER (ORDER BY order_date) return on the FIRST row?',
+      options: ['0', 'NULL', 'The same row’s revenue', 'An error'],
+      answer: 1,
+      explanation:
+        'There is no previous row for the first row, so LAG returns NULL — which is why day-over-day change is NULL on day one.',
+    },
+  ]}
+/>
+
+<LessonComplete />

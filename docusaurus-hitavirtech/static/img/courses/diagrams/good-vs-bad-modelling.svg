@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 300">
+  <defs>
+    <style>
+      text { font-family: "Google Sans", "Segoe UI", Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="780" height="300" rx="12" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="390" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#202124">Why Data Modelling Matters</text>
+
+  <!-- Column Headers -->
+  <rect x="20" y="44" width="370" height="28" rx="6" fill="#d93025"/>
+  <text x="205" y="63" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">Without Good Modelling</text>
+
+  <rect x="390" y="44" width="370" height="28" rx="6" fill="#34a853"/>
+  <text x="575" y="63" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">With Good Modelling</text>
+
+  <!-- Row 1 (tinted) -->
+  <rect x="20" y="76" width="370" height="32" rx="4" fill="#fce8e6"/>
+  <rect x="390" y="76" width="370" height="32" rx="4" fill="#e6f4ea"/>
+  <text x="205" y="97" text-anchor="middle" font-size="12" fill="#3c4043">Queries take minutes/hours</text>
+  <text x="575" y="97" text-anchor="middle" font-size="12" fill="#3c4043">Queries run in seconds</text>
+
+  <!-- Row 2 (white) -->
+  <rect x="20" y="112" width="370" height="32" rx="4" fill="#ffffff"/>
+  <rect x="390" y="112" width="370" height="32" rx="4" fill="#ffffff"/>
+  <text x="205" y="133" text-anchor="middle" font-size="12" fill="#3c4043">Duplicate data everywhere</text>
+  <text x="575" y="133" text-anchor="middle" font-size="12" fill="#3c4043">Single source of truth</text>
+
+  <!-- Row 3 (tinted) -->
+  <rect x="20" y="148" width="370" height="32" rx="4" fill="#fce8e6"/>
+  <rect x="390" y="148" width="370" height="32" rx="4" fill="#e6f4ea"/>
+  <text x="205" y="169" text-anchor="middle" font-size="12" fill="#3c4043">Reports give wrong numbers</text>
+  <text x="575" y="169" text-anchor="middle" font-size="12" fill="#3c4043">Accurate, consistent metrics</text>
+
+  <!-- Row 4 (white) -->
+  <rect x="20" y="184" width="370" height="32" rx="4" fill="#ffffff"/>
+  <rect x="390" y="184" width="370" height="32" rx="4" fill="#ffffff"/>
+  <text x="205" y="205" text-anchor="middle" font-size="12" fill="#3c4043">Adding new data breaks everything</text>
+  <text x="575" y="205" text-anchor="middle" font-size="12" fill="#3c4043">Schema evolves gracefully</text>
+
+  <!-- Row 5 (tinted) -->
+  <rect x="20" y="220" width="370" height="32" rx="4" fill="#fce8e6"/>
+  <rect x="390" y="220" width="370" height="32" rx="4" fill="#e6f4ea"/>
+  <text x="205" y="241" text-anchor="middle" font-size="12" fill="#3c4043">Storage costs spiral</text>
+  <text x="575" y="241" text-anchor="middle" font-size="12" fill="#3c4043">Optimized storage</text>
+
+  <!-- Row 6 (white) -->
+  <rect x="20" y="256" width="370" height="32" rx="4" fill="#ffffff"/>
+  <rect x="390" y="256" width="370" height="32" rx="4" fill="#ffffff"/>
+  <text x="205" y="277" text-anchor="middle" font-size="12" fill="#3c4043">Team cannot understand the data</text>
+  <text x="575" y="277" text-anchor="middle" font-size="12" fill="#3c4043">Self-documenting structure</text>
+</svg>

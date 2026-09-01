@@ -1,0 +1,267 @@
+---
+title: "Column Functions and Data Cleaning"
+description: "Column Functions and Data Cleaning — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Column Functions and Data Cleaning
+
+*⏱ Estimated time: 90 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Standardize text, parse dates safely with `try_to_date()`, and cast types.
+- Handle nulls, duplicates, and invalid categories with built-in functions.
+- Split valid and rejected records null-safely, preserving rejection reasons.
+
+:::
+
+### Clean text
+
+```python
+cleaned_df = (
+    sales_df
+    .withColumn(
+        "region",
+        F.upper(F.trim(F.col("region")))
+    )
+    .withColumn(
+        "product",
+        F.initcap(F.trim(F.col("product")))
+    )
+)
+```
+
+### Parse dates
+
+```python
+cleaned_df = cleaned_df.withColumn(
+    "transaction_date",
+    F.try_to_date(
+        F.col("transaction_date"),
+        "yyyy-MM-dd"
+    )
+)
+```
+
+:::warning[ANSI mode]
+
+Spark 4 and current Databricks runtimes (including serverless) enable ANSI SQL mode by default. Under ANSI mode, `to_date()` raises `CANNOT_PARSE_TIMESTAMP` on malformed input instead of returning null. Use `try_to_date()` (and `try_cast()` for risky casts) when you want invalid values to become null so your validation rules can catch them.
+
+:::
+
+### Cast values
+
+```python
+cleaned_df = cleaned_df.withColumn(
+    "quantity",
+    F.col("quantity").cast("integer")
+)
+```
+
+### Handle nulls
+
+Fill:
+
+```python
+cleaned_df = cleaned_df.fillna(
+    {
+        "quantity": 0,
+        "region": "UNKNOWN"
+    }
+)
+```
+
+Drop rows with nulls:
+
+```python
+cleaned_df = cleaned_df.dropna(
+    subset=["transaction_id", "transaction_date"]
+)
+```
+
+### Conditional logic
+
+```python
+cleaned_df = cleaned_df.withColumn(
+    "revenue_band",
+    F.when(
+        F.col("revenue") >= 100000,
+        F.lit("VERY_HIGH")
+    )
+    .when(
+        F.col("revenue") >= 50000,
+        F.lit("HIGH")
+    )
+    .otherwise(F.lit("STANDARD"))
+)
+```
+
+### Replace values
+
+```python
+cleaned_df = cleaned_df.replace(
+    {
+        "S": "SOUTH",
+        "N": "NORTH",
+        "E": "EAST",
+        "W": "WEST"
+    },
+    subset=["region"]
+)
+```
+
+### Remove duplicates
+
+```python
+cleaned_df = cleaned_df.dropDuplicates(
+    ["transaction_id"]
+)
+```
+
+### String functions
+
+```python
+cleaned_df.select(
+    F.length("product").alias("product_length"),
+    F.substring("transaction_id", 1, 1).alias("prefix"),
+    F.concat_ws(
+        "-",
+        "region",
+        "product"
+    ).alias("region_product")
+).show()
+```
+
+### Date functions
+
+```python
+cleaned_df = (
+    cleaned_df
+    .withColumn(
+        "transaction_year",
+        F.year("transaction_date")
+    )
+    .withColumn(
+        "transaction_month",
+        F.month("transaction_date")
+    )
+    .withColumn(
+        "transaction_day",
+        F.dayofmonth("transaction_date")
+    )
+)
+```
+
+### Validate categories
+
+```python
+allowed_regions = ["NORTH", "SOUTH", "EAST", "WEST"]
+
+valid_df = cleaned_df.filter(
+    F.col("region").isin(allowed_regions)
+)
+```
+
+### Separate valid and rejected records
+
+```python
+valid_condition = (
+    F.col("transaction_id").isNotNull()
+    & F.col("transaction_date").isNotNull()
+    & F.col("region").isin(allowed_regions)
+    & (F.col("quantity") > 0)
+    & F.col("unit_price").isNotNull()
+    & (F.col("unit_price") >= 0)
+)
+
+is_valid = F.coalesce(valid_condition, F.lit(False))
+
+valid_df = cleaned_df.filter(is_valid)
+rejected_df = cleaned_df.filter(~is_valid)
+```
+
+:::danger[Null logic warning]
+
+SQL uses three-valued logic. When `quantity` is null, `quantity > 0` evaluates to null, and `~null` is also null — so filtering on `~valid_condition` directly would silently drop null-containing rows from **both** DataFrames. Wrapping the condition in `F.coalesce(..., F.lit(False))` turns unknown into false, so every row lands in exactly one of the two outputs. Verify with `valid_df.count() + rejected_df.count() == cleaned_df.count()`.
+
+:::
+
+### ✅ Checkpoint
+
+You should see standardized values:
+
+```text
+South → SOUTH
+south → SOUTH
+laptop → Laptop
+```
+
+### 🛠️ Exercise
+
+Create `record_status`:
+
+- `VALID` when quantity > 0 and unit price is not null.
+- `INVALID` otherwise.
+
+<details>
+<summary>Show solution</summary>
+
+```python
+result_df = cleaned_df.withColumn(
+    "record_status",
+    F.when(
+        (F.col("quantity") > 0)
+        & F.col("unit_price").isNotNull(),
+        F.lit("VALID")
+    ).otherwise(F.lit("INVALID"))
+)
+```
+
+</details>
+
+<Quiz
+  questions={[
+  {
+    "question": "Under ANSI mode (Spark 4 and current Databricks runtimes), `to_date()` on malformed input:",
+    "options": [
+      "Returns null",
+      "Raises an error",
+      "Returns the epoch date"
+    ],
+    "answer": 1,
+    "explanation": "Use `try_to_date()` when invalid values should become null for validation."
+  },
+  {
+    "question": "Filtering on `~condition` when the condition can evaluate to null:",
+    "options": [
+      "Is always safe",
+      "Silently drops null rows from both outputs unless the condition is coalesced to false",
+      "Always raises an error"
+    ],
+    "answer": 1,
+    "explanation": "SQL three-valued logic: `~null` is null, and null rows fail every filter."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- `try_to_date()` and `try_cast()` turn invalid values into nulls your validation rules can catch.
+- SQL three-valued logic makes negated null conditions silently drop rows — coalesce to false.
+- Preserve rejected records with explicit rejection reasons instead of discarding them.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Preserve rejected records with rejection reasons instead of silently discarding them.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Add a dedicated `rejection_reason` column using ordered validation rules.
+
+:::

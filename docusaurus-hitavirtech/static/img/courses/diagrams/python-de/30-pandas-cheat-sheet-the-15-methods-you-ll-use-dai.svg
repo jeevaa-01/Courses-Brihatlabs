@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 610 578" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="610" height="578" rx="12" fill="#f8f9fa"/>
+  <text x="305" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">pandas Cheat Sheet — The 15 Methods You'll Use Daily</text>
+  <rect x="15" y="40" width="138" height="30" rx="6" fill="#1a73e8"/>
+  <text x="84" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Task</text>
+  <rect x="158" y="40" width="145" height="30" rx="6" fill="#1a73e8"/>
+  <text x="231" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Method</text>
+  <rect x="308" y="40" width="286" height="30" rx="6" fill="#1a73e8"/>
+  <text x="451" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Example</text>
+  <rect x="15" y="76" width="138" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">Read CSV</text>
+  <rect x="158" y="76" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="168" y="94" font-size="12" font-family="monospace" fill="#1a73e8">pd.read_csv()</text>
+  <rect x="308" y="76" width="286" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="318" y="94" font-size="12" font-family="monospace" fill="#1a73e8">pd.read_csv("sales.csv")</text>
+  <rect x="15" y="108" width="138" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" fill="#3c4043">Read JSON</text>
+  <rect x="158" y="108" width="145" height="28" rx="4" fill="white"/>
+  <text x="168" y="126" font-size="12" font-family="monospace" fill="#3c4043">pd.read_json()</text>
+  <rect x="308" y="108" width="286" height="28" rx="4" fill="white"/>
+  <text x="318" y="126" font-size="12" font-family="monospace" fill="#3c4043">pd.read_json("data.json")</text>
+  <rect x="15" y="140" width="138" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">Peek at first rows</text>
+  <rect x="158" y="140" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="168" y="158" font-size="12" font-family="monospace" fill="#1a73e8">.head()</text>
+  <rect x="308" y="140" width="286" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="318" y="158" font-size="12" font-family="monospace" fill="#1a73e8">df.head(10)</text>
+  <rect x="15" y="172" width="138" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" fill="#3c4043">Peek at last rows</text>
+  <rect x="158" y="172" width="145" height="28" rx="4" fill="white"/>
+  <text x="168" y="190" font-size="12" font-family="monospace" fill="#3c4043">.tail()</text>
+  <rect x="308" y="172" width="286" height="28" rx="4" fill="white"/>
+  <text x="318" y="190" font-size="12" font-family="monospace" fill="#3c4043">df.tail()</text>
+  <rect x="15" y="204" width="138" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" fill="#1a73e8">See column types</text>
+  <rect x="158" y="204" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="168" y="222" font-size="12" font-family="monospace" fill="#1a73e8">.dtypes</text>
+  <rect x="308" y="204" width="286" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="318" y="222" font-size="12" font-family="monospace" fill="#1a73e8">df.dtypes</text>
+  <rect x="15" y="236" width="138" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" fill="#3c4043">Summary stats</text>
+  <rect x="158" y="236" width="145" height="28" rx="4" fill="white"/>
+  <text x="168" y="254" font-size="12" font-family="monospace" fill="#3c4043">.describe()</text>
+  <rect x="308" y="236" width="286" height="28" rx="4" fill="white"/>
+  <text x="318" y="254" font-size="12" font-family="monospace" fill="#3c4043">df.describe()</text>
+  <rect x="15" y="268" width="138" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" fill="#1a73e8">Count nulls</text>
+  <rect x="158" y="268" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="168" y="286" font-size="12" font-family="monospace" fill="#1a73e8">.isnull().sum()</text>
+  <rect x="308" y="268" width="286" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="318" y="286" font-size="12" font-family="monospace" fill="#1a73e8">df.isnull().sum()</text>
+  <rect x="15" y="300" width="138" height="28" rx="4" fill="white"/>
+  <text x="25" y="318" font-size="12" font-weight="700" fill="#3c4043">Drop nulls</text>
+  <rect x="158" y="300" width="145" height="28" rx="4" fill="white"/>
+  <text x="168" y="318" font-size="12" font-family="monospace" fill="#3c4043">.dropna()</text>
+  <rect x="308" y="300" width="286" height="28" rx="4" fill="white"/>
+  <text x="318" y="318" font-size="12" font-family="monospace" fill="#3c4043">df.dropna(subset=["price"])</text>
+  <rect x="15" y="332" width="138" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="350" font-size="12" font-weight="700" fill="#1a73e8">Fill nulls</text>
+  <rect x="158" y="332" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="168" y="350" font-size="12" font-family="monospace" fill="#1a73e8">.fillna()</text>
+  <rect x="308" y="332" width="286" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="318" y="350" font-size="12" font-family="monospace" fill="#1a73e8">df.fillna(0)</text>
+  <rect x="15" y="364" width="138" height="28" rx="4" fill="white"/>
+  <text x="25" y="382" font-size="12" font-weight="700" fill="#3c4043">Filter rows</text>
+  <rect x="158" y="364" width="145" height="28" rx="4" fill="white"/>
+  <text x="168" y="382" font-size="12" fill="#3c4043">Boolean indexing</text>
+  <rect x="308" y="364" width="286" height="28" rx="4" fill="white"/>
+  <text x="318" y="382" font-size="12" font-family="monospace" fill="#3c4043">df[df["price"] &gt; 100]</text>
+  <rect x="15" y="396" width="138" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="414" font-size="12" font-weight="700" fill="#1a73e8">Add column</text>
+  <rect x="158" y="396" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="168" y="414" font-size="12" fill="#1a73e8">Assignment</text>
+  <rect x="308" y="396" width="286" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="318" y="414" font-size="12" font-family="monospace" fill="#1a73e8">df["total"] = df["a"] * df["b"]</text>
+  <rect x="15" y="428" width="138" height="28" rx="4" fill="white"/>
+  <text x="25" y="446" font-size="12" font-weight="700" fill="#3c4043">Apply a function</text>
+  <rect x="158" y="428" width="145" height="28" rx="4" fill="white"/>
+  <text x="168" y="446" font-size="12" font-family="monospace" fill="#3c4043">.apply()</text>
+  <rect x="308" y="428" width="286" height="28" rx="4" fill="white"/>
+  <text x="318" y="446" font-size="12" font-family="monospace" fill="#3c4043">df["col"].apply(lambda x: x*2)</text>
+  <rect x="15" y="460" width="138" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="478" font-size="12" font-weight="700" fill="#1a73e8">Group + aggregate</text>
+  <rect x="158" y="460" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="168" y="478" font-size="12" font-family="monospace" fill="#1a73e8">.groupby().agg()</text>
+  <rect x="308" y="460" width="286" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="318" y="478" font-size="12" font-family="monospace" fill="#1a73e8">df.groupby("region")["sales"].sum()</text>
+  <rect x="15" y="492" width="138" height="28" rx="4" fill="white"/>
+  <text x="25" y="510" font-size="12" font-weight="700" fill="#3c4043">Join two tables</text>
+  <rect x="158" y="492" width="145" height="28" rx="4" fill="white"/>
+  <text x="168" y="510" font-size="12" font-family="monospace" fill="#3c4043">pd.merge()</text>
+  <rect x="308" y="492" width="286" height="28" rx="4" fill="white"/>
+  <text x="318" y="510" font-size="12" font-family="monospace" fill="#3c4043">pd.merge(df1, df2, on="id")</text>
+  <rect x="15" y="524" width="138" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="542" font-size="12" font-weight="700" fill="#1a73e8">Save CSV</text>
+  <rect x="158" y="524" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="168" y="542" font-size="12" font-family="monospace" fill="#1a73e8">.to_csv()</text>
+  <rect x="308" y="524" width="286" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="318" y="542" font-size="12" font-family="monospace" fill="#1a73e8">df.to_csv("out.csv", index=False)</text>
+  <text x="305" y="572" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

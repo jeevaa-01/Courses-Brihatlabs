@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 465 322" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="465" height="322" rx="12" fill="#f8f9fa"/>
+  <text x="232" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Performance Comparison (Big-O)</text>
+  <rect x="15" y="40" width="134" height="30" rx="6" fill="#1a73e8"/>
+  <text x="82" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Operation</text>
+  <rect x="154" y="40" width="71" height="30" rx="6" fill="#1a73e8"/>
+  <text x="189" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">List</text>
+  <rect x="230" y="40" width="70" height="30" rx="6" fill="#1a73e8"/>
+  <text x="265" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Tuple</text>
+  <rect x="305" y="40" width="70" height="30" rx="6" fill="#1a73e8"/>
+  <text x="340" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Set</text>
+  <rect x="380" y="40" width="70" height="30" rx="6" fill="#1a73e8"/>
+  <text x="415" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Dict</text>
+  <rect x="15" y="76" width="134" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">Access by index</text>
+  <rect x="154" y="76" width="71" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="164" y="94" font-size="12" fill="#1a73e8">O(1)</text>
+  <rect x="230" y="76" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="240" y="94" font-size="12" fill="#1a73e8">O(1)</text>
+  <rect x="305" y="76" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="315" y="94" font-size="12" fill="#1a73e8">N/A</text>
+  <rect x="380" y="76" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="390" y="94" font-size="12" fill="#1a73e8">N/A</text>
+  <rect x="15" y="108" width="134" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" fill="#3c4043">Access by key</text>
+  <rect x="154" y="108" width="71" height="28" rx="4" fill="white"/>
+  <text x="164" y="126" font-size="12" fill="#3c4043">N/A</text>
+  <rect x="230" y="108" width="70" height="28" rx="4" fill="white"/>
+  <text x="240" y="126" font-size="12" fill="#3c4043">N/A</text>
+  <rect x="305" y="108" width="70" height="28" rx="4" fill="white"/>
+  <text x="315" y="126" font-size="12" fill="#3c4043">N/A</text>
+  <rect x="380" y="108" width="70" height="28" rx="4" fill="white"/>
+  <text x="390" y="126" font-size="12" fill="#3c4043">O(1)</text>
+  <rect x="15" y="140" width="134" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">Search (in)</text>
+  <rect x="154" y="140" width="71" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="164" y="158" font-size="12" fill="#1a73e8">O(n)</text>
+  <rect x="230" y="140" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="240" y="158" font-size="12" fill="#1a73e8">O(n)</text>
+  <rect x="305" y="140" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="315" y="158" font-size="12" fill="#1a73e8">O(1)</text>
+  <rect x="380" y="140" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="390" y="158" font-size="12" fill="#1a73e8">O(1)</text>
+  <rect x="15" y="172" width="134" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" fill="#3c4043">Append / Add</text>
+  <rect x="154" y="172" width="71" height="28" rx="4" fill="white"/>
+  <text x="164" y="190" font-size="12" fill="#3c4043">O(1)</text>
+  <rect x="230" y="172" width="70" height="28" rx="4" fill="white"/>
+  <text x="240" y="190" font-size="12" fill="#3c4043">N/A</text>
+  <rect x="305" y="172" width="70" height="28" rx="4" fill="white"/>
+  <text x="315" y="190" font-size="12" fill="#3c4043">O(1)</text>
+  <rect x="380" y="172" width="70" height="28" rx="4" fill="white"/>
+  <text x="390" y="190" font-size="12" fill="#3c4043">O(1)</text>
+  <rect x="15" y="204" width="134" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" fill="#1a73e8">Insert at position</text>
+  <rect x="154" y="204" width="71" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="164" y="222" font-size="12" fill="#1a73e8">O(n)</text>
+  <rect x="230" y="204" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="240" y="222" font-size="12" fill="#1a73e8">N/A</text>
+  <rect x="305" y="204" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="315" y="222" font-size="12" fill="#1a73e8">N/A</text>
+  <rect x="380" y="204" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="390" y="222" font-size="12" fill="#1a73e8">N/A</text>
+  <rect x="15" y="236" width="134" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" fill="#3c4043">Delete</text>
+  <rect x="154" y="236" width="71" height="28" rx="4" fill="white"/>
+  <text x="164" y="254" font-size="12" fill="#3c4043">O(n)</text>
+  <rect x="230" y="236" width="70" height="28" rx="4" fill="white"/>
+  <text x="240" y="254" font-size="12" fill="#3c4043">N/A</text>
+  <rect x="305" y="236" width="70" height="28" rx="4" fill="white"/>
+  <text x="315" y="254" font-size="12" fill="#3c4043">O(1)</text>
+  <rect x="380" y="236" width="70" height="28" rx="4" fill="white"/>
+  <text x="390" y="254" font-size="12" fill="#3c4043">O(1)</text>
+  <rect x="15" y="268" width="134" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" fill="#1a73e8">Memory usage</text>
+  <rect x="154" y="268" width="71" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="164" y="286" font-size="12" fill="#1a73e8">Medium</text>
+  <rect x="230" y="268" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="240" y="286" font-size="12" fill="#1a73e8">Low</text>
+  <rect x="305" y="268" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="315" y="286" font-size="12" fill="#1a73e8">High</text>
+  <rect x="380" y="268" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="390" y="286" font-size="12" fill="#1a73e8">High</text>
+  <text x="232" y="316" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

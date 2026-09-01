@@ -1,0 +1,148 @@
+---
+title: "Summary and What's Next"
+sidebar_position: 1
+description: 'Everything you learned in Part 1 — concepts, the 5 Vs, the Azure service map, hands-on skills — and where to go next in the HitaVirTech program.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Recap the concepts, the 5 Vs, and the Azure service map from this course
+- Preview what Azure Analytics Part 2 will cover
+- Pick your next steps inside and outside the HitaVirTech portal
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |          CONGRATULATIONS  -  PART 1 DONE!                    |
+  +==============================================================+
+```
+
+### What You Learned
+
+**🧠 Analytics Concepts**
+
+| Topic | Icon |
+|-------|:---:|
+| Analytics and the four maturity levels | 📊 |
+| Machine Learning — three flavors | 🤖 |
+
+**📏 The 5 Vs of Big Data**
+
+| V | Icon | Theme |
+|---|:---:|-------|
+| **VOLUME** | 📦 | Scale |
+| **VARIETY** | 🧩 | Formats |
+| **VELOCITY** | 🌊 | Speed |
+| **VERACITY** | 🛡️ | Trust |
+| **VALUE** | 💎 | Outcome |
+
+**☁️ Azure Services Mapped to Each V**
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Databricks](/img/courses/azure-icons/databricks.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg) ![ML](/img/courses/azure-icons/ml.svg) ![OpenAI](/img/courses/azure-icons/openai.svg)
+
+| V | Key Services |
+|---|--------------|
+| 📦 Volume | 🪣 ADLS Gen2 • 🏛️ Synapse • 🔥 Databricks • 🐘 HDInsight |
+| 🧩 Variety | 🕸️ Data Factory • 🔍 Synapse Serverless • 🤖 AI Vision • 📝 Doc Intelligence • 🔊 AI Speech • 💭 AI Language |
+| 🌊 Velocity | 🌊 Event Hubs • 🎯 Stream Analytics • 🔬 Data Explorer • ⚡ Functions |
+| 🛡️ Veracity | 🧪 ADF Data Flows • 🛡️ Purview • 🕵️ Defender • 📜 Activity Log |
+| 💎 Value | 📊 Power BI • 🤖 Azure ML • 🧠 Azure OpenAI • 🎯 Personalizer |
+
+**🛠️ Hands-on Skills**
+
+- 🪣 Created a Storage Account with ADLS Gen2
+- ⬆️ Uploaded data to a container
+- 🏗️ Created a Synapse workspace
+- 🔐 Granted RBAC to the workspace's managed identity
+- 🔍 Ran `OPENROWSET` queries on CSV
+- 🧹 Cleaned up via resource group delete
+
+### What's Coming in Part 2
+
+🚀 **Azure Analytics Part 2 — Advanced Analytics on Azure** will cover:
+
+- 🪣 Data Lakes deep dive
+- 🏛️ Data Warehousing (dedicated SQL pool + star schemas)
+- 🏡 Modern Data Architecture (Lakehouse + Microsoft Fabric)
+- 🌊 Streaming architectures with Event Hubs
+- 📊 Real Power BI dashboards
+- 🤖 Intro to Azure ML + Synapse ML
+- 🗺️ Six reference architectures for real-world use cases
+
+### What To Do Next
+
+1. 🔄 **Repeat this lab** with a different dataset (try a Kaggle CSV) — the [hands-on lab](/courses/azure-analytics-part1/module-4-end-to-end-and-hands-on-lab/hands-on-lab-your-first-azure-analytics-pipeline) is repeatable end to end
+2. 🧠 **Apply the 5 Vs** with the [self-assessment](/courses/azure-analytics-part1/module-5-wrap-up/bonus-self-assessment) to a project you work on — identify the bottleneck V
+3. 🐍 **Keep building your engineering base** with the [PySpark course](/courses/pyspark/intro) and the [Windows setup course](/courses/windows-setup) if your local environment is not ready yet
+4. 📚 **Sharpen your learning habits** with [Learn Like a Top Performer](/courses/learn-like-a-top-performer)
+5. 💰 **Watch your Azure bill** for a few days after the lab
+6. 📰 Check the [HitaVirTech blog](/blog) and the [course portal home](/) for new releases
+
+### Final Thoughts
+
+```
+  +==============================================================+
+  |                                                              |
+  |    The 5 Vs  =  universal data challenge framework           |
+  |    Azure    =  complete toolbox for each V                   |
+  |                                                              |
+  |    Learn both  ->  you can pick up any cloud's analytics     |
+  |    stack in a week.                                          |
+  |                                                              |
+  +==============================================================+
+```
+
+:::tip[HitaVir Tech says]
+"Analytics is not about tools. Tools change every two years. Analytics is about
+asking the right question, finding the right data, and presenting an insight
+people can act on. Master the fundamentals — Volume, Variety, Velocity,
+Veracity, Value — and every new tool becomes just another syntax."
+:::
+
+🎓 Welcome to cloud analytics on Azure. See you in **Azure Analytics Part 2**.
+
+— **HitaVir Tech** ☁️
+
+<KeyTakeaways>
+
+- You can now define analytics, the four maturity levels, and the three ML flavors
+- The 5 Vs — Volume, Variety, Velocity, Veracity, Value — are your universal diagnostic checklist
+- Each V maps to a concrete Azure toolkit, anchored by ADLS Gen2, Data Factory, Event Hubs, Purview, and Power BI
+- You built, queried, and cleaned up a real ADLS + Synapse Serverless pipeline
+- Azure Analytics Part 2 goes deeper: warehousing, Lakehouse/Fabric, streaming, dashboards, and reference architectures
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which statement best captures the final message of this course?',
+      options: [
+        'Memorize every Azure service name',
+        'Master the 5 Vs fundamentals — tools change, the framework transfers to any cloud',
+        'Streaming should replace batch everywhere',
+        'Dashboards are the goal of analytics',
+      ],
+      answer: 1,
+      explanation:
+        'Tools change every two years; the 5 Vs framework and decision-first thinking transfer across clouds and tools.',
+    },
+    {
+      question: 'Which hands-on skills did Part 1 give you?',
+      options: [
+        'Training an Azure ML model and deploying endpoints',
+        'Building Power BI dashboards with Copilot',
+        'Creating ADLS Gen2 storage, a Synapse workspace, RBAC, and OPENROWSET queries',
+        'Configuring Event Hubs partitions for Kafka',
+      ],
+      answer: 2,
+      explanation:
+        'The Part 1 lab covered storage, workspace creation, managed-identity RBAC, Serverless SQL, and cleanup. Dashboards and ML arrive in Part 2.',
+    },
+  ]}
+/>
+
+<LessonComplete />

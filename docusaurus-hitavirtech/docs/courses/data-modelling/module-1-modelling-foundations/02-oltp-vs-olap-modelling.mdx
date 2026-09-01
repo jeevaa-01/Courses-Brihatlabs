@@ -1,0 +1,116 @@
+---
+title: 'OLTP vs OLAP Modelling'
+sidebar_position: 2
+description: 'How transactional (OLTP) and analytical (OLAP) systems differ, and why Data Engineers model data differently for each.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Explain what OLTP and OLAP systems are optimized for
+- Recognize typical OLTP and OLAP queries at a glance
+- Describe the Data Engineer's role as the bridge between the two worlds
+
+</LearningObjectives>
+
+Understanding the difference between transactional and analytical systems is fundamental to data modelling.
+
+### OLTP — Online Transaction Processing
+
+OLTP systems handle **day-to-day transactions**. They are optimized for fast INSERT, UPDATE, DELETE operations on individual records.
+
+**Examples:** Banking systems, e-commerce checkout, airline booking, hospital patient records.
+
+```
+OLTP Query (fast, single record):
+  SELECT balance FROM accounts WHERE account_id = 12345;
+  UPDATE accounts SET balance = balance - 500 WHERE account_id = 12345;
+```
+
+### OLAP — Online Analytical Processing
+
+OLAP systems handle **analytics and reporting**. They are optimized for complex queries that scan millions of rows.
+
+**Examples:** Sales dashboards, financial reports, customer analytics, fraud detection.
+
+```
+OLAP Query (complex, millions of rows):
+  SELECT
+      region,
+      product_category,
+      EXTRACT(QUARTER FROM order_date) AS quarter,
+      SUM(revenue) AS total_revenue,
+      COUNT(DISTINCT customer_id) AS unique_customers,
+      AVG(order_value) AS avg_order_value
+  FROM fact_sales
+  JOIN dim_product USING (product_key)
+  JOIN dim_geography USING (geo_key)
+  WHERE order_date >= '2025-01-01'
+  GROUP BY region, product_category, quarter
+  ORDER BY total_revenue DESC;
+```
+
+### Comparison Table
+
+![OLTP vs OLAP Comparison](/img/courses/diagrams/oltp-vs-olap-table.svg)
+
+### Banking Example
+
+![OLTP vs OLAP](/img/courses/diagrams/oltp-vs-olap.svg)
+
+:::tip[HitaVir Tech says]
+"As a Data Engineer, you pull data FROM OLTP systems and model it INTO OLAP systems. Your job is the bridge between the two worlds."
+:::
+
+<KeyTakeaways>
+
+- OLTP = fast single-record INSERT/UPDATE/DELETE; normalized models; banking, checkout, booking
+- OLAP = complex aggregations over millions of rows; denormalized models; dashboards and reports
+- Data Engineers extract from OLTP systems and model into OLAP systems
+- The modelling style follows the workload: normalize for writes, denormalize for reads
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which query is typical of an OLTP system?',
+      options: [
+        'SUM of revenue by region and quarter over two years of sales',
+        'A COUNT DISTINCT of customers across all stores',
+        'UPDATE accounts SET balance = balance - 500 WHERE account_id = 12345',
+        'A full-table scan joining five dimension tables',
+      ],
+      answer: 2,
+      explanation:
+        'OLTP workloads are fast, single-record operations. Large scans and aggregations belong to OLAP.',
+    },
+    {
+      question: 'A sales dashboard aggregates millions of rows by product category. What kind of system serves it best?',
+      options: [
+        'An OLAP system with a denormalized model',
+        'An OLTP system with a normalized model',
+        'A key-value cache',
+        'The application database that handles checkout',
+      ],
+      answer: 0,
+      explanation:
+        'Analytical scans and GROUP BY aggregations are exactly what OLAP systems and star-schema models are optimized for.',
+    },
+    {
+      question: 'In the OLTP/OLAP picture, what is the Data Engineer primarily responsible for?',
+      options: [
+        'Building the checkout UI on top of OLTP',
+        'Tuning the bank ledger for faster UPDATEs',
+        'Replacing OLTP systems with OLAP systems',
+        'Moving and remodelling data from OLTP sources into OLAP systems',
+      ],
+      answer: 3,
+      explanation:
+        'Data Engineers are the bridge: they extract from transactional systems and model the data into analytical systems.',
+    },
+  ]}
+/>
+
+<LessonComplete />

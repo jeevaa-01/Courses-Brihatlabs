@@ -1,0 +1,124 @@
+---
+title: 'Working with Multiple Files'
+sidebar_position: 3
+description: 'Stage everything at once with git add . or stage selectively to build small, focused commits.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Stage every change at once with `git add .`
+- Stage specific files to create separate, focused commits
+- Recognize why one commit per logical change is professional practice
+
+</LearningObjectives>
+
+In real projects, you work with many files at once. Let us practice.
+
+### Create Multiple Files
+
+```bash
+touch file1.txt file2.txt file3.txt
+echo "First file content" > file1.txt
+echo "Second file content" > file2.txt
+echo "Third file content" > file3.txt
+```
+
+### Check Status
+
+```bash
+git status
+```
+
+**Expected output:**
+
+```
+On branch main
+Untracked files:
+        file1.txt
+        file2.txt
+        file3.txt
+```
+
+### Add All Files at Once
+
+```bash
+git add .
+```
+
+The `.` means "add everything in the current directory."
+
+### Commit All Files
+
+```bash
+git commit -m "Add three content files"
+```
+
+### Alternative: Add Specific Files
+
+Sometimes you only want to commit certain files:
+
+```bash
+touch config.txt notes.txt
+echo "APP_PORT=3000" > config.txt
+echo "Meeting notes from today" > notes.txt
+
+git add config.txt
+git commit -m "Add application config"
+
+git add notes.txt
+git commit -m "Add meeting notes"
+```
+
+This creates **two separate commits** — each focused on one thing.
+
+### Best Practice: Small, Focused Commits
+
+| Approach | Quality |
+|----------|---------|
+| One commit per logical change | Professional |
+| Add related files together | Good |
+| Commit everything at once | Acceptable for small changes |
+| Commit unrelated changes together | Bad practice |
+
+> **HitaVir Tech says:** "Each commit should tell a story. When someone reads your commit history, they should understand what changed and why — without looking at the code."
+
+<KeyTakeaways>
+
+- `git add .` stages everything in the current directory in one go
+- Staging specific files lets you split unrelated work into separate commits
+- One commit per logical change keeps history readable and easy to revert
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What does the dot in git add . mean?',
+      options: [
+        'Add only hidden files',
+        'Add only files ending in .txt',
+        'Stage everything in the current directory',
+        'Create an empty commit',
+      ],
+      answer: 2,
+      explanation:
+        'The . means "everything here" — all new and modified files in the current directory are staged at once.',
+    },
+    {
+      question: 'Why did we commit config.txt and notes.txt separately instead of together?',
+      options: [
+        'They are unrelated changes — each commit should focus on one thing',
+        'Git cannot commit two files at once',
+        'Text files must always be committed alone',
+        'Separate commits upload faster to GitHub',
+      ],
+      answer: 0,
+      explanation:
+        'A config change and meeting notes are unrelated. Focused commits make history easier to read, review, and revert.',
+    },
+  ]}
+/>
+
+<LessonComplete />

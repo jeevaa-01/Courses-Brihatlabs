@@ -1,0 +1,190 @@
+---
+title: 'Step 13: Optimization — EXPLAIN and indexing'
+sidebar_position: 1
+description: 'Read EXPLAIN output, prove an index helps with before/after plans, and know when composite and covering indexes pay off.'
+---
+
+<DurationBadge minutes={25} />
+
+<LearningObjectives>
+
+- Read `EXPLAIN` output — `type`, `key`, `rows`, and `Extra`
+- Demonstrate a before/after index win with `EXPLAIN`
+- Design composite and covering indexes, and name the cases where indexes hurt
+
+</LearningObjectives>
+
+> *"Premature optimization is the root of all evil."*
+> — Donald Knuth
+
+:::info[HitaVir Tech connection]
+Optimization is the *third* step of "make it work, make it right, make it fast" — and it only pays off when you measure. Knuth's quote is permission to ignore performance until your slow query is *proven* slow.
+:::
+
+:::tip[Why this matters now]
+Every optimization claim below must be backed by an EXPLAIN. No guesses, no folklore.
+:::
+
+### 13.1 — Reading EXPLAIN
+
+```sql
+EXPLAIN
+SELECT
+    customer_id,
+    COUNT(*) AS order_count
+FROM orders
+WHERE order_date >= '2026-03-01'
+  AND order_date <  '2026-04-01'
+GROUP BY customer_id;
+```
+
+**Expected output (illustrative):**
+
+```
++----+-------------+--------+------+--------------------------+--------------------------+---------+------+------+----------------------------+
+| id | select_type | table  | type | possible_keys            | key                      | key_len | ref  | rows | Extra                      |
++----+-------------+--------+------+--------------------------+--------------------------+---------+------+------+----------------------------+
+|  1 | SIMPLE      | orders | range| idx_orders_order_date    | idx_orders_order_date    | 4       | NULL |   31 | Using where; Using temporary; Using filesort |
++----+-------------+--------+------+--------------------------+--------------------------+---------+------+------+----------------------------+
+```
+
+Key columns:
+
+| Column         | What it tells you                                                       |
+|----------------|-------------------------------------------------------------------------|
+| `type`         | Access path. `ALL` = full table scan (bad), `range` / `ref` = index used |
+| `key`          | Which index MySQL picked (or `NULL` if none)                            |
+| `rows`         | Estimated rows it will examine                                          |
+| `Extra`        | `Using index` = covering index (great), `Using filesort` = extra sort   |
+
+### 13.2 — Before / after: adding the right index
+
+Drop the index from Step 10.3 first to start clean:
+
+```sql
+DROP INDEX idx_orders_order_date ON orders;
+
+-- BEFORE: range scan with no index
+EXPLAIN
+SELECT
+    order_id,
+    order_date,
+    status
+FROM orders
+WHERE order_date >= '2026-03-01'
+  AND order_date <  '2026-04-01';
+```
+
+You will see `type = ALL` and `rows = ~100` — MySQL scans the entire table.
+
+```sql
+-- Add the index
+CREATE INDEX idx_orders_order_date ON orders(order_date);
+
+-- AFTER: range scan using the index
+EXPLAIN
+SELECT
+    order_id,
+    order_date,
+    status
+FROM orders
+WHERE order_date >= '2026-03-01'
+  AND order_date <  '2026-04-01';
+```
+
+Now `type = range` and `rows ≈ 31`. With 100 rows the difference is invisible to the eye; with 100 million rows it is the difference between 5 ms and 5 minutes.
+
+### 13.3 — Composite indexes: order matters
+
+If your query filters on `(customer_id, order_date)`, an index on `(customer_id, order_date)` works. An index on `(order_date, customer_id)` only helps queries that filter on `order_date` first. Pick the column with the highest selectivity (most distinct values) as the leading column.
+
+```sql
+CREATE INDEX idx_orders_cust_date ON orders(customer_id, order_date);
+```
+
+### 13.4 — Covering indexes
+
+If an index contains every column the query needs, MySQL can answer from the index alone (`Extra: Using index`) — no table read at all.
+
+```sql
+-- This query is "covered" by idx_orders_cust_date because both columns are in it
+EXPLAIN
+SELECT customer_id, order_date
+FROM orders
+WHERE customer_id = 1
+ORDER BY order_date;
+```
+
+### 13.5 — When indexes hurt
+
+- Write-heavy tables — every `INSERT` updates every index
+- Low-selectivity columns — indexing `status` (5 values) is rarely worth it
+- Wrapping the column in a function — `WHERE YEAR(order_date) = 2026` ignores the index on `order_date`
+
+:::info[Pro Insight]
+"I added an index and the query is still slow" is almost always (a) the optimizer chose a different index, (b) statistics are stale (`ANALYZE TABLE orders;`), or (c) the function around the column made it non-sargable. EXPLAIN tells you which.
+:::
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Read `EXPLAIN` and identify `type`, `key`, `rows`, `Extra`
+- ✅ Show a before/after EXPLAIN that proves an index helped
+- ✅ Pick the leading column of a composite index by selectivity
+- ✅ Recognize a covering index from `Extra: Using index`
+- ✅ Name three situations where adding an index makes performance worse
+
+---
+
+<KeyTakeaways>
+
+- `EXPLAIN` shows the access path: `type = ALL` is a full scan; `range`/`ref` mean an index is working
+- `Extra: Using index` marks a covering index — the query is answered without touching the table
+- In a composite index, column order matters — lead with the highest-selectivity filter column
+- Indexes hurt on write-heavy tables, low-selectivity columns, and function-wrapped filters
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'EXPLAIN shows type = ALL on a 100M-row table. What does that mean?',
+      options: [
+        'All indexes are being used',
+        'MySQL will scan the entire table — no index helps this query',
+        'The query returns all columns',
+        'The table is fully cached in memory',
+      ],
+      answer: 1,
+      explanation:
+        'type = ALL is a full table scan. Either no useful index exists or the query shape (e.g. a function on the column) prevents its use.',
+    },
+    {
+      question: 'A query filters on customer_id = ? and sorts by order_date. Which composite index covers it best?',
+      options: [
+        '(order_date, customer_id)',
+        '(customer_id, order_date)',
+        'Two separate single-column indexes are always better',
+        'Indexes cannot help queries with ORDER BY',
+      ],
+      answer: 1,
+      explanation:
+        'Lead with the equality-filtered column; the second column then serves the sort — and the index covers both columns of the SELECT.',
+    },
+    {
+      question: 'You added an index but EXPLAIN still shows a full scan on WHERE YEAR(order_date) = 2026. Why?',
+      options: [
+        'YEAR() around the column makes the predicate non-sargable, so the index is unusable',
+        'Indexes never work on DATE columns',
+        'The index needs 24 hours to activate',
+        'EXPLAIN output is cached',
+      ],
+      answer: 0,
+      explanation:
+        'Rewrite as a half-open range on the bare column — order_date >= "2026-01-01" AND order_date < "2027-01-01" — and the index applies.',
+    },
+  ]}
+/>
+
+<LessonComplete />

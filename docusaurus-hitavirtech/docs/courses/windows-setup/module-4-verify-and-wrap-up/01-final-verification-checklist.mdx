@@ -1,0 +1,62 @@
+---
+title: 'Final Verification Checklist'
+sidebar_position: 1
+description: 'One command that verifies your entire environment, plus a troubleshooting table for the common failures.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Verify all nine tools with a single Git Bash one-liner
+- Diagnose the six most common environment failures
+
+</LearningObjectives>
+Run this one-liner in **Git Bash** to check everything:
+
+```bash
+echo '=== HitaVirTech DE Environment Check ===' && \
+echo "Git:        $(git --version)" && \
+echo "Python:     $(python --version)" && \
+echo "PySpark:    $(python -c 'import pyspark; print(pyspark.__version__)')" && \
+echo "Java:       $(java -version 2>&1 | head -1)" && \
+echo "Docker:     $(docker --version)" && \
+echo "VS Code:    $(code --version | head -1)" && \
+echo "GitHub SSH: $(ssh -T git@github.com 2>&1 | head -1)" && \
+echo '======================================='
+```
+
+### Expected Output
+
+```
+=== HitaVirTech DE Environment Check ===
+Git:        git version 2.44.0.windows.1
+Python:     Python 3.11.9
+PySpark:    3.5.1
+Java:       openjdk version "11.0.23"
+Docker:     Docker version 26.x.x
+VS Code:    1.88.x
+GitHub SSH: Hi your-username! You have successfully authenticated
+=======================================
+```
+
+### Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| `python not found` | Reinstall Python with **Add to PATH** ticked |
+| PySpark Java error | Ensure JAVA_HOME points to JDK 11 exactly |
+| `winutils.exe` error | Check HADOOP_HOME is set correctly |
+| Docker won't start | Enable Virtualization in BIOS |
+| SSH auth failed | Re-run `ssh-add ~/.ssh/id_ed25519` in Git Bash |
+| GitHub push denied | Check SSH key is added to GitHub Settings |
+
+<KeyTakeaways>
+
+- The verification one-liner tests every layer in one pass — save it, you will reuse it
+- Most failures trace to PATH or a wrong `*_HOME` environment variable
+- A fresh terminal is required after any environment-variable change
+
+</KeyTakeaways>
+
+<LessonComplete />

@@ -1,0 +1,223 @@
+---
+title: 'Step 4: CREATE TABLE — data types and constraints'
+sidebar_position: 1
+description: 'The MySQL data types and constraints you will use 95% of the time, plus the hitavir_sales ER diagram.'
+---
+
+<DurationBadge minutes={20} />
+
+<LearningObjectives>
+
+- Read a `CREATE TABLE` statement and justify every column type
+- State what `PRIMARY KEY`, `NOT NULL`, `UNIQUE`, and `FOREIGN KEY` enforce
+- Sketch the `hitavir_sales` ER diagram from memory
+
+</LearningObjectives>
+
+> *"Show me your flowcharts and conceal your tables, and I shall continue to be mystified. Show me your tables, and I won't usually need your flowcharts; they'll be obvious."*
+> — Fred Brooks, *The Mythical Man-Month*
+
+:::info[HitaVir Tech connection]
+Tables are the source of truth. A clean schema explains the system; a dirty one buries it.
+:::
+
+:::tip[Why this matters now]
+Read every column type below and write down — in your own words — why it was picked. If you cannot justify a type, you do not understand the data.
+:::
+
+### 4.1 — Re-read the schema you created in Step 2
+
+```sql
+SHOW CREATE TABLE customers;
+```
+
+Workbench will return the full DDL for the `customers` table. You should see:
+
+```
+CREATE TABLE `customers` (
+  `customer_id` int NOT NULL AUTO_INCREMENT,
+  `full_name`   varchar(100) NOT NULL,
+  `email`       varchar(150) DEFAULT NULL,
+  `city`        varchar(80)  DEFAULT NULL,
+  `signup_date` date         DEFAULT NULL,
+  PRIMARY KEY (`customer_id`)
+) ENGINE=InnoDB ...
+```
+
+### 4.2 — The data types you will use 95% of the time
+
+| Type             | What it stores                          | Use it for                          |
+|------------------|-----------------------------------------|-------------------------------------|
+| `INT`            | Whole numbers, –2.1B to 2.1B            | IDs, counts, quantities             |
+| `BIGINT`         | Whole numbers up to ~9.2 × 10¹⁸         | Very large IDs, byte counts         |
+| `DECIMAL(p,s)`   | Exact decimals (no float drift)         | Money, prices, percentages          |
+| `VARCHAR(n)`     | Variable-length text up to `n` chars    | Names, emails, statuses             |
+| `TEXT`           | Long text, no fixed limit               | Descriptions, JSON blobs            |
+| `DATE`           | Calendar date only                      | `signup_date`, `order_date`         |
+| `DATETIME`       | Date + time (no timezone)               | `created_at` in OLTP                |
+| `TIMESTAMP`      | Date + time, UTC-stored                 | `event_time` in event pipelines     |
+| `BOOLEAN`        | Alias for `TINYINT(1)`, 0 or 1          | Flags                               |
+
+:::tip[HitaVir Tech Tip]
+**Never** use `FLOAT` or `DOUBLE` for money. Use `DECIMAL(10,2)` so `0.10 + 0.20` equals exactly `0.30`, not `0.30000000004`.
+:::
+
+### 4.3 — Constraints in plain English
+
+| Constraint     | What it enforces                                                  |
+|----------------|-------------------------------------------------------------------|
+| `PRIMARY KEY`  | This column is unique and not null — the row's identity           |
+| `NOT NULL`     | The column must have a value on every row                         |
+| `UNIQUE`       | No two rows can share this value                                  |
+| `FOREIGN KEY`  | This value must exist in another table's column                   |
+| `CHECK`        | The value must satisfy an expression (MySQL 8.0.16+ enforces)     |
+| `DEFAULT`      | If not provided on insert, use this value                         |
+
+### 4.4 — Build a small reference table from scratch
+
+```sql
+-- A reference table for valid order statuses
+CREATE TABLE order_statuses (
+    status_code  VARCHAR(20) PRIMARY KEY,
+    description  VARCHAR(100) NOT NULL,
+    is_terminal  BOOLEAN     NOT NULL DEFAULT FALSE
+);
+
+INSERT INTO order_statuses (status_code, description, is_terminal) VALUES
+('PLACED',    'Customer placed the order',                FALSE),
+('SHIPPED',   'Order has shipped from warehouse',         FALSE),
+('DELIVERED', 'Customer received the order',              TRUE),
+('CANCELLED', 'Order cancelled before shipment',          TRUE),
+('RETURNED',  'Customer returned a delivered order',      TRUE);
+```
+
+### 4.5 — Confirm the new table
+
+```sql
+SELECT
+    status_code,
+    description,
+    is_terminal
+FROM order_statuses
+ORDER BY status_code;
+```
+
+**Expected output:**
+
+```
++-------------+----------------------------------------+-------------+
+| status_code | description                            | is_terminal |
++-------------+----------------------------------------+-------------+
+| CANCELLED   | Order cancelled before shipment        |           1 |
+| DELIVERED   | Customer received the order            |           1 |
+| PLACED      | Customer placed the order              |           0 |
+| RETURNED    | Customer returned a delivered order    |           1 |
+| SHIPPED     | Order has shipped from warehouse       |           0 |
++-------------+----------------------------------------+-------------+
+```
+
+### 4.6 — ER diagram for `hitavir_sales`
+
+```
+                +-------------------+
+                |     customers     |
+                |-------------------|
+                | customer_id  PK   |
+                | full_name         |
+                | email             |
+                | city              |
+                | signup_date       |
+                +---------+---------+
+                          |
+                          | 1
+                          |
+                          | M
+                +---------v---------+         +-------------------+
+                |      orders       |         |    products       |
+                |-------------------|         |-------------------|
+                | order_id     PK   |         | product_id    PK  |
+                | customer_id  FK   |         | product_name      |
+                | order_date        |         | category          |
+                | status            |         | unit_price        |
+                +---------+---------+         +---------+---------+
+                          |                             |
+                          | 1                           | 1
+                          |                             |
+                          | M                           | M
+                +---------v-----------+----------------v+
+                |          order_items                  |
+                |---------------------------------------|
+                | order_item_id   PK                    |
+                | order_id        FK -> orders          |
+                | product_id      FK -> products        |
+                | quantity                              |
+                | line_amount                           |
+                +---------------------------------------+
+```
+
+:::info[Pro Insight]
+In production, every database has at least one ER diagram in version control. When the schema diverges from the diagram, *that* is when bugs ship. Treat the diagram as code: it lives in the repo, it gets reviewed, it gets updated in the same PR as the migration.
+:::
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Read a `CREATE TABLE` and explain every column type
+- ✅ State what `PRIMARY KEY`, `NOT NULL`, and `FOREIGN KEY` enforce
+- ✅ Justify `DECIMAL(10,2)` over `FLOAT` for `unit_price`
+- ✅ Sketch the `hitavir_sales` ER diagram from memory
+
+---
+
+<KeyTakeaways>
+
+- Nine data types cover 95% of real schemas: `INT`, `BIGINT`, `DECIMAL`, `VARCHAR`, `TEXT`, `DATE`, `DATETIME`, `TIMESTAMP`, `BOOLEAN`
+- `DECIMAL(p,s)` stores exact decimals — the only acceptable type for money
+- Constraints are enforced business rules: `PRIMARY KEY` is identity, `FOREIGN KEY` is referential integrity, `CHECK` is validity
+- The ER diagram belongs in version control and gets updated in the same PR as the migration
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which type should store unit_price, and why?',
+      options: [
+        'FLOAT — it is designed for fractional numbers',
+        'VARCHAR — prices sometimes include currency symbols',
+        'DECIMAL(10,2) — exact decimal math with no rounding drift',
+        'INT — store paise/cents and divide later',
+      ],
+      answer: 2,
+      explanation:
+        'FLOAT/DOUBLE accumulate binary rounding errors; DECIMAL keeps 0.10 + 0.20 exactly 0.30. (Storing integer cents also works, but DECIMAL is the schema used here.)',
+    },
+    {
+      question: 'What does the FOREIGN KEY on orders.customer_id enforce?',
+      options: [
+        'customer_id values must be unique in orders',
+        'Every orders.customer_id must exist in customers.customer_id',
+        'orders.customer_id can never be read without a JOIN',
+        'customers rows are deleted when their orders are deleted',
+      ],
+      answer: 1,
+      explanation:
+        'A foreign key guarantees the referenced value exists in the parent table — you cannot insert an order for a nonexistent customer.',
+    },
+    {
+      question: 'A PRIMARY KEY column is automatically…',
+      options: [
+        'indexed, unique, and NOT NULL',
+        'AUTO_INCREMENT and DECIMAL',
+        'case-insensitive and TEXT',
+        'invisible to SELECT queries',
+      ],
+      answer: 0,
+      explanation:
+        'The primary key is the row’s identity: MySQL builds a unique index on it and forbids NULLs. AUTO_INCREMENT is optional.',
+    },
+  ]}
+/>
+
+<LessonComplete />

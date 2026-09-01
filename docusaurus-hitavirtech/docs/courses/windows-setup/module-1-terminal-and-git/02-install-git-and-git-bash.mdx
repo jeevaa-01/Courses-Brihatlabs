@@ -1,0 +1,121 @@
+---
+title: 'Install Git & Git Bash'
+sidebar_position: 2
+description: 'Install Git with recommended settings, configure your identity, and generate an SSH key for GitHub.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Install Git for Windows with the recommended installer options
+- Configure your global Git identity and default branch
+- Generate an ed25519 SSH key you will later add to GitHub
+
+</LearningObjectives>
+
+Git is essential for version control. Git Bash gives you a Unix-like shell on Windows.
+
+### Step 1 - Download Git
+
+Go to [https://git-scm.com/download/win](https://git-scm.com/download/win)
+
+Download the **64-bit Windows installer** or use winget:
+
+```powershell
+winget install Git.Git
+```
+
+### Step 2 - Install with Recommended Settings
+
+| Screen | Recommended Option |
+|--------|-------------------|
+| Default Editor | **Visual Studio Code** |
+| Initial branch name | **main** |
+| PATH environment | **Git from the command line and 3rd-party software** |
+| Line endings | **Checkout Windows-style, commit Unix-style** |
+| Terminal emulator | **Use MinTTY (Git Bash)** |
+| Credential helper | **Git Credential Manager** |
+
+### Step 3 - Configure Git Identity
+
+Open **Git Bash** and run:
+
+```bash
+git config --global user.name "Your Full Name"
+git config --global user.email "your@email.com"
+git config --global init.defaultBranch main
+git config --global core.autocrlf true
+```
+
+### Step 4 - Generate SSH Key for GitHub
+
+```bash
+ssh-keygen -t ed25519 -C "your@email.com"
+# Press Enter to accept defaults
+
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+
+# Copy public key - paste this into GitHub later
+cat ~/.ssh/id_ed25519.pub
+```
+
+### Verify
+
+```bash
+git --version
+# git version 2.44.x.windows.1
+```
+
+<KeyTakeaways>
+
+- Choose **VS Code** as Git's default editor and **main** as the initial branch
+- `git config --global` sets your commit identity once for every repo
+- The SSH key pair lives in `~/.ssh/id_ed25519` — the `.pub` file is what goes to GitHub
+- `core.autocrlf true` keeps Windows/Unix line endings sane
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which file do you paste into GitHub when adding your SSH key?',
+      options: [
+        '~/.ssh/id_ed25519.pub (the public key)',
+        '~/.ssh/id_ed25519 (the private key)',
+        '~/.gitconfig',
+        '~/.ssh/known_hosts',
+      ],
+      answer: 0,
+      explanation:
+        'Only the PUBLIC key is ever shared. The private key never leaves your machine.',
+    },
+    {
+      question: 'What does git config --global init.defaultBranch main do?',
+      options: [
+        'New repositories start with a branch named main instead of master',
+        'Renames all existing branches to main',
+        'Sets the remote branch to track',
+        'Protects the main branch from force pushes',
+      ],
+      answer: 0,
+      explanation:
+        'It only affects the default branch name of newly created repositories.',
+    },
+    {
+      question: 'Which line-ending setting is recommended on Windows?',
+      options: [
+        'Checkout Windows-style, commit Unix-style (core.autocrlf true)',
+        'Checkout Unix-style, commit Windows-style',
+        'Never convert line endings',
+        'Line endings do not matter in Git',
+      ],
+      answer: 0,
+      explanation:
+        'This keeps CRLF locally for Windows tools while storing LF in the repository — the cross-platform convention.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,127 @@
+---
+title: 'Final Quiz'
+sidebar_position: 2
+description: 'The graded final quiz for Python for Data Engineering — ten questions spanning the whole course. Aim for at least 7 of 10.'
+---
+
+<DurationBadge minutes={10} />
+
+# Final Quiz
+
+This quiz covers the whole course — data types, PEP 8, control flow, functions,
+data structures, files, error handling, pandas, and pipeline practice.
+**Aim for at least 7 of 10.** If you miss a question, revisit the lesson it
+came from before moving on to the next course.
+
+<Quiz
+  title="Graded final quiz"
+  questions={[
+    {
+      question: 'Which of these is NOT one of the five core Python data types you use every day?',
+      options: ['str', 'int', 'DataFrame', 'bool'],
+      answer: 2,
+      explanation:
+        'The five core types are str, int, float, bool, and None. A DataFrame comes from the pandas library, not the language itself.',
+    },
+    {
+      question: 'What is the PEP 8 indentation rule?',
+      options: [
+        '4 spaces per level, never tabs',
+        '2 spaces per level',
+        'Tabs, for accessibility',
+        'Any width, as long as it is consistent',
+      ],
+      answer: 0,
+      explanation:
+        'PEP 8 mandates exactly 4 spaces per indentation level. Mixing tabs and spaces crashes Python with a TabError.',
+    },
+    {
+      question: 'Inside a loop, what does continue do?',
+      options: [
+        'Ends the loop immediately',
+        'Skips the rest of this iteration and moves to the next item',
+        'Restarts the loop from the first item',
+        'Raises StopIteration',
+      ],
+      answer: 1,
+      explanation:
+        'continue abandons only the current iteration; break is the statement that leaves the loop entirely.',
+    },
+    {
+      question: 'Why is def f(items=[]) a famous bug?',
+      options: [
+        'Empty lists are invalid default values',
+        'It is a syntax error',
+        'It runs slower than None',
+        'The same list object is created once and shared across all calls',
+      ],
+      answer: 3,
+      explanation:
+        'Defaults are evaluated once at definition time. Use items=None and create a fresh list inside the function.',
+    },
+    {
+      question: 'Which statement about sorted(data) vs data.sort() is TRUE?',
+      options: [
+        'sorted() returns a new list; sort() mutates the list and returns None',
+        'Both return new lists',
+        'Both mutate the original',
+        'sort() works on any iterable',
+      ],
+      answer: 0,
+      explanation:
+        'x = my_list.sort() leaves x as None — a classic interview trap. sorted() works on any iterable and returns a new list.',
+    },
+    {
+      question: 'Fastest structure for membership checks on millions of unique IDs?',
+      options: ['list', 'tuple', 'set', 'str'],
+      answer: 2,
+      explanation:
+        'A set answers "x in s" in O(1); a list must scan every element (O(n)). At scale that is milliseconds vs minutes.',
+    },
+    {
+      question: 'Which function parses a JSON string into a Python dict?',
+      options: ['json.load', 'json.loads', 'json.dump', 'json.dumps'],
+      answer: 1,
+      explanation:
+        'The "s" stands for string: loads parses a string, load reads a file object; dump/dumps are the writing twins.',
+    },
+    {
+      question: 'The correct exception-handling habit in production pipelines?',
+      options: [
+        'Use a bare except: to be safe',
+        'Catch Exception everywhere',
+        'Silence errors with pass',
+        'Catch specific exceptions and log them with reasons',
+      ],
+      answer: 3,
+      explanation:
+        'Specific except clauses plus logging keep failures visible and debuggable; bare excepts hide bugs and swallow KeyboardInterrupt.',
+    },
+    {
+      question: 'df.groupby("region")["total"].sum() returns what?',
+      options: [
+        'One summed value per region',
+        'The original DataFrame with a new column',
+        'A Python dict',
+        'A sorted list',
+      ],
+      answer: 0,
+      explanation:
+        'groupby + agg reduces to one row per group — pandas\' version of SQL GROUP BY. transform() is the variant that keeps the original shape.',
+    },
+    {
+      question: 'A pipeline is idempotent when...',
+      options: [
+        'it never writes logs',
+        'it is built from classes',
+        'running it twice produces exactly the same result',
+        'it finishes in under a second',
+      ],
+      answer: 2,
+      explanation:
+        'Idempotency makes re-runs safe after failures — achieved with upserts, deterministic transforms, and partition overwrites.',
+    },
+  ]}
+/>
+
+<LessonComplete />

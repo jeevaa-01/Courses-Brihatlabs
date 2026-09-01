@@ -1,0 +1,127 @@
+---
+title: 'Putting It All Together'
+sidebar_position: 1
+description: 'One living architecture that combines all 5 Vs — ingest, store, process, query, and value layers with every Azure service in its place.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Assemble the full end-to-end Azure analytics architecture from the pieces of Module 3
+- Locate each V in the stack — where Velocity, Variety, Volume, Veracity, and Value live
+- Trace data from ingestion through storage and processing to decisions
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |         END-TO-END  AZURE  ANALYTICS  STACK                  |
+  +==============================================================+
+```
+
+### The Full Cast — Every Service You Will See Below
+
+![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Databricks](/img/courses/azure-icons/databricks.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Data Explorer](/img/courses/azure-icons/data-explorer.svg) ![ML](/img/courses/azure-icons/ml.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg) ![OpenAI](/img/courses/azure-icons/openai.svg)
+
+All 5 Vs combined into one living architecture:
+
+```
+  INGEST  (Velocity + Variety Layers)
+  +---------------------------+    +---------------------------+
+  |  Azure Event Hubs         |    |  Data Factory             |
+  |  Event Hubs Capture       |    |  AI Vision / Doc Intel.   |
+  |  Functions                |    |  AI Speech / Language     |
+  |  IoT Hub                  |    |  Translator               |
+  +-------------+-------------+    +-------------+-------------+
+                |                                |
+                +----------------+---------------+
+                                 |
+                                 v
+  STORE  (Volume Layer)
+  +----------------------------------------------------------+
+  |   ADLS Gen2  Data Lake  (raw  /  curated  /  analytics)  |
+  |   <------>  Microsoft Purview  (catalog + lineage)       |
+  +-----------------------------+----------------------------+
+                                |
+                                v
+  PROCESS + VERACITY
+  +----------------------------------------------------------+
+  |   ADF Data Flows  /  Databricks  /  Synapse Spark        |
+  |   <---  Purview DQ  /  Defender for Cloud  /  Policy     |
+  +-----------------------------+----------------------------+
+                                |
+                                v
+  QUERY
+  +--------------+  +--------------+  +--------------+
+  |  Synapse     |  |  Synapse     |  | Azure ML     |
+  |  Serverless  |  |  Dedicated   |  |  (training)  |
+  +------+-------+  +------+-------+  +------+-------+
+         |                 |                 |
+         +-----------------+-----------------+
+                           |
+                           v
+  VALUE LAYER
+  +----------------------------------------------------------+
+  |   Power BI       |    Azure OpenAI (GPT)                 |
+  |   Copilot (NL)   |    Personalizer                       |
+  +-----------------------------+----------------------------+
+                                |
+                                v
+                 Decisions  -  Revenue  -  Growth
+```
+
+Every box maps to a V. Every arrow is a managed Azure service.
+
+<KeyTakeaways>
+
+- The ingest layer handles Velocity (Event Hubs, Functions) and Variety (Data Factory, AI extractors) side by side
+- ADLS Gen2 with its raw / curated / analytics zones is the Volume backbone, cataloged by Purview
+- Veracity lives inside the processing layer — quality rules run where data is transformed
+- Everything converges on the Value layer: Power BI, Copilot, Azure OpenAI, Personalizer → decisions
+- Every box in the architecture is a managed service — no servers to run
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In the end-to-end stack, where do the Veracity controls (Purview DQ, Defender, Policy) attach?',
+      options: [
+        'The processing layer, alongside ADF Data Flows / Databricks / Synapse Spark',
+        'Only at the Power BI report level',
+        'Inside Event Hubs partitions',
+        'They run outside Azure entirely',
+      ],
+      answer: 0,
+      explanation:
+        'Quality and governance checks run where data is transformed — in the process layer — so bad data never reaches curated zones.',
+    },
+    {
+      question: 'Which layer of the architecture does ADLS Gen2 anchor?',
+      options: [
+        'The ingest layer',
+        'The store (Volume) layer',
+        'The value layer',
+        'The query layer',
+      ],
+      answer: 1,
+      explanation:
+        'ADLS Gen2 with raw/curated/analytics zones is the storage backbone every other service reads and writes.',
+    },
+    {
+      question: 'What is the final output of the whole stack, according to the diagram?',
+      options: [
+        'Parquet files',
+        'Kusto indexes',
+        'Decisions, revenue, and growth',
+        'SQL endpoints',
+      ],
+      answer: 2,
+      explanation:
+        'The architecture exists to produce business outcomes — the Value layer feeds decisions, revenue, and growth.',
+    },
+  ]}
+/>
+
+<LessonComplete />

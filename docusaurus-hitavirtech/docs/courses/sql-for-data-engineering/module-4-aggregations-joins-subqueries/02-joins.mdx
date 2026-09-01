@@ -1,0 +1,262 @@
+---
+title: 'Step 8: Joins — INNER, LEFT, RIGHT, and FULL via UNION'
+sidebar_position: 2
+description: 'All five join types on the hitavir_sales tables — including the FULL OUTER workaround and how to catch cardinality bugs.'
+---
+
+<DurationBadge minutes={30} />
+
+<LearningObjectives>
+
+- Draw and apply `INNER`, `LEFT`, `RIGHT`, `FULL OUTER`, and `CROSS` joins
+- Simulate `FULL OUTER JOIN` in MySQL with `LEFT … UNION … RIGHT`
+- Detect runaway cross joins and cardinality bugs by comparing row counts
+
+</LearningObjectives>
+
+> *"Smart data structures and dumb code works a lot better than the other way around."*
+> — Eric S. Raymond
+
+:::info[HitaVir Tech connection]
+Joins are where your tables tell their story together. 80% of production SQL bugs hide in bad joins — wrong columns, wrong direction, exploding row counts.
+:::
+
+:::tip[Why this matters now]
+In the next 30 minutes, draw every join on paper before you write it. No exceptions.
+:::
+
+### 8.1 — The five joins, drawn
+
+```
+   INNER JOIN              LEFT JOIN              RIGHT JOIN
+   (intersection)          (all left + match)     (all right + match)
+
+      A     B                  A     B                A     B
+     ###   ###                ###   ###              ###   ###
+    #####=####               ####=####              ####=####
+     ###   ###                ###                          ###
+                                                            
+   FULL OUTER JOIN          CROSS JOIN
+   (everything)             (every A x every B)
+
+      A     B                  A     B
+     ###   ###                ### x ###
+    #####=####                = all pairs
+     ###   ###                
+```
+
+MySQL does not have a native `FULL OUTER JOIN` — Step 8.5 shows the standard `UNION` workaround.
+
+### 8.2 — INNER JOIN: matching rows from both sides
+
+```sql
+-- Each order with the buyer's name (matches on both sides only)
+SELECT
+    o.order_id,
+    o.order_date,
+    c.full_name
+FROM orders   AS o
+INNER JOIN customers AS c
+       ON c.customer_id = o.customer_id
+ORDER BY o.order_id
+LIMIT 5;
+```
+
+**Expected output:**
+
+```
++----------+------------+----------------+
+| order_id | order_date | full_name      |
++----------+------------+----------------+
+|        1 | 2026-01-03 | Asha Sharma    |
+|        2 | 2026-01-04 | Kavya Iyer     |
+|        3 | 2026-01-05 | Anjali Desai   |
+|        4 | 2026-01-06 | Priya Patel    |
+|        5 | 2026-01-07 | Ravi Kumar     |
++----------+------------+----------------+
+```
+
+### 8.3 — LEFT JOIN: keep every left row
+
+```sql
+-- Every customer + their order count (zero if they never bought)
+SELECT
+    c.customer_id,
+    c.full_name,
+    COUNT(o.order_id) AS order_count
+FROM customers AS c
+LEFT JOIN orders AS o
+       ON o.customer_id = c.customer_id
+GROUP BY c.customer_id, c.full_name
+ORDER BY order_count, c.customer_id
+LIMIT 5;
+```
+
+**Expected output:**
+
+```
++-------------+----------------+-------------+
+| customer_id | full_name      | order_count |
++-------------+----------------+-------------+
+|          23 | Ritu Agarwal   |           0 |
+|          29 | Ravi Kumar     |           0 |
+|          10 | Karthik Pillai |           1 |
+|          12 | Aditya Bhatt   |           3 |
+|          13 | Divya Krishnan |           3 |
++-------------+----------------+-------------+
+```
+
+:::info[Pro Insight]
+`COUNT(o.order_id)` is the safe pattern, not `COUNT(*)`. With `COUNT(*)` a customer with zero orders still produces a row from the LEFT JOIN — and `COUNT(*)` would count that as 1. Pick a column from the *right* side for the count.
+:::
+
+### 8.4 — RIGHT JOIN: keep every right row
+
+```sql
+-- Every order with customer name; if a customer is missing, still show the order
+SELECT
+    c.full_name,
+    o.order_id,
+    o.order_date
+FROM customers AS c
+RIGHT JOIN orders AS o
+       ON c.customer_id = o.customer_id
+ORDER BY o.order_id
+LIMIT 5;
+```
+
+`RIGHT JOIN` is rarely needed in production — flip the table order and use `LEFT JOIN`. It reads more naturally.
+
+### 8.5 — FULL OUTER JOIN via UNION
+
+```sql
+-- Customers with no orders + orders with no matching customer
+SELECT
+    c.customer_id,
+    c.full_name,
+    o.order_id
+FROM customers AS c
+LEFT JOIN orders AS o
+       ON o.customer_id = c.customer_id
+
+UNION
+
+SELECT
+    c.customer_id,
+    c.full_name,
+    o.order_id
+FROM customers AS c
+RIGHT JOIN orders AS o
+       ON o.customer_id = c.customer_id
+
+ORDER BY customer_id, order_id;
+```
+
+`UNION` deduplicates the merged rows. Use `UNION ALL` if you want duplicates kept (faster — no dedup pass).
+
+### 8.6 — Three-table join (the daily-bread query)
+
+```sql
+-- Order line detail with customer and product names
+SELECT
+    o.order_id,
+    o.order_date,
+    c.full_name      AS customer,
+    p.product_name,
+    oi.quantity,
+    oi.line_amount
+FROM order_items AS oi
+JOIN orders    AS o ON o.order_id    = oi.order_id
+JOIN customers AS c ON c.customer_id = o.customer_id
+JOIN products  AS p ON p.product_id  = oi.product_id
+WHERE o.order_date = '2026-01-03'
+ORDER BY oi.order_item_id;
+```
+
+**Expected output:**
+
+```
++----------+------------+--------------+-----------------+----------+-------------+
+| order_id | order_date | customer     | product_name    | quantity | line_amount |
++----------+------------+--------------+-----------------+----------+-------------+
+|        1 | 2026-01-03 | Asha Sharma  | Laptop Pro 14   |        1 |    89999.00 |
+|        1 | 2026-01-03 | Asha Sharma  | Wireless Mouse  |        1 |     1299.00 |
+|        1 | 2026-01-03 | Asha Sharma  | USB-C Hub       |        2 |     4998.00 |
++----------+------------+--------------+-----------------+----------+-------------+
+```
+
+### 8.7 — The cardinality bug
+
+If you forget the join condition, MySQL gives you a *cross join* — every row in A paired with every row in B. With 100 orders and 30 customers, that's 3,000 rows of nonsense. Always include `ON` clauses, and always sanity-check row counts.
+
+```sql
+-- Sanity check: rows in JOIN = rows in driving table
+SELECT COUNT(*) AS driver_rows FROM order_items;
+SELECT COUNT(*) AS join_rows
+FROM order_items AS oi
+JOIN orders   AS o ON o.order_id = oi.order_id;
+-- Both should return 182.
+```
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Draw `INNER`, `LEFT`, `RIGHT`, `FULL OUTER`, and `CROSS` joins on paper
+- ✅ Pick the correct join for "all customers, even those who never bought"
+- ✅ Simulate `FULL OUTER` in MySQL using `LEFT … UNION … RIGHT`
+- ✅ Spot a runaway cross join by comparing row counts before and after
+
+---
+
+<KeyTakeaways>
+
+- `INNER JOIN` keeps only matches; `LEFT JOIN` keeps every left row with NULLs for missing matches
+- MySQL has no native `FULL OUTER JOIN` — simulate it with `LEFT JOIN … UNION … RIGHT JOIN`
+- After a LEFT JOIN, count with `COUNT(right_table.col)` so zero-match rows count as 0, not 1
+- Sanity-check joins: joined row count should equal the driving table's count unless you *intend* fan-out
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: '"Every customer, including those who never ordered, with their order count." Which join?',
+      options: [
+        'INNER JOIN from orders to customers',
+        'LEFT JOIN from customers to orders',
+        'RIGHT JOIN from customers to orders',
+        'CROSS JOIN of both tables',
+      ],
+      answer: 1,
+      explanation:
+        'LEFT JOIN keeps every row of the left table (customers) even when no order matches — INNER would drop the zero-order customers.',
+    },
+    {
+      question: 'How do you get FULL OUTER JOIN behavior in MySQL?',
+      options: [
+        'Use the FULL OUTER JOIN keyword — MySQL 8.0 added it',
+        'Use CROSS JOIN with a WHERE filter',
+        'UNION a LEFT JOIN with a RIGHT JOIN of the same tables',
+        'It is impossible in any version of MySQL',
+      ],
+      answer: 2,
+      explanation:
+        'The LEFT side contributes unmatched left rows, the RIGHT side unmatched right rows, and UNION deduplicates the overlap.',
+    },
+    {
+      question: 'Your join returns 540 rows but the driving table has 180. Most likely cause?',
+      options: [
+        'The join key is non-unique on the other side (or the ON clause is missing), multiplying rows',
+        'MySQL cached extra rows',
+        'ORDER BY tripled the result',
+        'LIMIT was set too high',
+      ],
+      answer: 0,
+      explanation:
+        'Row-count inflation means each driver row matched multiple rows on the right — a cardinality bug or accidental cross join.',
+    },
+  ]}
+/>
+
+<LessonComplete />

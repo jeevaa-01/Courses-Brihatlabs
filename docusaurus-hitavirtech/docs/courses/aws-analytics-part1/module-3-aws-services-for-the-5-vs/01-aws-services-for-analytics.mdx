@@ -1,0 +1,78 @@
+---
+title: 'AWS Services for Analytics'
+sidebar_position: 1
+description: 'The headline cast of AWS analytics services and the golden rule — every stack follows the ingest → store → catalog → process → query → view → act shape.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Meet the headline AWS analytics services you will map to each V
+- Memorize the universal pipeline shape every analytics stack follows
+- Use the 5 Vs to locate the bottleneck and AWS services to solve it
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |       SECTION  3  -  AWS  SERVICES  BY  THE  5  Vs           |
+  +==============================================================+
+```
+
+### The Headline Cast
+
+![S3](/img/courses/aws-icons/s3.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![EMR](/img/courses/aws-icons/emr.png) ![Glue](/img/courses/aws-icons/glue.png) ![Athena](/img/courses/aws-icons/athena.png) ![Kinesis](/img/courses/aws-icons/kinesis-streams.png) ![Firehose](/img/courses/aws-icons/kinesis-firehose.png) ![Lambda](/img/courses/aws-icons/lambda.png) ![QuickSight](/img/courses/aws-icons/quicksight.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png)
+
+Now we map **each V** to the **AWS services** that solve it.
+
+### The Golden Rule — Every Stack Follows One Shape
+
+```
+  +-------+   +-------+   +-------+   +-------+   +-------+   +-------+   +-------+
+  |       |   |       |   |       |   |       |   |       |   |       |   |       |
+  | INGST | ->| STORE | ->| CATLG | ->| PROCS | ->| QUERY | ->| VIEW  | ->|  ACT  |
+  |       |   |       |   |       |   |       |   |       |   |       |   |       |
+  +-------+   +-------+   +-------+   +-------+   +-------+   +-------+   +-------+
+```
+
+The **5 Vs** tell you where the bottleneck is. The **AWS services** tell you what solves it.
+
+<KeyTakeaways>
+
+- Every analytics stack follows one shape: ingest → store → catalog → process → query → view → act
+- The 5 Vs diagnose where your bottleneck is; AWS services are the toolbox that fixes it
+- The next five lessons cover one dedicated service lineup per V
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is the correct order of the universal analytics pipeline?',
+      options: [
+        'Query → Store → Ingest → View',
+        'Ingest → Store → Catalog → Process → Query → View → Act',
+        'Store → Ingest → Act → Query',
+        'Catalog → Ingest → View → Process',
+      ],
+      answer: 1,
+      explanation:
+        'Data flows in (ingest), lands (store), gets described (catalog), transformed (process), queried, visualized, and finally drives action.',
+    },
+    {
+      question: 'In this framework, what role do the 5 Vs play versus the AWS services?',
+      options: [
+        'The Vs replace AWS services entirely',
+        'AWS services diagnose, the Vs solve',
+        'The Vs diagnose the bottleneck; AWS services solve it',
+        'They are interchangeable terms',
+      ],
+      answer: 2,
+      explanation:
+        'The 5 Vs are the diagnostic checklist; the AWS service lineup per V is the treatment.',
+    },
+  ]}
+/>
+
+<LessonComplete />

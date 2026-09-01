@@ -1,0 +1,138 @@
+---
+title: 'Install Git Bash'
+sidebar_position: 2
+description: 'Download and install Git for Windows, open the Git Bash terminal, and verify it with bash --version.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Install Git for Windows with the recommended PATH option
+- Open Git Bash and understand each part of the prompt
+- Verify the installation with `bash --version`
+
+</LearningObjectives>
+
+Git Bash gives you a Linux-like terminal on Windows. It understands the same commands used on Linux and Mac.
+
+### Step 1 — Download Git for Windows
+
+Go to [https://git-scm.com/download/win](https://git-scm.com/download/win)
+
+Download the **64-bit Windows installer**.
+
+Or open **PowerShell** and run:
+
+```console
+winget install Git.Git
+```
+
+### Step 2 — Run the Installer
+
+1. Double-click the downloaded file
+2. Click **Next** through the installer
+3. **Important:** On the "Adjusting your PATH environment" screen, select **"Git from the command line and also from 3rd-party software"**
+4. On the "Choosing the default editor" screen, select **VS Code** (or your preferred editor)
+5. Accept defaults for all other screens
+6. Click **Install**
+
+### Step 3 — Open Git Bash
+
+Press `Win + S`, type **Git Bash**, and open it.
+
+You should see a window with a prompt like this:
+
+```
+user@COMPUTER MINGW64 ~
+$
+```
+
+This is your terminal. The `$` sign means it is ready for your commands.
+
+### Step 4 — Verify Installation
+
+Type this command and press Enter:
+
+```bash
+bash --version
+```
+
+**Expected output:**
+
+```
+GNU bash, version 5.2.26(1)-release (x86_64-pc-msys)
+```
+
+The version number may differ — any version 4+ is fine.
+
+### Terminal Anatomy
+
+```
+user@COMPUTER MINGW64 ~/projects
+$  ls -la
+│    │         │          │    └── The command you type
+│    │         │          └── Dollar sign = ready for input
+│    │         └── Current directory
+│    └── System name
+└── Your username
+```
+
+### Common Mistakes
+
+| Problem | Solution |
+|---------|----------|
+| "Git Bash not found" | Restart your computer after installation |
+| Blank or frozen screen | Press Enter — the terminal may be waiting |
+| Cannot paste text | Right-click to paste (Ctrl+V may not work) |
+
+:::tip[HitaVir Tech says]
+"Git Bash is your gateway to Linux on Windows. Treat it like your new best friend — you will be spending a lot of time together."
+:::
+
+<KeyTakeaways>
+
+- Git Bash bundles Bash, Git, and core Unix tools (ls, grep, find) on Windows
+- During install, choose **"Git from the command line and also from 3rd-party software"**
+- The `$` in the prompt means the terminal is ready for your next command
+- If Git Bash is missing after install, a restart usually fixes it
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which PATH option should you select during the Git for Windows install?',
+      options: [
+        'Use Git from Git Bash only',
+        'Use Git and optional Unix tools from the Command Prompt',
+        'Skip the PATH screen entirely',
+        'Git from the command line and also from 3rd-party software',
+      ],
+      answer: 3,
+      explanation:
+        'This option makes Git and the Unix tools available to Git Bash and to other programs like VS Code.',
+    },
+    {
+      question: 'What does the $ sign at the end of the Git Bash prompt mean?',
+      options: [
+        'A command is still running',
+        'You are logged in as administrator',
+        'The terminal is ready for your input',
+        'An environment variable follows',
+      ],
+      answer: 2,
+      explanation:
+        'The $ is the standard Bash prompt symbol — it appears when the shell is waiting for your next command.',
+    },
+    {
+      question: 'Which command verifies that Bash installed correctly?',
+      options: ['git verify', 'bash --version', 'check bash', 'version bash'],
+      answer: 1,
+      explanation:
+        'bash --version prints the installed Bash version; any version 4+ works for this course.',
+    },
+  ]}
+/>
+
+<LessonComplete />

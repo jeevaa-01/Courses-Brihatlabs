@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 260" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="780" height="260" rx="12" fill="#f8f9fa"/>
+  <text x="390" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">SCD Types Comparison</text>
+
+  <!-- Header -->
+  <rect x="10" y="40" width="80" height="30" rx="6" fill="#5f6368"/>
+  <text x="50" y="60" text-anchor="middle" font-size="11" font-weight="700" fill="white">Type</text>
+  <rect x="94" y="40" width="150" height="30" rx="6" fill="#5f6368"/>
+  <text x="169" y="60" text-anchor="middle" font-size="11" font-weight="700" fill="white">History</text>
+  <rect x="248" y="40" width="110" height="30" rx="6" fill="#5f6368"/>
+  <text x="303" y="60" text-anchor="middle" font-size="11" font-weight="700" fill="white">Storage</text>
+  <rect x="362" y="40" width="110" height="30" rx="6" fill="#5f6368"/>
+  <text x="417" y="60" text-anchor="middle" font-size="11" font-weight="700" fill="white">Complexity</text>
+  <rect x="476" y="40" width="290" height="30" rx="6" fill="#5f6368"/>
+  <text x="621" y="60" text-anchor="middle" font-size="11" font-weight="700" fill="white">Use Case</text>
+
+  <!-- Type 0 -->
+  <rect x="10" y="76" width="80" height="30" rx="4" fill="#e8eaed"/>
+  <text x="50" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#202124">Type 0</text>
+  <rect x="94" y="76" width="150" height="30" rx="4" fill="#fce8e6"/>
+  <text x="169" y="96" text-anchor="middle" font-size="10" fill="#d93025">None (fixed forever)</text>
+  <rect x="248" y="76" width="110" height="30" rx="4" fill="white"/>
+  <text x="303" y="96" text-anchor="middle" font-size="10" fill="#3c4043">Minimal</text>
+  <rect x="362" y="76" width="110" height="30" rx="4" fill="white"/>
+  <text x="417" y="96" text-anchor="middle" font-size="10" fill="#3c4043">None</text>
+  <rect x="476" y="76" width="290" height="30" rx="4" fill="white"/>
+  <text x="621" y="96" text-anchor="middle" font-size="10" fill="#3c4043">Birth date, SSN, original signup date</text>
+
+  <!-- Type 1 -->
+  <rect x="10" y="110" width="80" height="30" rx="4" fill="#e8eaed"/>
+  <text x="50" y="130" text-anchor="middle" font-size="12" font-weight="700" fill="#202124">Type 1</text>
+  <rect x="94" y="110" width="150" height="30" rx="4" fill="#fce8e6"/>
+  <text x="169" y="130" text-anchor="middle" font-size="10" fill="#d93025">None (overwrite)</text>
+  <rect x="248" y="110" width="110" height="30" rx="4" fill="white"/>
+  <text x="303" y="130" text-anchor="middle" font-size="10" fill="#3c4043">Same</text>
+  <rect x="362" y="110" width="110" height="30" rx="4" fill="white"/>
+  <text x="417" y="130" text-anchor="middle" font-size="10" fill="#3c4043">Low</text>
+  <rect x="476" y="110" width="290" height="30" rx="4" fill="white"/>
+  <text x="621" y="130" text-anchor="middle" font-size="10" fill="#3c4043">Error corrections, non-critical attributes</text>
+
+  <!-- Type 2 (highlighted) -->
+  <rect x="10" y="144" width="80" height="34" rx="4" fill="#1a73e8"/>
+  <text x="50" y="166" text-anchor="middle" font-size="12" font-weight="700" fill="white">Type 2</text>
+  <rect x="94" y="144" width="150" height="34" rx="4" fill="#e8f0fe" stroke="#1a73e8" stroke-width="1.5"/>
+  <text x="169" y="166" text-anchor="middle" font-size="10" font-weight="600" fill="#1a73e8">Full history (new rows)</text>
+  <rect x="248" y="144" width="110" height="34" rx="4" fill="#e8f0fe" stroke="#1a73e8" stroke-width="1.5"/>
+  <text x="303" y="166" text-anchor="middle" font-size="10" fill="#1a73e8">Grows</text>
+  <rect x="362" y="144" width="110" height="34" rx="4" fill="#e8f0fe" stroke="#1a73e8" stroke-width="1.5"/>
+  <text x="417" y="166" text-anchor="middle" font-size="10" fill="#1a73e8">Medium</text>
+  <rect x="476" y="144" width="290" height="34" rx="4" fill="#e8f0fe" stroke="#1a73e8" stroke-width="1.5"/>
+  <text x="621" y="166" text-anchor="middle" font-size="10" font-weight="600" fill="#1a73e8">Address, status changes (MOST USED)</text>
+
+  <!-- Type 3 -->
+  <rect x="10" y="182" width="80" height="30" rx="4" fill="#e8eaed"/>
+  <text x="50" y="202" text-anchor="middle" font-size="12" font-weight="700" fill="#202124">Type 3</text>
+  <rect x="94" y="182" width="150" height="30" rx="4" fill="#fef7e0"/>
+  <text x="169" y="202" text-anchor="middle" font-size="10" fill="#ea8600">Current + previous only</text>
+  <rect x="248" y="182" width="110" height="30" rx="4" fill="white"/>
+  <text x="303" y="202" text-anchor="middle" font-size="10" fill="#3c4043">+1 column</text>
+  <rect x="362" y="182" width="110" height="30" rx="4" fill="white"/>
+  <text x="417" y="202" text-anchor="middle" font-size="10" fill="#3c4043">Low</text>
+  <rect x="476" y="182" width="290" height="30" rx="4" fill="white"/>
+  <text x="621" y="202" text-anchor="middle" font-size="10" fill="#3c4043">When 1 level of history is enough</text>
+
+  <!-- Type 6 -->
+  <rect x="10" y="216" width="80" height="30" rx="4" fill="#e8eaed"/>
+  <text x="50" y="236" text-anchor="middle" font-size="12" font-weight="700" fill="#202124">Type 6</text>
+  <rect x="94" y="216" width="150" height="30" rx="4" fill="#e6f4ea"/>
+  <text x="169" y="236" text-anchor="middle" font-size="10" fill="#34a853">Full + current + previous</text>
+  <rect x="248" y="216" width="110" height="30" rx="4" fill="white"/>
+  <text x="303" y="236" text-anchor="middle" font-size="10" fill="#3c4043">Grows + cols</text>
+  <rect x="362" y="216" width="110" height="30" rx="4" fill="white"/>
+  <text x="417" y="236" text-anchor="middle" font-size="10" fill="#3c4043">High</text>
+  <rect x="476" y="216" width="290" height="30" rx="4" fill="white"/>
+  <text x="621" y="236" text-anchor="middle" font-size="10" fill="#3c4043">When you need everything (hybrid 1+2+3)</text>
+
+  <text x="390" y="256" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech — Type 2 is the most asked in interviews</text>
+</svg>

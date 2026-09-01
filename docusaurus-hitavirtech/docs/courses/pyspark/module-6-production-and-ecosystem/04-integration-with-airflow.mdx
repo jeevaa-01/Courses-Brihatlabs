@@ -1,0 +1,103 @@
+---
+title: "Integration with Airflow"
+description: "Integration with Airflow — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Integration with Airflow
+
+*⏱ Estimated time: 45 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Orchestrate the pipeline with an Airflow DAG.
+- Keep orchestration logic separate from transformation logic.
+
+:::
+
+Airflow can orchestrate Spark jobs.
+
+Simplified example:
+
+```python
+from datetime import datetime
+
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+
+with DAG(
+    dag_id="hitavir_pyspark_sales_pipeline",
+    start_date=datetime(2026, 1, 1),
+    schedule="@daily",
+    catchup=False,
+) as dag:
+    run_pipeline = BashOperator(
+        task_id="run_pyspark_pipeline",
+        bash_command=(
+            "cd /path/to/project && "
+            "python -m src.pipeline"
+        ),
+    )
+```
+
+For clusters, Airflow may use:
+
+- SparkSubmitOperator.
+- Databricks operators.
+- KubernetesPodOperator.
+- Cloud-specific operators.
+
+### ✅ Checkpoint
+
+Explain the difference:
+
+```text
+Spark processes data.
+Airflow orchestrates workflows.
+```
+
+<Quiz
+  questions={[
+  {
+    "question": "The relationship between Airflow and Spark is:",
+    "options": [
+      "Both process distributed data",
+      "Airflow orchestrates workflows; Spark processes data",
+      "Airflow replaces Spark"
+    ],
+    "answer": 1,
+    "explanation": "Keep the scheduler light and let Spark do the heavy lifting."
+  },
+  {
+    "question": "Running heavy data processing inside the Airflow scheduler is:",
+    "options": [
+      "Recommended",
+      "An anti-pattern",
+      "Required"
+    ],
+    "answer": 1,
+    "explanation": "Use operators to launch the work on Spark or Databricks."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- Airflow schedules and monitors; Spark transforms.
+- Use operators (SparkSubmit, Databricks) to launch heavy work outside the scheduler.
+- Separated concerns keep both systems simple to operate.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Do not use Airflow to perform heavy data processing inside the scheduler process.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Keep orchestration logic separate from transformation logic.
+
+:::

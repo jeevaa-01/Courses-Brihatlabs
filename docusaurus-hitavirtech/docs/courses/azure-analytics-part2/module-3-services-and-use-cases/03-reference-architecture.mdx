@@ -1,0 +1,276 @@
+---
+title: 'Reference Architecture'
+sidebar_position: 3
+description: 'Six whiteboard-ready Azure reference architectures — Batch BI, Real-Time, Log Observability, Customer 360, ML, and Data Mesh — with when to pick each.'
+---
+
+<DurationBadge minutes={12} />
+
+<LearningObjectives>
+
+- Read each of the six whiteboard-ready Azure reference architectures
+- Explain when to pick each pattern and which V dominates it
+- Compare the storage, compute, and serving choices across all six shapes
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |           SECTION  3  -  REFERENCE  ARCHITECTURES            |
+  +==============================================================+
+```
+
+For each use case, here is a whiteboard-ready Azure architecture you can copy, adapt, and defend in a design review.
+
+### Reference 1 — Batch BI on a Lakehouse
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg)
+
+```
+  Azure SQL / Postgres            Dynamics 365, Salesforce
+           |                                |
+           +---- ADF with CDC connector ----+
+                                   |
+                                   v
+            +--------------------------------------+
+            |     ADLS Gen2  Data Lake             |
+            |     raw -> curated (Delta/Parquet)   |
+            +---------------+----------------------+
+                            |
+                            v  (ADF Data Flows, Purview DQ, catalog)
+                            |
+            +---------------+----------------------+
+            |   Synapse Dedicated SQL Pool         |
+            |   - Star schemas                     |
+            |   - Nightly COPY loads               |
+            +---------------+----------------------+
+                            |
+                            v
+                     Power BI
+               (Direct Query or Import)
+                            |
+                            v
+                        Executives
+```
+
+**When to pick it:** Finance, ops, exec reporting. Stable queries, predictable loads.
+
+### Reference 2 — Real-Time Analytics
+
+![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Functions](/img/courses/azure-icons/functions.svg) ![Data Explorer](/img/courses/azure-icons/data-explorer.svg) ![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg)
+
+```
+  Producers (apps, IoT, clickstream)
+             |
+             v
+   +-------------------------+
+   |  Azure Event Hubs       |
+   |  (durable, partitioned) |
+   +------------+------------+
+                |
+    +-----------+------------+------------+
+    |                        |            |
+    v                        v            v
+ Stream Analytics          Functions    Capture
+ (continuous SQL)        (alerting on    |
+    |                    anomalies)      v
+    |                        |         ADLS
+    v                        v       (Parquet, hist.)
+ Live dashboard            Service         |
+ (Power BI streaming)      Bus / Teams     v
+ OR Data Explorer          alert        Synapse
+                                        Serverless
+                                         ad-hoc
+```
+
+**When to pick it:** Fraud detection, live pricing, real-time personalization, IoT.
+
+### Reference 3 — Log & Application Observability
+
+![Monitor](/img/courses/azure-icons/monitor.svg) ![Log Analytics](/img/courses/azure-icons/log-analytics.svg) ![Data Explorer](/img/courses/azure-icons/data-explorer.svg) ![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg)
+
+```
+  App services / AKS / VMs / Activity Log / Defender
+                      |
+                      v
+              Azure Monitor
+          (agent + diagnostic settings)
+                      |
+           +----------+-----------+
+           |                      |
+           v                      v
+   Log Analytics /          ADLS (archive)
+   Data Explorer            (cheap, years)
+   (hot, 30-90 days)              |
+           |                      v
+           v                 Synapse Serverless
+   KQL dashboards /         for historical
+   Grafana / Sentinel       audits
+```
+
+**When to pick it:** SRE and platform teams, security logs (Sentinel), microservice observability.
+
+### Reference 4 — Customer 360
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![ML](/img/courses/azure-icons/ml.svg)
+
+```
+  Dynamics 365   Web events    Mobile app    Zendesk / SN
+       |            |              |                |
+       +------------+------+-------+----------------+
+                          |
+                          v
+                ADLS Gen2 Data Lake (raw)
+                          |
+                          v  ADF + Purview DQ
+                          |
+                ADLS Gen2 Data Lake (curated, Delta)
+                          |
+                          v
+         +----------------+------------------+
+         |                                    |
+         v                                    v
+     Synapse                              Azure ML
+     Unified Customer                     Features + Models
+     table (serving BI)                   (churn, LTV, NBA)
+         |                                    |
+         v                                    v
+      Power BI 360                   Marketing automation
+      dashboard                      (personalized offers)
+```
+
+**When to pick it:** Retail, banking, telecom, subscription SaaS.
+
+### Reference 5 — ML / Predictive Analytics
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Databricks](/img/courses/azure-icons/databricks.svg) ![ML](/img/courses/azure-icons/ml.svg) ![Functions](/img/courses/azure-icons/functions.svg)
+
+```
+  +----------------------+
+  |   ADLS / OneLake     |
+  |   (historical data)  |
+  +----------+-----------+
+             |
+             v
+  +----------------------+
+  |  Databricks / Synapse|
+  |  Feature engineering |
+  +----------+-----------+
+             |
+             v
+  +-------------------------+
+  |  Azure ML Feature Store |
+  +-----+-----------+-------+
+        |           |
+  (training)    (serving)
+        v           v
+  Azure ML       Real-time
+  Jobs           endpoint
+  (compute       (managed online
+   cluster)       inference)
+        |           |
+        v           v
+     Models    Mobile / web app
+                (personalized UX)
+```
+
+**When to pick it:** Recommenders, fraud detection, demand forecasting, dynamic pricing.
+
+### Reference 6 — Data Mesh on Azure
+
+![Policy](/img/courses/azure-icons/policy.svg) ![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Data Shares](/img/courses/azure-icons/data-shares.svg)
+
+```
+  Domain A (Orders)      Domain B (Marketing)     Domain C (Finance)
+  owns its own pipes     owns its own pipes       owns its own pipes
+     |                       |                         |
+     v                       v                         v
+  ADLS + Synapse          ADLS + Synapse           ADLS + Synapse
+  (Orders domain)         (Marketing domain)       (Finance domain)
+     |                       |                         |
+     +-----------+-----------+-------------------------+
+                 |
+                 v
+       +-----------------------------------+
+       |  Microsoft Purview  (central cat) |
+       |  + Fabric domains + Data Policies |
+       +---------------+-------------------+
+                       |
+          +------------+------------+
+          |            |            |
+          v            v            v
+        Analyst    Data sci.    Executive
+       (Synapse)  (Azure ML)   (Power BI / Copilot)
+```
+
+**When to pick it:** Large enterprises where domain teams must own their data products, but a central platform team guarantees governance.
+
+### Reference Architecture Comparison
+
+| # | Pattern | Primary V | Storage | Compute | Serve |
+|:-:|---------|:-------:|---------|---------|-------|
+| 1 | Batch BI | Volume | ADLS + Synapse | ADF, Synapse Dedicated | Power BI |
+| 2 | Real-Time | Velocity | Event Hubs + ADLS | Stream Analytics, Functions | Power BI, Data Explorer |
+| 3 | Log Obs. | Velocity + Variety | Log Analytics + ADX + ADLS | Azure Monitor | KQL dashboards, Sentinel |
+| 4 | 360 | Variety + Value | ADLS + Synapse | ADF | Power BI + apps |
+| 5 | ML | Value | ADLS | Databricks, Azure ML | Endpoint in app |
+| 6 | Mesh | Veracity + Value | Distributed ADLS | Per-domain | Purview + Power BI |
+
+:::tip[HitaVir Tech says]
+"Architects don't memorize 50 services — they memorize 6 shapes. When someone
+brings a new problem, they map it to a shape first, then pick services to fit.
+Copy these six patterns. Most of your career, you'll be adapting one of them."
+:::
+
+<KeyTakeaways>
+
+- Architects memorize shapes, not services — these six shapes cover most of a career
+- Batch BI: ADF → ADLS (raw → curated) → Synapse Dedicated star schemas → Power BI
+- Real-time: Event Hubs fans out to Stream Analytics (live SQL), Functions (alerts), and Capture-to-ADLS (history)
+- Log observability keeps 30-90 days hot in ADX and archives years cheaply in ADLS
+- Data mesh: domains own their pipes; Purview + Fabric domains guarantee central discovery and governance
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In the real-time reference architecture, which branch stores cheap long-term history?',
+      options: [
+        'Stream Analytics continuous SQL',
+        'Service Bus alerts',
+        'Event Hubs Capture writing Parquet to ADLS',
+        'The Power BI streaming dashboard',
+      ],
+      answer: 2,
+      explanation:
+        'Capture lands raw events in ADLS as Parquet, where Synapse Serverless can query years of history ad hoc.',
+    },
+    {
+      question: 'In the Batch BI reference architecture, where do the star schemas live?',
+      options: [
+        'Synapse Dedicated SQL Pool',
+        'Event Hubs',
+        'Azure Data Explorer',
+        'Azure Functions',
+      ],
+      answer: 0,
+      explanation:
+        'The warehouse (Synapse Dedicated) holds star schemas loaded nightly with COPY, serving Power BI at interactive speed.',
+    },
+    {
+      question: 'In a data mesh, what does the central platform team guarantee?',
+      options: [
+        'Building every domain pipeline itself',
+        'Governance and discoverability via Purview and Fabric domains',
+        'All star schemas across the company',
+        'Power BI licenses for executives',
+      ],
+      answer: 1,
+      explanation:
+        'Domains own their data products and pipelines; the platform team provides the central catalog, policies, and access control.',
+    },
+  ]}
+/>
+
+<LessonComplete />

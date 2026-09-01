@@ -1,0 +1,9 @@
+{
+  "label": "Module 1 \u00b7 Foundations of Spark and PySpark",
+  "position": 3,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "description": "Spark architecture, Databricks Free Edition, SparkSessions, and explicit schemas."
+  }
+}

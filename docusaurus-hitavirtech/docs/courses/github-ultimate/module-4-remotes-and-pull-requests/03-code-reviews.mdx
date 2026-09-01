@@ -1,0 +1,135 @@
+---
+title: 'Code Reviews'
+sidebar_position: 3
+description: 'Review pull requests on GitHub — what to look for, how to give constructive feedback, respond to review comments, and merge the PR.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Review a PR on GitHub: comment, approve, or request changes
+- Apply a checklist — correctness, readability, security, tests
+- Respond to review feedback and merge the approved PR
+
+</LearningObjectives>
+
+Code reviews are where teams catch bugs, share knowledge, and maintain quality.
+
+### How to Review a PR on GitHub
+
+1. Go to the PR page
+2. Click the **Files changed** tab
+3. Read through each change
+4. Click the `+` icon on any line to add a comment
+5. Choose: **Comment**, **Approve**, or **Request changes**
+6. Submit your review
+
+### What to Look For in a Code Review
+
+| Check | Question to Ask |
+|-------|----------------|
+| Correctness | Does the code do what it claims? |
+| Readability | Can I understand this in 30 seconds? |
+| Edge cases | What happens with empty input or errors? |
+| Security | Any hardcoded passwords or exposed data? |
+| Tests | Are there tests for new functionality? |
+| Style | Does it follow the project conventions? |
+
+### Giving Good Review Feedback
+
+**Good:** "This function could return null if the list is empty. Consider adding a check on line 42."
+
+**Bad:** "This is wrong."
+
+### Handling Reviews on Your PR
+
+When you receive review comments:
+
+1. Read each comment carefully
+2. Make the requested changes locally
+3. Commit and push — the PR updates automatically
+4. Reply to each comment explaining what you changed
+5. Re-request review
+
+```bash
+# Make changes based on review
+echo "Contact: hitavir@example.com" >> bio.md
+git add bio.md
+git commit -m "Address review: add contact info"
+git push
+```
+
+### Merge the PR
+
+Once approved, merge on GitHub:
+
+1. Click **Merge pull request**
+2. Choose merge strategy (usually "Create a merge commit")
+3. Click **Confirm merge**
+4. Click **Delete branch** (clean up)
+
+**Update your local repo:**
+
+```bash
+git switch main
+git pull origin main
+git branch -d feature-bio
+```
+
+:::tip[HitaVir Tech says]
+"Code reviews are not about finding fault — they are about making the code better together. Be kind, be specific, and be constructive."
+:::
+
+<KeyTakeaways>
+
+- Reviews happen on the **Files changed** tab; a reviewer can Comment, Approve, or Request changes
+- Check correctness, readability, edge cases, security, tests, and style
+- Good feedback is specific and actionable — point to the line and suggest a fix
+- Pushing new commits to the same branch updates the PR automatically
+- After merging, pull `main` locally and delete the feature branch
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which is an example of GOOD review feedback?',
+      options: [
+        '"This is wrong."',
+        '"Rewrite all of this."',
+        '"This function could return null if the list is empty. Consider adding a check on line 42."',
+        '"I would have done this differently."',
+      ],
+      answer: 2,
+      explanation:
+        'Good feedback is specific, explains the problem, and suggests a concrete fix — not vague criticism.',
+    },
+    {
+      question: 'You received review comments on your PR. After fixing the code locally, how does the PR get updated?',
+      options: [
+        'Commit and push to the same branch — the PR updates automatically',
+        'Open a brand-new PR',
+        'Email the reviewer the new files',
+        'Delete the branch and start over',
+      ],
+      answer: 0,
+      explanation:
+        'A PR tracks its source branch. Any new commits pushed to that branch appear in the PR immediately.',
+    },
+    {
+      question: 'What are the three review verdicts a reviewer can submit on GitHub?',
+      options: [
+        'Pass, Fail, Retry',
+        'Comment, Approve, Request changes',
+        'Merge, Close, Reopen',
+        'Like, Dislike, Block',
+      ],
+      answer: 1,
+      explanation:
+        'GitHub reviews end with one of three states: a neutral comment, an approval, or a request for changes.',
+    },
+  ]}
+/>
+
+<LessonComplete />

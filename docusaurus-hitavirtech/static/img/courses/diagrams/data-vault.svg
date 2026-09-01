@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="s" x="-4%" y="-4%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  <rect width="760" height="320" rx="12" fill="#f8f9fa"/>
+  <text x="380" y="28" text-anchor="middle" font-size="14" font-weight="600" fill="#5f6368">DATA VAULT 2.0 — Building Blocks</text>
+
+  <!-- Hub Customer -->
+  <rect x="40" y="60" width="180" height="70" rx="10" fill="#1a73e8" filter="url(#s)"/>
+  <text x="130" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="white">HUB</text>
+  <text x="130" y="108" text-anchor="middle" font-size="11" fill="#c2d9f7">Customer</text>
+  <text x="130" y="122" text-anchor="middle" font-size="9" fill="#90b8f0">customer_id (BK)</text>
+
+  <!-- Link -->
+  <rect x="280" y="60" width="200" height="70" rx="10" fill="#ea8600" filter="url(#s)"/>
+  <text x="380" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="white">LINK</text>
+  <text x="380" y="108" text-anchor="middle" font-size="11" fill="#fce4b8">Customer-Order</text>
+  <text x="380" y="122" text-anchor="middle" font-size="9" fill="#f5d69e">hub_cust + hub_order</text>
+
+  <!-- Hub Order -->
+  <rect x="540" y="60" width="180" height="70" rx="10" fill="#1a73e8" filter="url(#s)"/>
+  <text x="630" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="white">HUB</text>
+  <text x="630" y="108" text-anchor="middle" font-size="11" fill="#c2d9f7">Order</text>
+  <text x="630" y="122" text-anchor="middle" font-size="9" fill="#90b8f0">order_id (BK)</text>
+
+  <!-- Lines Hub to Link -->
+  <line x1="220" y1="95" x2="280" y2="95" stroke="#9aa0a6" stroke-width="2"/>
+  <line x1="480" y1="95" x2="540" y2="95" stroke="#9aa0a6" stroke-width="2"/>
+
+  <!-- Satellite Customer -->
+  <rect x="20" y="180" width="220" height="100" rx="8" fill="#34a853" filter="url(#s)"/>
+  <text x="130" y="206" text-anchor="middle" font-size="13" font-weight="700" fill="white">SATELLITE</text>
+  <text x="130" y="224" text-anchor="middle" font-size="11" fill="#b8e6c4">Customer Details</text>
+  <line x1="40" y1="232" x2="220" y2="232" stroke="#5ec97a" stroke-width="1"/>
+  <text x="130" y="250" text-anchor="middle" font-size="10" fill="white">name, email, city, segment</text>
+  <text x="130" y="268" text-anchor="middle" font-size="10" fill="#b8e6c4">load_date, hash_diff, source</text>
+
+  <!-- Satellite Order -->
+  <rect x="520" y="180" width="220" height="100" rx="8" fill="#34a853" filter="url(#s)"/>
+  <text x="630" y="206" text-anchor="middle" font-size="13" font-weight="700" fill="white">SATELLITE</text>
+  <text x="630" y="224" text-anchor="middle" font-size="11" fill="#b8e6c4">Order Details</text>
+  <line x1="540" y1="232" x2="720" y2="232" stroke="#5ec97a" stroke-width="1"/>
+  <text x="630" y="250" text-anchor="middle" font-size="10" fill="white">amount, status, ship_date</text>
+  <text x="630" y="268" text-anchor="middle" font-size="10" fill="#b8e6c4">load_date, hash_diff, source</text>
+
+  <!-- Lines Hub to Sat -->
+  <line x1="130" y1="130" x2="130" y2="180" stroke="#9aa0a6" stroke-width="2" stroke-dasharray="4"/>
+  <line x1="630" y1="130" x2="630" y2="180" stroke="#9aa0a6" stroke-width="2" stroke-dasharray="4"/>
+
+  <!-- Legend -->
+  <rect x="260" y="185" width="240" height="85" rx="8" fill="white" stroke="#dadce0" filter="url(#s)"/>
+  <text x="380" y="205" text-anchor="middle" font-size="11" font-weight="600" fill="#3c4043">Legend</text>
+  <rect x="280" y="214" width="14" height="14" rx="3" fill="#1a73e8"/>
+  <text x="302" y="225" font-size="10" fill="#3c4043">HUB — Business Keys (never change)</text>
+  <rect x="280" y="234" width="14" height="14" rx="3" fill="#ea8600"/>
+  <text x="302" y="245" font-size="10" fill="#3c4043">LINK — Relationships between Hubs</text>
+  <rect x="280" y="254" width="14" height="14" rx="3" fill="#34a853"/>
+  <text x="302" y="265" font-size="10" fill="#3c4043">SAT — Descriptive data (with history)</text>
+
+  <text x="380" y="310" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

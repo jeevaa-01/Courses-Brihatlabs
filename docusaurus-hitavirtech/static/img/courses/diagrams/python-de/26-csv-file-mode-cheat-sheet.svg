@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 479 226" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="479" height="226" rx="12" fill="#f8f9fa"/>
+  <text x="239" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">CSV File Mode Cheat Sheet</text>
+  <rect x="15" y="40" width="70" height="30" rx="6" fill="#1a73e8"/>
+  <text x="50" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Mode</text>
+  <rect x="90" y="40" width="138" height="30" rx="6" fill="#1a73e8"/>
+  <text x="159" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Meaning</text>
+  <rect x="233" y="40" width="230" height="30" rx="6" fill="#1a73e8"/>
+  <text x="348" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Use it for</text>
+  <rect x="15" y="76" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">"r"</text>
+  <rect x="90" y="76" width="138" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="100" y="94" font-size="12" fill="#1a73e8">Read</text>
+  <rect x="233" y="76" width="230" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="243" y="94" font-size="12" fill="#1a73e8">Loading existing data</text>
+  <rect x="15" y="108" width="70" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">"w"</text>
+  <rect x="90" y="108" width="138" height="28" rx="4" fill="white"/>
+  <text x="100" y="126" font-size="12" fill="#3c4043">Write (overwrites)</text>
+  <rect x="233" y="108" width="230" height="28" rx="4" fill="white"/>
+  <text x="243" y="126" font-size="12" fill="#3c4043">Creating a new output file</text>
+  <rect x="15" y="140" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">"a"</text>
+  <rect x="90" y="140" width="138" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="100" y="158" font-size="12" fill="#1a73e8">Append</text>
+  <rect x="233" y="140" width="230" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="243" y="158" font-size="12" fill="#1a73e8">Adding new rows to an existing log</text>
+  <rect x="15" y="172" width="70" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">"r+"</text>
+  <rect x="90" y="172" width="138" height="28" rx="4" fill="white"/>
+  <text x="100" y="190" font-size="12" fill="#3c4043">Read + write</text>
+  <rect x="233" y="172" width="230" height="28" rx="4" fill="white"/>
+  <text x="243" y="190" font-size="12" fill="#3c4043">Rare in DE — usually avoid</text>
+  <text x="239" y="220" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

@@ -1,0 +1,140 @@
+---
+title: 'Final Quiz'
+sidebar_position: 8
+description: 'The graded final quiz for GitHub Ultimate — ten questions across the whole course. Aim for at least 7 of 10.'
+---
+
+<DurationBadge minutes={10} />
+
+# Final Quiz
+
+This quiz covers the whole course. **Aim for at least 7 of 10.** If you miss a
+question, revisit the lesson it came from before moving on to your next course.
+
+<Quiz
+  title="Graded final quiz"
+  questions={[
+    {
+      question: 'What is the correct flow of a change through Git?',
+      options: [
+        'Working directory → staging area (git add) → repository (git commit)',
+        'Repository → staging area → working directory',
+        'Staging area → repository → working directory',
+        'Working directory → repository → staging area',
+      ],
+      answer: 0,
+      explanation:
+        'You edit in the working directory, stage with git add, and permanently record with git commit.',
+    },
+    {
+      question: 'Which file keeps secrets like API keys OUT of version control?',
+      options: [
+        'README.md',
+        '.gitignore',
+        'config.yml',
+        '.git/HEAD',
+      ],
+      answer: 1,
+      explanation:
+        'Patterns in .gitignore (like .env) stop files from ever being tracked — the first line of defense for secrets.',
+    },
+    {
+      question: 'A merge conflict appears. What does it actually mean?',
+      options: [
+        'The repository is corrupted',
+        'You must delete one of the branches',
+        'Two branches changed the same line and Git needs your human judgment',
+        'GitHub is offline',
+      ],
+      answer: 2,
+      explanation:
+        'Conflicts are not errors — Git pauses so you can decide which competing change (or combination) is correct.',
+    },
+    {
+      question: 'Which undo command is safe on a branch your teammates already pulled?',
+      options: [
+        'git reset --hard HEAD~1',
+        'git rebase -i HEAD~3',
+        'git push --force',
+        'git revert HEAD',
+      ],
+      answer: 3,
+      explanation:
+        'revert creates a NEW commit that undoes the old one — history is never rewritten, so teammates stay in sync.',
+    },
+    {
+      question: 'What does git push -u origin main accomplish beyond a normal push?',
+      options: [
+        'It sets the upstream so future pushes and pulls need no arguments',
+        'It force-pushes over remote changes',
+        'It uploads tags as well',
+        'It makes the repository public',
+      ],
+      answer: 0,
+      explanation:
+        'The -u flag records origin/main as the tracking branch — afterwards plain git push and git pull just work.',
+    },
+    {
+      question: 'What is the correct pull request workflow order?',
+      options: [
+        'Open PR → branch → commit → push',
+        'Branch → commit → push → open PR → review → merge',
+        'Push to main → open PR → branch',
+        'Merge → review → commit',
+      ],
+      answer: 1,
+      explanation:
+        'Work happens on a branch, gets pushed, and the PR invites review BEFORE anything lands on main.',
+    },
+    {
+      question: 'When is rebase the WRONG choice?',
+      options: [
+        'On a local feature branch only you use',
+        'Before opening a pull request to clean up commits',
+        'On a shared branch other people are working on',
+        'Rebase is never wrong',
+      ],
+      answer: 2,
+      explanation:
+        'Rebase rewrites history. On shared branches that creates conflicting histories for everyone else — the golden rule.',
+    },
+    {
+      question: 'Where do GitHub Actions workflow files live?',
+      options: [
+        '.git/hooks/',
+        'The repository root',
+        'actions/workflows/',
+        '.github/workflows/',
+      ],
+      answer: 3,
+      explanation:
+        'GitHub only discovers workflow YAML files inside the .github/workflows/ directory.',
+    },
+    {
+      question: 'In the fork workflow, how do you bring the ORIGINAL project’s latest changes into your fork?',
+      options: [
+        'git fetch upstream, then merge upstream/main into your main',
+        'Delete your fork and fork again',
+        'git push origin main',
+        'Open a PR from the original repo to your fork',
+      ],
+      answer: 0,
+      explanation:
+        'The upstream remote points at the original repository; fetching and merging it keeps your fork current.',
+    },
+    {
+      question: 'You need ONE bug-fix commit from a messy experimental branch on main. Which tool?',
+      options: [
+        'git merge feature-experimental',
+        'git cherry-pick <commit-hash>',
+        'git rebase feature-experimental',
+        'git stash pop',
+      ],
+      answer: 1,
+      explanation:
+        'Cherry-pick copies exactly one commit onto your current branch — the experiments never touch main.',
+    },
+  ]}
+/>
+
+<LessonComplete />

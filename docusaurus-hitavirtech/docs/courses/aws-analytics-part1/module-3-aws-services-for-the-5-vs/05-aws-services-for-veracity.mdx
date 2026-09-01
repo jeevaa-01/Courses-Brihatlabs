@@ -1,0 +1,202 @@
+---
+title: 'AWS Services for Veracity'
+sidebar_position: 5
+description: 'The AWS Veracity toolkit — DataBrew, Glue Data Quality, Macie, CloudTrail, Config — and the profile → enforce → monitor data quality lifecycle.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Match trust services to jobs: DataBrew (visual prep), Glue Data Quality (rules), Macie (PII), CloudTrail/Config (audit)
+- Walk the data quality lifecycle from profiling to monitoring
+- Design a quality gate that quarantines bad rows instead of poisoning the curated zone
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              AWS  FOR  VERACITY                              |
+  |         "Make sure the data is trustworthy."                 |
+  +==============================================================+
+```
+
+### The Veracity Lineup
+
+![DataBrew](/img/courses/aws-icons/glue-databrew.png) ![Glue DQ](/img/courses/aws-icons/glue-dq.png) ![Lake Formation](/img/courses/aws-icons/lake-formation.png) ![Macie](/img/courses/aws-icons/macie.png) ![CloudTrail](/img/courses/aws-icons/cloudtrail.png) ![Config](/img/courses/aws-icons/config.png) ![IAM](/img/courses/aws-icons/iam.png) ![KMS](/img/courses/aws-icons/kms.png)
+
+**DataBrew** • **Glue Data Quality** • **Lake Formation** • **Macie** • **CloudTrail** • **Config** • **IAM** • **KMS**
+
+### The Veracity Toolkit
+
+| Service | Icon | Purpose |
+|---------|:---:|---------|
+| **AWS Glue DataBrew** | <img src="aws-icons/glue-databrew.png" width="32" height="32" alt="Glue DataBrew" /> | Visual data cleaning and profiling |
+| **AWS Glue Data Quality** | <img src="aws-icons/glue-dq.png" width="32" height="32" alt="Glue Data Quality" /> | Rule-based DQ checks |
+| **Amazon Deequ (library)** | <img src="aws-icons/glue-dq.png" width="32" height="32" alt="Deequ" /> | Unit tests for data on Spark |
+| **AWS Lake Formation** | <img src="aws-icons/lake-formation.png" width="32" height="32" alt="Lake Formation" /> | Governance and fine-grained permissions |
+| **AWS CloudTrail** | <img src="aws-icons/cloudtrail.png" width="32" height="32" alt="CloudTrail" /> | Audit every API call |
+| **AWS Config** | <img src="aws-icons/config.png" width="32" height="32" alt="AWS Config" /> | Track resource configuration drift |
+| **Amazon Macie** | <img src="aws-icons/macie.png" width="32" height="32" alt="Macie" /> | Discover and classify PII in S3 |
+| **AWS KMS** | <img src="aws-icons/kms.png" width="32" height="32" alt="KMS" /> | Manage encryption keys |
+
+### Service Spotlight — AWS Glue DataBrew
+
+![DataBrew](/img/courses/aws-icons/glue-databrew.png)
+
+```
+  +--------------------------------------------------------------+
+  |  GLUE  DATABREW  -  No-Code Data Prep                        |
+  +--------------------------------------------------------------+
+  |  Interface    :  Visual, spreadsheet-like                    |
+  |  Transforms   :  250+ built-in (nulls, dupes, dates...)      |
+  |  Profiling    :  Auto column stats, anomaly flags            |
+  |  Recipes      :  Save and schedule as jobs                   |
+  |                                                              |
+  |  Hand this to business analysts - no Spark needed.           |
+  +--------------------------------------------------------------+
+```
+
+```
+  Load  --->  Profile  --->  Apply transforms  --->  Export
+              (stats,        (fill nulls, parse      (to S3 or
+               anomalies)     dates, standardize)     Redshift)
+```
+
+### Service Spotlight — Glue Data Quality
+
+![Glue Data Quality](/img/courses/aws-icons/glue-dq.png)
+
+```
+  +--------------------------------------------------------------+
+  |  GLUE  DATA  QUALITY  -  Rules That Guard the Lake           |
+  +--------------------------------------------------------------+
+  |  Rule types    :  Completeness, uniqueness, ranges, custom   |
+  |  Enforcement   :  Block pipeline  OR  quarantine  OR  alert  |
+  |  ML-assisted   :  Recommends rules from sample data          |
+  |                                                              |
+  |  Data quality becomes a pipeline concern, not tribal.        |
+  +--------------------------------------------------------------+
+```
+
+```
+  RULES                                          CHECK RESULT
+  -----                                          -------------
+  order_id IS NOT NULL                     ...   PASS
+  amount BETWEEN 0 AND 1_000_000           ...   PASS
+  customer_id IN customers                 ...   PASS
+  COUNT(DISTINCT order_id) = COUNT(*)      ...   FAIL - 23 dupes!
+```
+
+### Service Spotlight — Amazon Macie
+
+![Macie](/img/courses/aws-icons/macie.png)
+
+```
+  +--------------------------------------------------------------+
+  |  AMAZON  MACIE  -  PII Detective                             |
+  +--------------------------------------------------------------+
+  |  Method       :  ML-based classification of S3 contents      |
+  |  Finds        :  Credit cards, SSNs, emails, addresses       |
+  |  Output       :  Severity alerts -> Security Hub             |
+  |                                                              |
+  |  Sniffs sensitive data hiding in your data lake.             |
+  +--------------------------------------------------------------+
+```
+
+### CloudTrail + Config — The Audit Twins
+
+![CloudTrail](/img/courses/aws-icons/cloudtrail.png) ![Config](/img/courses/aws-icons/config.png)
+
+- 📜 **CloudTrail** — "Who did WHAT and WHEN?" Every API call logged.
+- ⚙️ **AWS Config** — "What did it LOOK like then?" Resource config snapshots over time.
+
+Essential for regulated industries (finance, healthcare, gov).
+
+### The Data Quality Lifecycle
+
+```
+  PROFILE  --->  DEFINE RULES  --->  ENFORCE  --->  ALERT  --->  FIX  --->  MONITOR
+  (know)         (expected)           (every run)    (fail fast)  (fix)     (trends)
+     ^                                                                         |
+     |                                                                         |
+     +---------------------------- loop ---------------------------------------+
+```
+
+### Real-World Example — Sales Lake Quality Gate
+
+```
+  Raw sales CSV from 50 stores
+        |
+        v
+  Glue ETL reads it
+        |
+        v
+  Glue Data Quality runs rules:
+     PASS - order_id unique
+     PASS - amount in [0, 1M]
+     FAIL - store_id in valid list   (12 rows failed)
+        |
+        v
+     +--+--+
+     v     v
+  Quarantine   Curated
+  bucket +    zone
+  SNS alert   (Parquet)
+```
+
+:::tip[HitaVir Tech says]
+"Every pipeline must have quality rules — not 'someday', from day one. 10x cheaper to catch bad data at ingest than to explain a wrong dashboard to the CEO."
+:::
+
+<KeyTakeaways>
+
+- DataBrew gives analysts no-code profiling and 250+ transforms; Glue Data Quality enforces rules on every pipeline run
+- Failed rows should be quarantined with an alert — never silently passed into the curated zone
+- Macie hunts PII in S3; CloudTrail and Config are the audit twins (who did what / what did it look like)
+- The quality lifecycle loops forever: profile → define rules → enforce → alert → fix → monitor
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which service uses ML to find credit card numbers and SSNs hiding in S3?',
+      options: [
+        'CloudTrail',
+        'KMS',
+        'Amazon Macie',
+        'Glue DataBrew',
+      ],
+      answer: 2,
+      explanation:
+        'Macie is the PII detective — it classifies S3 contents and raises severity alerts to Security Hub.',
+    },
+    {
+      question: 'CloudTrail answers which audit question?',
+      options: [
+        'Who did what and when — every API call',
+        'What did the resource configuration look like at a point in time',
+        'Which rows failed data-quality rules',
+        'Which encryption key protects a bucket',
+      ],
+      answer: 0,
+      explanation:
+        'CloudTrail logs every API call. Its twin, AWS Config, snapshots what resources looked like over time.',
+    },
+    {
+      question: 'In the sales-lake quality gate, what happens to the 12 rows that fail the store_id rule?',
+      options: [
+        'They are silently dropped',
+        'They pass into the curated zone with a warning',
+        'The entire pipeline is deleted',
+        'They go to a quarantine bucket and an SNS alert fires',
+      ],
+      answer: 3,
+      explanation:
+        'Bad rows are quarantined for investigation and an alert is raised — the curated zone stays trustworthy.',
+    },
+  ]}
+/>
+
+<LessonComplete />

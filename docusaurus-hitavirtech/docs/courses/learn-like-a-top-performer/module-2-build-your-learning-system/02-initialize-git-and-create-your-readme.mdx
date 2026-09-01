@@ -1,0 +1,138 @@
+---
+title: 'Step 2 — Initialize Git and Create Your README'
+sidebar_position: 2
+description: 'Turn your learning directory into a Git repository with a professional README and make your first conventional commit.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Initialize a Git repository in your learning directory
+- Create a professional README with a heredoc and commit it with a conventional (`feat:`) message
+- Fix the two most common Git first-commit errors
+
+</LearningObjectives>
+
+### Step Objective
+
+Turn your learning directory into a Git repository with a professional README.
+
+### Commands
+
+```bash
+cd ~/hitavir-learning-system
+
+# Initialize Git repository
+git init
+
+# Create README
+cat > README.md << 'README'
+# HitaVir Tech - My Learning System
+
+Personal engineering knowledge base built during the HitaVir Tech Data Engineering program.
+
+### Structure
+- **journal/** — Weekly learning logs
+- **debug-log/** — Error database with fixes
+- **notes/** — Structured topic notes
+- **challenges/** — Rebuild attempt tracker
+- **interview-prep/** — Interview questions bank
+
+### Learning Methodology
+- Execute-Understand-Explain cycle for every concept
+- 7-step debugging protocol for every error
+- 3-attempt rebuild challenge for every codelab
+- Daily journal for continuous improvement
+
+Built with discipline. Maintained with consistency.
+README
+
+# Stage and commit
+git add .
+git commit -m "feat: initialize learning system with directory structure and README"
+
+# Verify
+git log --oneline
+```
+
+### Why This Step Matters
+
+**"Lift yourself by your own self; the self alone is your friend, and the self alone is your enemy."** *(Bhagavad Gita 6.5)* — Your GitHub profile is your engineering portfolio. Every recruiter and hiring manager will check it. A well-maintained learning repository shows discipline, consistency, and genuine engineering mindset — traits that cannot be faked in an interview.
+
+### Expected Output
+
+```
+Initialized empty Git repository in /home/user/hitavir-learning-system/.git/
+[main (root-commit) abc1234] feat: initialize learning system with directory structure and README
+ 1 file changed, 16 insertions(+)
+ create mode 100644 README.md
+abc1234 feat: initialize learning system with directory structure and README
+```
+
+### Common Errors and Fixes
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `git: command not found` | Git not installed | Install Git first (see Environment Setup codelab) |
+| `Author identity unknown` | Git user not configured | Run `git config --global user.name "Your Name"` and `git config --global user.email "your@email.com"` |
+
+### Checkpoint
+
+```
+Verify before moving on:
+  [x] Git repository initialized (ls -la .git confirms)
+  [x] README.md committed
+  [x] git log shows your commit
+```
+
+<KeyTakeaways>
+
+- `git init` + a professional README turns a folder into a portfolio artifact recruiters will actually check
+- Use conventional commit messages (`feat:`, `fix:`, `docs:`) from day one
+- `Author identity unknown` means Git needs `git config --global user.name` and `user.email` set once
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Git rejects your commit with "Author identity unknown". What is the fix?',
+      options: [
+        'Run git init again',
+        'Delete the .git folder and start over',
+        'Use git commit --force',
+        'Set git config --global user.name and user.email, then commit again',
+      ],
+      answer: 3,
+      explanation:
+        'Git needs to know who is committing. Configure your name and email globally once and the error goes away.',
+    },
+    {
+      question: 'Why does the commit message start with "feat:"?',
+      options: [
+        'It follows the conventional-commits style that professional teams use',
+        'Git requires all messages to start with a verb',
+        'GitHub rejects commits without a prefix',
+        'It makes the commit run faster',
+      ],
+      answer: 0,
+      explanation:
+        'Prefixes like feat:, fix:, and docs: are conventional commit types — clear history is part of Git hygiene.',
+    },
+    {
+      question: 'Why does a well-maintained learning repository matter for your career?',
+      options: [
+        'It reduces your cloud bill',
+        'Recruiters and hiring managers check GitHub — it shows discipline and consistency that cannot be faked',
+        'It is required to install PySpark',
+        'GitHub pays for public repositories',
+      ],
+      answer: 1,
+      explanation:
+        'Your GitHub profile is your engineering portfolio; a maintained learning system demonstrates a genuine engineering mindset.',
+    },
+  ]}
+/>
+
+<LessonComplete />

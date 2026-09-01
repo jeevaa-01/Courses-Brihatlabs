@@ -1,0 +1,104 @@
+---
+title: 'Final Quiz'
+sidebar_position: 3
+description: 'The graded final quiz for the data modelling course — aim for at least 7 of 9.'
+---
+
+<DurationBadge minutes={10} />
+
+# Final Quiz
+
+This quiz covers the whole course. **Aim for at least 7 of 9.** If you miss a
+question, revisit the lesson it came from before moving on to the next course.
+
+<Quiz
+  title="Graded final quiz"
+  questions={[
+    {
+      question: 'Which sequence correctly orders the three levels of data modelling from least to most detailed?',
+      options: [
+        'Conceptual → Logical → Physical',
+        'Physical → Logical → Conceptual',
+        'Logical → Conceptual → Physical',
+        'Conceptual → Physical → Logical',
+      ],
+      answer: 0,
+      explanation: 'You start with entities (conceptual), add tables and keys (logical), then types, indexes, and partitioning (physical).',
+    },
+    {
+      question: 'A table has PK (student_id, course_id), and student_name depends only on student_id. Which normal form is violated?',
+      options: ['1NF', '2NF', '3NF', 'BCNF'],
+      answer: 1,
+      explanation: '2NF forbids partial dependencies — every non-key column must depend on the ENTIRE composite key.',
+    },
+    {
+      question: 'What is the golden rule of normalization vs denormalization in data engineering?',
+      options: [
+        'Denormalize everywhere for speed',
+        'Normalize everywhere for integrity',
+        'Normalize where data is written (OLTP), denormalize where data is read (OLAP)',
+        'Alternate strategies every quarter',
+      ],
+      answer: 2,
+      explanation: 'Source/transactional systems stay normalized for integrity; warehouses denormalize for query speed.',
+    },
+    {
+      question: 'In a star schema, revenue and quantity belong in which table?',
+      options: [
+        'dim_product',
+        'dim_date',
+        'A sub-dimension table',
+        'The fact table',
+      ],
+      answer: 3,
+      explanation: 'Measures — the numbers you aggregate — live in the fact table; dimensions hold descriptive context.',
+    },
+    {
+      question: 'A customer moves cities and you must keep FULL history for time-based analysis. Which SCD type do you apply?',
+      options: ['Type 2 — expire the old row and insert a new versioned row', 'Type 1 — overwrite the city', 'Type 0 — never change it', 'Type 3 — previous_city column only'],
+      answer: 0,
+      explanation: 'SCD Type 2 preserves complete history via effective/expiry dates, is_current flags, and a new surrogate key per version.',
+    },
+    {
+      question: 'Which fact table type fits an insurance claim moving through filed → assessed → approved → paid?',
+      options: [
+        'Transaction fact',
+        'Periodic snapshot',
+        'Accumulating snapshot',
+        'Junk dimension',
+      ],
+      answer: 2,
+      explanation: 'Accumulating snapshots carry one row per lifecycle with a date key per milestone, updated as the claim progresses.',
+    },
+    {
+      question: 'In the medallion architecture, deduplicated and validated data with an enforced schema lives in which layer?',
+      options: ['Bronze', 'Silver', 'Gold', 'Platinum'],
+      answer: 1,
+      explanation: 'Bronze is raw as-is, Silver is cleansed and validated, Gold is business-ready star schemas and aggregates.',
+    },
+    {
+      question: 'In Data Vault, which structure stores changing descriptive attributes with full history?',
+      options: [
+        'Hub',
+        'Link',
+        'Bridge',
+        'Satellite',
+      ],
+      answer: 3,
+      explanation: 'Hubs hold immutable business keys, links hold relationships, and satellites append attribute history with hash_diff change detection.',
+    },
+    {
+      question: 'What two-step rule solves roughly 80% of cloud warehouse performance problems?',
+      options: [
+        'Partition fact tables by date and cluster/sort by common WHERE columns',
+        'Add more indexes and use VARCHAR keys',
+        'Normalize the warehouse to 3NF and remove partitions',
+        'Cache every query in the BI tool',
+      ],
+      answer: 0,
+      explanation: 'Date partitioning plus clustering on frequent filter columns is the universal cloud performance baseline.',
+    },
+  ]}
+/>
+
+<LessonComplete />

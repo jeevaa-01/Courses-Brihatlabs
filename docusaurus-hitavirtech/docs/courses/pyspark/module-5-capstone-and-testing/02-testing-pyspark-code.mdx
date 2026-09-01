@@ -1,0 +1,136 @@
+---
+title: "Testing PySpark Code"
+description: "Testing PySpark Code — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Testing PySpark Code
+
+*⏱ Estimated time: 65 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Write pytest fixtures and unit tests for PySpark transformations.
+- Compare result rows and schemas against expected values.
+- Design tests around representative edge cases, not only happy paths.
+
+:::
+
+### Why test transformations?
+
+Tests protect against:
+
+- Incorrect business logic.
+- Schema changes.
+- Null handling defects.
+- Duplicate handling defects.
+- Join multiplication.
+- Invalid date logic.
+- Refactoring errors.
+
+### Test small DataFrames
+
+Use small in-memory datasets.
+
+```python
+def test_revenue_calculation(spark):
+    input_df = spark.createDataFrame(
+        [("T001", 2, 500.0)],
+        ["transaction_id", "quantity", "unit_price"]
+    )
+
+    result_df = input_df.withColumn(
+        "revenue",
+        F.col("quantity") * F.col("unit_price")
+    )
+
+    result = result_df.collect()[0]
+
+    assert result.revenue == 1000.0
+```
+
+### Compare rows
+
+```python
+actual = result_df.orderBy("transaction_id").collect()
+expected = expected_df.orderBy("transaction_id").collect()
+
+assert actual == expected
+```
+
+### Compare schemas
+
+```python
+assert result_df.schema == expected_df.schema
+```
+
+### Test invalid inputs
+
+Test:
+
+- Null IDs.
+- Invalid regions.
+- Negative quantity.
+- Missing price.
+- Duplicate IDs.
+- Invalid dates.
+
+### ✅ Checkpoint
+
+Run all tests:
+
+```powershell
+pytest -q
+```
+
+<Quiz
+  questions={[
+  {
+    "question": "A session-scoped Spark fixture exists to:",
+    "options": [
+      "Reuse one SparkSession across tests for speed",
+      "Isolate network traffic",
+      "Enable SQL"
+    ],
+    "answer": 0,
+    "explanation": "Session startup is expensive; share it across the test session."
+  },
+  {
+    "question": "The best unit to test is:",
+    "options": [
+      "The whole pipeline against real files",
+      "Pure transformation functions with small in-memory DataFrames",
+      "The notebook UI"
+    ],
+    "answer": 1,
+    "explanation": "Keep transformation logic separate from I/O so it is testable."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- Test pure transformation functions independently from file I/O.
+- Assert on both data and schema.
+- Edge cases (nulls, duplicates, invalid values) catch more defects than happy paths.
+
+:::
+
+:::note[💬 Discussion prompt — Module 5]
+
+Exchange capstone repositories with a peer and review each other against the [capstone rubric](/courses/pyspark/module-5-capstone-and-testing/data-engineering-mini-project#capstone-rubric-peer-review-style). Post one strength and one improvement for the project you reviewed.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Test transformation functions independently from file I/O.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Use representative edge cases, not only happy-path records.
+
+:::

@@ -1,0 +1,76 @@
+---
+title: "Final Quiz"
+description: "Final Quiz — HitaVir Tech PySpark for Data Engineering."
+tags: [assessment]
+---
+
+# Final Quiz
+
+*⏱ Estimated time: 30 minutes*
+
+:::info[🎓 Graded quiz]
+
+This is the graded quiz for the course. Answer all 25 questions before checking the answers, and aim for at least 20 correct before moving on. Revisit the relevant sections for any you miss.
+
+:::
+
+### Questions
+
+1. What is the difference between Spark and PySpark?
+2. What does the Spark driver do?
+3. What does an executor do?
+4. What is a partition?
+5. What is lazy evaluation?
+6. Name three Spark actions.
+7. Name three Spark transformations.
+8. Why are explicit schemas recommended?
+9. What is a shuffle?
+10. What is the difference between `repartition()` and `coalesce()`?
+11. Why is `collect()` dangerous?
+12. When should a DataFrame be cached?
+13. What is a broadcast join?
+14. What does a left anti join return?
+15. Why are Parquet files preferred for analytics?
+16. What is data skew?
+17. What is predicate pushdown?
+18. Why should built-in functions be preferred over Python UDFs?
+19. What is idempotency?
+20. What is the purpose of a window function?
+21. What is the difference between Airflow and Spark?
+22. What is Delta Lake?
+23. What is the medallion architecture?
+24. Why should raw data remain unchanged?
+25. What should be logged for every production pipeline run?
+
+### Answer key
+
+<details>
+<summary>Show the answer key</summary>
+
+1. Spark is the distributed engine; PySpark is its Python API.
+2. It coordinates the application and builds execution plans.
+3. It processes tasks and partitions.
+4. A logical chunk of distributed data.
+5. Transformations are not executed until an action is triggered.
+6. `show`, `count`, `collect`, `take`, and write operations such as `df.write.parquet(...)`.
+7. `select`, `filter`, `withColumn`, `groupBy`, `join`.
+8. They improve correctness, predictability, and performance.
+9. Data movement between partitions or executors.
+10. `repartition()` reshuffles and can increase or decrease partitions; `coalesce()` usually reduces partitions with less movement.
+11. It moves all data to driver memory.
+12. When an expensive DataFrame is reused multiple times.
+13. A join that sends a small table to executors to avoid shuffling the large table.
+14. Rows from the left side without a match on the right.
+15. They are columnar, compressed, and optimized for analytical reads.
+16. Uneven distribution where some partitions contain much more data.
+17. Filtering data at the storage read layer.
+18. Built-in functions are optimized by Spark and avoid Python serialization overhead.
+19. Re-running produces safe, consistent results without duplicates.
+20. It calculates values across related rows without collapsing them.
+21. Airflow orchestrates workflows; Spark processes distributed data.
+22. A storage layer adding transactions and reliability to lake data.
+23. Bronze, Silver, and Gold data layers.
+24. For auditability and reproducibility.
+25. Run ID, source, row counts, rejections, outputs, duration, status, and errors.
+
+</details>

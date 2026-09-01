@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 678 290" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="678" height="290" rx="12" fill="#f8f9fa"/>
+  <text x="339" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Control-Flow Cheat Sheet</text>
+  <rect x="15" y="40" width="159" height="30" rx="6" fill="#1a73e8"/>
+  <text x="94" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Pattern</text>
+  <rect x="179" y="40" width="231" height="30" rx="6" fill="#1a73e8"/>
+  <text x="295" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">When to use</text>
+  <rect x="416" y="40" width="247" height="30" rx="6" fill="#1a73e8"/>
+  <text x="539" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Example</text>
+  <rect x="15" y="76" width="159" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">if/elif/else</text>
+  <rect x="179" y="76" width="231" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="189" y="94" font-size="12" fill="#1a73e8">Branch logic — one of several paths</text>
+  <rect x="416" y="76" width="247" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="426" y="94" font-size="12" fill="#1a73e8">Choose DB host based on environment</text>
+  <rect x="15" y="108" width="159" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">for over a list</text>
+  <rect x="179" y="108" width="231" height="28" rx="4" fill="white"/>
+  <text x="189" y="126" font-size="12" fill="#3c4043">Process every item</text>
+  <rect x="416" y="108" width="247" height="28" rx="4" fill="white"/>
+  <text x="426" y="126" font-size="12" fill="#3c4043">Loop over CSV rows</text>
+  <rect x="15" y="140" width="159" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">for ... in range()</text>
+  <rect x="179" y="140" width="231" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="189" y="158" font-size="12" fill="#1a73e8">A fixed number of iterations</text>
+  <rect x="416" y="140" width="247" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="426" y="158" font-size="12" fill="#1a73e8">Batch chunks of 500</text>
+  <rect x="15" y="172" width="159" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">while</text>
+  <rect x="179" y="172" width="231" height="28" rx="4" fill="white"/>
+  <text x="189" y="190" font-size="12" fill="#3c4043">Repeat until a condition flips</text>
+  <rect x="416" y="172" width="247" height="28" rx="4" fill="white"/>
+  <text x="426" y="190" font-size="12" fill="#3c4043">Retry until connected</text>
+  <rect x="15" y="204" width="159" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">break</text>
+  <rect x="179" y="204" width="231" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="189" y="222" font-size="12" fill="#1a73e8">Stop early</text>
+  <rect x="416" y="204" width="247" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="426" y="222" font-size="12" fill="#1a73e8">Stop on a sentinel value</text>
+  <rect x="15" y="236" width="159" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">continue</text>
+  <rect x="179" y="236" width="231" height="28" rx="4" fill="white"/>
+  <text x="189" y="254" font-size="12" fill="#3c4043">Skip this iteration</text>
+  <rect x="416" y="236" width="247" height="28" rx="4" fill="white"/>
+  <text x="426" y="254" font-size="12" fill="#3c4043">Skip invalid rows, keep looping</text>
+  <text x="339" y="284" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

@@ -1,0 +1,109 @@
+---
+title: 'Repository structure'
+sidebar_position: 3
+description: 'The recommended repository layout for everything you built — setup scripts, examples, capstone, integrations, and challenges.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Organize your course artifacts into a clean, portfolio-ready repository
+- Map each course module to its directory of runnable SQL files
+
+</LearningObjectives>
+
+If you saved your SQL as you worked through the course, arrange it like this —
+the layout doubles as a portfolio piece you can push to GitHub and link from
+your resume:
+
+```
+hitavir-sql-codelab/
+├── README.md
+├── 01_setup/
+│   ├── 01_create_schema.sql
+│   ├── 02_create_tables.sql
+│   ├── 03_seed_customers.sql
+│   ├── 04_seed_products.sql
+│   ├── 05_seed_orders.sql
+│   └── 06_seed_order_items.sql
+├── 02_examples/
+│   ├── 03_select_where.sql
+│   ├── 04_create_table.sql
+│   ├── 05_insert_update_delete.sql
+│   ├── 06_conditional.sql
+│   ├── 07_aggregations.sql
+│   ├── 08_joins.sql
+│   ├── 09_subqueries.sql
+│   ├── 10_views_indexes_temp.sql
+│   ├── 11_cleaning.sql
+│   ├── 12_window_cte_recursive.sql
+│   └── 13_explain_indexing.sql
+├── 03_capstone/
+│   ├── 01_stg_orders_raw.sql
+│   ├── 02_v_stg_orders_clean.sql
+│   ├── 03_dim_customer.sql
+│   ├── 04_dim_product.sql
+│   ├── 05_fact_sales.sql
+│   ├── 06_daily_sales_summary.sql
+│   └── 07_explain_before_after.sql
+├── 04_integrations/
+│   ├── python_pymysql_demo.py
+│   ├── airflow_dag_daily_summary.py
+│   ├── spark_jdbc_demo.py
+│   └── databricks_uc_query.sql
+├── 05_challenges/
+│   ├── 01_filter_aggregation.sql
+│   ├── 02_join_having.sql
+│   ├── 03_window_top_per_group.sql
+│   ├── 04_data_cleaning.sql
+│   └── 05_endtoend_report.sql
+├── docs/
+│   ├── er_diagram.md
+│   └── style_guide.md
+└── .gitignore
+```
+
+**Happy querying — and remember: bring the data.**
+
+One lesson left: the graded final quiz.
+
+<KeyTakeaways>
+
+- Keep setup, examples, capstone, integrations, and challenges in separate numbered directories
+- The `01_setup/` scripts make the whole repository reproducible from a blank MySQL install
+- Docs (`er_diagram.md`, `style_guide.md`) live in the repo and evolve with the schema
+- A clean course repository doubles as an interview portfolio piece
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why does the repository start with a complete 01_setup/ directory?',
+      options: [
+        'GitHub requires a setup folder',
+        'So anyone can rebuild the entire hitavir_sales environment from a blank MySQL install',
+        'Setup files are the only ones worth versioning',
+        'It makes the repository clone faster',
+      ],
+      answer: 1,
+      explanation:
+        'Reproducibility is the point: schema + seed scripts mean the 50+ examples and the capstone run anywhere.',
+    },
+    {
+      question: 'Where do the ER diagram and style guide belong?',
+      options: [
+        'In a wiki, separate from the code',
+        'Nowhere — diagrams go stale anyway',
+        'In the repository docs/ directory, updated alongside schema changes',
+        'Only in the README',
+      ],
+      answer: 2,
+      explanation:
+        'Treat the diagram as code: it lives in the repo, gets reviewed, and updates in the same PR as the migration.',
+    },
+  ]}
+/>
+
+<LessonComplete />

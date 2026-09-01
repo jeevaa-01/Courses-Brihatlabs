@@ -1,0 +1,235 @@
+---
+title: 'AWS Services for Value'
+sidebar_position: 6
+description: 'The AWS Value toolkit — QuickSight, SageMaker, Forecast, Personalize, Redshift ML, Amazon Q — turning data into decisions and ROI.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Map the Value lineup — QuickSight, SageMaker, Forecast, Personalize, Fraud Detector, Bedrock — to business outcomes
+- Explain SPICE and Amazon Q, QuickSight's speed and natural-language superpowers
+- Recognize where Redshift ML fits: training and running models with plain SQL
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              AWS  FOR  VALUE                                 |
+  |       "Turn data into decisions and ROI."                    |
+  +==============================================================+
+```
+
+### The Value Lineup
+
+![QuickSight](/img/courses/aws-icons/quicksight.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png) ![Forecast](/img/courses/aws-icons/forecast.png) ![Personalize](/img/courses/aws-icons/personalize.png) ![Fraud Detector](/img/courses/aws-icons/fraud-detector.png) ![Bedrock](/img/courses/aws-icons/bedrock.png)
+
+**QuickSight** • **SageMaker** • **Forecast** • **Personalize** • **Fraud Detector** • **Bedrock**
+
+### The Value Toolkit
+
+| Service | Icon | Purpose |
+|---------|:---:|---------|
+| **Amazon QuickSight** | <img src="aws-icons/quicksight.png" width="32" height="32" alt="QuickSight" /> | Dashboards, BI, natural-language analytics |
+| **Amazon SageMaker** | <img src="aws-icons/sagemaker.png" width="32" height="32" alt="SageMaker" /> | Build, train, deploy ML models |
+| **Amazon Forecast** | <img src="aws-icons/forecast.png" width="32" height="32" alt="Forecast" /> | No-code time-series forecasting |
+| **Amazon Personalize** | <img src="aws-icons/personalize.png" width="32" height="32" alt="Personalize" /> | Recommendation engines |
+| **Amazon Fraud Detector** | <img src="aws-icons/fraud-detector.png" width="32" height="32" alt="Fraud Detector" /> | Fraud-prediction models |
+| **Amazon Q in QuickSight** | <img src="aws-icons/quicksight.png" width="32" height="32" alt="Amazon Q in QuickSight" /> | Ask data questions in natural language |
+| **Amazon Bedrock** | <img src="aws-icons/bedrock.png" width="32" height="32" alt="Bedrock" /> | Foundation models (Claude, Llama, etc.) |
+| **Redshift ML** | <img src="aws-icons/redshift.png" width="32" height="32" alt="Redshift ML" /> | Train and run ML using SQL in Redshift |
+| **Amazon Lookout for Metrics** | <img src="aws-icons/forecast.png" width="32" height="32" alt="Lookout for Metrics" /> | Auto-detect anomalies in business KPIs |
+
+### Service Spotlight — Amazon QuickSight
+
+![QuickSight](/img/courses/aws-icons/quicksight.png)
+
+```
+  +--------------------------------------------------------------+
+  |  AMAZON  QUICKSIGHT  -  Business Intelligence                |
+  +--------------------------------------------------------------+
+  |  Sources      :  S3 via Athena, Redshift, RDS, Excel...      |
+  |  Engine       :  SPICE (in-memory columnar cache)            |
+  |  Superpowers  :  Amazon Q (natural language) + Embedded      |
+  |  Editions     :  Standard  |  Enterprise                     |
+  |                                                              |
+  |  Your "Tableau / Power BI" on AWS, with AI built in.         |
+  +--------------------------------------------------------------+
+```
+
+### QuickSight Flow
+
+```
+  Athena / Redshift  --->  SPICE  --->  Visuals  --->  Dashboard  --->  Share
+  (data source)            (cache)      (charts)      (compose)        (embed)
+```
+
+### Service Spotlight — Amazon SageMaker
+
+![SageMaker](/img/courses/aws-icons/sagemaker.png)
+
+```
+  +--------------------------------------------------------------+
+  |  AMAZON  SAGEMAKER  -  Full-Lifecycle ML                     |
+  +--------------------------------------------------------------+
+  |  Studio       :  Browser IDE for ML                          |
+  |  AutoPilot    :  AutoML - tries many models                  |
+  |  Pipelines    :  Train / evaluate / deploy as code           |
+  |  Monitor      :  Catch model drift in production             |
+  |                                                              |
+  |  From raw data to deployed model - one platform.             |
+  +--------------------------------------------------------------+
+```
+
+### Service Spotlight — Amazon Forecast
+
+![Forecast](/img/courses/aws-icons/forecast.png)
+
+```
+  +--------------------------------------------------------------+
+  |  AMAZON  FORECAST  -  No-Code Time-Series ML                 |
+  +--------------------------------------------------------------+
+  |  Inputs       :  Historical + related series + metadata      |
+  |  AutoML       :  Tries multiple algorithms, picks best       |
+  |  Accuracy     :  Typically 50% better than Excel baselines   |
+  |                                                              |
+  |  Same tech Amazon uses internally for demand planning.       |
+  +--------------------------------------------------------------+
+```
+
+```
+  Past sales + Weather + Holidays
+           |
+           v
+      Forecast (AutoML)
+           |
+           v
+   Daily predictions per SKU per store
+```
+
+### Service Spotlight — Amazon Personalize
+
+![Personalize](/img/courses/aws-icons/personalize.png)
+
+```
+  +--------------------------------------------------------------+
+  |  AMAZON  PERSONALIZE  -  Netflix-Style Recs                  |
+  +--------------------------------------------------------------+
+  |  Inputs       :  Users + items + interaction events          |
+  |  Use cases    :  "You may like...", "Related items..."       |
+  |  Real-time    :  Inference in milliseconds                   |
+  |                                                              |
+  |  Same ML powering Amazon.com recommendations.                |
+  +--------------------------------------------------------------+
+```
+
+### Amazon Q in QuickSight — Natural-Language BI
+
+```
+  User types:   "Show me top 5 products last quarter"
+                        |
+                        v
+         Q interprets -> writes SQL -> runs -> visualizes
+                        |
+                        v
+            Bar chart appears in 2 seconds
+```
+
+Analysts no longer gatekeep simple questions.
+
+### Redshift ML — SQL-Native Machine Learning
+
+```sql
+CREATE MODEL churn_model
+FROM   customer_features
+TARGET churned
+FUNCTION predict_churn
+IAM_ROLE DEFAULT
+SETTINGS (S3_BUCKET 'my-ml-bucket');
+
+-- then use it
+SELECT customer_id, predict_churn(features) AS risk
+FROM   customers
+WHERE  risk > 0.8;
+```
+
+ML without leaving your data warehouse.
+
+### The Value Stack
+
+```
+  +==============================================================+
+  |                                                              |
+  |   BUSINESS  VALUE      revenue - savings - growth            |
+  |        ^                                                     |
+  |        |                                                     |
+  |   APPLICATION LAYER    Personalize, Fraud Detector, Lookout  |
+  |        ^                                                     |
+  |        |                                                     |
+  |   ML LAYER             SageMaker, Forecast, Redshift ML      |
+  |        ^                                                     |
+  |        |                                                     |
+  |   ANALYSIS LAYER       Athena + QuickSight + Redshift        |
+  |        ^                                                     |
+  |        |                                                     |
+  |   BUILD LAYER          S3 + Glue + Kinesis + Lake Formation  |
+  |                                                              |
+  +==============================================================+
+```
+
+:::tip[HitaVir Tech says]
+"The best data platform is worthless if nobody uses the outputs. Start from Value and work backwards — who sees which insight, and what decision changes? Design everything else to serve that."
+:::
+
+<KeyTakeaways>
+
+- QuickSight is AWS's BI layer — SPICE caching for speed, Amazon Q for natural-language questions
+- SageMaker covers the full ML lifecycle; Forecast and Personalize package Amazon's own ML as no-code services
+- Redshift ML lets you train and run models with plain SQL, without leaving the warehouse
+- The value stack climbs from build (S3, Glue, Kinesis) through analysis and ML layers to business outcomes
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is SPICE in Amazon QuickSight?',
+      options: [
+        'A natural-language chatbot',
+        'An in-memory columnar cache that speeds up dashboards',
+        'A data-quality rules engine',
+        'A Kafka-compatible stream',
+      ],
+      answer: 1,
+      explanation:
+        'SPICE caches data in memory in columnar form so visuals render fast without hammering the source.',
+    },
+    {
+      question: 'Which service delivers "Netflix-style" recommendations with millisecond inference?',
+      options: [
+        'Amazon Forecast',
+        'Amazon Macie',
+        'Amazon Personalize',
+        'AWS Config',
+      ],
+      answer: 2,
+      explanation:
+        'Personalize is built on the same ML that powers Amazon.com recommendations. Forecast handles time series, not recs.',
+    },
+    {
+      question: 'What does Redshift ML let analysts do?',
+      options: [
+        'Stream events at sub-second latency',
+        'Encrypt the warehouse with KMS',
+        'Auto-detect PII in S3',
+        'Create and use ML models with plain SQL inside the warehouse',
+      ],
+      answer: 3,
+      explanation:
+        'CREATE MODEL trains a model from a SQL query, and the resulting function is called directly in SELECT statements.',
+    },
+  ]}
+/>
+
+<LessonComplete />

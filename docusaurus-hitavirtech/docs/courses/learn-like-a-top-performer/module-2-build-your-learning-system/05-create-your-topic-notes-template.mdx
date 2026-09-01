@@ -1,0 +1,124 @@
+---
+title: 'Step 5 — Create Your Topic Notes Template'
+sidebar_position: 5
+description: 'Create a reusable structured-notes template with interview-ready explanations and a multi-cloud equivalents table for every topic you learn.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Create `notes/topic-notes-template.md` as a reusable structure for every new topic
+- Know why structured notes beat free-form notes for interviews and reviews
+- Use the multi-cloud equivalents table to build cross-platform awareness
+
+</LearningObjectives>
+
+### Step Objective
+
+Create a reusable template for structured notes on each topic you learn.
+
+### Commands
+
+```bash
+cat > ~/hitavir-learning-system/notes/topic-notes-template.md << 'NOTES'
+# [Topic Name] — Notes
+
+### One-Line Summary
+[Explain this topic in one sentence]
+
+### Key Concepts
+| Concept | What It Does | When to Use It |
+|---------|-------------|----------------|
+| [concept] | [description] | [use case] |
+
+### Essential Commands
+- `[command 1]` — [what it does]
+- `[command 2]` — [what it does]
+
+### How It Works (Architecture)
+[Describe the flow or draw an ASCII diagram]
+
+### Common Pitfalls
+- [Pitfall 1 and how to avoid it]
+- [Pitfall 2 and how to avoid it]
+
+### Interview-Ready Explanation
+"[2-3 sentence explanation you could give in an interview]"
+
+### Multi-Cloud Equivalents
+| Capability | AWS | Azure | GCP |
+|-----------|-----|-------|-----|
+| [service type] | [AWS service] | [Azure service] | [GCP service] |
+
+### Related Topics
+- [Topic A] — [how it connects]
+- [Topic B] — [how it connects]
+NOTES
+
+# Verify
+cat ~/hitavir-learning-system/notes/topic-notes-template.md
+```
+
+### Why This Step Matters
+
+Structured notes are dramatically more useful than free-form notes. This template forces you to organize knowledge in a way that is immediately useful for interviews, code reviews, and architecture discussions. The multi-cloud section builds the cross-platform awareness that top employers value.
+
+### Expected Output
+
+The complete notes template should display with all sections.
+
+### Common Errors and Fixes
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| File created but empty | Heredoc syntax error | Re-run the command, check for matching `NOTES` tags |
+| Cannot find file later | Forgot the path | Use `find ~/hitavir-learning-system -name "*.md"` |
+
+### Checkpoint
+
+```
+Verify before moving on:
+  [x] topic-notes-template.md exists in notes/
+  [x] Template includes multi-cloud section
+  [x] You plan to copy this template for each new topic
+```
+
+<KeyTakeaways>
+
+- Copy the template for every new topic — structure forces interview-ready organization
+- The "Interview-Ready Explanation" section makes you write the 2-3 sentence answer you would give a hiring manager
+- The Multi-Cloud Equivalents table builds the cross-platform awareness top employers value
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What makes structured notes more valuable than free-form notes, per this lesson?',
+      options: [
+        'They use less disk space',
+        'They render better on GitHub',
+        'They organize knowledge so it is immediately usable in interviews, code reviews, and architecture discussions',
+        'They are required by the validation script',
+      ],
+      answer: 2,
+      explanation:
+        'The template forces one-line summaries, pitfalls, and interview-ready explanations — exactly the shape knowledge is consumed in professionally.',
+    },
+    {
+      question: 'Which section of the notes template builds cross-platform awareness?',
+      options: [
+        'Multi-Cloud Equivalents (AWS / Azure / GCP)',
+        'Essential Commands',
+        'Related Topics',
+        'One-Line Summary',
+      ],
+      answer: 0,
+      explanation:
+        'Mapping each capability to its AWS, Azure, and GCP service teaches you the pattern once and the names three times.',
+    },
+  ]}
+/>
+
+<LessonComplete />

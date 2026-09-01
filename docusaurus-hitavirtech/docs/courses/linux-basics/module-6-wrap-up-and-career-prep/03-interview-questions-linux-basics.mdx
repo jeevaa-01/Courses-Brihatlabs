@@ -1,0 +1,126 @@
+---
+title: 'Interview Questions — Linux Basics'
+sidebar_position: 3
+description: '15 real interview questions on Linux basics with concise, confident answers — plus tips for explaining the why.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Answer the 15 most common Linux-basics interview questions
+- Explain when and why to use each command, not just what it does
+
+</LearningObjectives>
+
+Here are 15 real-world interview questions with concise answers.
+
+### Q1: What is the difference between absolute and relative paths?
+
+**Answer:** An absolute path starts from the root (`/`) and specifies the full location, like `/home/user/docs`. A relative path starts from the current directory, like `../docs`. Absolute paths work from anywhere; relative paths depend on where you are.
+
+### Q2: What does `chmod 755` mean?
+
+**Answer:** It sets permissions to `rwxr-xr-x`. Owner gets read+write+execute (7), group gets read+execute (5), others get read+execute (5). This is the standard permission for executable scripts.
+
+### Q3: What is the difference between `>` and `>>`?
+
+**Answer:** `>` overwrites the file with new content (creates it if it does not exist). `>>` appends to the end of the file without deleting existing content.
+
+### Q4: How do you search for a word in a file?
+
+**Answer:** Use `grep "word" filename`. Add `-i` for case-insensitive search, `-r` for recursive search across directories, and `-n` for line numbers.
+
+### Q5: What does `|` (pipe) do?
+
+**Answer:** The pipe takes the output of one command and sends it as input to the next command. For example, `ls | grep ".txt"` lists files and then filters for .txt files only.
+
+### Q6: What is the difference between `rm` and `rmdir`?
+
+**Answer:** `rmdir` only removes empty directories. `rm -r` removes directories and all their contents recursively. `rm` without `-r` removes only files.
+
+### Q7: How do you find all .log files in a directory tree?
+
+**Answer:** Use `find /path -name "*.log"`. Add `-type f` to ensure only files (not directories) are returned.
+
+### Q8: What does `ls -la` show?
+
+**Answer:** It shows all files including hidden ones (`-a`) in long format (`-l`). Long format displays permissions, owner, group, size, modification date, and filename.
+
+### Q9: How do you make a script executable?
+
+**Answer:** Run `chmod +x script.sh` to add execute permission. Then run it with `./script.sh`. Without the execute permission, the shell refuses to run it.
+
+### Q10: What is the `$PATH` variable?
+
+**Answer:** `$PATH` is a colon-separated list of directories where the shell looks for executable programs. When you type a command, the shell searches these directories in order.
+
+### Q11: What is the difference between `cp` and `mv`?
+
+**Answer:** `cp` creates a copy of the file — the original remains. `mv` moves the file — the original is removed from its old location. `mv` can also rename files.
+
+### Q12: How do you view the last 20 lines of a file?
+
+**Answer:** Use `tail -20 filename`. `tail` shows the end of a file. Combine with `-f` (`tail -f filename`) to watch a file in real-time as new lines are added.
+
+### Q13: What are hidden files in Linux?
+
+**Answer:** Files whose names start with a dot (`.`) are hidden. They do not appear in regular `ls` output. Use `ls -a` to see them. Configuration files like `.bashrc` and `.gitconfig` are typically hidden.
+
+### Q14: How do you count the number of lines in a file?
+
+**Answer:** Use `wc -l filename`. The `-l` flag counts lines only. Without flags, `wc` shows lines, words, and characters.
+
+### Q15: What is the purpose of `~` in paths?
+
+**Answer:** `~` is a shortcut for the current user's home directory. `cd ~` and `cd $HOME` both take you to your home directory. `~/Documents` means the Documents folder inside your home.
+
+### Bonus Tips for Interviews
+
+- Always explain **when** and **why** to use each command, not just what it does
+- Mention safety practices (backups, `rm -i`, checking `pwd`)
+- Show you understand pipes and command chaining
+- Know the difference between `>` and `>>` — interviewers love this question
+
+:::tip[HitaVir Tech says]
+"In Linux interviews, they are not testing your memory. They are testing your understanding. If you have worked through this entire course hands-on, you understand these concepts deeply. That is what matters."
+:::
+
+<KeyTakeaways>
+
+- Interviewers test understanding, not memorization — always explain the why
+- The `>` vs `>>` and `cp` vs `mv` distinctions are perennial interview favorites
+- Mentioning safety habits (backups, `rm -i`, pwd checks) sets you apart
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'An interviewer asks the difference between > and >>. The correct answer is:',
+      options: [
+        '> appends, >> overwrites',
+        'Both overwrite the file',
+        '> overwrites, >> appends',
+        'Both append to the file',
+      ],
+      answer: 2,
+      explanation:
+        'A single > replaces the file content; a double >> adds to the end without deleting anything.',
+    },
+    {
+      question: 'What is $PATH?',
+      options: [
+        'Your home directory',
+        'A colon-separated list of directories the shell searches for executables',
+        'The current working directory',
+        'A list of your aliases',
+      ],
+      answer: 1,
+      explanation:
+        'When you type a command, the shell walks the $PATH directories in order until it finds a matching program.',
+    },
+  ]}
+/>
+
+<LessonComplete />

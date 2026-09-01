@@ -1,0 +1,167 @@
+---
+title: 'Creating Files — touch and echo'
+sidebar_position: 2
+description: 'Create empty files with touch, write and append content with echo, > and >>, and seed the workspace with configs, logs, and a script.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Create empty (and hidden) files with `touch`
+- Write to files with `echo` and `>`; append with `>>`
+- Seed the config, log, and script files used in later lessons
+
+</LearningObjectives>
+
+Now let us add files to our workspace.
+
+### touch — Create Empty Files
+
+```bash
+cd ~/hitavir-workspace
+touch README.md
+touch .gitignore
+```
+
+Verify:
+
+```bash
+ls -la
+```
+
+You should see both files. Notice `.gitignore` starts with a dot — it is a hidden file.
+
+### Create Multiple Files
+
+```bash
+touch projects/web-app/index.html projects/web-app/style.css projects/web-app/app.js
+touch projects/api/server.py projects/api/requirements.txt
+touch config/settings.conf config/database.conf
+```
+
+### echo — Write Text to Files
+
+```bash
+echo "# HitaVir Workspace" > README.md
+```
+
+The `>` writes text to a file (creates it if it does not exist, overwrites if it does).
+
+### Append Text (Do Not Overwrite)
+
+```bash
+echo "Created by HitaVir Tech" >> README.md
+echo "Linux Basics Codelab Project" >> README.md
+```
+
+The `>>` appends text to the end of the file without deleting existing content.
+
+### Create Files with Content
+
+```bash
+echo "node_modules/" > .gitignore
+echo "*.log" >> .gitignore
+echo "__pycache__/" >> .gitignore
+```
+
+### Create Config Files
+
+```bash
+echo "APP_NAME=HitaVir-Workspace" > config/settings.conf
+echo "APP_ENV=development" >> config/settings.conf
+echo "APP_PORT=3000" >> config/settings.conf
+echo "DEBUG=true" >> config/settings.conf
+```
+
+```bash
+echo "DB_HOST=localhost" > config/database.conf
+echo "DB_PORT=5432" >> config/database.conf
+echo "DB_NAME=hitavir_db" >> config/database.conf
+echo "DB_USER=admin" >> config/database.conf
+```
+
+### Create Log Files for Practice
+
+```bash
+echo "[2026-04-05 10:00:01] INFO: Server started on port 3000" > logs/app.log
+echo "[2026-04-05 10:00:02] INFO: Database connected successfully" >> logs/app.log
+echo "[2026-04-05 10:01:15] WARNING: High memory usage detected" >> logs/app.log
+echo "[2026-04-05 10:02:30] ERROR: Failed to connect to cache server" >> logs/app.log
+echo "[2026-04-05 10:03:00] INFO: Cache reconnected" >> logs/app.log
+echo "[2026-04-05 10:05:22] ERROR: Timeout on /api/users endpoint" >> logs/app.log
+echo "[2026-04-05 10:06:00] INFO: Request completed in 250ms" >> logs/app.log
+echo "[2026-04-05 10:07:45] WARNING: Disk space below 10%" >> logs/app.log
+echo "[2026-04-05 10:08:00] ERROR: Permission denied on /var/data" >> logs/app.log
+echo "[2026-04-05 10:10:00] INFO: Daily backup completed" >> logs/app.log
+```
+
+### Create a Script File
+
+```bash
+cat > scripts/setup.sh << 'EOF'
+#!/bin/bash
+# HitaVir Workspace Setup Script
+echo "Setting up HitaVir Workspace..."
+echo "Creating directories..."
+mkdir -p data output
+echo "Setup complete!"
+echo "Welcome to HitaVir Tech workspace!"
+EOF
+```
+
+### Verify Everything
+
+```bash
+ls -la
+ls projects/web-app/
+ls config/
+ls logs/
+ls scripts/
+```
+
+:::tip[HitaVir Tech says]
+"`touch` creates empty files. `echo` puts content inside files. Think of `touch` as placing an empty envelope, and `echo` as writing a letter and putting it inside."
+:::
+
+<KeyTakeaways>
+
+- `touch` creates empty files; names starting with a dot are hidden
+- `>` overwrites a file's content, while `>>` appends to the end
+- A heredoc (`cat > file << 'EOF'`) writes multi-line files in one go
+- The log and config files you created here power the grep and pipes lessons ahead
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which operator appends text to a file without deleting existing content?',
+      options: ['>', '>>', '|', '<'],
+      answer: 1,
+      explanation:
+        '>> adds new content to the end of the file. A single > would replace everything already there.',
+    },
+    {
+      question: 'What kind of file does touch .gitignore create?',
+      options: ['A directory', 'A read-only file', 'An executable script', 'A hidden file'],
+      answer: 3,
+      explanation:
+        'Any file whose name starts with a dot is hidden — it only appears with ls -a or ls -la.',
+    },
+    {
+      question: 'What does echo "hi" > file.txt do if file.txt already has content?',
+      options: [
+        'Appends hi to the end',
+        'Fails with an error',
+        'Replaces all content with the single line hi',
+        'Creates a second file named file2.txt',
+      ],
+      answer: 2,
+      explanation:
+        'The > operator overwrites: the old content is gone and the file now contains only "hi".',
+    },
+  ]}
+/>
+
+<LessonComplete />

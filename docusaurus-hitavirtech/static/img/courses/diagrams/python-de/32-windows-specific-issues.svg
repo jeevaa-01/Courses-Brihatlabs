@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 562 256" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="562" height="256" rx="12" fill="#f8f9fa"/>
+  <text x="281" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Windows-Specific Issues</text>
+  <rect x="15" y="40" width="167" height="30" rx="6" fill="#1a73e8"/>
+  <text x="98" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Issue</text>
+  <rect x="187" y="40" width="360" height="30" rx="6" fill="#1a73e8"/>
+  <text x="367" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Fix</text>
+  <rect x="15" y="76" width="167" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">python not found</text>
+  <rect x="187" y="76" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="197" y="94" font-size="12" fill="#1a73e8">Use python3 or reinstall with PATH checked</text>
+  <rect x="15" y="108" width="167" height="43" rx="4" fill="white"/>
+  <text x="25" y="133" font-size="12" font-weight="700" fill="#3c4043">Path uses backslash</text>
+  <rect x="187" y="108" width="360" height="43" rx="4" fill="white"/>
+  <text x="197" y="126" font-size="12" fill="#3c4043">Use forward slashes: "C:/Users/..." or raw strings:</text>
+  <text x="197" y="141" font-size="12" fill="#3c4043">r"C:\Users\..."</text>
+  <rect x="15" y="155" width="167" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="173" font-size="12" font-weight="700" fill="#1a73e8">Permission denied</text>
+  <rect x="187" y="155" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="197" y="173" font-size="12" fill="#1a73e8">Run terminal as Administrator</text>
+  <rect x="15" y="187" width="167" height="43" rx="4" fill="white"/>
+  <text x="25" y="212" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">venv won't activate</text>
+  <rect x="187" y="187" width="360" height="43" rx="4" fill="white"/>
+  <text x="197" y="205" font-size="12" fill="#3c4043">Use venv\Scripts\activate (Command Prompt) or source</text>
+  <text x="197" y="220" font-size="12" fill="#3c4043">venv/Scripts/activate (Git Bash)</text>
+  <text x="281" y="250" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

@@ -1,0 +1,219 @@
+---
+title: 'Introduction to Data Lakes'
+sidebar_position: 1
+description: 'Data lakes on Azure — schema-on-read, the medallion zones, Delta Lake ACID, Purview governance, and how lakes turn into swamps.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Define a data lake and contrast schema-on-read with schema-on-write
+- Lay out the medallion zones (raw/bronze, curated/silver, analytics/gold) and who reads each
+- Explain how Delta Lake adds ACID transactions to ADLS and how Purview keeps a lake from becoming a swamp
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              ARCHITECTURE  1   -   DATA  LAKE                |
+  |              "Store first, schema later."                    |
+  +==============================================================+
+```
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Policy](/img/courses/azure-icons/policy.svg) ![Data Shares](/img/courses/azure-icons/data-shares.svg)
+
+### What is a Data Lake?
+
+🪣 A **data lake** is a centralized repository that stores **any type of data** — structured, semi-structured, unstructured — **at any scale**, in its **native format**, typically on cheap object storage like **Azure Data Lake Storage Gen2**.
+
+The defining move: you **ingest now** and **decide the schema later** (called *schema-on-read*). Contrast with warehouses, which demand *schema-on-write*.
+
+### Data Lake — The Core Idea
+
+```
+  +------------------------------------------------------------+
+  |                                                            |
+  |   ANY DATA  --->   ADLS Gen2 (object store)   --->  ENGINES|
+  |                                                            |
+  |   CSV, JSON,        cheap, durable,          Synapse,      |
+  |   Parquet, Delta,   infinite scale,          Databricks,   |
+  |   logs, images,     one source of truth      HDInsight,    |
+  |   Kafka events                               Power BI, ML  |
+  |                                                            |
+  +------------------------------------------------------------+
+```
+
+One lake. Many engines. That is the core promise.
+
+### Why Data Lakes Emerged
+
+Before ~2010, analytics meant **warehouses** — expensive, schema-strict, row-limited. Then data exploded:
+
+| Problem With Warehouse-Only World | Who Felt It |
+|-----------------------------------|-------------|
+| 💸 Warehouse storage cost $1000s / TB / month | Every CFO |
+| 🚫 Could not store PDFs, images, videos | Healthcare, retail, media |
+| 🐢 Schema changes took weeks | Fast-moving startups |
+| ⛔ Historical data deleted to save cost | Regulated industries |
+
+Data lakes fixed this by leveraging **cheap object storage** (ADLS at ~$0.018 / GB / month) and **decoupling compute from storage**.
+
+### Data Lake Zones — The Medallion Pattern
+
+```
+  abfss://lake@hitavirtech.dfs.core.windows.net/
+    |
+    +-- raw/          <--  BRONZE:  untouched, as ingested
+    |                      + source of truth
+    |                      + can replay anything from here
+    |
+    +-- curated/      <--  SILVER:  cleaned, typed, Delta/Parquet
+    |                      + deduped, quality-checked
+    |                      + partitioned for fast scans
+    |
+    +-- analytics/    <--  GOLD:    pre-aggregated, BI-ready
+                           + joins done once
+                           + powers Power BI and ML features
+```
+
+| Zone | Icon | Shape | Readers |
+|------|:---:|-------|---------|
+| **Raw / Bronze** | 🥉 | Original bytes — CSV, JSON, images, dumps | Data engineers only |
+| **Curated / Silver** | 🥈 | Cleaned, typed, often Delta + partitions | Analysts, ML engineers |
+| **Analytics / Gold** | 🥇 | Aggregated, ready for Power BI and models | Business users, BI tools |
+
+### Delta Lake — The ACID Layer on Your Data Lake
+
+```
+  +--------------------------------------------------------------+
+  |  DELTA  LAKE  -  ACID Transactions on ADLS                   |
+  +--------------------------------------------------------------+
+  |  Format    :  Parquet files + JSON transaction log           |
+  |  Superpower:  UPDATE, DELETE, MERGE on lake files            |
+  |  Travel    :  Time travel (query any past version)           |
+  |  Used by   :  Databricks, Synapse Spark, Microsoft Fabric    |
+  |                                                              |
+  |  Solves the "warehouse features on lake files" problem.      |
+  +--------------------------------------------------------------+
+```
+
+### Data Lake on Azure — The Service Stack
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Policy](/img/courses/azure-icons/policy.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![ML](/img/courses/azure-icons/ml.svg)
+
+| Layer | Icon | Purpose | Service |
+|-------|:---:|---------|---------|
+| **Storage** | 🪣 | Raw bytes, infinite scale | ADLS Gen2 |
+| **Governance** | 🔐 | Permissions, catalog, lineage | Microsoft Purview |
+| **Cataloging** | 📚 | Schema + lineage | Purview + Synapse Catalog |
+| **ETL / ELT** | 🕸️ | Move raw → curated → analytics | Azure Data Factory, Synapse Pipelines, Databricks |
+| **Query** | 🔍 | SQL on lake files | Synapse Serverless SQL |
+| **ML** | 🤖 | Train on lake data directly | Azure Machine Learning |
+
+### Service Spotlight — Microsoft Purview
+
+![Purview](/img/courses/azure-icons/data-shares.svg) ![Info Protection](/img/courses/azure-icons/info-protection.svg) ![Policy](/img/courses/azure-icons/policy.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  MICROSOFT  PURVIEW  -  Unified Data Governance              |
+  +--------------------------------------------------------------+
+  |  Catalog   :  Scan ADLS, Synapse, SQL, Power BI, S3, GCS     |
+  |  Discovery :  Auto-classify sensitive data (500+ types)      |
+  |  Lineage   :  End-to-end, column-level, across services      |
+  |  Policy    :  Data access governance across clouds           |
+  |                                                              |
+  |  Turns a raw ADLS account into a governed, multi-tenant lake.|
+  +--------------------------------------------------------------+
+```
+
+Purview is what lets **one ADLS account serve 20 teams** without everyone seeing everyone else's columns.
+
+### Data Lake Strengths and Weaknesses
+
+| Strength | Icon | Weakness | Icon |
+|----------|:---:|----------|:---:|
+| Cheap per GB | 💰 | Can become a "data swamp" without governance | 🐊 |
+| Any format | 🧩 | Query performance \< a warehouse on the same data | 🐢 |
+| Separates storage and compute | 🔀 | Schema enforcement is optional (and often skipped) | 🫥 |
+| Multi-engine access (Synapse, Databricks, Power BI, ML) | 🌐 | Harder for business users to self-serve | 😵 |
+
+### The Data Swamp — How Lakes Fail
+
+```
+  +--------------------------------------------------------------+
+  |                                                              |
+  |   NO CATALOG         ->  "Which container has customers?"    |
+  |   NO QUALITY RULES   ->  "Why are 40% of amounts negative?"  |
+  |   NO GOVERNANCE      ->  "Who deleted last quarter's data?"  |
+  |   NO LIFECYCLE       ->  "We're paying for 2014 clickstream" |
+  |                                                              |
+  |             ==>  DATA SWAMP  (useless, expensive)            |
+  +--------------------------------------------------------------+
+```
+
+Every successful data lake is paired with **Purview + quality rules + lifecycle policies + Azure Policy**. Skip these and your lake drowns.
+
+:::tip[HitaVir Tech says]
+"A data lake without a catalog is a data swamp. A data lake without quality rules
+is a liability. Governance is not optional — it is the difference between an asset
+and a landfill."
+:::
+
+:::info[Data lake in one line]
+Store everything cheaply, govern it strictly, query it from any engine.
+:::
+
+<KeyTakeaways>
+
+- A data lake stores any data, at any scale, in native format on cheap object storage (ADLS Gen2)
+- Schema-on-read means you ingest now and decide the structure at query time
+- Medallion zones: raw/bronze (engineers) → curated/silver (analysts, ML) → analytics/gold (business, BI)
+- Delta Lake adds ACID transactions, MERGE, and time travel on top of plain lake files
+- Without Purview, quality rules, and lifecycle policies, a lake degrades into a data swamp
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which schema approach defines a data lake?',
+      options: [
+        'Schema-on-write — every row fits a predefined schema at load time',
+        'Schema-on-read — ingest now, decide the structure at query time',
+        'No schema is ever allowed in a lake',
+        'Star schema enforced at ingestion',
+      ],
+      answer: 1,
+      explanation:
+        'Lakes store data in its native format and apply structure only when an engine reads it. Schema-on-write is the warehouse approach.',
+    },
+    {
+      question: 'In the medallion pattern, which zone should business users and BI tools read?',
+      options: [
+        'Raw / Bronze',
+        'Curated / Silver',
+        'Analytics / Gold',
+        'Any zone — they are interchangeable',
+      ],
+      answer: 2,
+      explanation:
+        'Gold holds pre-aggregated, BI-ready tables with joins done once. Raw is for engineers; Silver serves analysts and ML engineers.',
+    },
+    {
+      question: "What is Delta Lake's superpower on top of ADLS?",
+      options: [
+        'ACID transactions, UPDATE/DELETE/MERGE, and time travel on lake files',
+        'Cheaper storage than ADLS itself',
+        'Replacing Power BI for dashboards',
+        'Row-based OLTP performance',
+      ],
+      answer: 0,
+      explanation:
+        'Delta Lake pairs Parquet files with a JSON transaction log, bringing warehouse-style guarantees to open lake storage.',
+    },
+  ]}
+/>
+
+<LessonComplete />

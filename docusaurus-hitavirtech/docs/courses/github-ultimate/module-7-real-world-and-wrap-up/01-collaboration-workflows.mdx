@@ -1,0 +1,145 @@
+---
+title: 'Collaboration Workflows'
+sidebar_position: 1
+description: 'Compare GitFlow, trunk-based development, and the forking workflow — and pick the right one for your team size and release cadence.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Describe GitFlow's long-running branch model
+- Explain trunk-based development and its short-lived branches
+- Choose a workflow based on team size and release cadence
+
+</LearningObjectives>
+
+Different teams use different Git workflows. Understanding them helps you work in any team.
+
+### 1. GitFlow
+
+GitFlow uses long-running branches for different purposes:
+
+```
+main (production) ─────────────────────────────
+         \                      /
+release   \──── release/1.0 ──/
+           \                /
+develop ────────────────────────────────────────
+         \       /     \          /
+feature   feat-A/       \feat-B /
+```
+
+**Branches:**
+
+| Branch | Purpose |
+|--------|---------|
+| `main` | Production-ready code |
+| `develop` | Integration branch for features |
+| `feature/*` | New features |
+| `release/*` | Release preparation |
+| `hotfix/*` | Emergency production fixes |
+
+**Best for:** Large teams, scheduled releases, complex projects.
+
+### 2. Trunk-Based Development
+
+Everyone works on `main` (the trunk) with short-lived branches:
+
+```
+main ───A───B───C───D───E───F───
+             \  /       \  /
+              \/         \/
+         feature     feature
+        (1-2 days)  (1-2 days)
+```
+
+**Rules:**
+
+- Feature branches live for 1-2 days maximum
+- Merge to main frequently (at least daily)
+- Use feature flags to hide incomplete work
+- Every commit to main should be deployable
+
+**Best for:** Small teams, continuous deployment, fast-moving projects.
+
+### 3. Forking Workflow
+
+Used in open source — everyone works on their own fork:
+
+```
+upstream/main ──────────────────────────
+      ↑           ↑
+      │ PR        │ PR
+      │           │
+fork-A/main   fork-B/main
+      │           │
+  feature     feature
+```
+
+**Best for:** Open source projects, external contributors.
+
+### Which Workflow Should You Use?
+
+| Team Size | Release Cadence | Recommended Workflow |
+|-----------|----------------|---------------------|
+| 1-3 people | Continuous | Trunk-based |
+| 4-10 people | Weekly/bi-weekly | Simplified GitFlow |
+| 10+ people | Scheduled releases | Full GitFlow |
+| Open source | Varies | Forking workflow |
+
+:::tip[HitaVir Tech says]
+"There is no single 'correct' workflow. The best one is the one your team agrees on and follows consistently. Start simple and add complexity only when needed."
+:::
+
+<KeyTakeaways>
+
+- GitFlow: long-lived `main`, `develop`, `feature/*`, `release/*`, `hotfix/*` — suits big teams with scheduled releases
+- Trunk-based: everyone merges to `main` within 1-2 days, hiding unfinished work behind feature flags — suits continuous deployment
+- Forking workflow: contributors work on their own forks and send PRs — the open source standard
+- The best workflow is the one your team agrees on and follows consistently
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In GitFlow, which branch is the integration branch where features come together before release?',
+      options: [
+        'main',
+        'hotfix',
+        'develop',
+        'release',
+      ],
+      answer: 2,
+      explanation:
+        'Features branch off develop and merge back into it; release branches then carry develop to main.',
+    },
+    {
+      question: 'Which rule belongs to trunk-based development?',
+      options: [
+        'Feature branches live at most 1-2 days and merge to main frequently',
+        'Every feature needs its own fork',
+        'Releases happen from a long-lived release branch every quarter',
+        'Nobody may commit to main, ever',
+      ],
+      answer: 0,
+      explanation:
+        'Trunk-based development keeps branches tiny and short-lived, with feature flags hiding incomplete work on main.',
+    },
+    {
+      question: 'An open source project with hundreds of external contributors should use which workflow?',
+      options: [
+        'Trunk-based development',
+        'Full GitFlow',
+        'Direct pushes to main for everyone',
+        'The forking workflow',
+      ],
+      answer: 3,
+      explanation:
+        'External contributors cannot push to the main repository, so they fork it and contribute via pull requests.',
+    },
+  ]}
+/>
+
+<LessonComplete />

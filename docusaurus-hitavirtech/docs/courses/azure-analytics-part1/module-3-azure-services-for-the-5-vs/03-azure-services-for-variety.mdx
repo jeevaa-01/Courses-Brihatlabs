@@ -1,0 +1,201 @@
+---
+title: 'Azure Services for Variety'
+sidebar_position: 3
+description: 'The Azure toolkit for format diversity — Data Factory, Synapse Serverless OPENROWSET, Cosmos DB, and the AI extractor services that structure unstructured data.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Match Data Factory, Synapse Serverless, Cosmos DB, and the Azure AI services to their Variety roles
+- Query CSV, JSON, and Parquet with one T-SQL statement using OPENROWSET
+- Design an AI extractor pipeline that turns unstructured inputs into structured features
+- Use the variety decision tree to pick a service by data format
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              AZURE  FOR  VARIETY                             |
+  |         "Handle any data format, elegantly."                 |
+  +==============================================================+
+```
+
+### The Variety Lineup
+
+![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Cosmos DB](/img/courses/azure-icons/cosmos-db.svg) ![AI Vision](/img/courses/azure-icons/ai-vision.svg) ![Doc Intelligence](/img/courses/azure-icons/doc-intelligence.svg) ![AI Speech](/img/courses/azure-icons/ai-speech.svg) ![AI Language](/img/courses/azure-icons/ai-language.svg) ![AI Search](/img/courses/azure-icons/ai-search.svg)
+
+**Data Factory** • **Synapse** • **Cosmos DB** • **AI Vision** • **Doc Intelligence** • **AI Speech** • **AI Language** • **AI Search**
+
+### The Variety Toolkit
+
+| Service | Icon | Purpose |
+|---------|:---:|---------|
+| **ADLS Gen2** | <img src="azure-icons/adls-gen2.svg" width="32" height="32" alt="ADLS Gen2" /> | Holds every format — CSV, JSON, Parquet, images, video |
+| **Azure Data Factory** | <img src="azure-icons/data-factory.svg" width="32" height="32" alt="Data Factory" /> | ETL / ELT, 100+ connectors, mapping data flows |
+| **Synapse Serverless SQL** | <img src="azure-icons/synapse.svg" width="32" height="32" alt="Synapse" /> | `OPENROWSET` on CSV / JSON / Parquet — no setup |
+| **Azure Cosmos DB** | <img src="azure-icons/cosmos-db.svg" width="32" height="32" alt="Cosmos DB" /> | Multi-model NoSQL (document, graph, key-value) |
+| **Azure AI Vision** | <img src="azure-icons/ai-vision.svg" width="32" height="32" alt="AI Vision" /> | Images / video → structured labels, OCR |
+| **Azure AI Document Intelligence** | <img src="azure-icons/doc-intelligence.svg" width="32" height="32" alt="Doc Intelligence" /> | PDFs, forms, invoices → text and tables |
+| **Azure AI Speech** | <img src="azure-icons/ai-speech.svg" width="32" height="32" alt="AI Speech" /> | Speech → text, speaker ID, translation |
+| **Azure AI Language** | <img src="azure-icons/ai-language.svg" width="32" height="32" alt="AI Language" /> | NLP: sentiment, entities, summarization |
+| **Azure AI Search** | <img src="azure-icons/ai-search.svg" width="32" height="32" alt="AI Search" /> | Full-text and vector search over any source |
+
+### Service Spotlight — Azure Data Factory
+
+![Data Factory](/img/courses/azure-icons/data-factory.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  AZURE  DATA  FACTORY  -  Serverless ETL / ELT               |
+  +--------------------------------------------------------------+
+  |  Connectors  :  100+  (SQL, SaaS, files, APIs, on-prem)      |
+  |  Pipelines   :  Drag-and-drop + code-free mapping data flows |
+  |  Triggers    :  Schedule, event-based, tumbling window       |
+  |  Integration :  Git (Azure DevOps / GitHub)                  |
+  |                                                              |
+  |  The "orchestrator" of Azure data platforms.                 |
+  +--------------------------------------------------------------+
+```
+
+### Data Factory Flow
+
+```
+  INPUT                                                       OUTPUT
+  -----                                                       ------
+
+  CSV       +                                           +---- Parquet
+  JSON      +---> Copy Activity ---> Mapping Data Flow -+     (optimized)
+  Parquet   +              (schema +                    +---- Delta
+  Oracle    |               transforms)                        tables
+  SAP       +
+```
+
+### Synapse Serverless SQL — One SQL, Many Formats
+
+```sql
+SELECT  c.customer_id, SUM(o.amount) AS total_spent
+FROM    OPENROWSET(
+          BULK 'https://hitavirtech.dfs.core.windows.net/lake/orders/*.parquet',
+          FORMAT = 'PARQUET'
+        ) AS o
+JOIN    OPENROWSET(
+          BULK 'https://hitavirtech.dfs.core.windows.net/lake/customers/*.json',
+          FORMAT = 'CSV', FIELDTERMINATOR='0x0b'
+        ) AS c  ON c.customer_id = o.customer_id
+GROUP BY c.customer_id;
+```
+
+Serverless SQL reads **CSV, JSON, Parquet, Delta** directly from ADLS. You never leave T-SQL.
+
+### Unstructured → Structured: The AI Extractor Pipeline
+
+![AI Vision](/img/courses/azure-icons/ai-vision.svg) ![Doc Intelligence](/img/courses/azure-icons/doc-intelligence.svg) ![AI Speech](/img/courses/azure-icons/ai-speech.svg) ![AI Language](/img/courses/azure-icons/ai-language.svg) ![Translator](/img/courses/azure-icons/translator.svg)
+
+| Input | Icon | Azure Service | Output |
+|-------|:---:|---------------|--------|
+| Images | 🖼️ | AI Vision | Labels, faces, OCR |
+| PDFs / scans | 📄 | Doc Intelligence | Extracted text + tables + key-value |
+| Audio / voice | 🎤 | AI Speech | Transcripts + speaker ID |
+| Free text | 💬 | AI Language | Sentiment, entities, summarization |
+| Translations | 🌍 | Translator | 100+ languages |
+
+Magic step: **chaos in → structured features out** → then into ADLS / Synapse / Databricks as normal.
+
+### Real-World Example — E-commerce Review Pipeline
+
+```
+  Customer review (raw text)
+        |
+        v
+  AI Language  --->  sentiment = negative, topic = shipping
+        |
+        v
+  ADLS Gen2 (enriched records)
+        |
+        v
+  Data Factory  --->  Synapse table
+        |
+        v
+  Synapse SQL:   "avg sentiment per product / month"
+        |
+        v
+  Power BI dashboard for the CX team
+        |
+        v
+  Action:  fix shipping partner in Region X
+```
+
+### Variety Decision Tree
+
+```
+                       What's my data?
+                             |
+      +---------+---------+--+---+---------+---------+
+      |         |         |      |         |         |
+   Tabular   JSON      Images   PDFs   Audio     Free text
+      |         |         |      |         |         |
+      v         v         v      v         v         v
+   ADLS +     ADLS +    AI      Doc      AI         AI
+   Synapse    Synapse   Vision  Intell.  Speech     Language
+              or Cosmos
+```
+
+:::tip[HitaVir Tech says]
+"The magic of modern analytics — unstructured data becomes structured features
+in minutes via Azure AI services. What took PhDs years a decade ago is now an
+API call."
+:::
+
+<KeyTakeaways>
+
+- ADLS Gen2 holds every format; Data Factory orchestrates movement with 100+ connectors
+- Synapse Serverless `OPENROWSET` queries CSV, JSON, Parquet, and Delta from the lake without leaving T-SQL
+- The AI extractor services (Vision, Doc Intelligence, Speech, Language, Translator) turn unstructured inputs into structured features
+- Decision tree by format: tabular/JSON → ADLS + Synapse (or Cosmos), images → AI Vision, PDFs → Doc Intelligence, audio → AI Speech, free text → AI Language
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which Synapse Serverless feature lets one T-SQL query read CSV, JSON, and Parquet straight from ADLS?',
+      options: [
+        'CREATE EXTERNAL LIBRARY',
+        'OPENROWSET with BULK paths',
+        'sp_execute_remote',
+        'PolyBase push-down',
+      ],
+      answer: 1,
+      explanation:
+        'OPENROWSET(BULK ..., FORMAT = ...) reads files in the lake directly — no loading step, no infrastructure.',
+    },
+    {
+      question: 'You need to extract text and tables from thousands of scanned invoices. Which service fits best?',
+      options: [
+        'Azure AI Document Intelligence',
+        'Azure AI Speech',
+        'Azure Cosmos DB',
+        'Azure Event Hubs',
+      ],
+      answer: 0,
+      explanation:
+        'Doc Intelligence is purpose-built for PDFs, forms, and invoices — it outputs text, tables, and key-value pairs.',
+    },
+    {
+      question: 'What is Azure Data Factory’s primary role in a data platform?',
+      options: [
+        'Serving dashboards to business users',
+        'Training machine learning models',
+        'Orchestrating ETL/ELT movement across 100+ connectors',
+        'Storing multi-model NoSQL documents',
+      ],
+      answer: 2,
+      explanation:
+        'ADF is the orchestrator — pipelines, copy activities, and mapping data flows that move and reshape data.',
+    },
+  ]}
+/>
+
+<LessonComplete />

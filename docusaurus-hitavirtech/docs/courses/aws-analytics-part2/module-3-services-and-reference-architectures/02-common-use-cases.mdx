@@ -1,0 +1,215 @@
+---
+title: 'Common Use Cases'
+sidebar_position: 2
+description: 'The six repeatable analytics patterns — Batch BI, Real-Time, Log Observability, Customer 360, ML, and Data Mesh.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Name the six repeatable patterns that cover most real-world analytics on AWS
+- Identify the dominant V, freshness, and core services for each pattern
+- Use the decision cheat to map a problem statement to the right pattern
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |         SECTION  2   -   COMMON  USE  CASES                  |
+  |           (where the patterns show up in real life)          |
+  +==============================================================+
+```
+
+Most real-world analytics work on AWS falls into **six repeatable patterns**. Recognize them and you'll know which reference architecture to reach for.
+
+### The Service Cast Across All Six Patterns
+
+![Redshift](/img/courses/aws-icons/redshift.png) ![QuickSight](/img/courses/aws-icons/quicksight.png) ![Kinesis](/img/courses/aws-icons/kinesis-streams.png) ![Kinesis Analytics](/img/courses/aws-icons/kinesis-analytics.png) ![OpenSearch](/img/courses/aws-icons/opensearch.png) ![S3](/img/courses/aws-icons/s3.png) ![Glue](/img/courses/aws-icons/glue.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png) ![Lake Formation](/img/courses/aws-icons/lake-formation.png)
+
+### The Six Patterns
+
+```
+  +-----------------------------------------------------------+
+  |  1.  BATCH  BI           - nightly dashboards             |
+  |  2.  REAL-TIME  ANALYTICS- live metrics, fraud, IoT       |
+  |  3.  LOG  /  APP  OBS.   - search + troubleshoot logs     |
+  |  4.  CUSTOMER  360       - unify profiles across sources  |
+  |  5.  ML  /  PREDICTIVE   - forecast, recommend, score     |
+  |  6.  DATA  MESH          - domain-owned, shared data      |
+  +-----------------------------------------------------------+
+```
+
+### Use Case 1 — Batch Business Intelligence
+
+![Redshift](/img/courses/aws-icons/redshift.png) ![QuickSight](/img/courses/aws-icons/quicksight.png)
+
+**Who needs it:** Every company with a CFO.
+
+**Shape:** Operational databases + flat files → data lake → warehouse → dashboards.
+
+| Trait | Value |
+|-------|-------|
+| Freshness | Daily or hourly |
+| Volume | GB to TB |
+| Velocity V | 🐢 Batch |
+| Core service | 🏛️ Redshift |
+
+**Example prompt:** "Revenue by region compared to last quarter, refreshed every morning at 8 am."
+
+### Use Case 2 — Real-Time Analytics
+
+![Kinesis](/img/courses/aws-icons/kinesis-streams.png) ![Kinesis Analytics](/img/courses/aws-icons/kinesis-analytics.png) ![Lambda](/img/courses/aws-icons/lambda.png)
+
+**Who needs it:** Rideshare, fintech, ad-tech, IoT, online gaming.
+
+**Shape:** Events → Kinesis → stream processor → live dashboard **and** S3 for history.
+
+| Trait | Value |
+|-------|-------|
+| Freshness | Sub-second to seconds |
+| Volume | Millions of events / sec |
+| Velocity V | ⚡ Streaming |
+| Core service | 🌊 Kinesis + 🎯 Kinesis Analytics |
+
+**Example prompt:** "Alert the risk team the moment any card transaction looks fraudulent."
+
+### Use Case 3 — Log & Application Observability
+
+![OpenSearch](/img/courses/aws-icons/opensearch.png) ![Kinesis Firehose](/img/courses/aws-icons/kinesis-firehose.png) ![CloudTrail](/img/courses/aws-icons/cloudtrail.png)
+
+**Who needs it:** Every engineering team at scale.
+
+**Shape:** Application logs → Firehose → OpenSearch + S3 archive.
+
+| Trait | Value |
+|-------|-------|
+| Freshness | Seconds |
+| Volume | TB/day in logs |
+| Velocity V | ⚡ Streaming |
+| Core service | 🔎 OpenSearch |
+
+**Example prompt:** "Search the last 30 days of production logs for any mention of this request ID."
+
+### Use Case 4 — Customer 360
+
+![S3](/img/courses/aws-icons/s3.png) ![Glue](/img/courses/aws-icons/glue.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png)
+
+**Who needs it:** Retail, banking, telecom, SaaS.
+
+**Shape:** Unify profiles from CRM, web, mobile, support into one view, served to marketing + ML.
+
+| Trait | Value |
+|-------|-------|
+| Freshness | Hourly |
+| Volume | TB |
+| Dominant V | 🧩 Variety |
+| Core service | 🪣 S3 + 🕸️ Glue + 🏛️ Redshift |
+
+**Example prompt:** "Show one customer's full lifetime journey — ads seen, orders placed, tickets filed."
+
+### Use Case 5 — ML / Predictive Analytics
+
+![SageMaker](/img/courses/aws-icons/sagemaker.png) ![S3](/img/courses/aws-icons/s3.png) ![Lambda](/img/courses/aws-icons/lambda.png)
+
+**Who needs it:** Forecasting, recommendations, fraud, churn, dynamic pricing.
+
+**Shape:** Lake → feature store → model training → model endpoint → prediction served in app or BI.
+
+| Trait | Value |
+|-------|-------|
+| Freshness | Training weekly, inference real-time |
+| Volume | GB to PB of history |
+| Dominant V | 💎 Value |
+| Core service | 🤖 SageMaker + 🪣 S3 |
+
+**Example prompt:** "Predict which customers will churn next month so we can retain them."
+
+### Use Case 6 — Data Mesh
+
+![Lake Formation](/img/courses/aws-icons/lake-formation.png) ![DataZone](/img/courses/aws-icons/datazone.png) ![S3](/img/courses/aws-icons/s3.png)
+
+**Who needs it:** Enterprises with many product teams owning their own data.
+
+**Shape:** Each domain team curates its own data products on S3; a central catalog (Lake Formation + DataZone) makes them discoverable and access-controlled.
+
+| Trait | Value |
+|-------|-------|
+| Freshness | Per-domain |
+| Ownership | Distributed to domain teams |
+| Dominant V | 🛡️ Veracity + 💎 Value |
+| Core service | 🏗️ Lake Formation + 🧭 DataZone |
+
+**Example prompt:** "The Finance team owns 'invoices', Marketing owns 'campaigns', but anyone at the company can discover and request access."
+
+### Picking the Right Pattern — Decision Cheat
+
+```
+                What is the dominant question?
+                            |
+       +-------+---+-----+----+-----+----+-------+
+       |       |         |         |    |       |
+    Weekly   Instant  Find a    One     Predict  Federated
+    KPIs     alerts   log line  360 view future   ownership
+       |       |         |         |    |       |
+       v       v         v         v    v       v
+     BATCH   REAL-    LOG      CUSTOMER  ML /   DATA
+      BI     TIME     OBS.      360      PRED.   MESH
+```
+
+:::tip[HitaVir Tech says]
+"New engineers try to force every problem into the pattern they already know. Seniors look at the dominant V and pick the shape — then fill in services. Diagnose first. Build second."
+:::
+
+<KeyTakeaways>
+
+- Six patterns cover most analytics work: Batch BI, Real-Time, Log Observability, Customer 360, ML, Data Mesh
+- Each pattern is defined by its dominant question, freshness requirement, and core services
+- Batch BI (Redshift + QuickSight) serves scheduled KPIs; Real-Time (Kinesis) serves instant alerts
+- Customer 360 is a Variety problem; ML/Predictive is a Value problem; Data Mesh is about distributed ownership
+- Diagnose the dominant V first, pick the shape, then fill in services
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'A fraud team must react to suspicious card transactions within seconds. Which pattern fits?',
+      options: [
+        'Batch BI',
+        'Data Mesh',
+        'Real-Time Analytics',
+        'Customer 360',
+      ],
+      answer: 2,
+      explanation:
+        'Sub-second freshness on streaming events is the Real-Time Analytics pattern — Kinesis plus a stream processor plus alerting.',
+    },
+    {
+      question: 'Which pattern unifies CRM, web, mobile, and support data into one profile per customer?',
+      options: [
+        'Log Observability',
+        'Customer 360',
+        'Batch BI',
+        'ML / Predictive',
+      ],
+      answer: 1,
+      explanation:
+        'Customer 360 is dominated by the Variety V: many sources merged via S3 + Glue into a unified view in Redshift.',
+    },
+    {
+      question: 'What distinguishes Data Mesh from the other five patterns?',
+      options: [
+        'It requires no governance',
+        'It only works for streaming data',
+        'It stores everything in a single central team’s warehouse',
+        'Domain teams own their data products, with central discovery and access control',
+      ],
+      answer: 3,
+      explanation:
+        'Data Mesh distributes ownership to domain teams while Lake Formation + DataZone provide central governance and discoverability.',
+    },
+  ]}
+/>
+
+<LessonComplete />

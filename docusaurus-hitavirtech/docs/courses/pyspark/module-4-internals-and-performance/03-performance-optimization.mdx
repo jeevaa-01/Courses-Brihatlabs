@@ -1,0 +1,240 @@
+---
+title: "Performance Optimization"
+description: "Performance Optimization — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Performance Optimization
+
+*⏱ Estimated time: 110 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Reduce shuffle cost through early filtering, column pruning, and broadcasts.
+- Detect and mitigate data skew, and describe what Adaptive Query Execution automates.
+- Replace Python UDFs with built-in functions and eliminate repeated actions.
+
+:::
+
+### Control shuffle partitions
+
+> **Databricks serverless:** shuffle partitioning and many other configurations are managed automatically. This setting applies to local Spark and classic clusters.
+
+For local development:
+
+```python
+spark.conf.set(
+    "spark.sql.shuffle.partitions",
+    "8"
+)
+```
+
+Check:
+
+```python
+print(
+    spark.conf.get(
+        "spark.sql.shuffle.partitions"
+    )
+)
+```
+
+### Avoid Python UDFs when built-in functions exist
+
+Avoid:
+
+```python
+from pyspark.sql.types import StringType
+from pyspark.sql.functions import udf
+
+@udf(StringType())
+def clean_region_udf(region):
+    if region is None:
+        return "UNKNOWN"
+    return region.strip().upper()
+```
+
+Prefer:
+
+```python
+cleaned_df = sales_df.withColumn(
+    "region",
+    F.upper(F.trim(F.col("region")))
+)
+```
+
+### Filter early
+
+Prefer:
+
+```python
+filtered_df = (
+    source_df
+    .filter(F.col("event_date") >= "2026-07-01")
+    .select(
+        "event_id",
+        "user_id",
+        "event_type"
+    )
+)
+```
+
+### Select only needed columns
+
+Avoid carrying unused wide columns.
+
+### Broadcast small tables
+
+```python
+enriched_df = large_sales_df.join(
+    F.broadcast(small_product_df),
+    "product",
+    "left"
+)
+```
+
+### Handle skew
+
+Data skew occurs when a few keys contain much more data.
+
+Symptoms:
+
+- One or few tasks run much longer.
+- Large shuffle partitions.
+- Executors spill to disk.
+- Job stalls near completion.
+
+Strategies:
+
+- Broadcast small dimension tables.
+- Salt skewed keys.
+- Filter extreme records.
+- Repartition more intelligently.
+- Use adaptive query execution.
+
+### Adaptive Query Execution
+
+AQE is enabled by default in recent Spark versions and is always on in Databricks serverless compute.
+
+Check:
+
+```python
+print(
+    spark.conf.get(
+        "spark.sql.adaptive.enabled"
+    )
+)
+```
+
+Enable:
+
+```python
+spark.conf.set(
+    "spark.sql.adaptive.enabled",
+    "true"
+)
+```
+
+### Repartition by join key
+
+```python
+sales_partitioned_df = sales_df.repartition(
+    8,
+    "product"
+)
+```
+
+Do this only when it improves repeated downstream operations.
+
+### Avoid repeated count actions
+
+Avoid:
+
+```python
+print(df.count())
+print(df.filter(...).count())
+print(df.groupBy(...).count().count())
+```
+
+Each action can launch a job.
+
+### Avoid collecting large data
+
+Never:
+
+```python
+all_rows = huge_df.collect()
+```
+
+Prefer distributed writes or limited samples.
+
+### Monitor partitions
+
+```python
+# Local or classic clusters only.
+# The RDD API is unavailable on serverless compute.
+print(df.rdd.getNumPartitions())
+```
+
+### File sizing
+
+Aim for fewer reasonably sized files rather than:
+
+- One massive file.
+- Millions of tiny files.
+
+### ✅ Checkpoint
+
+Optimize a pipeline by:
+
+1. Filtering early.
+2. Selecting only required columns.
+3. Broadcasting the product dimension.
+4. Writing Parquet.
+5. Reviewing the physical plan.
+
+<Quiz
+  questions={[
+  {
+    "question": "Prefer built-in functions over Python UDFs because built-ins:",
+    "options": [
+      "Are the only way to return strings",
+      "Avoid Python serialization overhead and keep Catalyst optimization",
+      "Are deprecated"
+    ],
+    "answer": 1,
+    "explanation": "UDFs are opaque to the optimizer and cross the JVM–Python boundary."
+  },
+  {
+    "question": "A classic symptom of data skew is:",
+    "options": [
+      "All tasks finish at the same time",
+      "A few tasks run far longer while the job stalls near completion",
+      "Too many small files"
+    ],
+    "answer": 1,
+    "explanation": "A handful of oversized partitions dominate the stage runtime."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- Measure before optimizing: plans, Spark UI, stage durations, shuffle sizes.
+- The cheapest computation is the one avoided — fewer rows, columns, and partitions read.
+- AQE automates shuffle-partition tuning and some skew handling.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Optimize only after measuring. Use execution plans, Spark UI, stage durations, shuffle size, and task skew.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+The fastest transformation is the one you avoid by reading fewer columns, fewer partitions, and fewer rows.
+
+:::

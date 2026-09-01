@@ -1,0 +1,115 @@
+---
+title: 'What is Git? What is GitHub?'
+sidebar_position: 4
+description: 'Understand version control — Git as the local time machine for your code and GitHub as the cloud platform that adds collaboration on top.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Explain what a version control system does
+- Distinguish Git (local tool) from GitHub (cloud platform)
+- List the collaboration features GitHub adds on top of Git
+
+</LearningObjectives>
+
+Before we start using Git, let us understand what it is and why it matters.
+
+### What is Git?
+
+**Git** is a **version control system**. It tracks changes to your files over time.
+
+Think of it like a **save game** feature in video games. Every time you commit in Git, you save a snapshot of your entire project. You can go back to any previous save at any time.
+
+**Key facts about Git:**
+
+- Created in 2005 by Linus Torvalds (creator of Linux)
+- It is **free** and **open source**
+- It works **locally** on your computer — no internet needed
+- It is the most popular version control system in the world
+
+### What is GitHub?
+
+**GitHub** is a **cloud platform** that hosts Git repositories online. It adds collaboration features on top of Git.
+
+Think of it this way:
+
+| Git | GitHub |
+|-----|--------|
+| Tool on your computer | Website in the cloud |
+| Tracks changes locally | Stores code online |
+| Works offline | Requires internet |
+| Command line tool | Web interface + API |
+| Version control | Collaboration platform |
+
+**GitHub adds:**
+
+- Pull requests (propose changes)
+- Issues (track bugs and features)
+- Actions (automate testing and deployment)
+- Social features (follow, star, fork)
+
+### Why Should You Learn Git?
+
+1. **Every tech company uses it** — it is a required skill
+2. **Protects your work** — never lose code again
+3. **Enables collaboration** — work with teams of any size
+4. **Shows your portfolio** — GitHub is your coding resume
+5. **Required for open source** — contribute to real projects
+
+:::tip[HitaVir Tech says]
+"Git is like a time machine for your code. GitHub is the cloud where your time machine lives. Together, they are the foundation of modern software development."
+:::
+
+<KeyTakeaways>
+
+- Git is a free, open-source **version control system** that tracks changes locally — no internet needed
+- GitHub is a **cloud platform** that hosts Git repositories and adds pull requests, issues, and Actions
+- Every commit is a snapshot you can return to, like a save point in a video game
+- Git skills are required at virtually every tech company — and GitHub doubles as your portfolio
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which statement about Git is TRUE?',
+      options: [
+        'Git requires an internet connection to track changes',
+        'Git works locally on your computer, even offline',
+        'Git is a website owned by Microsoft',
+        'Git only works with GitHub',
+      ],
+      answer: 1,
+      explanation:
+        'Git is a local tool that tracks changes on your machine. GitHub is the website; Git works with or without it.',
+    },
+    {
+      question: 'Which feature belongs to GitHub, NOT to Git itself?',
+      options: [
+        'Commits',
+        'Branches',
+        'Pull requests',
+        'The staging area',
+      ],
+      answer: 2,
+      explanation:
+        'Pull requests are a GitHub collaboration feature layered on top of Git. Commits, branches, and staging are core Git.',
+    },
+    {
+      question: 'Who created Git, and when?',
+      options: [
+        'Microsoft, in 2018',
+        'GitHub Inc., in 2008',
+        'Guido van Rossum, in 1991',
+        'Linus Torvalds, in 2005',
+      ],
+      answer: 3,
+      explanation:
+        'Linus Torvalds, the creator of Linux, created Git in 2005 to manage Linux kernel development.',
+    },
+  ]}
+/>
+
+<LessonComplete />

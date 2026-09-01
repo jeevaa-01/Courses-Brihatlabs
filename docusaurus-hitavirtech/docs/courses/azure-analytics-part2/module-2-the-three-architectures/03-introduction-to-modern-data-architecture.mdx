@@ -1,0 +1,264 @@
+---
+title: 'Introduction to Modern Data Architecture'
+sidebar_position: 3
+description: 'The Lakehouse pattern on Azure — the two-copies problem, the five pillars of modern data architecture, and where Microsoft Fabric and OneLake fit.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Explain the "two copies of the truth" problem that the lakehouse solves
+- Name the five pillars of modern data architecture on Azure
+- Place Microsoft Fabric and OneLake in the modern architecture picture
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |       ARCHITECTURE  3   -   MODERN  DATA  ARCHITECTURE       |
+  |         (aka the "Lakehouse" pattern on Azure)               |
+  +==============================================================+
+```
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Databricks](/img/courses/azure-icons/databricks.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg) ![ML](/img/courses/azure-icons/ml.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg)
+
+### The Problem Modern Data Architecture Solves
+
+By 2018, most companies had **both** a lake and a warehouse — and suffered:
+
+| Pain | Icon | Symptom |
+|------|:---:|---------|
+| Two copies of the truth | 👯 | Lake says one number, warehouse says another |
+| Pipeline sprawl | 🕸️ | 200 Data Factory jobs shuffling data between them |
+| Permission chaos | 🔐 | Entra ID for SQL, ACLs for storage, separate audits |
+| Skill silos | 🧑‍💻 | Data engineers in Spark, analysts in SQL, no common tool |
+| ML engineers stuck | 🤖 | Data scientists denied warehouse access, scraping lakes by hand |
+
+### The Modern Data Architecture Idea
+
+```
+  +==============================================================+
+  |                                                              |
+  |    ONE GOVERNED PLATFORM                                     |
+  |                                                              |
+  |    - Unified storage  (ADLS Gen2 = source of truth)          |
+  |    - Open table format  (Delta Lake / Iceberg)               |
+  |    - Purpose-built engines  (pick the right tool per job)    |
+  |    - Shared catalog + governance  (Purview)                  |
+  |    - Common security model  (Entra ID + RBAC + Key Vault)    |
+  |                                                              |
+  +==============================================================+
+```
+
+Instead of lake **or** warehouse, you get lake **and** warehouse — unified by one catalog, one permission model, one lineage.
+
+### Microsoft Fabric — The Unified SaaS Lakehouse
+
+![Synapse](/img/courses/azure-icons/synapse.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Data Explorer](/img/courses/azure-icons/data-explorer.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg) ![ML](/img/courses/azure-icons/ml.svg) ![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg)
+
+In 2023 Microsoft launched **Fabric** — a single SaaS surface that bundles:
+
+| Fabric Pillar | Icon | Under the Hood |
+|---------------|:---:|----------------|
+| **OneLake** | <img src="/img/courses/azure-icons/adls-gen2.svg" width="32" height="32" alt="OneLake" /> | One tenant-wide ADLS, "OneDrive for data" |
+| **Data Factory** | <img src="/img/courses/azure-icons/data-factory.svg" width="32" height="32" alt="Data Factory" /> | Ingest and orchestrate (same engine as ADF) |
+| **Synapse Data Engineering** | <img src="/img/courses/azure-icons/databricks.svg" width="32" height="32" alt="Synapse DE" /> | Spark notebooks on Delta Lake |
+| **Synapse Data Warehouse** | <img src="/img/courses/azure-icons/sql-dw.svg" width="32" height="32" alt="Synapse DW" /> | T-SQL warehouse over Delta (not Dedicated Pool!) |
+| **Synapse Real-Time Analytics** | <img src="/img/courses/azure-icons/data-explorer.svg" width="32" height="32" alt="Synapse RTA" /> | KQL / Data Explorer on streams |
+| **Power BI** | <img src="/img/courses/azure-icons/power-bi.svg" width="32" height="32" alt="Power BI" /> | Native BI over OneLake (Direct Lake mode) |
+| **Data Activator** | <img src="/img/courses/azure-icons/event-grid.svg" width="32" height="32" alt="Data Activator" /> | Trigger actions from data signals |
+| **Copilot** | <img src="/img/courses/azure-icons/openai.svg" width="32" height="32" alt="Fabric Copilot" /> | Natural-language across all pillars |
+
+Fabric is where Azure analytics is heading. The Part 1 services still exist — Fabric simply bundles them on one pricing model, one identity, one lakehouse.
+
+### The Five Pillars of Modern Data Architecture on Azure
+
+```
+     +--------+     +--------+     +--------+     +--------+     +--------+
+     |   1    |     |   2    |     |   3    |     |   4    |     |   5    |
+     | SCALABLE|    |PURPOSE-|    |SEAMLESS|    |UNIFIED |    |FUTURE- |
+     |   DATA  |    |  BUILT |    |  DATA  |    |GOVERN- |    |  PROOF |
+     |   LAKE  |    | ENGINES|    |MOVEMENT|    |  ANCE  |    |   ML   |
+     +---------+    +--------+    +--------+    +--------+    +--------+
+         |              |              |              |              |
+         v              v              v              v              v
+       ADLS +        Synapse,      Shortcuts,   Purview +     Azure ML,
+       Fabric        Databricks,   Mirroring,   Entra ID +    OpenAI,
+       OneLake       Power BI,     ADF zero-    Key Vault +   Synapse
+                     Data Explorer  copy link   Defender      ML, Fabric
+```
+
+### Pillar 1 — A Scalable Data Lake at the Core
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg)
+
+Every modern Azure architecture **starts from ADLS Gen2 / OneLake**. Why?
+
+| Reason | Icon | Impact |
+|--------|:---:|--------|
+| Infinite scale | ♾️ | Never outgrow it |
+| 11 nines durability (GRS) | 🛡️ | Your data is safer than on any disk |
+| Pennies per GB | 💰 | Keep history forever |
+| Native reader for Synapse, Databricks, Power BI, ML | 🌐 | One source, many consumers |
+
+### Pillar 2 — Purpose-Built Engines
+
+One-size-fits-all is dead. Pick the right engine per workload:
+
+| Workload | Icon | Engine | Why |
+|----------|:---:|--------|-----|
+| Ad-hoc SQL on lake files | 🔍 | **Synapse Serverless SQL** | Pay per TB scanned, zero setup |
+| Dashboards on curated tables | 🏛️ | **Synapse Dedicated / Fabric Warehouse** | Sub-second BI |
+| Petabyte Spark / ML | 🔥 | **Databricks / Synapse Spark** | Custom transforms + ML at scale |
+| Sub-ms lookups | ⚡ | **Cosmos DB** | Document / key-value queries |
+| Full-text + vector search | 🔎 | **AI Search** | RAG, log search, enterprise search |
+| Real-time aggregation | 🎯 | **Stream Analytics / ADX** | Streaming SQL / KQL |
+
+### Pillar 3 — Seamless Data Movement
+
+Instead of 200 brittle ETL jobs, modern Azure architectures rely on:
+
+- 🚀 **Mirroring** — Azure SQL / Cosmos / Snowflake → Fabric with near-zero-latency replication
+- 🌐 **OneLake Shortcuts** — point to data in another lake / S3 / GCS without copying
+- 🔭 **Synapse Serverless SQL** — warehouse-style SQL on any ADLS folder
+- 📡 **Event Hubs to Synapse / Data Explorer streaming ingestion**
+- 🔗 **Power BI Direct Lake** — report on Delta tables with no import cache
+
+### Pillar 4 — Unified Governance
+
+![Policy](/img/courses/azure-icons/policy.svg) ![Key Vault](/img/courses/azure-icons/key-vault.svg) ![Defender](/img/courses/azure-icons/defender.svg) ![Activity Log](/img/courses/azure-icons/activity-log.svg)
+
+| Layer | Icon | Service | Purpose |
+|-------|:---:|---------|---------|
+| Identity | 🔑 | Microsoft Entra ID (formerly AAD) | Who you are |
+| Fine-grained access | 🔐 | Azure RBAC + ADLS ACLs + Purview policies | What you can do |
+| Encryption | 🔒 | Key Vault + Customer-Managed Keys | At-rest and in-transit |
+| PII scanning | 🕵️ | Microsoft Purview + Defender for Cloud | Find sensitive data |
+| Audit | 📜 | Activity Log + Azure Monitor | Every API call, every query |
+| Data discovery | 🧭 | Microsoft Purview | Business-friendly data catalog |
+| Policy-as-code | ⚙️ | Azure Policy | Enforce rules on resources |
+
+### Pillar 5 — Built-in AI / ML
+
+![ML](/img/courses/azure-icons/ml.svg) ![OpenAI](/img/courses/azure-icons/openai.svg)
+
+ML is no longer a bolt-on — it lives **inside** the platform:
+
+| Capability | Icon | Service |
+|------------|:---:|---------|
+| Full ML lifecycle | 🤖 | Azure Machine Learning |
+| Foundation models (GPT-4, Claude partners, Llama) | 🧠 | Azure OpenAI Service |
+| Spark-native ML in notebooks | 🔥 | Databricks MLflow / Synapse ML |
+| No-code ML | 📈 | Azure ML Designer / AutoML |
+| Natural-language BI | 💬 | Power BI Copilot |
+| RAG | 🔎 | AI Search + Azure OpenAI |
+
+### The Modern Data Architecture — One Picture
+
+```
+  +==================================================================+
+  |                                                                  |
+  |   +---------+   +---------+   +---------+   +---------+          |
+  |   | Batch   |   | Stream  |   | OpTx DB |   | SaaS    |          |
+  |   | files   |   | events  |   | (CDC)   |   | apps    |          |
+  |   +----+----+   +----+----+   +----+----+   +----+----+          |
+  |        |             |             |             |               |
+  |        +-------------+-------------+-------------+               |
+  |                             |                                    |
+  |                             v                                    |
+  |     +-----------------------------------------------------+      |
+  |     |    ADLS GEN2 / ONELAKE  ---  Centralized Lake       |      |
+  |     |    Raw  ->  Curated  ->  Analytics  (Delta/Parquet) |      |
+  |     +---------------------------+-------------------------+      |
+  |                                 |                                |
+  |                  governed by    |                                |
+  |                                 v                                |
+  |     +-----------------------------------------------------+      |
+  |     | PURVIEW + ENTRA ID + KEY VAULT + DEFENDER + POLICY  |      |
+  |     +-----------------------------------------------------+      |
+  |                                 |                                |
+  |       +------------+------------+------------+-------------+     |
+  |       |            |            |            |             |    |
+  |       v            v            v            v             v    |
+  |   +-------+   +---------+   +-----+   +-----------+   +------+  |
+  |   |Synapse|   |Synapse  |   |Data-|   |Azure Data |   |Azure |  |
+  |   |Server-|   |Dedicated|   |bricks|  |Explorer   |   |ML /  |  |
+  |   |less   |   |(MPP)    |   |Spark |  |  (KQL)    |   |OpenAI|  |
+  |   +---+---+   +----+----+   +--+--+   +-----+-----+   +--+---+  |
+  |       |            |           |             |           |      |
+  |       +------------+-----------+-------------+-----------+      |
+  |                                 |                                |
+  |                                 v                                |
+  |            +----------------------------------------+            |
+  |            |   VALUE  =  Power BI + Copilot + apps  |            |
+  |            +----------------------------------------+            |
+  |                                                                  |
+  +==================================================================+
+```
+
+Look carefully: **every service from Part 1 has a home.** That is modern Azure data architecture.
+
+:::info[Modern data architecture in one sentence]
+Centralize storage in a governed ADLS / OneLake. Use the best engine for each
+workload. Let data move frictionlessly between them. Secure it all uniformly.
+Build ML natively on top.
+:::
+
+:::tip[HitaVir Tech says]
+"Don't build one monolith. Don't build 20 silos. Build one lake, with many
+engines, one catalog, one security model. That's how Azure's biggest analytics
+customers run."
+:::
+
+<KeyTakeaways>
+
+- Running a separate lake and warehouse creates two copies of the truth, pipeline sprawl, and permission chaos
+- The lakehouse unifies them: one governed lake (ADLS/OneLake), an open table format, and purpose-built engines
+- Five pillars: scalable lake, purpose-built engines, seamless movement, unified governance, built-in AI/ML
+- Microsoft Fabric bundles the whole stack as SaaS on OneLake — one pricing model, one identity, one lakehouse
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In an Azure modern data architecture, which layer is the "source of truth" for storage?',
+      options: [
+        'Azure Synapse Dedicated Pool',
+        'Cosmos DB',
+        'ADLS Gen2 / OneLake',
+        'Azure SQL Database',
+      ],
+      answer: 2,
+      explanation:
+        'Everything starts from the governed lake — every engine (Synapse, Databricks, Power BI, Azure ML) reads from ADLS Gen2 or OneLake.',
+    },
+    {
+      question: 'What is OneLake?',
+      options: [
+        'One tenant-wide data lake under Fabric — "OneDrive for data"',
+        'A Databricks feature store',
+        'The new name for Azure SQL Database',
+        'A Power BI visualization type',
+      ],
+      answer: 0,
+      explanation:
+        'OneLake is Fabric’s built-in, tenant-wide lake (ADLS under the hood) that all Fabric workloads share.',
+    },
+    {
+      question: 'Which of these is NOT one of the five pillars of modern data architecture on Azure?',
+      options: [
+        'Purpose-built engines',
+        'Unified governance',
+        'Seamless data movement',
+        'Manual nightly CSV exports between systems',
+      ],
+      answer: 3,
+      explanation:
+        'The five pillars are: scalable lake, purpose-built engines, seamless movement, unified governance, and built-in AI/ML. Manual exports are exactly what the pattern eliminates.',
+    },
+  ]}
+/>
+
+<LessonComplete />

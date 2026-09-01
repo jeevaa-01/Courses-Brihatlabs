@@ -1,0 +1,115 @@
+---
+title: 'The 5 Vs of Big Data'
+sidebar_position: 1
+description: 'Where the 5 Vs framework came from (Doug Laney, 2001) and the five diagnostic questions — Volume, Variety, Velocity, Veracity, Value.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Trace the origin of the 5 Vs — Doug Laney's original three plus the two the industry added
+- State the diagnostic question behind each V
+- Preview AWS's "one headline service per V" mapping
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |         SECTION  2   -   THE  5  Vs  OF  BIG  DATA           |
+  +==============================================================+
+```
+
+### Where the 5 Vs Come From
+
+In 2001, analyst **Doug Laney** described big-data challenges with three Vs: **Volume, Variety, Velocity**. Later the industry added **Veracity** (trust) and **Value** (outcome). Together they form the universal diagnostic checklist.
+
+### The 5 Vs Star
+
+```
+                          *
+                     VOLUME
+                  How much is it?
+                       / \
+                      /   \
+                     /     \
+                    /       \
+           VARIETY             VELOCITY
+       How many formats?     How fast?
+                 \             /
+                  \           /
+                   \         /
+                    \       /
+             VERACITY        VALUE
+         Can we trust it?  Worth it?
+```
+
+### The 5 Vs at a Glance
+
+| V | Icon | Question |
+|---|:---:|----------|
+| 1 | 📦 **VOLUME** | How much? (scale) |
+| 2 | 🧩 **VARIETY** | How many formats? |
+| 3 | 🌊 **VELOCITY** | How fast? (speed) |
+| 4 | 🛡️ **VERACITY** | Can we trust it? |
+| 5 | 💎 **VALUE** | What outcome? |
+
+Miss any one V and your data platform has a hole. Let's tour each.
+
+### Preview — AWS's One Service Per V
+
+![S3](/img/courses/aws-icons/s3.png) ![Glue](/img/courses/aws-icons/glue.png) ![Kinesis](/img/courses/aws-icons/kinesis-streams.png) ![Lake Formation](/img/courses/aws-icons/lake-formation.png) ![QuickSight](/img/courses/aws-icons/quicksight.png)
+
+*Volume → S3. Variety → Glue. Velocity → Kinesis. Veracity → Lake Formation. Value → QuickSight.*
+
+<KeyTakeaways>
+
+- Doug Laney coined Volume, Variety, Velocity in 2001; Veracity and Value came later
+- Each V is a diagnostic question: how much, how many formats, how fast, can we trust it, what outcome
+- A data platform that ignores any one V has a hole
+- AWS has a headline service for each V — S3, Glue, Kinesis, Lake Formation, QuickSight
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which three Vs were in Doug Laney\'s original 2001 framework?',
+      options: [
+        'Veracity, Value, Velocity',
+        'Volume, Veracity, Value',
+        'Volume, Variety, Velocity',
+        'Variety, Veracity, Velocity',
+      ],
+      answer: 2,
+      explanation:
+        'Laney described Volume, Variety, and Velocity; the industry later added Veracity (trust) and Value (outcome).',
+    },
+    {
+      question: 'Which V asks the question "Can we trust the data?"',
+      options: [
+        'Veracity',
+        'Value',
+        'Velocity',
+        'Volume',
+      ],
+      answer: 0,
+      explanation:
+        'Veracity covers accuracy, consistency, and trustworthiness — data quality.',
+    },
+    {
+      question: 'In the AWS one-service-per-V preview, which service headlines Velocity?',
+      options: [
+        'S3',
+        'QuickSight',
+        'Glue',
+        'Kinesis',
+      ],
+      answer: 3,
+      explanation:
+        'Kinesis is the real-time streaming backbone — the speed V. S3 is Volume, Glue is Variety, QuickSight is Value.',
+    },
+  ]}
+/>
+
+<LessonComplete />

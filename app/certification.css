@@ -1,0 +1,10 @@
+.verify-card{max-width:700px}
+.verify-loading,.verify-result-heading{display:flex;align-items:center;gap:12px}
+.verify-valid>svg,.verify-valid .verify-result-heading>svg{color:var(--success)}
+.verify-invalid>svg,.verify-invalid .verify-result-heading>svg{color:var(--danger)}
+.verify-card h2{margin:6px 0;font-size:22px}
+.verify-card dl{display:grid;gap:0;margin:22px 0 0}
+.verify-card dl div{display:flex;justify-content:space-between;gap:20px;padding:12px 0;border-top:1px solid var(--line);font-size:12px}
+.verify-card dt{color:var(--text-secondary)}
+.verify-card dd{margin:0;text-align:right;font-weight:750}
+.verify-result-heading{align-items:flex-start}

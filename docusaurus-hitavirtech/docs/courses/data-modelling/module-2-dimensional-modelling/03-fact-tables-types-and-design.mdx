@@ -1,0 +1,153 @@
+---
+title: 'Fact Tables — Types and Design'
+sidebar_position: 3
+description: 'Transaction, periodic snapshot, and accumulating snapshot fact tables — what each one models and how to choose between them.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Name the three fact table types and the grain of each
+- Match business processes (sales, balances, claim lifecycles) to the right type
+- Answer the classic interview question on fact table selection
+
+</LearningObjectives>
+
+Fact tables are the heart of every data warehouse. They store the **measurable events** of the business.
+
+![Fact Table Types](/img/courses/diagrams/fact-table-types.svg)
+
+### Three Types of Fact Tables
+
+### 1. Transaction Fact Table
+
+Stores **one row per event** at the most detailed level.
+
+```sql
+-- One row per sale transaction
+CREATE TABLE fact_sales_transaction (
+    sale_key        BIGINT,
+    date_key        INT,
+    customer_key    INT,
+    product_key     INT,
+    store_key       INT,
+    quantity        INT,
+    unit_price      DECIMAL(10,2),
+    total_amount    DECIMAL(12,2),
+    payment_method  VARCHAR(20)
+);
+
+-- Grain: One row per product per order
+```
+
+**Use case:** Retail sales, bank transactions, insurance claims, web clicks.
+
+### 2. Periodic Snapshot Fact Table
+
+Stores **one row per entity per time period** — a snapshot of state.
+
+```sql
+-- Monthly account balance snapshot
+CREATE TABLE fact_account_monthly_snapshot (
+    snapshot_date_key   INT,
+    account_key         INT,
+    balance             DECIMAL(15,2),
+    num_deposits        INT,
+    total_deposits      DECIMAL(15,2),
+    num_withdrawals     INT,
+    total_withdrawals   DECIMAL(15,2),
+    interest_earned     DECIMAL(10,2)
+);
+
+-- Grain: One row per account per month
+```
+
+**Use case:** Monthly account balances, daily inventory levels, weekly pipeline reports.
+
+### 3. Accumulating Snapshot Fact Table
+
+Tracks the **lifecycle of a process** with multiple milestone dates.
+
+```sql
+-- Insurance claim lifecycle
+CREATE TABLE fact_claim_lifecycle (
+    claim_key           BIGINT,
+    policy_key          INT,
+    claimant_key        INT,
+    filed_date_key      INT,
+    acknowledged_date_key INT,
+    assessed_date_key   INT,
+    approved_date_key   INT,
+    paid_date_key       INT,
+    claim_amount        DECIMAL(12,2),
+    approved_amount     DECIMAL(12,2),
+    paid_amount         DECIMAL(12,2),
+    current_status      VARCHAR(20),
+    days_to_settle      INT
+);
+
+-- Grain: One row per claim (updated as milestones are reached)
+```
+
+**Use case:** Order fulfillment, insurance claims, loan processing, hiring pipeline.
+
+### Choosing the Right Fact Table
+
+![Fact Table Chooser](/img/courses/diagrams/fact-table-chooser.svg)
+
+:::tip[HitaVir Tech Interview Insight]
+"In interviews, they will ask: 'What type of fact table would you use for insurance claims?' The answer is accumulating snapshot — because a claim goes through multiple stages (filed, assessed, approved, paid) and you want to track the full lifecycle in one row."
+:::
+
+<KeyTakeaways>
+
+- **Transaction fact** = one row per event, never updated — the most common type
+- **Periodic snapshot** = one row per entity per period (monthly balance, daily inventory)
+- **Accumulating snapshot** = one row per process lifecycle, updated at each milestone
+- Pick the type by matching the business process: events, recurring states, or multi-stage pipelines
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'A table stores one row per bank account per month with the closing balance. Which fact table type is this?',
+      options: [
+        'Transaction fact',
+        'Accumulating snapshot',
+        'Periodic snapshot',
+        'Degenerate fact',
+      ],
+      answer: 2,
+      explanation:
+        'One row per entity per time period capturing state is the definition of a periodic snapshot.',
+    },
+    {
+      question: 'Why is an accumulating snapshot the right choice for insurance claims?',
+      options: [
+        'Claims never change once filed',
+        'A claim moves through multiple milestones, and you want the whole lifecycle in one updatable row',
+        'It uses the least storage of the three types',
+        'Insurance regulators require snapshot tables',
+      ],
+      answer: 1,
+      explanation:
+        'Accumulating snapshots carry a date key per milestone (filed, assessed, approved, paid) and are updated as the claim progresses.',
+    },
+    {
+      question: 'Which fact table type is typically never updated after a row is written?',
+      options: [
+        'Transaction fact',
+        'Accumulating snapshot',
+        'Periodic snapshot',
+        'All three are updated constantly',
+      ],
+      answer: 0,
+      explanation:
+        'Transaction facts record immutable events — one row per sale, click, or claim filing — and are append-only.',
+    },
+  ]}
+/>
+
+<LessonComplete />

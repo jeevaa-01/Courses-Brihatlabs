@@ -1,0 +1,227 @@
+---
+title: 'Step 17: Tool integration — Python, Airflow, Spark SQL, Databricks'
+sidebar_position: 5
+description: 'Run your MySQL SQL from the tools that wrap it — pymysql + pandas, an Airflow DAG, Spark JDBC, and Databricks Unity Catalog.'
+---
+
+<DurationBadge minutes={15} />
+
+<LearningObjectives>
+
+- Read MySQL into a pandas DataFrame with `pymysql` and `pd.read_sql`
+- Schedule an idempotent daily SQL job with Airflow's `MySqlOperator`
+- Load a MySQL table into Spark over JDBC and read three-part Unity Catalog names
+
+</LearningObjectives>
+
+> *"Talk is cheap. Show me the code."*
+> — Linus Torvalds
+
+:::info[HitaVir Tech connection]
+SQL never lives alone. Every Data Engineering tool eventually wraps SQL — and the engineer who can read both layers ships features the rest cannot.
+:::
+
+:::tip[Why this matters now]
+Each snippet below is the smallest working version. Type it; do not just read it. The integration only sticks when your machine has actually executed it.
+:::
+
+### 17.1 — Python (`pymysql` + pandas)
+
+```python
+import pymysql
+import pandas as pd
+
+conn = pymysql.connect(
+    host="localhost",
+    user="root",
+    password="your_password_here",
+    database="hitavir_sales",
+    charset="utf8mb4",
+)
+
+query = """
+SELECT
+    summary_date,
+    gross_revenue
+FROM daily_sales_summary
+WHERE summary_date >= '2026-03-01'
+ORDER BY summary_date
+"""
+
+df = pd.read_sql(query, conn)
+conn.close()
+
+print(df.head())
+```
+
+**Expected output (head of DataFrame):**
+
+```
+  summary_date  gross_revenue
+0   2026-03-01      94997.00
+1   2026-03-02       3597.00
+2   2026-03-03       5097.00
+3   2026-03-04      14498.00
+4   2026-03-05       5395.00
+```
+
+:::tip[HitaVir Tech Tip]
+Never embed a password in source code. Read it from `os.environ["MYSQL_PASSWORD"]` and store it in `.env` (and `.gitignore` the `.env`).
+:::
+
+### 17.2 — Airflow (`MySqlOperator`)
+
+```python
+from airflow import DAG
+from airflow.providers.mysql.operators.mysql import MySqlOperator
+from datetime import datetime
+
+with DAG(
+    dag_id="hitavir_daily_sales_summary",
+    start_date=datetime(2026, 4, 1),
+    schedule="0 2 * * *",     # every day at 02:00
+    catchup=False,
+) as dag:
+
+    refresh_summary = MySqlOperator(
+        task_id="refresh_daily_sales_summary",
+        mysql_conn_id="hitavir_mysql",
+        sql="""
+            DELETE FROM daily_sales_summary
+            WHERE summary_date = CURRENT_DATE - INTERVAL 1 DAY;
+
+            INSERT INTO daily_sales_summary
+                (summary_date, order_count, units_sold, gross_revenue)
+            SELECT
+                fs.order_date,
+                COUNT(DISTINCT fs.customer_sk),
+                SUM(fs.quantity),
+                SUM(fs.line_amount)
+            FROM fact_sales AS fs
+            WHERE fs.order_date = CURRENT_DATE - INTERVAL 1 DAY
+            GROUP BY fs.order_date;
+        """,
+    )
+```
+
+The DAG runs once per day, deletes yesterday's row from `daily_sales_summary` (idempotent re-runs), then re-inserts it.
+
+### 17.3 — Spark SQL (`spark.read.jdbc`)
+
+```python
+from pyspark.sql import SparkSession
+
+spark = (
+    SparkSession.builder
+    .appName("hitavir_sales")
+    .config("spark.jars", "/path/to/mysql-connector-j-8.x.x.jar")
+    .getOrCreate()
+)
+
+df = (
+    spark.read
+    .format("jdbc")
+    .option("url",      "jdbc:mysql://localhost:3306/hitavir_sales")
+    .option("dbtable",  "fact_sales")
+    .option("user",     "root")
+    .option("password", "your_password_here")
+    .load()
+)
+
+df.createOrReplaceTempView("fact_sales")
+
+result = spark.sql("""
+    SELECT
+        order_date,
+        SUM(line_amount) AS revenue
+    FROM fact_sales
+    WHERE order_date >= '2026-03-01'
+    GROUP BY order_date
+    ORDER BY order_date
+""")
+
+result.show(5)
+```
+
+### 17.4 — Databricks SQL (with Unity Catalog naming)
+
+```sql
+-- Run inside a Databricks SQL cell
+SELECT
+    order_date,
+    SUM(line_amount) AS revenue
+FROM hitavir_prod.sales.fact_sales        -- catalog.schema.table
+WHERE order_date >= DATE '2026-03-01'
+GROUP BY order_date
+ORDER BY order_date;
+```
+
+The fully-qualified name is `catalog.schema.table` — under Unity Catalog, this lets you query across catalogs (e.g. `hitavir_dev.sales.fact_sales`) without changing client connections.
+
+:::info[Pro Insight]
+Once your SQL is identical across MySQL, Spark, and Databricks, refactoring storage engines becomes a search-and-replace exercise. Lock in standard SQL early; reach for vendor-specific syntax only when the standard version cannot express the intent.
+:::
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Read MySQL into a pandas DataFrame with `pymysql` + `pd.read_sql`
+- ✅ Schedule a daily SQL job with `MySqlOperator` in Airflow
+- ✅ Load a MySQL table into Spark and run SQL on it
+- ✅ Read a three-part Databricks Unity Catalog table name
+
+---
+
+<KeyTakeaways>
+
+- `pymysql` + `pd.read_sql` is the two-line bridge from MySQL to pandas
+- The Airflow DAG deletes yesterday's summary row before re-inserting — that is what makes re-runs idempotent
+- Spark reads MySQL over JDBC, then `createOrReplaceTempView` lets you query it with the same SQL
+- Databricks Unity Catalog names are `catalog.schema.table` — three parts, environment switchable
+- Passwords live in environment variables, never in source code
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why does the Airflow DAG DELETE yesterday’s row before INSERTing it?',
+      options: [
+        'DELETE warms up the connection',
+        'It makes re-runs idempotent — running the task twice does not duplicate the row',
+        'MySQL requires DELETE before every INSERT',
+        'It resets the AUTO_INCREMENT counter',
+      ],
+      answer: 1,
+      explanation:
+        'Idempotency is the core scheduling discipline: a retried or backfilled task must produce the same result as a single run.',
+    },
+    {
+      question: 'In hitavir_prod.sales.fact_sales, what are the three parts?',
+      options: [
+        'server.database.column',
+        'catalog.schema.table',
+        'cluster.notebook.cell',
+        'user.role.table',
+      ],
+      answer: 1,
+      explanation:
+        'Unity Catalog fully qualifies tables as catalog.schema.table, letting you switch hitavir_prod to hitavir_dev without changing connections.',
+    },
+    {
+      question: 'Where should the MySQL password live for the Python snippet?',
+      options: [
+        'Hard-coded in the script for reproducibility',
+        'In a comment above the connect call',
+        'In an environment variable loaded from a git-ignored .env file',
+        'In the repository README',
+      ],
+      answer: 2,
+      explanation:
+        'Credentials never belong in source control — os.environ plus a .gitignore’d .env is the minimum standard.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,78 @@
+---
+title: 'Azure Services for Analytics'
+sidebar_position: 1
+description: 'Meet the headline cast of Azure analytics services and the universal pipeline shape — ingest, store, catalog, process, query, view, act.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Recognize the ten headline Azure analytics services by name and icon
+- Describe the universal pipeline shape every analytics stack follows
+- Connect the 5 Vs diagnostic to the Azure toolbox that solves each bottleneck
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |       SECTION  3  -  AZURE  SERVICES  BY  THE  5  Vs         |
+  +==============================================================+
+```
+
+### The Headline Cast
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Databricks](/img/courses/azure-icons/databricks.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Functions](/img/courses/azure-icons/functions.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg) ![Azure ML](/img/courses/azure-icons/ml.svg) ![Azure OpenAI](/img/courses/azure-icons/openai.svg)
+
+Now we map **each V** to the **Azure services** that solve it.
+
+### The Golden Rule — Every Stack Follows One Shape
+
+```
+  +-------+   +-------+   +-------+   +-------+   +-------+   +-------+   +-------+
+  |       |   |       |   |       |   |       |   |       |   |       |   |       |
+  | INGST | ->| STORE | ->| CATLG | ->| PROCS | ->| QUERY | ->| VIEW  | ->|  ACT  |
+  |       |   |       |   |       |   |       |   |       |   |       |   |       |
+  +-------+   +-------+   +-------+   +-------+   +-------+   +-------+   +-------+
+```
+
+The **5 Vs** tell you where the bottleneck is. The **Azure services** tell you what solves it.
+
+<KeyTakeaways>
+
+- Every analytics stack follows one shape: ingest → store → catalog → process → query → view → act
+- The 5 Vs diagnose the bottleneck; Azure services are the toolbox that fixes it
+- The headline cast — ADLS Gen2, Synapse, Databricks, Data Factory, Event Hubs, Stream Analytics, Functions, Power BI, Azure ML, Azure OpenAI — will reappear throughout this module
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is the correct order of the universal analytics pipeline shape?',
+      options: [
+        'Store → Ingest → Query → Process → View',
+        'Ingest → Store → Catalog → Process → Query → View → Act',
+        'Query → Store → Ingest → Act',
+        'Process → Ingest → View → Store',
+      ],
+      answer: 1,
+      explanation:
+        'Data is ingested, stored, cataloged, processed, queried, visualized, and finally acted upon.',
+    },
+    {
+      question: 'How do the 5 Vs and the Azure service catalog work together?',
+      options: [
+        'The 5 Vs replace the need for Azure services',
+        'Azure services define the 5 Vs',
+        'The 5 Vs diagnose the bottleneck; Azure services solve it',
+        'They are unrelated frameworks',
+      ],
+      answer: 2,
+      explanation:
+        'The 5 Vs are the diagnostic checklist; the Azure toolbox provides a solution for each V.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,361 @@
+---
+title: 'Real-World Project Simulation'
+sidebar_position: 1
+description: 'Play junior DevOps engineer — build a deployment project, write configs and scripts, analyze logs, and generate a status report.'
+---
+
+<DurationBadge minutes={12} />
+
+<LearningObjectives>
+
+- Scaffold a deployment project with brace expansion and heredocs
+- Write and run executable deploy and report scripts
+- Analyze application logs with grep pipelines (counts, IPs, context)
+- Archive configs and reports into dated backup folders
+
+</LearningObjectives>
+
+Let us bring everything together with a realistic developer workflow simulation.
+
+### The Scenario
+
+You are a junior DevOps engineer at HitaVir Tech. Your manager asks you to:
+
+1. Set up a deployment project
+2. Organize the repository structure
+3. Create configuration files
+4. Analyze application logs
+5. Generate a status report
+6. Archive old files
+
+### Step 1 — Set Up the Deployment Project
+
+```bash
+cd ~/hitavir-workspace
+mkdir -p deployment/{staging,production,scripts,logs,configs}
+```
+
+Verify:
+
+```bash
+ls deployment/
+```
+
+**Expected output:**
+
+```
+configs  logs  production  scripts  staging
+```
+
+### Step 2 — Create Deployment Configurations
+
+```bash
+cat > deployment/configs/staging.env << 'EOF'
+APP_ENV=staging
+APP_URL=https://staging.hitavir.tech
+DB_HOST=staging-db.hitavir.tech
+DB_PORT=5432
+DB_NAME=hitavir_staging
+REDIS_HOST=staging-cache.hitavir.tech
+LOG_LEVEL=debug
+MAX_WORKERS=2
+EOF
+
+cat > deployment/configs/production.env << 'EOF'
+APP_ENV=production
+APP_URL=https://hitavir.tech
+DB_HOST=prod-db.hitavir.tech
+DB_PORT=5432
+DB_NAME=hitavir_prod
+REDIS_HOST=prod-cache.hitavir.tech
+LOG_LEVEL=warning
+MAX_WORKERS=8
+EOF
+```
+
+### Step 3 — Create the Deploy Script
+
+```bash
+cat > deployment/scripts/deploy.sh << 'SCRIPT'
+#!/bin/bash
+# HitaVir Tech Deployment Script
+# Usage: ./deploy.sh [staging|production]
+
+ENV=${1:-staging}
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+
+echo "================================================"
+echo "  HitaVir Tech Deployment Tool"
+echo "  Environment: $ENV"
+echo "  Timestamp: $TIMESTAMP"
+echo "================================================"
+echo ""
+echo "[1/4] Loading configuration..."
+echo "[2/4] Running pre-deployment checks..."
+echo "[3/4] Deploying application..."
+echo "[4/4] Running health checks..."
+echo ""
+echo "Deployment to $ENV completed successfully!"
+echo "Log saved to: deployment/logs/deploy_${ENV}_${TIMESTAMP}.log"
+SCRIPT
+
+chmod +x deployment/scripts/deploy.sh
+```
+
+### Step 4 — Generate Application Logs
+
+```bash
+cat > deployment/logs/staging-app.log << 'EOF'
+[2026-04-05 08:00:01] INFO: Application starting in staging mode
+[2026-04-05 08:00:02] INFO: Loading configuration from staging.env
+[2026-04-05 08:00:03] INFO: Connected to database staging-db.hitavir.tech
+[2026-04-05 08:00:04] INFO: Redis cache connected
+[2026-04-05 08:01:00] INFO: Health check passed
+[2026-04-05 08:15:30] WARNING: Slow query detected (2.3s) on /api/reports
+[2026-04-05 08:20:00] INFO: Request from 192.168.1.100 - GET /api/users - 200
+[2026-04-05 08:20:05] INFO: Request from 192.168.1.101 - POST /api/orders - 201
+[2026-04-05 08:25:10] ERROR: Connection refused to payment gateway
+[2026-04-05 08:25:15] ERROR: Retry 1/3 - payment gateway connection
+[2026-04-05 08:25:20] INFO: Payment gateway reconnected
+[2026-04-05 08:30:00] INFO: Scheduled job: cleanup temp files
+[2026-04-05 08:45:00] WARNING: Memory usage at 78%
+[2026-04-05 09:00:00] INFO: Hourly metrics report generated
+[2026-04-05 09:15:30] ERROR: Disk write failed on /tmp/upload_cache
+[2026-04-05 09:15:35] WARNING: Fallback to memory cache activated
+[2026-04-05 09:30:00] INFO: SSL certificate valid for 45 days
+[2026-04-05 09:45:00] INFO: Auto-scaling triggered: 2 -> 3 instances
+[2026-04-05 10:00:00] ERROR: Unhandled exception in worker thread 2
+[2026-04-05 10:00:05] INFO: Worker thread 2 restarted
+[2026-04-05 10:30:00] INFO: Daily backup initiated
+EOF
+```
+
+### Step 5 — Analyze the Logs
+
+**Task 1: How many errors?**
+
+```bash
+grep -c "ERROR" deployment/logs/staging-app.log
+```
+
+**Expected output:** `4`
+
+**Task 2: Show all errors with line numbers**
+
+```bash
+grep -n "ERROR" deployment/logs/staging-app.log
+```
+
+**Task 3: Count each log level**
+
+```bash
+grep -o "INFO\|WARNING\|ERROR" deployment/logs/staging-app.log | sort | uniq -c | sort -rn
+```
+
+**Expected output:**
+
+```
+     13 INFO
+      4 ERROR
+      3 WARNING
+```
+
+**Task 4: Find all IP addresses in the logs**
+
+```bash
+grep -o "[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}" deployment/logs/staging-app.log
+```
+
+**Expected output:**
+
+```
+192.168.1.100
+192.168.1.101
+```
+
+**Task 5: Show errors with surrounding context**
+
+```bash
+grep -B 1 -A 1 "ERROR" deployment/logs/staging-app.log
+```
+
+### Step 6 — Generate the Status Report
+
+```bash
+cat > deployment/scripts/report.sh << 'REPORT'
+#!/bin/bash
+# HitaVir Tech Log Analysis Report Generator
+
+LOG_FILE="deployment/logs/staging-app.log"
+REPORT_FILE="deployment/logs/status-report.txt"
+
+echo "============================================" > $REPORT_FILE
+echo "  HitaVir Tech - System Status Report" >> $REPORT_FILE
+echo "  Generated: $(date)" >> $REPORT_FILE
+echo "============================================" >> $REPORT_FILE
+echo "" >> $REPORT_FILE
+
+echo "--- Log Summary ---" >> $REPORT_FILE
+echo "Total entries: $(wc -l < $LOG_FILE)" >> $REPORT_FILE
+echo "INFO count:    $(grep -c 'INFO' $LOG_FILE)" >> $REPORT_FILE
+echo "WARNING count: $(grep -c 'WARNING' $LOG_FILE)" >> $REPORT_FILE
+echo "ERROR count:   $(grep -c 'ERROR' $LOG_FILE)" >> $REPORT_FILE
+echo "" >> $REPORT_FILE
+
+echo "--- Error Details ---" >> $REPORT_FILE
+grep "ERROR" $LOG_FILE >> $REPORT_FILE
+echo "" >> $REPORT_FILE
+
+echo "--- Warning Details ---" >> $REPORT_FILE
+grep "WARNING" $LOG_FILE >> $REPORT_FILE
+echo "" >> $REPORT_FILE
+
+echo "--- System Health ---" >> $REPORT_FILE
+echo "Config files: $(find deployment/configs -type f | wc -l)" >> $REPORT_FILE
+echo "Log files: $(find deployment/logs -type f | wc -l)" >> $REPORT_FILE
+echo "Scripts: $(find deployment/scripts -type f | wc -l)" >> $REPORT_FILE
+echo "" >> $REPORT_FILE
+echo "Report complete." >> $REPORT_FILE
+REPORT
+
+chmod +x deployment/scripts/report.sh
+```
+
+Run the report:
+
+```bash
+cd ~/hitavir-workspace
+bash deployment/scripts/report.sh
+cat deployment/logs/status-report.txt
+```
+
+### Step 7 — Archive Old Files
+
+```bash
+cd ~/hitavir-workspace
+mkdir -p backups/archive-$(date +%Y%m%d)
+
+cp deployment/logs/staging-app.log backups/archive-$(date +%Y%m%d)/
+cp deployment/logs/status-report.txt backups/archive-$(date +%Y%m%d)/
+cp -r deployment/configs backups/archive-$(date +%Y%m%d)/
+
+ls backups/archive-$(date +%Y%m%d)/
+```
+
+### Step 8 — Run the Deploy Script
+
+```bash
+cd ~/hitavir-workspace
+./deployment/scripts/deploy.sh staging
+```
+
+**Expected output:**
+
+```
+================================================
+  HitaVir Tech Deployment Tool
+  Environment: staging
+  Timestamp: 20260405_103000
+================================================
+
+[1/4] Loading configuration...
+[2/4] Running pre-deployment checks...
+[3/4] Deploying application...
+[4/4] Running health checks...
+
+Deployment to staging completed successfully!
+Log saved to: deployment/logs/deploy_staging_20260405_103000.log
+```
+
+### Final Workspace Structure
+
+```
+hitavir-workspace/
+├── README.md
+├── .gitignore
+├── backups/
+│   ├── archive-20260405/
+│   ├── README.md.bak
+│   └── web-app-backup/
+├── config/
+│   ├── settings.conf
+│   ├── settings.conf.backup
+│   └── database.conf
+├── deployment/
+│   ├── configs/
+│   │   ├── staging.env
+│   │   └── production.env
+│   ├── logs/
+│   │   ├── staging-app.log
+│   │   └── status-report.txt
+│   ├── scripts/
+│   │   ├── deploy.sh
+│   │   └── report.sh
+│   ├── staging/
+│   └── production/
+├── docs/
+├── logs/
+│   └── app.log
+├── projects/
+│   ├── api/
+│   └── web-app/
+├── scripts/
+│   └── setup.sh
+└── temp/
+```
+
+:::tip[HitaVir Tech says]
+"You just did what junior DevOps engineers do every day — set up deployments, analyze logs, generate reports, and manage files. These are not toy exercises. This is real-world work."
+:::
+
+<KeyTakeaways>
+
+- `mkdir -p deployment/{staging,production,...}` scaffolds a whole tree in one command
+- Heredocs write multi-line configs and scripts without opening an editor
+- grep + sort + uniq pipelines turn raw logs into an incident summary
+- Everything here — deploy scripts, log analysis, archiving — is genuine junior DevOps work
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What does mkdir -p deployment/{staging,production} create?',
+      options: [
+        'deployment/staging and deployment/production',
+        'One folder literally named {staging,production}',
+        'An error — braces are not allowed',
+        'Two folders at the top level, not under deployment',
+      ],
+      answer: 0,
+      explanation:
+        'Brace expansion expands to deployment/staging and deployment/production before mkdir runs.',
+    },
+    {
+      question: 'Why does deploy.sh need chmod +x before ./deployment/scripts/deploy.sh works?',
+      options: [
+        'Scripts must be owned by root',
+        'The shell refuses to execute files without the execute permission',
+        'chmod compiles the script',
+        'It adds the script to $PATH',
+      ],
+      answer: 1,
+      explanation:
+        'Running a file directly requires the x (execute) bit; chmod +x grants it. bash script.sh works without it because bash reads the file.',
+    },
+    {
+      question: 'In report.sh, what does $(wc -l < $LOG_FILE) produce?',
+      options: [
+        'The file name plus the count',
+        'The word count',
+        'Only the line count number',
+        'The last line of the file',
+      ],
+      answer: 2,
+      explanation:
+        'Redirecting the file into wc -l hides the filename, so command substitution yields just the number.',
+    },
+  ]}
+/>
+
+<LessonComplete />

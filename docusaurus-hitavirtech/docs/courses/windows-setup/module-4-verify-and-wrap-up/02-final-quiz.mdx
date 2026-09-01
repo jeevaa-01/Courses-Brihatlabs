@@ -1,0 +1,88 @@
+---
+title: 'Final Quiz'
+sidebar_position: 2
+description: 'The graded final quiz for the Windows 11 environment setup course — aim for at least 6 of 8.'
+---
+
+<DurationBadge minutes={5} />
+
+# Final Quiz
+
+This quiz covers the whole course. **Aim for at least 6 of 8.** If you miss a
+question, revisit the lesson it came from before moving on to the next course.
+
+<Quiz
+  title="Graded final quiz"
+  questions={[
+    {
+      question: 'Which Python version does this environment use, and why?',
+      options: [
+        '3.11 — best PySpark compatibility',
+        '3.12 — newest features',
+        '2.7 — legacy Spark support',
+        'Any version works identically',
+      ],
+      answer: 0,
+      explanation: 'PySpark 3.5 is not fully compatible with CPython 3.12+; 3.11 is the safe choice.',
+    },
+    {
+      question: 'Which Java version does Apache Spark 3.5 require in this setup?',
+      options: ['JDK 11', 'JDK 8', 'JDK 17', 'JDK 21'],
+      answer: 0,
+      explanation: 'Java 11 LTS (Temurin build) — 17+ has compatibility issues with Spark.',
+    },
+    {
+      question: 'PySpark crashes with a winutils.exe error. Which variable is misconfigured?',
+      options: ['HADOOP_HOME', 'JAVA_HOME', 'SPARK_HOME', 'PYSPARK_PYTHON'],
+      answer: 0,
+      explanation: 'winutils.exe must live at %HADOOP_HOME%\\bin\\winutils.exe.',
+    },
+    {
+      question: 'Which file is safe to share when setting up GitHub SSH access?',
+      options: [
+        'id_ed25519.pub — the public key',
+        'id_ed25519 — the private key',
+        'Both files together',
+        'Neither; SSH keys stay local',
+      ],
+      answer: 0,
+      explanation: 'Public keys are designed to be shared; the private key never leaves your machine.',
+    },
+    {
+      question: 'What backend does Docker Desktop use on Windows 11 in this course?',
+      options: ['WSL2', 'Hyper-V', 'VirtualBox', 'Windows Sandbox'],
+      answer: 0,
+      explanation: 'WSL2 is faster and is the default; we installed Ubuntu 22.04 under it.',
+    },
+    {
+      question: 'After changing a machine-level environment variable, commands still fail. First fix?',
+      options: [
+        'Open a NEW terminal window',
+        'Reinstall the tool',
+        'Restart Docker',
+        'Run the command as admin',
+      ],
+      answer: 0,
+      explanation: 'Terminals capture the environment at launch; changes only appear in new sessions.',
+    },
+    {
+      question: 'Which command proves the entire Python → Java → Spark chain works?',
+      options: [
+        'A python script that builds a SparkSession and calls df.show()',
+        'java -version',
+        'pip show pyspark',
+        'spark-submit --version',
+      ],
+      answer: 0,
+      explanation: 'Creating a DataFrame and showing it exercises Python, the JVM, and Spark together.',
+    },
+    {
+      question: 'Where does the Databricks CLI store your configured workspace profiles?',
+      options: ['~/.databrickscfg', '~/.bashrc', 'C:\\databricks\\config.json', 'The Windows Registry'],
+      answer: 0,
+      explanation: 'databricks configure writes named profiles to .databrickscfg in your home directory.',
+    },
+  ]}
+/>
+
+<LessonComplete />

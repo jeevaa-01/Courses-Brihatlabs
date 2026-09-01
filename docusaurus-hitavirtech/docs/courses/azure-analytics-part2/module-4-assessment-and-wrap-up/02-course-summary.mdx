@@ -1,0 +1,155 @@
+---
+title: 'Course Summary'
+sidebar_position: 2
+description: 'Everything you learned in Part 2 — the three architectures, six reference shapes, the Part 1 → Part 2 mental upgrade, and where to go next.'
+---
+
+<DurationBadge minutes={4} />
+
+<LearningObjectives>
+
+- Recap the three architectures and six reference shapes in one place
+- Plan concrete next steps to cement the material and continue learning
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |          CONGRATULATIONS  -  PART 2 DONE!                    |
+  +==============================================================+
+```
+
+### Every Service You Now Know
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Databricks](/img/courses/azure-icons/databricks.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Data Explorer](/img/courses/azure-icons/data-explorer.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg) ![ML](/img/courses/azure-icons/ml.svg) ![OpenAI](/img/courses/azure-icons/openai.svg) ![AI Search](/img/courses/azure-icons/ai-search.svg) ![Cosmos DB](/img/courses/azure-icons/cosmos-db.svg)
+
+### What You Learned
+
+**🪣 Data Lakes**
+
+| Topic | Icon |
+|-------|:---:|
+| What a lake is (schema-on-read) | 📖 |
+| The medallion zones (raw, curated, analytics) | 🥉🥈🥇 |
+| Why lakes become swamps without governance | 🐊 |
+| Delta Lake — ACID on ADLS | 🔺 |
+
+**🏛️ Data Warehouses**
+
+| Topic | Icon |
+|-------|:---:|
+| Schema-on-write, columnar, MPP | 📊 |
+| Star schemas (fact + dimensions) | ⭐ |
+| Synapse Dedicated vs Serverless | 🏛️ |
+| Fabric Warehouse (the new kid) | 🏡 |
+
+**🏡 Modern Data Architecture (Lakehouse)**
+
+| Pillar | Icon |
+|--------|:---:|
+| Scalable data lake (ADLS / OneLake) | 🪣 |
+| Purpose-built engines | 🧰 |
+| Seamless movement (Mirroring, Shortcuts, Direct Lake) | 🔀 |
+| Unified governance (Purview + Entra) | 🔐 |
+| Built-in AI / ML (Azure ML + OpenAI) | 🤖 |
+
+**🗺️ Six Reference Architectures**
+
+| # | Pattern | Core Service |
+|:-:|---------|--------------|
+| 1 | Batch BI | 🏛️ Synapse + 📊 Power BI |
+| 2 | Real-Time | 🌊 Event Hubs + 🎯 Stream Analytics |
+| 3 | Log Observability | 🔬 Data Explorer / Log Analytics |
+| 4 | Customer 360 | 🪣 ADLS + 🕸️ ADF + 🏛️ Synapse |
+| 5 | ML / Predictive | 🤖 Azure ML + 🔥 Databricks |
+| 6 | Data Mesh | 🏗️ Purview + 🏡 Fabric domains |
+
+### The Mental Upgrade From Part 1 to Part 2
+
+| Part 1 Gave You... | Part 2 Gave You... |
+|--------------------|--------------------|
+| 📏 A diagnostic framework (5 Vs) | 🗺️ Reference architectures |
+| ☁️ One service per V | 🧩 Combinations that scale |
+| 🛠️ A basic ADLS → Synapse Serverless lab | 🏡 The full Lakehouse picture |
+| 🎯 What to pick for each bottleneck | 🎯 Which shape fits each real-world problem |
+
+### What To Do Next
+
+1. 🔎 **Draw one of the six reference architectures** for a project you know.
+2. 💬 **Walk a teammate through it** — teaching cements understanding.
+3. 🧪 **Extend the Part 1 lab:** add an ADF pipeline to move `raw/` → `curated/` as Parquet.
+4. 📚 **Read the Azure Well-Architected Framework — Analytics perspective** (link in the Appendix).
+5. 🎓 **Try Microsoft Learn** for free, hands-on Azure training paths.
+
+### Keep Learning on the Portal
+
+- Browse the [course catalog](/) for your next course
+- Build hands-on data engineering skills with [PySpark for Data Engineering](/courses/pyspark/intro)
+- Need a local environment? Follow the [Windows 11 setup course](/courses/windows-setup)
+- Practicing SQL alongside this course? Set up [MySQL Workbench](/courses/mysql-workbench-setup)
+- Sharpen your study habits with [Learn Like a Top Performer](/courses/learn-like-a-top-performer)
+- Watch the [Announcements](/blog) for Part 3 and new course releases
+
+### Final Thoughts
+
+```
+  +==============================================================+
+  |                                                              |
+  |   Part 1  =  the 5 Vs  +  one service per V                  |
+  |   Part 2  =  three architectures  +  six reference shapes    |
+  |                                                              |
+  |   Together  =  you can design and defend                     |
+  |               an analytics platform on Azure.                |
+  |                                                              |
+  +==============================================================+
+```
+
+:::tip[HitaVir Tech says]
+"You just completed the same journey a new hire at a top cloud team makes in
+their first three months. Keep the cheat sheet, apply the patterns, and your
+architecture reviews will sound like a 5-year veteran's. Fundamentals compound."
+:::
+
+🎓 Welcome to the Lakehouse. See you in **Part 3** — hands-on ADF + Synapse + Power BI capstone.
+
+— **HitaVir Tech** ☁️
+
+<KeyTakeaways>
+
+- Data lakes give schema-on-read storage; warehouses give columnar MPP speed; the lakehouse gives both, governed
+- Six reference architectures cover Batch BI, Real-Time, Log Observability, Customer 360, ML/Predictive, and Data Mesh
+- Part 1 gave you the diagnostic (5 Vs); Part 2 gave you the shapes that scale
+- Teaching a pattern to a teammate — and redrawing it for a real project — is the fastest way to cement it
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'The mental upgrade from Part 1 to Part 2 is best described as...',
+      options: [
+        'Memorizing more Azure service names',
+        'Passing an Azure certification exam',
+        'Moving from single services per V to architectures that combine them',
+        'Replacing SQL with KQL everywhere',
+      ],
+      answer: 2,
+      explanation:
+        'Part 1 taught the ingredients (one service per V); Part 2 taught the recipes — three architectures and six reference shapes.',
+    },
+    {
+      question: 'Which next step does the course recommend to cement the material?',
+      options: [
+        'Redraw one of the six reference architectures for a project you know, then walk a teammate through it',
+        'Memorize every Azure SKU and pricing tier',
+        'Rebuild the Part 1 lab on AWS instead',
+        'Wait for Part 3 before practicing anything',
+      ],
+      answer: 0,
+      explanation:
+        'Applying a shape to a real project and teaching it are the two highest-leverage ways to make the patterns stick.',
+    },
+  ]}
+/>
+
+<LessonComplete />

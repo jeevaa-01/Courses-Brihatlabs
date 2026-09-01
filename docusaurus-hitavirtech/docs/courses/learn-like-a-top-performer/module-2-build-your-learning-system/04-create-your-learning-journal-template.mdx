@@ -1,0 +1,129 @@
+---
+title: 'Step 4 — Create Your Learning Journal Template'
+sidebar_position: 4
+description: 'Create a weekly journal template that captures concepts, commands, errors, aha moments, and rebuild attempts every single day.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Create `journal/week-01.md` with the full daily-entry structure
+- Know the sections every daily entry must capture, from key concepts to tomorrow's focus
+- Understand why journaling at the moment of insight beats reviewing later
+
+</LearningObjectives>
+
+### Step Objective
+
+Create a weekly journal template that captures daily learning progress.
+
+### Commands
+
+```bash
+cat > ~/hitavir-learning-system/journal/week-01.md << 'JOURNAL'
+# Week 01 — Learning Journal
+
+### Day 1 — [Date]
+**What I Worked On**
+- [Codelab name / topic]
+
+**Key Concepts Learned**
+- [Concept 1: one sentence explanation]
+- [Concept 2: one sentence explanation]
+
+**Commands I Practiced**
+- [command 1] — [what it does]
+- [command 2] — [what it does]
+
+**Errors I Hit**
+| Error | Type | Fix |
+|-------|------|-----|
+| [error message] | [classification] | [what fixed it] |
+
+**What Clicked Today** (aha moments)
+- [insight]
+
+**What Is Still Confusing** (to revisit)
+- [question or concept]
+
+**Rebuild Attempt**
+- Attempted: [Yes/No]
+- Completion: [percentage]
+- What I forgot: [specific items]
+
+**Tomorrow's Focus**
+- [what to work on next]
+
+---
+
+### Day 2 — [Date]
+(Same structure — copy and fill daily)
+JOURNAL
+
+# Verify
+cat ~/hitavir-learning-system/journal/week-01.md
+```
+
+### Why This Step Matters
+
+**"Nothing in this world purifies like knowledge; in time you find it within yourself."** *(Bhagavad Gita 4.38)* — Your journal trains your engineering intuition. The human brain forgets 70% of new information within 24 hours. A journal captures insights at the moment they happen, when they are sharpest. What you write down today becomes the instinct you rely on tomorrow.
+
+### Expected Output
+
+The full journal template should display with Day 1 structure and all sections.
+
+### Common Errors and Fixes
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Heredoc not closing | Missing `JOURNAL` at end | Ensure closing tag is alone on its own line |
+| File in wrong directory | Typo in path | Verify with `ls ~/hitavir-learning-system/journal/` |
+
+### Checkpoint
+
+```
+Verify before moving on:
+  [x] week-01.md exists in journal/
+  [x] Template has all required sections
+  [x] You commit to filling this out daily
+```
+
+<KeyTakeaways>
+
+- The brain forgets ~70% of new information within 24 hours — the journal captures insights while they are sharp
+- Every daily entry logs concepts, commands, errors, aha moments, open confusions, and your rebuild attempt
+- What you write down today becomes the engineering instinct you rely on tomorrow
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why does the journal need to be filled in DAILY rather than at the end of each week?',
+      options: [
+        'Git requires daily commits',
+        'The brain forgets about 70% of new information within 24 hours — capture insights while they are sharp',
+        'Weekly files would be too large for GitHub',
+        'The template only has space for one day',
+      ],
+      answer: 1,
+      explanation:
+        'Journaling at the moment of learning captures insights before the forgetting curve erases them.',
+    },
+    {
+      question: 'Which of these is a section in the daily journal template?',
+      options: [
+        'Stack Overflow answers copied',
+        'Videos watched today',
+        'What Clicked Today (aha moments)',
+        'Lines of code written',
+      ],
+      answer: 2,
+      explanation:
+        'Entries capture what you worked on, key concepts, commands practiced, errors hit, aha moments, confusions, rebuild attempts, and tomorrow’s focus.',
+    },
+  ]}
+/>
+
+<LessonComplete />

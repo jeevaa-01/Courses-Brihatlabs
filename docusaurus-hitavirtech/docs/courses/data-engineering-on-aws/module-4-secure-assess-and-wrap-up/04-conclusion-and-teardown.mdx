@@ -1,0 +1,335 @@
+---
+title: 'Conclusion and teardown'
+sidebar_position: 4
+description: 'Recap the full lake house architecture, chart where to go next, then tear down every resource in dependency order so your bill returns to zero.'
+---
+
+<DurationBadge minutes={30} />
+
+<LearningObjectives>
+
+- Recap the whole build mapped to the six key functions
+- Describe the finished architecture in one sentence
+- Tear down every resource in dependency order and verify the account is empty
+- Pick a where-to-go-next direction to keep building
+
+</LearningObjectives>
+
+You made it. You became the first data engineer at HitaVir Retail and built a real, working
+lake house: one dataset moving through a Medallion lake on S3, cataloged, transformed,
+served, scheduled, secured, and watched. This final stage recaps what you built, gives you a
+one-page architecture summary and where to go next, then runs the complete teardown.
+
+### Recap, mapped to the six functions
+
+| Stage | What you built | Key function |
+|---|---|---|
+| Workbench | AWS account, `hvt-admin` IAM user, billing alarm, budget, CLI | Build infrastructure |
+| Role + quick win | The lake bucket and `raw/` landing zone, three CSVs uploaded | Build infrastructure, Ingest |
+| Discovery | Glue crawler, `hvt_retail_db` catalog database, Athena queries | Catalog |
+| Storage | The S3 Medallion layout and a lifecycle rule | Build infrastructure |
+| Transform | Glue ETL job raw to silver, with its own IAM role | Prepare |
+| Serve | Athena gold table via CTAS, Redshift Serverless to serve | Prepare, Serve |
+| Orchestration | Step Functions state machine, EventBridge schedule | Automate |
+| Security | Least-privilege IAM, Lake Formation, KMS, CloudWatch, CloudTrail | Govern and secure |
+
+Read that table top to bottom and you have described the job: a data engineer **builds the
+infrastructure**, **ingests** from sources, **prepares** raw data into analytics-ready form,
+**catalogs** it, **automates** the whole thing, and **governs** quality, access, and audit
+end to end. You did all six, on real services, against one dataset.
+
+### The architecture, on one page
+
+The pipeline recap visual — `assets/07-pipeline-recap.html` in the course materials repo —
+draws the same picture out.
+
+**The lake is the spine.** Everything reads from and writes to one S3 bucket,
+`hvt-retail-datalake-<your-account-id>`, organized as a Medallion lake: **raw** (untouched
+source), **bronze** (columnar copies), **silver** (cleaned, typed, partitioned), **gold**
+(business aggregates).
+
+**Catalog sits over the lake.** A Glue crawler infers schemas into the catalog database
+`hvt_retail_db`, so every engine reads table definitions from there and the lake is
+self-describing.
+
+**Compute moves the data forward.** A Glue ETL job in PySpark reads bronze and writes
+silver. Athena CTAS turns silver into gold tables in the lake. Redshift Serverless serves
+gold to warehouse-style queries.
+
+**Automation wraps the flow.** A Step Functions state machine chains crawler, ETL, and gold
+build in order; an EventBridge schedule triggers it on a cadence.
+
+**Governance wraps the flow.** Least-privilege IAM, Lake Formation table- and column-level
+grants, a KMS key for encryption at rest, and CloudWatch plus CloudTrail for alarms and
+audit.
+
+Read it as one sentence: **raw to bronze to silver to gold, cataloged by Glue, transformed
+by Glue ETL and Athena, served by Athena and Redshift, automated by Step Functions and
+EventBridge, and secured by IAM, Lake Formation, and KMS while CloudWatch and CloudTrail
+watch.** That is a modern AWS lake house, and you built it.
+
+### Where to go next
+
+- **AWS Certified Data Engineer - Associate** (exam DEA-C01) validates exactly what you
+  practiced: ingestion, transformation, the Glue and Athena ecosystem, orchestration, and
+  data security. Use the official exam guide to find your gaps.
+- **Amazon EMR** — when Glue jobs outgrow Glue, EMR gives you full, tunable Spark clusters
+  for large-scale processing.
+- **Amazon Kinesis** — this whole track was batch. Kinesis is the entry point to
+  **streaming**: process events the moment they arrive.
+- **Lake Formation governance, dbt, and Apache Iceberg** — go deeper on fine-grained
+  permissions, modern table formats with ACID transactions and time travel, and
+  software-engineering discipline for SQL transforms.
+
+**Keep learning on the portal:**
+
+- Go deeper on the engine under Glue ETL with the [PySpark course](/courses/pyspark/intro).
+- Sharpen your study habits with [Learn Like a Top Performer](/courses/learn-like-a-top-performer).
+- Machine not fully set up? The [Windows 11 environment setup course](/courses/windows-setup)
+  covers Python, Java, Spark, and Docker, and the
+  [MySQL Workbench setup course](/courses/mysql-workbench-setup) adds a local SQL workbench.
+- Browse everything else — the AWS analytics and data modelling tracks among them — on the
+  [course portal home](/) and check the [blog](/blog) for updates.
+
+:::tip[Build on it]
+Pick one and build something small with it on top of what you have — right after you
+finish the teardown below.
+:::
+
+### Complete teardown: delete everything
+
+This is the big one. You will now delete **every resource created across the entire track**,
+in an order that respects dependencies, so nothing is left billing.
+
+:::warning[Teardown order matters]
+Run these steps **in order**. A workgroup must go before its namespace, roles must be
+detached before they delete, and the S3 bucket must be emptied and deleted **last** because
+almost everything else points at it.
+:::
+
+```bash
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+export BUCKET=hvt-retail-datalake-$ACCOUNT_ID
+echo "Tearing down for account $ACCOUNT_ID, bucket $BUCKET"
+```
+
+**Step 1 — Delete the EventBridge schedule** (kill the trigger first):
+
+```bash
+aws scheduler delete-schedule --name hvt-retail-daily-pipeline
+
+# If you used the classic rules API instead:
+aws events remove-targets --rule hvt-retail-daily-pipeline --ids hvt-pipeline
+aws events delete-rule --name hvt-retail-daily-pipeline
+```
+
+**Step 2 — Delete the Step Functions state machine:**
+
+```bash
+SM_ARN=$(aws stepfunctions list-state-machines \
+  --query "stateMachines[?name=='hvt-retail-pipeline'].stateMachineArn" \
+  --output text)
+
+aws stepfunctions delete-state-machine --state-machine-arn "$SM_ARN"
+```
+
+**Step 3 — Delete Redshift Serverless: workgroup, then namespace.** Order matters.
+
+```bash
+aws redshift-serverless delete-workgroup --workgroup-name hvt-retail-wg
+
+# Wait until the workgroup is fully gone, then:
+aws redshift-serverless delete-namespace --namespace-name hvt-retail-ns
+```
+
+:::tip[If the namespace delete conflicts]
+If the namespace delete returns a conflict, the workgroup is still tearing down. Wait a
+minute and re-run. Deleting these stops the only resources in the track that bill
+meaningfully while idle.
+:::
+
+**Step 4 — Delete the Glue job, crawler, and database:**
+
+```bash
+aws glue delete-job --job-name hvt-retail-bronze-to-silver
+aws glue delete-crawler --name hvt-retail-raw-crawler
+aws glue delete-database --name hvt_retail_db
+```
+
+**Step 5 — Delete the Athena workgroup:**
+
+```bash
+aws athena delete-work-group --work-group hvt-retail-wg --recursive-delete-option
+```
+
+**Step 6 — Delete the CloudWatch alarm and CloudTrail trail:**
+
+```bash
+aws cloudwatch delete-alarms --alarm-names hvt-retail-glue-job-failures
+
+aws cloudtrail stop-logging --name hvt-retail-audit
+aws cloudtrail delete-trail --name hvt-retail-audit
+```
+
+**Step 7 — Revoke Lake Formation grants:**
+
+```bash
+aws lakeformation revoke-permissions \
+  --principal DataLakePrincipalIdentifier=arn:aws:iam::$ACCOUNT_ID:user/hvt-retail-analyst \
+  --permissions SELECT \
+  --resource '{ "TableWithColumns": { "DatabaseName": "hvt_retail_db", "Name": "customers", "ColumnWildcard": { "ExcludedColumnNames": ["email"] } } }'
+```
+
+:::warning[Already revoked? Move on]
+If a revoke errors because the grant was already removed when you deleted the Glue
+database in step 4, that is fine — there is nothing left to revoke. Move on.
+:::
+
+**Step 8 — Delete the IAM policies and roles.** Detach and delete inline policies first.
+
+```bash
+# Analyst user and its policy (security stage).
+aws iam detach-user-policy --user-name hvt-retail-analyst \
+  --policy-arn arn:aws:iam::$ACCOUNT_ID:policy/hvt-retail-analyst-readonly
+aws iam delete-policy --policy-arn arn:aws:iam::$ACCOUNT_ID:policy/hvt-retail-analyst-readonly
+aws iam delete-user --user-name hvt-retail-analyst
+
+# Glue ETL role.
+aws iam delete-role-policy --role-name hvt-retail-glue-etl-role --policy-name hvt-retail-glue-s3
+aws iam detach-role-policy --role-name hvt-retail-glue-etl-role \
+  --policy-arn arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+aws iam delete-role --role-name hvt-retail-glue-etl-role
+
+# Glue crawler role.
+aws iam delete-role-policy --role-name hvt-retail-glue-crawler-role --policy-name hvt-retail-glue-s3-read
+aws iam detach-role-policy --role-name hvt-retail-glue-crawler-role \
+  --policy-arn arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+aws iam delete-role --role-name hvt-retail-glue-crawler-role
+
+# Redshift serving role.
+aws iam detach-role-policy --role-name hvt-retail-redshift-role \
+  --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+aws iam detach-role-policy --role-name hvt-retail-redshift-role \
+  --policy-arn arn:aws:iam::aws:policy/AmazonAthenaFullAccess
+aws iam delete-role --role-name hvt-retail-redshift-role
+
+# Step Functions states role.
+aws iam delete-role-policy --role-name hvt-retail-states-role --policy-name hvt-retail-states-permissions
+aws iam delete-role --role-name hvt-retail-states-role
+
+# EventBridge scheduler role.
+aws iam delete-role-policy --role-name hvt-retail-scheduler-role --policy-name hvt-retail-scheduler-start
+aws iam delete-role --role-name hvt-retail-scheduler-role
+```
+
+**Step 9 — Schedule the KMS key for deletion** (minimum 7-day window):
+
+```bash
+KEY_ID=$(aws kms describe-key --key-id alias/hvt-retail-lake \
+  --query 'KeyMetadata.KeyId' --output text)
+
+aws kms schedule-key-deletion --key-id "$KEY_ID" --pending-window-in-days 7
+aws kms delete-alias --alias-name alias/hvt-retail-lake
+```
+
+**Step 10 — Empty and delete the S3 buckets, last:**
+
+```bash
+# Empty all data, then remove the lake bucket.
+aws s3 rm "s3://$BUCKET" --recursive
+aws s3 rb "s3://$BUCKET"
+
+# The CloudTrail log bucket from the security stage.
+aws s3 rm "s3://hvt-retail-cloudtrail-$ACCOUNT_ID" --recursive
+aws s3 rb "s3://hvt-retail-cloudtrail-$ACCOUNT_ID"
+```
+
+:::warning[Deleting the bucket is irreversible]
+Deleting the bucket is irreversible and takes your raw data with it. That is the intended
+end state. If you want to keep a copy, download `raw/` first, or regenerate it any time with
+`python dataset/generate_data.py`.
+:::
+
+### Verify the account is empty
+
+```bash
+aws s3 ls | grep hvt-retail || echo "No hvt-retail buckets — good."
+aws glue get-databases --query "DatabaseList[?Name=='hvt_retail_db']"
+aws redshift-serverless list-workgroups --query "workgroups[?workgroupName=='hvt-retail-wg']"
+aws redshift-serverless list-namespaces --query "namespaces[?namespaceName=='hvt-retail-ns']"
+aws stepfunctions list-state-machines --query "stateMachines[?name=='hvt-retail-pipeline']"
+aws scheduler list-schedules --query "Schedules[?Name=='hvt-retail-daily-pipeline']"
+aws cloudwatch describe-alarms --alarm-names hvt-retail-glue-job-failures --query "MetricAlarms"
+aws cloudtrail describe-trails --query "trailList[?Name=='hvt-retail-audit']"
+```
+
+Empty results everywhere mean the pipeline is fully gone.
+
+:::tip[Watch the bill trend to zero]
+Open **Billing and Cost Management**, then **Cost Explorer**, over the next day or two.
+With everything deleted, your `project=hvt-retail` cost should trend to zero. The KMS key
+shows a small charge until its seven-day deletion window closes, then it too goes to zero.
+:::
+
+:::warning[Keep the guardrails]
+One thing you should **keep**: the `hvt-admin` IAM user, the budget, and the billing alarm
+from the workbench stage. They cost nothing and protect your account. Only the data pipeline
+resources come down.
+:::
+
+Thank you for working through **Data Engineering on AWS**. You built a complete, automated,
+governed AWS lake house for HitaVir Retail — raw to bronze to silver to gold, cataloged,
+transformed, served, scheduled, and secured — and then tore it all down cleanly so it costs
+you nothing. Pick one where-to-go-next direction and keep building.
+
+<KeyTakeaways>
+
+- Teardown respects dependencies: trigger first, workgroup before namespace, inline policies before roles, the S3 buckets last
+- Redshift Serverless and the KMS key are the resources that bill while idle — deleting them stops the meter
+- Keep the `hvt-admin` user, the budget, and the billing alarm; they cost nothing and protect the account
+- The verify block should return empty everywhere; Cost Explorer confirms the spend trends to zero
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why is the lake bucket deleted last in the teardown?',
+      options: [
+        'S3 deletions are the slowest operation',
+        'Almost every other resource points at it — engines, jobs, catalogs, and results all reference the bucket',
+        'The bucket cannot be deleted while the KMS key exists',
+        'AWS requires buckets to be at least a day old before deletion',
+      ],
+      answer: 1,
+      explanation:
+        'Deleting the spine first would break the resources still being torn down. Dependencies come down before the thing they depend on.',
+    },
+    {
+      question: 'Which items should you deliberately keep after the teardown?',
+      options: [
+        'The Redshift namespace, for next time',
+        'The Glue catalog database, since it is free',
+        'The hvt-admin IAM user, the budget, and the billing alarm',
+        'The gold Parquet files in S3',
+      ],
+      answer: 2,
+      explanation:
+        'The admin user and cost guardrails cost nothing and protect the account. Everything pipeline-related comes down, including all data in S3.',
+    },
+    {
+      question: 'The KMS key still shows a small charge right after teardown. Is something wrong?',
+      options: [
+        'No — key deletion has a minimum 7-day pending window, then the charge stops',
+        'Yes — the key must be deleted again',
+        'Yes — the bucket encryption was never removed',
+        'No — KMS keys always bill forever',
+      ],
+      answer: 0,
+      explanation:
+        'schedule-key-deletion enforces a waiting period (7 days minimum) as a safety net; the charge disappears when the window closes.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="s" x="-4%" y="-4%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  <rect width="700" height="380" rx="12" fill="#f8f9fa"/>
+  <text x="350" y="28" text-anchor="middle" font-size="14" font-weight="600" fill="#5f6368">THREE LEVELS OF DATA MODELLING</text>
+
+  <!-- Level 1: Conceptual -->
+  <rect x="120" y="44" width="460" height="80" rx="10" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2" filter="url(#s)"/>
+  <circle cx="155" cy="70" r="16" fill="#1a73e8"/>
+  <text x="155" y="75" text-anchor="middle" font-size="13" font-weight="700" fill="white">1</text>
+  <text x="185" y="68" font-size="15" font-weight="700" fill="#1a73e8">CONCEPTUAL MODEL</text>
+  <text x="185" y="86" font-size="12" fill="#3c4043">"What data exists?" — Entities and relationships only</text>
+  <text x="185" y="104" font-size="11" fill="#5f6368">Audience: Business stakeholders, product owners</text>
+
+  <!-- Arrow -->
+  <line x1="350" y1="124" x2="350" y2="148" stroke="#dadce0" stroke-width="2"/>
+  <polygon points="344,144 356,144 350,154" fill="#dadce0"/>
+
+  <!-- Level 2: Logical -->
+  <rect x="120" y="156" width="460" height="80" rx="10" fill="#fef7e0" stroke="#ea8600" stroke-width="2" filter="url(#s)"/>
+  <circle cx="155" cy="182" r="16" fill="#ea8600"/>
+  <text x="155" y="187" text-anchor="middle" font-size="13" font-weight="700" fill="white">2</text>
+  <text x="185" y="180" font-size="15" font-weight="700" fill="#ea8600">LOGICAL MODEL</text>
+  <text x="185" y="198" font-size="12" fill="#3c4043">"How is data organized?" — Tables, columns, keys, relationships</text>
+  <text x="185" y="216" font-size="11" fill="#5f6368">Audience: Data architects, analysts</text>
+
+  <!-- Arrow -->
+  <line x1="350" y1="236" x2="350" y2="260" stroke="#dadce0" stroke-width="2"/>
+  <polygon points="344,256 356,256 350,266" fill="#dadce0"/>
+
+  <!-- Level 3: Physical -->
+  <rect x="120" y="268" width="460" height="80" rx="10" fill="#e6f4ea" stroke="#34a853" stroke-width="2" filter="url(#s)"/>
+  <circle cx="155" cy="294" r="16" fill="#34a853"/>
+  <text x="155" y="299" text-anchor="middle" font-size="13" font-weight="700" fill="white">3</text>
+  <text x="185" y="292" font-size="15" font-weight="700" fill="#34a853">PHYSICAL MODEL</text>
+  <text x="185" y="310" font-size="12" fill="#3c4043">"How is data stored?" — Data types, indexes, partitions, storage</text>
+  <text x="185" y="328" font-size="11" fill="#5f6368">Audience: Data engineers, DBAs</text>
+
+  <text x="350" y="370" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

@@ -1,0 +1,105 @@
+---
+title: 'The 5 Vs of Big Data'
+sidebar_position: 1
+description: 'Where the 5 Vs framework came from, what each V asks, and the one Azure service headline for each — your universal diagnostic checklist.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Trace the origin of the 5 Vs from Doug Laney's original three
+- State the diagnostic question behind each V
+- Preview the headline Azure service for each V
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |         SECTION  2   -   THE  5  Vs  OF  BIG  DATA           |
+  +==============================================================+
+```
+
+### Where the 5 Vs Come From
+
+In 2001, analyst **Doug Laney** described big-data challenges with three Vs: **Volume, Variety, Velocity**. Later the industry added **Veracity** (trust) and **Value** (outcome). Together they form the universal diagnostic checklist.
+
+### The 5 Vs Star
+
+```
+                          *
+                     VOLUME
+                  How much is it?
+                       / \
+                      /   \
+                     /     \
+                    /       \
+           VARIETY             VELOCITY
+       How many formats?     How fast?
+                 \             /
+                  \           /
+                   \         /
+                    \       /
+             VERACITY        VALUE
+         Can we trust it?  Worth it?
+```
+
+### The 5 Vs at a Glance
+
+| V | Icon | Question |
+|---|:---:|----------|
+| 1 | 📦 **VOLUME** | How much? (scale) |
+| 2 | 🧩 **VARIETY** | How many formats? |
+| 3 | 🌊 **VELOCITY** | How fast? (speed) |
+| 4 | 🛡️ **VERACITY** | Can we trust it? |
+| 5 | 💎 **VALUE** | What outcome? |
+
+Miss any one V and your data platform has a hole. Let's tour each.
+
+### Preview — Azure's One Service Per V
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Data Shares](/img/courses/azure-icons/data-shares.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg)
+
+*Volume → ADLS Gen2. Variety → Data Factory. Velocity → Event Hubs. Veracity → Purview. Value → Power BI.*
+
+<KeyTakeaways>
+
+- Doug Laney coined Volume, Variety, Velocity in 2001; the industry added Veracity and Value
+- Each V is a diagnostic question: how much, how many formats, how fast, can we trust it, what outcome
+- A data platform that ignores any single V has a hole
+- Headline mapping: ADLS Gen2, Data Factory, Event Hubs, Purview, Power BI — one per V
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which three Vs did Doug Laney originally describe in 2001?',
+      options: [
+        'Volume, Veracity, Value',
+        'Velocity, Veracity, Variety',
+        'Volume, Variety, Velocity',
+        'Value, Volume, Velocity',
+      ],
+      answer: 2,
+      explanation:
+        'Laney started with Volume, Variety, and Velocity. Veracity (trust) and Value (outcome) were added later by the industry.',
+    },
+    {
+      question: 'Which V asks "Can we trust the data?"',
+      options: ['Veracity', 'Value', 'Velocity', 'Variety'],
+      answer: 0,
+      explanation:
+        'Veracity is about accuracy, consistency, and trustworthiness of the data.',
+    },
+    {
+      question: 'In the one-service-per-V headline mapping, which Azure service answers Velocity?',
+      options: ['ADLS Gen2', 'Power BI', 'Microsoft Purview', 'Event Hubs'],
+      answer: 3,
+      explanation:
+        'Event Hubs is the real-time event stream — the headline Azure answer for data speed.',
+    },
+  ]}
+/>
+
+<LessonComplete />

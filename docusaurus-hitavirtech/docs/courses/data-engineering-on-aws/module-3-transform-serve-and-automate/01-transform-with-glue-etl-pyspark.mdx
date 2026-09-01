@@ -1,0 +1,283 @@
+---
+title: 'Transform with AWS Glue ETL (PySpark)'
+sidebar_position: 1
+description: 'Run a serverless Glue ETL job in PySpark that moves orders from raw CSV to bronze Parquet to a clean, typed, partitioned silver table.'
+---
+
+<DurationBadge minutes={60} />
+
+<LearningObjectives>
+
+- Create a scoped IAM role that a Glue job assumes instead of using your keys
+- Read a PySpark job that casts types, deduplicates, and drops rows missing keys
+- Create and run the raw-to-silver Glue ETL job with minimal workers
+- Verify the silver output is partitioned Parquet under `region=` and `order_date=`
+
+</LearningObjectives>
+
+Raw data is faithful but messy: every column is text, duplicate orders sneak in, and some
+rows are missing keys. Now you run your first **transform** job. You use **AWS Glue ETL**
+(AWS's serverless extract-transform-load service) to run a **PySpark** script (Python on
+Apache Spark, the distributed engine Glue runs under the hood). The job moves orders along
+the Medallion path from **raw to bronze to silver**.
+
+### The concept visual
+
+Keep the lake-house diagram handy — `assets/03-lakehouse-architecture.html` in the course
+materials repo.
+
+:::warning[Glue ETL is not free tier]
+Glue ETL is not free tier. It bills per **DPU-hour** (a DPU is one Spark worker unit)
+while a job runs. Keep the job tiny, let it use the minimum workers, and never leave a job
+running. The final teardown deletes it.
+:::
+
+### Setup: upload the job script
+
+```bash
+export ACCOUNT_ID=<your-account-id>
+export BUCKET=hvt-retail-datalake-$ACCOUNT_ID
+
+aws s3 ls s3://$BUCKET/raw/
+
+aws s3 cp scripts/glue_bronze_to_silver.py \
+  s3://$BUCKET/scripts/glue_bronze_to_silver.py
+```
+
+### Create the Glue ETL IAM role
+
+A Glue job needs an identity of its own. You give it an **IAM role** instead of pasting
+your access keys into the job. Save the trust policy as `glue-trust.json`:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": { "Service": "glue.amazonaws.com" },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+Scope its S3 access to exactly the one bucket. Save this as `glue-s3-policy.json` (replace
+`<your-account-id>`):
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
+      "Resource": "arn:aws:s3:::hvt-retail-datalake-<your-account-id>/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::hvt-retail-datalake-<your-account-id>"
+    }
+  ]
+}
+```
+
+**Console path**
+
+1. Open **IAM**, **Roles**, **Create role**. Trusted entity **AWS service**, then **Glue**.
+2. Attach **AWSGlueServiceRole**, add an inline policy with the bucket JSON above.
+3. Name the role `hvt-retail-glue-etl-role` and create it.
+
+**AWS CLI**
+
+```bash
+aws iam create-role \
+  --role-name hvt-retail-glue-etl-role \
+  --assume-role-policy-document file://glue-trust.json \
+  --tags Key=project,Value=hvt-retail Key=env,Value=dev
+
+aws iam attach-role-policy \
+  --role-name hvt-retail-glue-etl-role \
+  --policy-arn arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+
+aws iam put-role-policy \
+  --role-name hvt-retail-glue-etl-role \
+  --policy-name hvt-retail-glue-s3 \
+  --policy-document file://glue-s3-policy.json
+```
+
+### Read the PySpark job
+
+The script is `scripts/glue_bronze_to_silver.py`. It reads job parameters so the bucket is
+passed in at run time and never hardcoded:
+
+```python
+args = getResolvedOptions(sys.argv, ["JOB_NAME", "BUCKET"])
+bucket = args["BUCKET"]
+
+sc = SparkContext()
+glue_context = GlueContext(sc)
+spark = glue_context.spark_session
+job = Job(glue_context)
+job.init(args["JOB_NAME"], args)
+```
+
+Glue can hand you data as a **DynamicFrame** (its self-describing table type that tolerates
+schema drift) or you can drop to a Spark **DataFrame** (fixed schema, full SQL-style API).
+For casting and dedup the DataFrame API is clearest. **Raw to bronze** reads the header CSV
+and writes Parquet:
+
+```python
+raw = spark.read.option("header", "true").csv(raw_path)
+raw.write.mode("overwrite").parquet(bronze_path)
+```
+
+**Bronze to silver** casts text columns to real types, removes duplicate rows
+(**dedup**), and drops rows missing a key:
+
+```python
+silver = (
+    spark.read.parquet(bronze_path)
+    .withColumn("order_date", F.to_date("order_date"))
+    .withColumn("quantity", F.col("quantity").cast("int"))
+    .withColumn("unit_price", F.col("unit_price").cast("double"))
+    .withColumn("amount", F.col("amount").cast("double"))
+    .dropDuplicates(["order_id"])
+    .dropna(subset=["order_id", "region", "order_date"])
+)
+```
+
+Finally it writes **partitioned Parquet**, so a later query filtered to one region reads
+only that folder:
+
+```python
+silver.write.mode("overwrite") \
+    .partitionBy("region", "order_date") \
+    .parquet(silver_path)
+```
+
+### Create and run the Glue ETL job
+
+**Console path**
+
+1. **AWS Glue**, **ETL jobs**, **Script editor**, **Create**. Choose **Author from an
+   existing script** and set the path to
+   `s3://hvt-retail-datalake-<account-id>/scripts/glue_bronze_to_silver.py`.
+2. On **Job details**: name `hvt-retail-bronze-to-silver`, role `hvt-retail-glue-etl-role`,
+   Glue version 4.0, Python 3, worker type **G.1X**, **2** workers.
+3. Under **Job parameters**, add key `--BUCKET` with value
+   `hvt-retail-datalake-<account-id>`. Save.
+4. Open the job and choose **Run**; watch the **Runs** tab go from Running to Succeeded.
+
+**AWS CLI**
+
+```bash
+aws glue create-job \
+  --name hvt-retail-bronze-to-silver \
+  --role hvt-retail-glue-etl-role \
+  --glue-version "4.0" \
+  --worker-type G.1X \
+  --number-of-workers 2 \
+  --command "Name=glueetl,ScriptLocation=s3://$BUCKET/scripts/glue_bronze_to_silver.py,PythonVersion=3" \
+  --default-arguments "{\"--BUCKET\":\"$BUCKET\"}" \
+  --tags project=hvt-retail,env=dev
+
+RUN_ID=$(aws glue start-job-run \
+  --job-name hvt-retail-bronze-to-silver \
+  --query JobRunId --output text)
+
+aws glue get-job-run \
+  --job-name hvt-retail-bronze-to-silver \
+  --run-id $RUN_ID \
+  --query "JobRun.JobRunState" --output text
+```
+
+Re-run the last command until the state is `SUCCEEDED`.
+
+:::tip[Right-size the workers]
+Two G.1X workers is the smallest practical Glue setup, and our dataset is tiny.
+Right-sizing workers is the single biggest lever on Glue cost — the cost optimization
+pillar applied to compute.
+:::
+
+### Checkpoint: silver is partitioned Parquet
+
+```bash
+aws s3 ls s3://$BUCKET/silver/orders/
+aws s3 ls s3://$BUCKET/silver/orders/region=West/ --recursive
+```
+
+You should see region partition folders, and inside one region the date partitions with
+Parquet files:
+
+```text
+silver/orders/region=West/order_date=2026-01-04/part-00000-....snappy.parquet
+silver/orders/region=West/order_date=2026-02-27/part-00000-....snappy.parquet
+```
+
+Seeing the `region=.../order_date=.../ ... .parquet` layout proves the transform worked:
+the data is typed, deduplicated, and partitioned. That is a silver table.
+
+### Troubleshooting
+
+- **`AccessDenied` writing to S3** — the inline bucket policy is missing or has the wrong
+  account id. Confirm `glue-s3-policy.json` names your bucket and re-run `put-role-policy`.
+- **Run fails with `getResolvedOptions ... BUCKET`** — the `--BUCKET` parameter was not
+  set. Confirm it is in `--default-arguments` or the console **Job parameters**.
+- **`EntityNotFoundException` on the role** — IAM is eventually consistent. Wait a few
+  seconds after creating the role, then run the job again.
+- **Run stuck in `RUNNING` far too long** — open the run's CloudWatch logs for the Spark
+  error, fix, and re-run. Do not leave a stuck job billing per DPU-hour.
+
+<KeyTakeaways>
+
+- A Glue job assumes its own scoped IAM role — your access keys never appear in job code
+- The silver transform does four things: cast types, deduplicate on `order_id`, drop rows missing keys, and write partitioned Parquet
+- Parameters like `--BUCKET` are passed at run time via `getResolvedOptions`, never hardcoded
+- Glue bills per DPU-hour while running — two G.1X workers is the right size for a tiny dataset
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'How does the Glue job get permission to read and write your bucket?',
+      options: [
+        'Your access keys are pasted into the script',
+        'Glue jobs have S3 access by default',
+        'It assumes the hvt-retail-glue-etl-role, whose inline policy is scoped to the one bucket',
+        'The bucket is made public for the duration of the run',
+      ],
+      answer: 2,
+      explanation:
+        'Service roles replace embedded credentials: the job assumes a role trusted for glue.amazonaws.com with least-privilege S3 access.',
+    },
+    {
+      question: 'Which of these does the bronze-to-silver step NOT do?',
+      options: [
+        'Cast text columns to real types',
+        'Aggregate revenue by region',
+        'Remove duplicate order rows',
+        'Drop rows missing order_id, region, or order_date',
+      ],
+      answer: 1,
+      explanation:
+        'Aggregation is a gold-layer concern (the Athena CTAS, next lesson). Silver stays at detail level: typed, deduplicated, complete rows.',
+    },
+    {
+      question: 'Why does the script write with partitionBy("region", "order_date")?',
+      options: [
+        'Parquet files require at least two partition columns',
+        'So later queries filtered on region or date read only the matching folders',
+        'Glue cannot write unpartitioned output',
+        'It makes the raw layer easier to rebuild',
+      ],
+      answer: 1,
+      explanation:
+        'Partition pruning: engines skip folders whose key values fail the filter, scanning less data for less money.',
+    },
+  ]}
+/>
+
+<LessonComplete />

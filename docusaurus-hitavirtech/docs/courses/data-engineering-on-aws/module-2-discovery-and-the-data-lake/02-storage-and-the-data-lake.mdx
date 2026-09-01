@@ -1,0 +1,250 @@
+---
+title: 'Storage and the data lake'
+sidebar_position: 2
+description: 'Design the Medallion lake on S3 — raw, bronze, silver, and gold prefixes, partitioning, storage classes, a lifecycle rule, and Parquet versus CSV.'
+---
+
+<DurationBadge minutes={50} />
+
+<LearningObjectives>
+
+- Explain the four Medallion layers and what each one is for
+- Create the `bronze/`, `silver/`, and `gold/` prefixes and a `key=value` partition layout
+- Choose S3 storage classes and automate cold-data tiering with a lifecycle rule
+- Argue why silver and gold are Parquet while raw stays CSV
+
+</LearningObjectives>
+
+You have raw files and a catalog. Now turn that pile into a proper **data lake**: a single
+storage layer that holds raw and refined data side by side, cheaply, and lets many tools
+query the same bytes. You design it the way real teams do — in **Medallion** layers.
+
+### The concept visual
+
+The lake-house diagram — `assets/03-lakehouse-architecture.html` in the course materials
+repo — shows the Medallion layers color-coded and the service stack that sits on top of
+S3, the same picture for this stage and the next two.
+
+### The Medallion layers
+
+The **Medallion** design splits the lake into quality tiers, named after medals, so anyone
+can tell how trustworthy a dataset is by which prefix it lives in.
+
+- **raw** — the original source files, byte-for-byte, never edited. Your safety net.
+- **bronze** — raw copied into the lake and given proper column types. Still messy, but
+  inside the lake's structure.
+- **silver** — cleaned, de-duplicated, conformed, and **partitioned**. What most queries read.
+- **gold** — business-ready aggregates, like daily sales by region, ready to serve.
+
+Each layer is just a **prefix** (a path segment) in the one bucket:
+
+```text
+s3://hvt-retail-datalake-<account-id>/
+├── raw/        already here  — untouched source CSVs
+├── bronze/     you create    — typed copies
+├── silver/     you create    — cleaned + partitioned
+└── gold/       you create    — aggregates to serve
+```
+
+:::warning[Raw is immutable]
+Never let a tool write back into `raw/`. The whole point of the raw layer is that it is
+immutable, so you can always rebuild every other layer from it. That replayability is the
+reliability pillar.
+:::
+
+### Create the lake prefixes
+
+S3 has no real folders — a prefix exists the moment an object exists under it. Drop a tiny
+zero-byte marker into each layer.
+
+**Console path**
+
+1. Open **S3** and your bucket. Choose **Create folder**, name it `bronze`, create it.
+2. Repeat for `silver` and `gold`.
+
+**AWS CLI**
+
+```bash
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+BUCKET="hvt-retail-datalake-${ACCOUNT_ID}"
+
+touch .keep
+for layer in bronze silver gold; do
+  aws s3 cp .keep "s3://${BUCKET}/${layer}/.keep"
+done
+rm .keep
+
+aws s3 ls "s3://${BUCKET}/"
+```
+
+You should see `raw/`, `bronze/`, `silver/`, and `gold/`.
+
+### Partition the silver layer
+
+A **partition** splits a dataset into folders by the value of a column, so a query that
+filters on that column skips every folder it does not need. For HitaVir Retail you
+partition `orders` by `region` and `order_date`, because almost every business question
+filters on one or both. The convention is `key=value` in the prefix — Athena and Glue read
+these names automatically and turn them into queryable columns.
+
+You will not write the Parquet files yet (that is the Glue ETL job, next). Create one
+example partition prefix so the layout is concrete.
+
+```bash
+touch .keep
+aws s3 cp .keep \
+  "s3://${BUCKET}/silver/orders/region=us-east/order_date=2025-01-01/.keep"
+rm .keep
+
+aws s3 ls "s3://${BUCKET}/silver/orders/" --recursive
+```
+
+:::tip[Choosing partition keys]
+Good partition keys are columns you filter on often and that have a moderate number of
+values. `region` and `order_date` are ideal. Partitioning on `order_id`, unique per row,
+would create millions of tiny folders and make things slower. Right partitioning is the
+performance efficiency pillar.
+:::
+
+### Choose a storage class and apply a lifecycle rule
+
+A **storage class** is the tier S3 keeps an object in, trading retrieval speed and access
+cost against storage price.
+
+| Storage class | Best for | Relative storage cost |
+|---|---|---|
+| S3 Standard | Hot data queried often (silver, gold) | Baseline |
+| S3 Standard-IA | Infrequent access, kept warm (aging raw, bronze) | Lower storage, small retrieval fee |
+| S3 Glacier Instant Retrieval | Rarely read, but needed instantly | Much lower |
+| S3 Glacier Deep Archive | Compliance archive, retrieval in hours | Lowest |
+
+New objects land in **S3 Standard**. You do not move cold raw files by hand — a
+**lifecycle rule** is an automatic policy that moves or deletes objects as they age. Add
+one: raw data older than 30 days transitions to **S3 Standard-IA**.
+
+**Console path**
+
+1. In the **S3** console, open your bucket and go to the **Management** tab.
+2. Choose **Create lifecycle rule**, name it `hvt-retail-raw-to-ia`.
+3. Under scope, select **Limit the scope** and set the prefix to `raw/`.
+4. Check **Move current versions of objects between storage classes**, choose
+   **Standard-IA**, set **Days after object creation** to `30`, and save.
+
+**AWS CLI**
+
+Save this as `lifecycle.json`:
+
+```json
+{
+  "Rules": [
+    {
+      "ID": "hvt-retail-raw-to-ia",
+      "Filter": { "Prefix": "raw/" },
+      "Status": "Enabled",
+      "Transitions": [
+        {
+          "Days": 30,
+          "StorageClass": "STANDARD_IA"
+        }
+      ]
+    }
+  ]
+}
+```
+
+```bash
+aws s3api put-bucket-lifecycle-configuration \
+  --bucket "$BUCKET" \
+  --lifecycle-configuration file://lifecycle.json
+```
+
+:::tip[Lifecycle rules run once a day]
+S3 evaluates lifecycle rules once a day and only acts on objects past the age threshold,
+so transitions are not instant. Automating cold-data tiering is cost optimization you set
+once and forget.
+:::
+
+### Parquet versus CSV
+
+Your raw files are CSV — fine for landing data, wrong for querying at scale. From silver
+on, this track stores data as **Parquet**: a columnar, compressed format built for
+analytics. "Columnar" means values from the same column are stored together.
+
+| | CSV | Parquet |
+|---|---|---|
+| Layout | Row by row | Column by column |
+| Reads only needed columns | No | Yes |
+| Compression | Poor | Strong |
+| Schema and types | None, all text | Stored in the file |
+| Athena scan cost | High | Low |
+
+Because Athena bills by **bytes scanned**, a query like `SELECT amount FROM orders` reads
+only the `amount` column from Parquet but the entire file from CSV.
+
+:::warning[Keep raw as CSV]
+Keep raw as CSV — you want the source format untouched and human-readable. Convert to
+Parquet on the way into silver. That conversion is the Glue ETL job next.
+:::
+
+### Checkpoint: prove the lake is laid out
+
+```bash
+aws s3 ls "s3://${BUCKET}/"
+aws s3api get-bucket-lifecycle-configuration --bucket "$BUCKET"
+```
+
+You should see `raw/`, `bronze/`, `silver/`, and `gold/`, and the `hvt-retail-raw-to-ia`
+rule, `Enabled`, scoped to `raw/`, with a 30-day transition to `STANDARD_IA`. If both
+checks pass, your lake is designed.
+
+<KeyTakeaways>
+
+- Medallion layers signal trust: raw (untouched) → bronze (typed) → silver (cleaned, partitioned) → gold (business-ready)
+- Partition on columns you filter often with moderate cardinality — `region` and `order_date`, never `order_id`
+- Lifecycle rules automate storage-class transitions; set them once and cold data tiers itself
+- Parquet is columnar and compressed, so Athena scans (and bills) a fraction of what CSV costs
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which Medallion layer do most analytics queries read?',
+      options: [
+        'raw — it is the original data',
+        'bronze — it has proper types',
+        'gold — it has everything pre-aggregated',
+        'silver — cleaned, de-duplicated, conformed, and partitioned',
+      ],
+      answer: 3,
+      explanation:
+        'Silver is the workhorse layer: trustworthy detail-level data. Gold serves specific business questions as aggregates.',
+    },
+    {
+      question: 'Why would partitioning orders by order_id be a mistake?',
+      options: [
+        'order_id is unique per row, so it would create millions of tiny folders and slow everything down',
+        'Athena cannot partition on numeric columns',
+        'S3 limits a bucket to 1000 prefixes',
+        'Glue crawlers ignore partitions entirely',
+      ],
+      answer: 0,
+      explanation:
+        'Good partition keys are frequently filtered and moderately valued. A unique key per row creates a folder per row — the opposite of pruning.',
+    },
+    {
+      question: 'Athena bills by bytes scanned. How does Parquet cut that bill versus CSV?',
+      options: [
+        'Parquet files are always under 1 MB',
+        'Being columnar and compressed, a query reads only the columns it needs instead of whole rows',
+        'Athena queries Parquet for free',
+        'Parquet stores the data in Redshift instead of S3',
+      ],
+      answer: 1,
+      explanation:
+        'Columnar layout lets the engine skip unneeded columns, and compression shrinks what remains — both directly reduce bytes scanned.',
+    },
+  ]}
+/>
+
+<LessonComplete />

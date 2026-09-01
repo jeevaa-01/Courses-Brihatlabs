@@ -1,0 +1,363 @@
+---
+title: "Optional Local Windows Setup"
+description: "Optional Local Windows Setup — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Optional Local Windows Setup
+
+*⏱ Estimated time: 75 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Install and verify Python, a JDK, and PySpark on Windows.
+- Configure `JAVA_HOME`, a virtual environment, and the PySpark Python interpreter.
+- Choose an appropriate local master setting for development.
+
+:::
+
+### Install Python
+
+Download the current stable Python 3 release from:
+
+```text
+https://www.python.org/downloads/
+```
+
+During installation:
+
+1. Select **Add Python to PATH**.
+2. Select **Install Now**.
+3. Complete installation.
+
+Verify:
+
+```powershell
+python --version
+```
+
+Expected output resembles:
+
+```text
+Python 3.x.x
+```
+
+Verify pip:
+
+```powershell
+python -m pip --version
+```
+
+### Install Java
+
+Apache Spark requires a supported Java Development Kit.
+
+Install a modern LTS JDK, such as JDK 17.
+
+Recommended distribution:
+
+```text
+Eclipse Temurin JDK
+```
+
+After installation, verify:
+
+```powershell
+java -version
+```
+
+Expected output resembles:
+
+```text
+openjdk version "17.x.x"
+```
+
+Check the Java compiler:
+
+```powershell
+javac -version
+```
+
+Expected output resembles:
+
+```text
+javac 17.x.x
+```
+
+### Configure JAVA_HOME
+
+Find the JDK path. It may resemble:
+
+```text
+C:\Program Files\Eclipse Adoptium\jdk-17.x.x
+```
+
+Temporarily set it in PowerShell:
+
+```powershell
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.x.x"
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+```
+
+Verify:
+
+```powershell
+echo $env:JAVA_HOME
+java -version
+```
+
+To configure permanently:
+
+1. Search for **Environment Variables** in Windows.
+2. Open **Edit the system environment variables**.
+3. Select **Environment Variables**.
+4. Add `JAVA_HOME`.
+5. Add `%JAVA_HOME%\bin` to `Path`.
+
+### Install Visual Studio Code
+
+Download:
+
+```text
+https://code.visualstudio.com/
+```
+
+Verify:
+
+```powershell
+code --version
+```
+
+### Install VS Code extensions
+
+Install:
+
+- Python
+- Pylance
+- Jupyter
+
+Optional:
+
+- Data Wrangler
+- GitLens
+
+### Create the project folder
+
+```powershell
+cd $HOME
+mkdir hitavir-pyspark-course
+cd hitavir-pyspark-course
+code .
+```
+
+### Create a virtual environment
+
+```powershell
+python -m venv .venv
+```
+
+Activate:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+If PowerShell blocks execution:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+Activate again:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+### Install PySpark
+
+```powershell
+python -m pip install --upgrade pip
+pip install pyspark pytest
+```
+
+Verify:
+
+```powershell
+pip show pyspark
+```
+
+### Test PySpark installation
+
+Create `spark_check.py`:
+
+```python
+from pyspark.sql import SparkSession
+
+spark = (
+    SparkSession.builder
+    .appName("HitaVirTechSparkCheck")
+    .master("local[*]")
+    .getOrCreate()
+)
+
+print("Spark version:", spark.version)
+print("Application name:", spark.sparkContext.appName)
+print("Master:", spark.sparkContext.master)
+
+spark.stop()
+```
+
+Run:
+
+```powershell
+python spark_check.py
+```
+
+Expected output resembles:
+
+```text
+Spark version: 4.x.x
+Application name: HitaVirTechSparkCheck
+Master: local[*]
+```
+
+Version will depend on the installed package.
+
+### Understand local master settings
+
+```python
+.master("local")
+```
+
+Uses one local worker thread.
+
+```python
+.master("local[2]")
+```
+
+Uses two local worker threads.
+
+```python
+.master("local[*]")
+```
+
+Uses all logical CPU cores.
+
+### Set Python executable for PySpark
+
+If multiple Python installations exist:
+
+```powershell
+$env:PYSPARK_PYTHON = "$PWD\.venv\Scripts\python.exe"
+$env:PYSPARK_DRIVER_PYTHON = "$PWD\.venv\Scripts\python.exe"
+```
+
+### Common Windows issue: winutils
+
+Modern PySpark installations often run locally without manual Hadoop binaries for common tasks. However, some operations may still produce Windows-specific Hadoop warnings.
+
+For this course:
+
+- Use local files.
+- Use PySpark installed from pip.
+- Avoid manual Hadoop setup unless a specific error requires it.
+- Prefer running production Spark workloads on Linux, Databricks, or a managed cloud service.
+
+### ✅ Checkpoint
+
+Run:
+
+```powershell
+python -c "import pyspark; print(pyspark.__version__)"
+```
+
+Then:
+
+```powershell
+python spark_check.py
+```
+
+You should see the Spark version and no fatal error.
+
+### 🛠️ Exercise
+
+Create a SparkSession named:
+
+```text
+HitaVirTechFirstSession
+```
+
+Print:
+
+- Spark version
+- Application name
+- Default parallelism
+
+<details>
+<summary>Show solution</summary>
+
+```python
+from pyspark.sql import SparkSession
+
+spark = (
+    SparkSession.builder
+    .appName("HitaVirTechFirstSession")
+    .master("local[*]")
+    .getOrCreate()
+)
+
+print(spark.version)
+print(spark.sparkContext.appName)
+print(spark.sparkContext.defaultParallelism)
+
+spark.stop()
+```
+
+</details>
+
+<Quiz
+  questions={[
+  {
+    "question": "`.master(\"local[*]\")` tells Spark to use:",
+    "options": [
+      "One worker thread",
+      "All logical CPU cores",
+      "A remote cluster"
+    ],
+    "answer": 1,
+    "explanation": "The `*` means all available logical cores on the machine."
+  },
+  {
+    "question": "Most local PySpark setup failures are caused by:",
+    "options": [
+      "Mismatched Java, Python, PATH, or virtual environment configuration",
+      "Slow internet",
+      "CSV file formats"
+    ],
+    "answer": 0,
+    "explanation": "Environment mismatches dominate; verify `java -version`, `JAVA_HOME`, and the interpreter first."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- Local mode is for learning and unit tests; production Spark runs on Linux clusters or managed platforms.
+- `JAVA_HOME` and virtual-environment mismatches cause most setup errors.
+- Code written against `local[*]` moves to a cluster largely unchanged.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Most PySpark setup problems are caused by mismatched Java, Python, PATH, or virtual environment configuration.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+For production Spark, develop locally but deploy on Linux-based clusters or managed platforms whenever possible.
+
+:::

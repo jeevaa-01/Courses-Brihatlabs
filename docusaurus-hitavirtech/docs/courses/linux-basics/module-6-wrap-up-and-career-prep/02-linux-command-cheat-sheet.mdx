@@ -1,0 +1,142 @@
+---
+title: 'Linux Command Cheat Sheet'
+sidebar_position: 2
+description: 'One-page reference of every command in this course — navigation, files, viewing, searching, permissions, pipes, and productivity.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Bookmark a single reference covering every command from this course
+- Recall the command families: navigation, files, viewing, searching, permissions, productivity
+
+</LearningObjectives>
+
+Save this reference for daily use!
+
+### Navigation
+
+```bash
+pwd                           # Where am I?
+ls                            # List files
+ls -la                        # List all with details
+cd folder                     # Enter folder
+cd ..                         # Go up one level
+cd ~                          # Go home
+cd -                          # Go to previous directory
+clear                         # Clear screen (or Ctrl+L)
+```
+
+### File Management
+
+```bash
+mkdir folder                  # Create directory
+mkdir -p a/b/c                # Create nested directories
+touch file.txt                # Create empty file
+cp file1 file2                # Copy file
+cp -r dir1 dir2               # Copy directory
+mv file1 file2                # Move or rename
+rm file                       # Delete file
+rm -r folder                  # Delete directory
+rm -i file                    # Delete with confirmation
+rmdir folder                  # Delete empty directory
+```
+
+### Viewing Files
+
+```bash
+cat file                      # View entire file
+cat -n file                   # View with line numbers
+head file                     # First 10 lines
+head -N file                  # First N lines
+tail file                     # Last 10 lines
+tail -N file                  # Last N lines
+less file                     # Interactive viewer (q to quit)
+wc -l file                    # Count lines
+```
+
+### Writing to Files
+
+```bash
+echo "text" > file            # Write (overwrite)
+echo "text" >> file           # Append
+command > file                # Save command output
+command >> file               # Append command output
+```
+
+### Searching
+
+```bash
+grep "text" file              # Search in file
+grep -i "text" file           # Case insensitive
+grep -n "text" file           # With line numbers
+grep -c "text" file           # Count matches
+grep -r "text" .              # Search recursively
+grep -v "text" file           # Lines NOT matching
+find . -name "*.txt"          # Find files by name
+find . -type d                # Find directories
+find . -type f                # Find files
+```
+
+### Permissions
+
+```bash
+ls -l file                    # View permissions
+chmod +x script.sh            # Make executable
+chmod 755 script.sh           # Set specific permissions
+chmod 644 file.txt            # Standard file permissions
+```
+
+### Pipes and Redirection
+
+```bash
+cmd1 | cmd2                   # Pipe output to next command
+cmd | grep "text"             # Filter output
+cmd | wc -l                   # Count output lines
+cmd | sort                    # Sort output
+cmd | head -N                 # First N lines of output
+cmd | sort | uniq -c          # Count unique values
+```
+
+### Productivity
+
+```bash
+history                       # View command history
+!!                            # Repeat last command
+alias name='command'          # Create shortcut
+echo $HOME                    # Show environment variable
+export VAR="value"            # Set variable
+Ctrl+C                        # Cancel command
+Ctrl+R                        # Search history
+Tab                           # Auto-complete
+```
+
+<KeyTakeaways>
+
+- Cheat sheets speed you up, but real recall comes from daily practice
+- Commands cluster into families — navigation, file management, viewing, searching, permissions, pipes
+- When stuck, a quick cheat-sheet glance or `command --help` beats guessing
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which command creates nested directories in one step?',
+      options: ['mkdir a/b/c', 'mkdir -p a/b/c', 'touch -p a/b/c', 'cd -p a/b/c'],
+      answer: 1,
+      explanation:
+        'mkdir -p builds every missing level of the path in a single command.',
+    },
+    {
+      question: 'Which shortcut searches your command history interactively?',
+      options: ['Ctrl + C', 'Tab', 'Ctrl + R', 'Ctrl + K'],
+      answer: 2,
+      explanation:
+        'Ctrl + R opens reverse-i-search: start typing and Bash finds matching commands from your history.',
+    },
+  ]}
+/>
+
+<LessonComplete />

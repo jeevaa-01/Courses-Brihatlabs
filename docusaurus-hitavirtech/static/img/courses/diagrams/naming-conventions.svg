@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="720" height="340" rx="12" fill="#f8f9fa"/>
+  <text x="360" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Naming Conventions</text>
+
+  <rect x="15" y="40" width="160" height="30" rx="6" fill="#1a73e8"/>
+  <text x="95" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Object</text>
+  <rect x="180" y="40" width="180" height="30" rx="6" fill="#1a73e8"/>
+  <text x="270" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Convention</text>
+  <rect x="365" y="40" width="340" height="30" rx="6" fill="#1a73e8"/>
+  <text x="535" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Example</text>
+
+  <rect x="15" y="76" width="160" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="95" font-size="11" font-weight="600" fill="#1a73e8">Fact tables</text>
+  <rect x="180" y="76" width="180" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="270" y="95" text-anchor="middle" font-size="11" fill="#1a73e8">fact_ prefix</text>
+  <rect x="365" y="76" width="340" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="375" y="95" font-size="11" font-family="monospace" fill="#1a73e8">fact_sales, fact_claims</text>
+
+  <rect x="15" y="108" width="160" height="28" rx="4" fill="white"/>
+  <text x="25" y="127" font-size="11" font-weight="600" fill="#3c4043">Dimension tables</text>
+  <rect x="180" y="108" width="180" height="28" rx="4" fill="white"/>
+  <text x="270" y="127" text-anchor="middle" font-size="11" fill="#3c4043">dim_ prefix</text>
+  <rect x="365" y="108" width="340" height="28" rx="4" fill="white"/>
+  <text x="375" y="127" font-size="11" font-family="monospace" fill="#3c4043">dim_customer, dim_date</text>
+
+  <rect x="15" y="140" width="160" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="159" font-size="11" font-weight="600" fill="#1a73e8">Surrogate keys</text>
+  <rect x="180" y="140" width="180" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="270" y="159" text-anchor="middle" font-size="11" fill="#1a73e8">_key suffix</text>
+  <rect x="365" y="140" width="340" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="375" y="159" font-size="11" font-family="monospace" fill="#1a73e8">customer_key, product_key</text>
+
+  <rect x="15" y="172" width="160" height="28" rx="4" fill="white"/>
+  <text x="25" y="191" font-size="11" font-weight="600" fill="#3c4043">Natural keys</text>
+  <rect x="180" y="172" width="180" height="28" rx="4" fill="white"/>
+  <text x="270" y="191" text-anchor="middle" font-size="11" fill="#3c4043">_id suffix</text>
+  <rect x="365" y="172" width="340" height="28" rx="4" fill="white"/>
+  <text x="375" y="191" font-size="11" font-family="monospace" fill="#3c4043">customer_id, order_id</text>
+
+  <rect x="15" y="204" width="160" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="223" font-size="11" font-weight="600" fill="#1a73e8">Date columns</text>
+  <rect x="180" y="204" width="180" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="270" y="223" text-anchor="middle" font-size="11" fill="#1a73e8">Descriptive name</text>
+  <rect x="365" y="204" width="340" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="375" y="223" font-size="11" font-family="monospace" fill="#1a73e8">order_date, ship_date</text>
+
+  <rect x="15" y="236" width="160" height="28" rx="4" fill="white"/>
+  <text x="25" y="255" font-size="11" font-weight="600" fill="#3c4043">Metrics</text>
+  <rect x="180" y="236" width="180" height="28" rx="4" fill="white"/>
+  <text x="270" y="255" text-anchor="middle" font-size="11" fill="#3c4043">Business term</text>
+  <rect x="365" y="236" width="340" height="28" rx="4" fill="white"/>
+  <text x="375" y="255" font-size="11" font-family="monospace" fill="#3c4043">total_amount, quantity, profit</text>
+
+  <rect x="15" y="268" width="160" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="287" font-size="11" font-weight="600" fill="#1a73e8">Boolean flags</text>
+  <rect x="180" y="268" width="180" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="270" y="287" text-anchor="middle" font-size="11" fill="#1a73e8">is_ prefix</text>
+  <rect x="365" y="268" width="340" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="375" y="287" font-size="11" font-family="monospace" fill="#1a73e8">is_current, is_active, is_fraud</text>
+
+  <rect x="15" y="300" width="160" height="28" rx="4" fill="white"/>
+  <text x="25" y="319" font-size="11" font-weight="600" fill="#3c4043">Staging tables</text>
+  <rect x="180" y="300" width="180" height="28" rx="4" fill="white"/>
+  <text x="270" y="319" text-anchor="middle" font-size="11" fill="#3c4043">stg_ prefix</text>
+  <rect x="365" y="300" width="340" height="28" rx="4" fill="white"/>
+  <text x="375" y="319" font-size="11" font-family="monospace" fill="#3c4043">stg_raw_orders</text>
+
+  <text x="360" y="338" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

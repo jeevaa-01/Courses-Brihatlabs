@@ -1,0 +1,121 @@
+---
+title: 'Debugging and Troubleshooting'
+sidebar_position: 4
+description: 'Read tracebacks bottom-up, recognise the eight most common Python errors, and fix Windows-specific gotchas fast.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Read a traceback bottom-up to find the failing line and the real error
+- Recognise common errors like `KeyError`, `ValueError`, and `ModuleNotFoundError` on sight
+- Apply quick defensive checks before failing calls
+
+</LearningObjectives>
+
+### Common Python Errors and Fixes
+
+![Common Python Errors and Fixes](/img/courses/diagrams/python-de/31-common-python-errors-and-fixes.svg)
+
+### Windows-Specific Issues
+
+![Windows-Specific Issues](/img/courses/diagrams/python-de/32-windows-specific-issues.svg)
+
+### Debugging Technique — The Print-Statement Trick
+
+```python
+# When something is wrong, add print statements to inspect the state:
+print(f"DEBUG: variable = {variable}")
+print(f"DEBUG: type = {type(variable)}")
+print(f"DEBUG: len = {len(data)}")
+
+# Or use Python's built-in debugger:
+# python -m pdb your_script.py
+```
+
+### Reading a Traceback
+
+When Python crashes, it prints a **traceback** — the trail of function calls leading to the error. Read it **bottom up**:
+
+```
+Traceback (most recent call last):
+  File "etl_pipeline.py", line 100, in <module>
+    run_pipeline()
+  File "etl_pipeline.py", line 80, in run_pipeline
+    cleaned = transform(raw_data, ...)
+  File "etl_pipeline.py", line 50, in transform
+    record["price"] = float(record["price"])
+ValueError: could not convert string to float: 'abc'
+                                                ^^^^^
+                                  This is the actual problem
+```
+
+:::tip[HitaVir Tech says]
+"Every bug is a lesson. Read the error message carefully — Python tells you exactly what went wrong and on which line. The traceback is your best debugging friend."
+:::
+
+### What You Have Learnt on This Page
+
+By the end of this page you should be able to confidently:
+
+- Recognise the **8 most common Python errors** by their names (`ModuleNotFoundError`, `KeyError`, `IndexError`, etc.)
+- Read a **traceback** bottom-up to find the actual line that failed
+- Fix Windows-specific issues (PATH, encoding, line endings, venv activation)
+- Use `os.path.exists()`, `.get(key, default)`, and `len()` checks **before** the failing call
+
+### PEP 8 — Style Rules to Apply Strictly During Debugging
+
+Bugs hide in inconsistent code. Apply these rules every single time you debug:
+
+- Use the **`logging`** module to print debug info — never leave `print()` calls behind
+- Catch **specific** exceptions — `except ValueError as e:` not `except Exception:`
+- Always include the **error variable** in the log: `logger.error("Failed: %s", e)`
+- Re-raise with `raise` (no argument) to preserve the traceback
+- Run **`flake8`** *before* hunting bugs — many "bugs" are linter warnings you ignored
+- Keep a clean repo — `black .` first, *then* debug
+
+:::note[Inspiration for the road ahead]
+*"Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it."*
+— Brian Kernighan
+:::
+
+<KeyTakeaways>
+
+- The **last line** of a traceback names the exception and the actual problem
+- Read tracebacks bottom-up: error first, then the call trail that led there
+- Most Windows issues are PATH, encoding, or venv-activation problems
+- `.get(key, default)` and `os.path.exists()` prevent the most common crashes
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Where in a traceback is the actual error message?',
+      options: [
+        'The first line',
+        'The last line — read the traceback bottom-up',
+        'The middle',
+        'Python does not print it',
+      ],
+      answer: 1,
+      explanation:
+        'The bottom line names the exception and the problem; the lines above it are the trail of calls that led there.',
+    },
+    {
+      question: 'row["price"] raises KeyError. Which defensive alternative avoids the crash?',
+      options: [
+        'row.get("price", default)',
+        'int(row)',
+        'del row["price"]',
+        'try: pass',
+      ],
+      answer: 0,
+      explanation:
+        '.get() returns your default instead of raising when the key is missing — the safe lookup for dirty data.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,148 @@
+---
+title: 'Summary and Command Cheat Sheet'
+sidebar_position: 1
+description: 'Your one-page Git command reference — setup, daily workflow, branching, history, undo, and remote commands.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Recap every command group covered in the course in one cheat sheet
+- Bookmark the daily workflow, branching, undo, and remote references
+- Prepare for the interview questions Git knowledge unlocks
+
+</LearningObjectives>
+
+Congratulations! You have completed **Git and GitHub Basics** by **HitaVir Tech**!
+
+### Your Learning Journey
+
+| Section | What You Learned |
+|---------|-----------------|
+| Setup | Install Git, configure identity |
+| Basics | init, add, commit, status |
+| History | log, show, oneline |
+| Branching | branch, checkout, switch |
+| Merging | merge, resolve conflicts |
+| GitHub | remote, push, pull, clone |
+| Workflow | Real-world DevOps process |
+| Best Practices | Commit messages, .gitignore, branches |
+| Fixes | reset, restore, revert, amend |
+| Project | Complete repo from scratch |
+
+### Git Command Cheat Sheet
+
+**Setup:**
+
+```bash
+git config --global user.name "Name"
+git config --global user.email "email"
+git init
+git clone <url>
+```
+
+**Daily Workflow:**
+
+```bash
+git status                    # Check state
+git add <file>                # Stage file
+git add .                     # Stage everything
+git commit -m "message"       # Commit
+git push                      # Upload to remote
+git pull                      # Download from remote
+```
+
+**Branching:**
+
+```bash
+git branch                    # List branches
+git branch <name>             # Create branch
+git checkout <name>           # Switch branch
+git checkout -b <name>        # Create + switch
+git merge <branch>            # Merge into current
+git branch -d <name>          # Delete branch
+```
+
+**History:**
+
+```bash
+git log                       # Full history
+git log --oneline             # Compact history
+git log --oneline --graph     # Visual history
+git show <hash>               # Commit details
+git diff                      # Unstaged changes
+git diff --staged             # Staged changes
+```
+
+**Undo:**
+
+```bash
+git restore <file>            # Discard changes
+git restore --staged <file>   # Unstage
+git reset --soft HEAD~1       # Undo commit (keep changes)
+git reset --hard HEAD~1       # Undo commit (discard changes)
+git revert HEAD               # Safe undo (for pushed commits)
+git commit --amend            # Fix last commit
+```
+
+**Remote:**
+
+```bash
+git remote add origin <url>   # Connect to GitHub
+git remote -v                 # Show remotes
+git push -u origin main       # First push
+git push                      # Subsequent pushes
+git pull                      # Download + merge
+git fetch                     # Download only
+```
+
+### Interview Tips
+
+1. Explain the **three stages**: Working Directory, Staging Area, Repository
+2. Know the difference between `merge` and `rebase`
+3. Explain why you should **never push secrets** to Git
+4. Describe a real branching workflow (feature branches, PRs)
+5. Know how to resolve a merge conflict
+
+> **HitaVir Tech says:** "In interviews, confidence comes from practice. If you have followed this entire codelab hands-on, you already know more than most candidates."
+
+<KeyTakeaways>
+
+- Daily workflow: `status` → `add` → `commit` → `push`, with `pull` at the start
+- Undo toolbox: `restore`, `reset --soft`, `reset --hard`, `revert`, `--amend`
+- `git diff` shows unstaged changes; `git diff --staged` shows what will be committed
+- Interviewers love the three-stage explanation: working directory, staging area, repository
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'According to the cheat sheet, what does git diff --staged show?',
+      options: [
+        'Changes in the working directory that are not yet staged',
+        'Changes that are staged and will go into the next commit',
+        'The difference between local and remote branches',
+        'A list of deleted files',
+      ],
+      answer: 1,
+      explanation:
+        'Plain git diff shows unstaged edits; --staged shows exactly what git commit would record.',
+    },
+    {
+      question: 'An interviewer asks you to explain Git\'s three stages. Which answer is correct?',
+      options: [
+        'Working directory, staging area, repository',
+        'Local, remote, cloud',
+        'Add, commit, push',
+        'Branch, merge, rebase',
+      ],
+      answer: 0,
+      explanation:
+        'Files move from the working directory to the staging area (git add) and then into the repository (git commit).',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,163 @@
+---
+title: "Spark SQL"
+description: "Spark SQL — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Spark SQL
+
+*⏱ Estimated time: 70 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Register temporary and global views and query them with Spark SQL.
+- Write SQL window functions equivalent to the DataFrame API versions.
+- Choose between the DataFrame API and SQL based on readability and reuse.
+
+:::
+
+### Register a temporary view
+
+```python
+valid_df.createOrReplaceTempView("sales")
+```
+
+### Run SQL
+
+```python
+result_df = spark.sql(
+    """
+    SELECT
+        region,
+        SUM(revenue) AS total_revenue,
+        COUNT(DISTINCT transaction_id) AS transaction_count
+    FROM sales
+    GROUP BY region
+    ORDER BY total_revenue DESC
+    """
+)
+
+result_df.show()
+```
+
+### SQL with window functions
+
+```python
+spark.sql(
+    """
+    SELECT
+        region,
+        product,
+        revenue,
+        DENSE_RANK() OVER (
+            PARTITION BY region
+            ORDER BY revenue DESC
+        ) AS revenue_rank
+    FROM sales
+    """
+).show()
+```
+
+### DataFrame API vs Spark SQL
+
+Use DataFrame API when:
+
+- Building reusable Python modules.
+- Using dynamic column logic.
+- Integrating with Python code.
+
+Use Spark SQL when:
+
+- SQL is easier to read.
+- Analysts collaborate on logic.
+- Complex SQL transformations already exist.
+
+Both use the same Spark optimizer.
+
+### Global temporary view
+
+```python
+valid_df.createOrReplaceGlobalTempView(
+    "sales_global"
+)
+```
+
+Query:
+
+```python
+spark.sql(
+    "SELECT * FROM global_temp.sales_global"
+).show()
+```
+
+### ✅ Checkpoint
+
+Register a view and calculate total sales by product using SQL.
+
+### 🛠️ Exercise
+
+Write SQL that returns regions with total revenue above 50,000.
+
+<details>
+<summary>Show solution</summary>
+
+```python
+spark.sql(
+    """
+    SELECT
+        region,
+        SUM(revenue) AS total_revenue
+    FROM sales
+    GROUP BY region
+    HAVING SUM(revenue) > 50000
+    """
+).show()
+```
+
+</details>
+
+<Quiz
+  questions={[
+  {
+    "question": "The DataFrame API and Spark SQL:",
+    "options": [
+      "Use different execution engines",
+      "Share the same Catalyst optimizer",
+      "SQL is always faster"
+    ],
+    "answer": 1,
+    "explanation": "Both compile to the same optimized plans."
+  },
+  {
+    "question": "Global temporary views are queried through:",
+    "options": [
+      "The `global_temp` database",
+      "The default database",
+      "Any unqualified name"
+    ],
+    "answer": 0,
+    "explanation": "For example `SELECT * FROM global_temp.sales_global`."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- The DataFrame API and SQL share the Catalyst optimizer; neither is inherently faster.
+- Choose the interface that keeps the transformation easiest to read and maintain.
+- Views let analysts collaborate on the same data with SQL.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Choose the interface that makes the transformation easiest to understand and maintain.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+DataFrame and SQL expressions are optimized by Catalyst. Python UDFs may limit optimization.
+
+:::

@@ -1,0 +1,214 @@
+---
+title: 'Hands-on Lab - Your First AWS Analytics Pipeline'
+sidebar_position: 2
+description: 'Build a real S3 → Glue → Athena pipeline in the AWS console — upload a CSV, crawl it into the Data Catalog, query it with SQL, then clean everything up.'
+---
+
+<DurationBadge minutes={25} />
+
+<LearningObjectives>
+
+- Create an S3 bucket and upload sample sales data into a raw zone
+- Run a Glue crawler to auto-discover the schema into the Data Catalog
+- Query the table with Athena SQL and read the "data scanned" cost signal
+- Clean up every resource so the lab costs $0.00
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |   HANDS-ON  LAB  -  S3  ->  GLUE  ->  ATHENA                 |
+  +==============================================================+
+```
+
+### The Services We'll Touch
+
+![S3](/img/courses/aws-icons/s3.png) ![Glue](/img/courses/aws-icons/glue.png) ![Crawler](/img/courses/aws-icons/glue-crawler.png) ![Glue Catalog](/img/courses/aws-icons/glue-catalog.png) ![Athena](/img/courses/aws-icons/athena.png)
+
+You will build a mini pipeline that touches **Volume** (S3), **Variety** (CSV auto-cataloged), and **Value** (SQL insights).
+
+```
+   Step 1         Step 2-3         Step 4-5           Step 6          Step 7-9
+  +------+       +------+          +----------+    +--------+     +----------+
+  | CSV  | ----> |  S3  | ------>  | Crawler  | -> | Catalog| --> | Athena   |
+  +------+       +------+          +----------+    +--------+     +----------+
+  Prepare        Upload            Create & run     Table auto    Run SQL,
+  sample data    to bucket          crawler          populated     get insights
+```
+
+### 📄 Step 1 — Prepare Sample Data
+
+On your laptop, create a file called `sales.csv`:
+
+```csv
+order_id,customer,product,quantity,amount,order_date
+1001,Ravi,Laptop,1,75000.00,2026-04-01
+1002,Priya,Mouse,2,1500.00,2026-04-01
+1003,Amit,Keyboard,1,3500.00,2026-04-02
+1004,Ravi,Monitor,1,18000.00,2026-04-02
+1005,Sneha,Headphones,1,4500.00,2026-04-03
+1006,Priya,Laptop,1,75000.00,2026-04-03
+1007,Vikram,USB Cable,3,900.00,2026-04-04
+1008,Neha,Webcam,1,5000.00,2026-04-04
+1009,Ravi,Mouse,1,750.00,2026-04-05
+1010,Amit,Monitor,1,18000.00,2026-04-05
+```
+
+### 🪣 Step 2 — Create an S3 Bucket
+
+1. Sign in to the **AWS Management Console**
+2. Search **S3** in the top search bar
+3. Click **Create bucket**
+4. Bucket name: `hitavirtech-analytics-yourname` (globally unique — add your name)
+5. Region: closest to you (`ap-south-1` = Mumbai)
+6. Leave defaults → **Create bucket**
+
+### ⬆️ Step 3 — Upload the CSV
+
+1. Open your bucket → **Create folder** → `raw`
+2. Inside `raw/` → **Create folder** → `sales`
+3. Inside `raw/sales/` → **Upload** → select `sales.csv` → **Upload**
+
+Your object now lives at:
+
+```
+s3://hitavirtech-analytics-yourname/raw/sales/sales.csv
+```
+
+### 🕸️ Step 4 — Create Glue Database and Crawler
+
+1. Search **Glue** in the AWS Console
+2. Left menu → **Databases** → **Add database**
+3. Name: `hitavirtech_sales_db` → **Create**
+4. Left menu → **Crawlers** → **Create crawler**
+5. Name: `hitavirtech-sales-crawler` → **Next**
+6. **Add a data source** → S3 → path: `s3://hitavirtech-analytics-yourname/raw/sales/` → **Add**
+7. **Next** → **Create new IAM role** `AWSGlueServiceRole-hitavirtech` → **Create**
+8. **Next** → Target database `hitavirtech_sales_db` → Schedule **On demand** → **Next** → **Create**
+
+### 🕷️ Step 5 — Run the Crawler
+
+1. Select `hitavirtech-sales-crawler` → **Run crawler**
+2. Wait 1-2 minutes until **Status = Completed** and **Table changes = 1 created**
+
+### 📚 Step 6 — Verify the Table
+
+1. Glue → **Tables** → open the new `sales` table
+2. Inspect:
+   - Columns: `order_id, customer, product, quantity, amount, order_date`
+   - Types: inferred automatically (bigint, string, double)
+   - Location: your S3 folder
+
+Glue just auto-discovered the schema. 🎉
+
+### 🔍 Step 7 — Query with Athena
+
+1. Open **Athena** in the AWS Console
+2. First time: **Edit settings** → set query results location to `s3://hitavirtech-analytics-yourname/athena-results/`
+3. In the editor: Data source = `AwsDataCatalog`, Database = `hitavirtech_sales_db`
+4. Run:
+
+```sql
+SELECT * FROM sales LIMIT 5;
+```
+
+You should see 5 rows. 🎉
+
+### 💡 Step 8 — Analytical Queries
+
+```sql
+-- Top customers by revenue
+SELECT customer, SUM(amount) AS total_spent
+FROM sales
+GROUP BY customer
+ORDER BY total_spent DESC;
+```
+
+```sql
+-- Best-selling products
+SELECT product, SUM(quantity) AS units_sold
+FROM sales
+GROUP BY product
+ORDER BY units_sold DESC;
+```
+
+```sql
+-- Daily revenue
+SELECT order_date, SUM(amount) AS daily_revenue
+FROM sales
+GROUP BY order_date
+ORDER BY order_date;
+```
+
+### 💰 Step 9 — The "Data Scanned" Number
+
+At the bottom of every result: **"Data scanned: 412 B"** or similar.
+
+That number is your bill. At scale, every analytics engineer watches it. Partitioning + Parquet shrinks it 100-1000x.
+
+### 🧹 Step 10 — Cleanup (Mandatory!)
+
+:::warning[Forgetting cleanup = surprise AWS bill]
+Do not skip this step. Delete everything you created, then verify the bill.
+:::
+
+1. 🕸️ **Glue** → Crawlers → delete `hitavirtech-sales-crawler`
+2. 🕸️ **Glue** → Databases → delete `hitavirtech_sales_db`
+3. 🪣 **S3** → your bucket → **Empty** → then **Delete**
+4. 💰 Check **Billing Dashboard** next day → confirm **$0**
+
+:::tip[HitaVir Tech says]
+"The last 5 minutes of cleanup are the most valuable 5 minutes of the entire lab. Engineers who skip it end up with $300 surprise bills."
+:::
+
+<KeyTakeaways>
+
+- You built a full pipeline: CSV → S3 raw zone → Glue crawler → Data Catalog → Athena SQL
+- The crawler inferred the schema automatically — no manual DDL needed
+- Athena's "data scanned" number is your bill; partitioning + Parquet shrinks it 100-1000x
+- Cleanup is part of the lab: delete the crawler, database, and bucket, then verify $0 on the billing dashboard
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What must you configure before running your first Athena query?',
+      options: [
+        'An EMR cluster',
+        'A Redshift connection',
+        'A query results location in S3',
+        'A VPC endpoint',
+      ],
+      answer: 2,
+      explanation:
+        'Athena writes query results to S3 — the first-time setup step is pointing it at a results folder like s3://your-bucket/athena-results/.',
+    },
+    {
+      question: 'What does the Glue crawler produce when it completes?',
+      options: [
+        'A table in the Glue Data Catalog with inferred columns and types',
+        'A copy of your CSV in Parquet',
+        'A QuickSight dashboard',
+        'A new S3 bucket',
+      ],
+      answer: 0,
+      explanation:
+        'The crawler scans raw/sales/, infers the schema (bigint, string, double), and registers a queryable table — no data is copied.',
+    },
+    {
+      question: 'Why does the "Data scanned" number at the bottom of Athena results matter?',
+      options: [
+        'It shows query execution time',
+        'It counts rows returned',
+        'It measures network latency',
+        'Athena bills per data scanned — it is literally your cost per query',
+      ],
+      answer: 3,
+      explanation:
+        'Athena pricing is per TB scanned. Partitioning and Parquet reduce scanned bytes by 100-1000x, directly shrinking the bill.',
+    },
+  ]}
+/>
+
+<LessonComplete />

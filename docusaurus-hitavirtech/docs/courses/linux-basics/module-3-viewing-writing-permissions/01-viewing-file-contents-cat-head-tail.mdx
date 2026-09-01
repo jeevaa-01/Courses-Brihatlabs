@@ -1,0 +1,206 @@
+---
+title: 'Viewing File Contents — cat, head, tail'
+sidebar_position: 1
+description: 'Read files straight from the terminal with cat, head, tail, and less, and count lines with wc.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Display whole files with `cat` (and line numbers with `cat -n`)
+- Preview the start or end of a file with `head` and `tail`
+- Page through long files with `less` and count lines with `wc -l`
+
+</LearningObjectives>
+
+Now let us read what is inside files without opening an editor.
+
+### cat — Display Entire File
+
+```bash
+cd ~/hitavir-workspace
+cat README.md
+```
+
+**Expected output:**
+
+```
+# HitaVir Workspace
+Created by HitaVir Tech
+Linux Basics Codelab Project
+```
+
+### cat with Line Numbers
+
+```bash
+cat -n logs/app.log
+```
+
+**Expected output:**
+
+```
+     1  [2026-04-05 10:00:01] INFO: Server started on port 3000
+     2  [2026-04-05 10:00:02] INFO: Database connected successfully
+     3  [2026-04-05 10:01:15] WARNING: High memory usage detected
+     4  [2026-04-05 10:02:30] ERROR: Failed to connect to cache server
+     5  [2026-04-05 10:03:00] INFO: Cache reconnected
+     6  [2026-04-05 10:05:22] ERROR: Timeout on /api/users endpoint
+     7  [2026-04-05 10:06:00] INFO: Request completed in 250ms
+     8  [2026-04-05 10:07:45] WARNING: Disk space below 10%
+     9  [2026-04-05 10:08:00] ERROR: Permission denied on /var/data
+    10  [2026-04-05 10:10:00] INFO: Daily backup completed
+```
+
+### head — Show First Lines
+
+```bash
+head logs/app.log
+```
+
+By default, shows the first 10 lines. Specify a number:
+
+```bash
+head -3 logs/app.log
+```
+
+**Expected output:**
+
+```
+[2026-04-05 10:00:01] INFO: Server started on port 3000
+[2026-04-05 10:00:02] INFO: Database connected successfully
+[2026-04-05 10:01:15] WARNING: High memory usage detected
+```
+
+### tail — Show Last Lines
+
+```bash
+tail logs/app.log
+```
+
+Show last 3 lines:
+
+```bash
+tail -3 logs/app.log
+```
+
+**Expected output:**
+
+```
+[2026-04-05 10:07:45] WARNING: Disk space below 10%
+[2026-04-05 10:08:00] ERROR: Permission denied on /var/data
+[2026-04-05 10:10:00] INFO: Daily backup completed
+```
+
+### less — Interactive File Viewer
+
+For long files, use `less`:
+
+```bash
+less logs/app.log
+```
+
+Inside `less`:
+
+| Key | Action |
+|-----|--------|
+| `Space` or `Page Down` | Scroll down one page |
+| `b` or `Page Up` | Scroll up one page |
+| `Arrow Down` | Scroll one line down |
+| `Arrow Up` | Scroll one line up |
+| `/search` | Search for text |
+| `n` | Next search match |
+| `q` | Quit |
+
+Press `q` to exit `less`.
+
+### wc — Word Count
+
+Count lines, words, and characters:
+
+```bash
+wc logs/app.log
+```
+
+**Expected output:**
+
+```
+ 10  62 560 logs/app.log
+```
+
+This means: 10 lines, 62 words, 560 characters.
+
+Count only lines:
+
+```bash
+wc -l logs/app.log
+```
+
+**Expected output:**
+
+```
+10 logs/app.log
+```
+
+### Combine cat with Other Files
+
+Display multiple files:
+
+```bash
+cat config/settings.conf config/database.conf
+```
+
+### Quick Reference
+
+| Command | What It Does | When to Use |
+|---------|-------------|-------------|
+| `cat file` | Show entire file | Small files |
+| `cat -n file` | Show with line numbers | Debugging |
+| `head file` | Show first 10 lines | Quick preview |
+| `head -N file` | Show first N lines | Specific preview |
+| `tail file` | Show last 10 lines | Recent log entries |
+| `tail -N file` | Show last N lines | Specific recent entries |
+| `less file` | Interactive viewer | Large files |
+| `wc -l file` | Count lines | File statistics |
+
+**Real-world analogy:** `cat` is reading the entire letter. `head` is reading just the greeting. `tail` is jumping to the signature. `less` is reading page by page.
+
+:::tip[HitaVir Tech says]
+"In real-world DevOps, `tail` is your go-to for reading logs. Servers generate thousands of lines — you almost always want to see just the latest entries."
+:::
+
+<KeyTakeaways>
+
+- `cat` suits small files; `less` pages through big ones (press q to quit)
+- `head -N` / `tail -N` show the first/last N lines — tail is the go-to for logs
+- `wc -l` counts lines; plain `wc` shows lines, words, and characters
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which command shows only the last 3 lines of a log file?',
+      options: ['head -3 log', 'tail -3 log', 'cat -3 log', 'less -3 log'],
+      answer: 1,
+      explanation:
+        'tail shows the end of a file; tail -3 limits it to the last 3 lines — perfect for the newest log entries.',
+    },
+    {
+      question: 'How do you exit the less viewer?',
+      options: ['Ctrl + C', 'Esc', 'q', 'Type exit'],
+      answer: 2,
+      explanation:
+        'Pressing q quits less and returns you to the prompt — the same key quits many terminal pagers.',
+    },
+    {
+      question: 'wc logs/app.log prints "10 62 560". What does the 62 represent?',
+      options: ['Lines', 'Characters', 'Bytes per line', 'Words'],
+      answer: 3,
+      explanation:
+        'wc output order is lines, words, characters — so 10 lines, 62 words, 560 characters.',
+    },
+  ]}
+/>
+
+<LessonComplete />

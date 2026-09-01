@@ -1,0 +1,159 @@
+---
+title: 'Step 16: Debugging — common errors with fixes'
+sidebar_position: 4
+description: 'Recognize MySQL errors 1054, 1064, 1062, 1093, and 1452 on sight — plus the join cardinality check.'
+---
+
+<DurationBadge minutes={15} />
+
+<LearningObjectives>
+
+- Decode MySQL error codes 1054, 1064, 1062, 1093, and 1452 on sight
+- Fix the `UPDATE`-from-self pattern with a derived table
+- Detect join cardinality bugs from row counts alone
+
+</LearningObjectives>
+
+> *"You don't have time to think up there. If you think, you're dead."*
+> — Maverick, *Top Gun*
+
+:::info[HitaVir Tech connection]
+Debugging at 2 AM is no time to look up syntax. The errors below are the same ones you will hit for the rest of your career — recognize them on sight.
+:::
+
+:::tip[Why this matters now]
+Force the errors below on purpose, in your own console, today. Pattern recognition only sticks after you have caused the problem.
+:::
+
+### 16.1 — `Error 1054: Unknown column 'x'`
+
+Caused by: typo, missing alias, or column dropped.
+
+```sql
+-- ❌
+SELECT customer_name FROM customers;
+-- ✅
+SELECT full_name FROM customers;
+```
+
+### 16.2 — `Error 1064: SQL syntax error near …`
+
+Caused by: missing comma, missing `FROM`, reserved word as column name, unclosed quote.
+
+```sql
+-- ❌  missing comma between columns
+SELECT customer_id full_name FROM customers;
+-- ✅
+SELECT customer_id, full_name FROM customers;
+```
+
+### 16.3 — `Error 1452: Cannot add or update a child row: a foreign key constraint fails`
+
+Caused by: inserting an `order` whose `customer_id` does not exist in `customers`.
+
+Fix: insert the parent first, or use a deferred constraint.
+
+### 16.4 — `Error 1062: Duplicate entry … for key 'PRIMARY'`
+
+Caused by: inserting a row whose primary key already exists.
+
+Fix: `INSERT IGNORE`, `INSERT … ON DUPLICATE KEY UPDATE`, or pick a new key.
+
+### 16.5 — `Error 1093: You can't specify target table 'x' for update in FROM clause`
+
+Caused by: an `UPDATE` whose `WHERE` reads the same table.
+
+Fix: wrap the inner query in another subquery — MySQL will materialize it first.
+
+```sql
+UPDATE products
+SET unit_price = unit_price * 1.05
+WHERE product_id IN (
+    SELECT product_id FROM (
+        SELECT product_id FROM products WHERE category = 'Stationery'
+    ) AS x
+);
+```
+
+### 16.6 — `ONLY_FULL_GROUP_BY` complaints
+
+Caused by: a `SELECT` column not in `GROUP BY` and not aggregated.
+
+Fix: add it to `GROUP BY` or wrap it in `MAX()` / `MIN()` / `ANY_VALUE()` if you genuinely do not care which row's value comes back.
+
+### 16.7 — Wrong join produces too many rows
+
+Always sanity-check:
+
+```sql
+SELECT COUNT(*) FROM order_items;          -- driver
+SELECT COUNT(*)
+FROM order_items AS oi
+JOIN orders AS o ON o.order_id = oi.order_id;
+-- both must equal the driver count
+```
+
+If the second is bigger, your join key is non-unique on the right side.
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Decode error codes 1054, 1064, 1062, 1093, 1452 on sight
+- ✅ Fix the `UPDATE`-from-self pattern with a derived table
+- ✅ Detect a join cardinality bug from row counts alone
+- ✅ Explain `ONLY_FULL_GROUP_BY` to a teammate
+
+---
+
+<KeyTakeaways>
+
+- 1054 = unknown column (typo/alias), 1064 = syntax error, 1062 = duplicate key, 1452 = foreign key violation, 1093 = update-from-self
+- Error 1452 means the parent row is missing — insert the parent first
+- Error 1093 is fixed by wrapping the inner query in another derived table so MySQL materializes it
+- If a join returns more rows than its driving table, the join key is non-unique on the other side
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: "INSERT INTO orders … fails with Error 1452. What is wrong?",
+      options: [
+        'The order_id already exists',
+        'A SQL syntax error near the VALUES clause',
+        'The customer_id being inserted does not exist in customers',
+        'The table is read-only',
+      ],
+      answer: 2,
+      explanation:
+        '1452 is a foreign key failure: the child row references a parent that does not exist. Insert the parent first.',
+    },
+    {
+      question: 'Which error do you get for UPDATE t … WHERE id IN (SELECT id FROM t …) — and what is the fix?',
+      options: [
+        '1062 — use INSERT IGNORE',
+        '1093 — wrap the subquery in another derived table so MySQL materializes it',
+        '1054 — rename the column',
+        '1452 — drop the foreign key',
+      ],
+      answer: 1,
+      explanation:
+        'MySQL cannot read and update the same table in one statement; the extra derived-table layer forces materialization first.',
+    },
+    {
+      question: 'ONLY_FULL_GROUP_BY rejects your query but you truly do not care which row’s value comes back. What is the escape hatch?',
+      options: [
+        'ANY_VALUE(column)',
+        'DISTINCT column',
+        'LIMIT 1',
+        'Disable foreign key checks',
+      ],
+      answer: 0,
+      explanation:
+        'ANY_VALUE() documents the intent explicitly — you accept an arbitrary value from the group — instead of relying on sloppy pre-8.0 behavior.',
+    },
+  ]}
+/>
+
+<LessonComplete />

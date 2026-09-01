@@ -1,0 +1,132 @@
+---
+title: 'Configure Git'
+sidebar_position: 3
+description: 'Set your Git identity — user.name, user.email, default branch, and editor — so every commit is correctly attributed to you.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Set your name and email so commits are attributed to you
+- Make `main` the default branch for new repositories
+- Verify your configuration with `git config --list`
+
+</LearningObjectives>
+
+Before using Git, you need to tell it who you are. This information is attached to every change you make.
+
+### Set Your Name
+
+```bash
+git config --global user.name "Your Name"
+```
+
+Replace `Your Name` with your actual name. Example:
+
+```bash
+git config --global user.name "HitaVir Tech"
+```
+
+### Set Your Email
+
+```bash
+git config --global user.email "your.email@example.com"
+```
+
+Use the **same email** you used for your GitHub account.
+
+### Set Default Branch Name
+
+Modern Git uses `main` as the default branch (older versions use `master`). Let us set this explicitly:
+
+```bash
+git config --global init.defaultBranch main
+```
+
+### Set Default Editor (Optional)
+
+```bash
+git config --global core.editor "code --wait"
+```
+
+This sets VS Code as your Git editor. If you prefer nano or vim, use `nano` or `vim` instead.
+
+### Verify Configuration
+
+```bash
+git config --list
+```
+
+**Expected output (partial):**
+
+```
+user.name=HitaVir Tech
+user.email=your.email@example.com
+init.defaultbranch=main
+```
+
+### What Each Setting Does
+
+| Setting | Purpose |
+|---------|---------|
+| `user.name` | Your name in commit history |
+| `user.email` | Your email in commit history |
+| `init.defaultBranch` | Default branch name for new repos |
+| `core.editor` | Editor for commit messages |
+
+:::tip[HitaVir Tech says]
+"Think of this as writing your name on your homework. Every commit you make will have your name and email attached."
+:::
+
+<KeyTakeaways>
+
+- `git config --global user.name` and `user.email` stamp your identity on every commit
+- Use the **same email** as your GitHub account so commits link to your profile
+- `init.defaultBranch main` makes new repositories start on `main` instead of `master`
+- `git config --list` shows everything currently configured
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why should user.email match the email on your GitHub account?',
+      options: [
+        'Git refuses to commit otherwise',
+        'GitHub sends you a receipt for every commit',
+        'It is required to install Git',
+        'So GitHub links your commits to your profile',
+      ],
+      answer: 3,
+      explanation:
+        'Git itself accepts any email, but GitHub uses the commit email to attribute commits to your account.',
+    },
+    {
+      question: 'What does git config --global init.defaultBranch main do?',
+      options: [
+        'Renames the current branch to main',
+        'Makes new repositories start on a branch called main',
+        'Deletes the master branch',
+        'Pushes main to GitHub',
+      ],
+      answer: 1,
+      explanation:
+        'It only affects repositories created with git init from now on — existing repositories are untouched.',
+    },
+    {
+      question: 'Which command shows all your current Git settings?',
+      options: [
+        'git config --list',
+        'git settings',
+        'git show config',
+        'git status --config',
+      ],
+      answer: 0,
+      explanation:
+        'git config --list prints every configured key=value pair, including user.name and user.email.',
+    },
+  ]}
+/>
+
+<LessonComplete />

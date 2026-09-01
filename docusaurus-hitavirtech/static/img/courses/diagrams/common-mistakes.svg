@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 360" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="820" height="360" rx="12" fill="#f8f9fa"/>
+  <text x="410" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Top Data Modelling Mistakes</text>
+
+  <rect x="15" y="40" width="210" height="30" rx="6" fill="#d93025"/>
+  <text x="120" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Mistake</text>
+  <rect x="230" y="40" width="280" height="30" rx="6" fill="#ea8600"/>
+  <text x="370" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Impact</text>
+  <rect x="515" y="40" width="290" height="30" rx="6" fill="#34a853"/>
+  <text x="660" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Fix</text>
+
+  <rect x="15" y="76" width="210" height="28" rx="4" fill="#fce8e6"/>
+  <text x="25" y="95" font-size="10" font-weight="600" fill="#d93025">Wrong grain</text>
+  <rect x="230" y="76" width="280" height="28" rx="4" fill="#fef7e0"/>
+  <text x="240" y="95" font-size="10" fill="#b06000">Duplicate metrics, wrong aggregations</text>
+  <rect x="515" y="76" width="290" height="28" rx="4" fill="#e6f4ea"/>
+  <text x="525" y="95" font-size="10" fill="#2d8f47">Define grain FIRST before anything else</text>
+
+  <rect x="15" y="108" width="210" height="28" rx="4" fill="white"/>
+  <text x="25" y="127" font-size="10" font-weight="600" fill="#d93025">No surrogate keys</text>
+  <rect x="230" y="108" width="280" height="28" rx="4" fill="white"/>
+  <text x="240" y="127" font-size="10" fill="#3c4043">Slow JOINs, SCD impossible</text>
+  <rect x="515" y="108" width="290" height="28" rx="4" fill="white"/>
+  <text x="525" y="127" font-size="10" fill="#3c4043">Always add integer surrogate keys</text>
+
+  <rect x="15" y="140" width="210" height="28" rx="4" fill="#fce8e6"/>
+  <text x="25" y="159" font-size="10" font-weight="600" fill="#d93025">Over-normalization in DW</text>
+  <rect x="230" y="140" width="280" height="28" rx="4" fill="#fef7e0"/>
+  <text x="240" y="159" font-size="10" fill="#b06000">Too many JOINs, slow queries</text>
+  <rect x="515" y="140" width="290" height="28" rx="4" fill="#e6f4ea"/>
+  <text x="525" y="159" font-size="10" fill="#2d8f47">Denormalize for analytics</text>
+
+  <rect x="15" y="172" width="210" height="28" rx="4" fill="white"/>
+  <text x="25" y="191" font-size="10" font-weight="600" fill="#d93025">Missing date dimension</text>
+  <rect x="230" y="172" width="280" height="28" rx="4" fill="white"/>
+  <text x="240" y="191" font-size="10" fill="#3c4043">Cannot analyze by time periods</text>
+  <rect x="515" y="172" width="290" height="28" rx="4" fill="white"/>
+  <text x="525" y="191" font-size="10" fill="#3c4043">Always create a full dim_date</text>
+
+  <rect x="15" y="204" width="210" height="28" rx="4" fill="#fce8e6"/>
+  <text x="25" y="223" font-size="10" font-weight="600" fill="#d93025">No SCD strategy</text>
+  <rect x="230" y="204" width="280" height="28" rx="4" fill="#fef7e0"/>
+  <text x="240" y="223" font-size="10" fill="#b06000">Lost history, wrong analysis</text>
+  <rect x="515" y="204" width="290" height="28" rx="4" fill="#e6f4ea"/>
+  <text x="525" y="223" font-size="10" fill="#2d8f47">Default to SCD Type 2</text>
+
+  <rect x="15" y="236" width="210" height="28" rx="4" fill="white"/>
+  <text x="25" y="255" font-size="10" font-weight="600" fill="#d93025">Poor naming</text>
+  <rect x="230" y="236" width="280" height="28" rx="4" fill="white"/>
+  <text x="240" y="255" font-size="10" fill="#3c4043">Confusion, maintenance nightmare</text>
+  <rect x="515" y="236" width="290" height="28" rx="4" fill="white"/>
+  <text x="525" y="255" font-size="10" fill="#3c4043">Use prefixes: dim_, fact_, stg_</text>
+
+  <rect x="15" y="268" width="210" height="28" rx="4" fill="#fce8e6"/>
+  <text x="25" y="287" font-size="10" font-weight="600" fill="#d93025">No partitioning</text>
+  <rect x="230" y="268" width="280" height="28" rx="4" fill="#fef7e0"/>
+  <text x="240" y="287" font-size="10" fill="#b06000">Full table scans on large tables</text>
+  <rect x="515" y="268" width="290" height="28" rx="4" fill="#e6f4ea"/>
+  <text x="525" y="287" font-size="10" fill="#2d8f47">Partition facts by date</text>
+
+  <rect x="15" y="300" width="210" height="28" rx="4" fill="white"/>
+  <text x="25" y="319" font-size="10" font-weight="600" fill="#d93025">Ignoring NULL handling</text>
+  <rect x="230" y="300" width="280" height="28" rx="4" fill="white"/>
+  <text x="240" y="319" font-size="10" fill="#3c4043">Wrong counts and aggregations</text>
+  <rect x="515" y="300" width="290" height="28" rx="4" fill="white"/>
+  <text x="525" y="319" font-size="10" fill="#3c4043">Define NULL strategy per column</text>
+
+  <text x="410" y="350" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 436 322" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="436" height="322" rx="12" fill="#f8f9fa"/>
+  <text x="218" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">What to Learn Next</text>
+  <rect x="15" y="40" width="164" height="30" rx="6" fill="#1a73e8"/>
+  <text x="97" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Topic</text>
+  <rect x="184" y="40" width="236" height="30" rx="6" fill="#1a73e8"/>
+  <text x="302" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Why</text>
+  <rect x="15" y="76" width="164" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">SQL with Python</text>
+  <rect x="184" y="76" width="236" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="194" y="94" font-size="12" fill="#1a73e8">Database queries using SQLAlchemy</text>
+  <rect x="15" y="108" width="164" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" fill="#3c4043">Apache Spark (PySpark)</text>
+  <rect x="184" y="108" width="236" height="28" rx="4" fill="white"/>
+  <text x="194" y="126" font-size="12" fill="#3c4043">Big Data processing</text>
+  <rect x="15" y="140" width="164" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">Apache Airflow</text>
+  <rect x="184" y="140" width="236" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="194" y="158" font-size="12" fill="#1a73e8">Pipeline orchestration</text>
+  <rect x="15" y="172" width="164" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" fill="#3c4043">Databricks</text>
+  <rect x="184" y="172" width="236" height="28" rx="4" fill="white"/>
+  <text x="194" y="190" font-size="12" fill="#3c4043">Cloud data engineering</text>
+  <rect x="15" y="204" width="164" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" fill="#1a73e8">Docker</text>
+  <rect x="184" y="204" width="236" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="194" y="222" font-size="12" fill="#1a73e8">Containerize your pipelines</text>
+  <rect x="15" y="236" width="164" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" fill="#3c4043">Unit Testing (pytest)</text>
+  <rect x="184" y="236" width="236" height="28" rx="4" fill="white"/>
+  <text x="194" y="254" font-size="12" fill="#3c4043">Test your pipeline code</text>
+  <rect x="15" y="268" width="164" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" fill="#1a73e8">AWS (boto3)</text>
+  <rect x="184" y="268" width="236" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="194" y="286" font-size="12" fill="#1a73e8">Cloud storage and services</text>
+  <text x="218" y="316" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

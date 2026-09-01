@@ -1,0 +1,121 @@
+---
+title: 'Final Quiz'
+sidebar_position: 4
+description: 'The graded final quiz for AWS Analytics Part 1 — concepts, the 5 Vs, the AWS service map, and the hands-on lab. Aim for at least 7 of 9.'
+---
+
+<DurationBadge minutes={10} />
+
+# Final Quiz
+
+This quiz covers the whole course — analytics concepts, the 5 Vs, the AWS
+service map, and the hands-on lab. **Aim for at least 7 of 9.** If you miss a
+question, revisit the lesson it came from before moving on to AWS Analytics
+Part 2.
+
+<Quiz
+  title="Graded final quiz"
+  questions={[
+    {
+      question: '"What will happen to June sales?" belongs to which analytics maturity level?',
+      options: [
+        'L1 Descriptive',
+        'L2 Diagnostic',
+        'L3 Predictive',
+        'L4 Prescriptive',
+      ],
+      answer: 2,
+      explanation: 'Forecasting the future is predictive analytics — the first level that requires machine learning.',
+    },
+    {
+      question: 'Which two Vs were ADDED to Doug Laney\'s original three?',
+      options: [
+        'Veracity and Value',
+        'Volume and Variety',
+        'Velocity and Volume',
+        'Variety and Velocity',
+      ],
+      answer: 0,
+      explanation: 'Laney (2001) defined Volume, Variety, Velocity; the industry later added Veracity (trust) and Value (outcome).',
+    },
+    {
+      question: 'A hospital combines patient records, X-ray images, and doctors\' free-text notes. Which V is the primary challenge?',
+      options: [
+        'Volume',
+        'Velocity',
+        'Value',
+        'Variety',
+      ],
+      answer: 3,
+      explanation: 'Structured records + unstructured images + free text is a format-diversity problem — Variety.',
+    },
+    {
+      question: 'Which AWS service is the recommended foundation of every data lake?',
+      options: [
+        'Amazon S3',
+        'Amazon EC2',
+        'Amazon DynamoDB',
+        'Amazon RDS',
+      ],
+      answer: 0,
+      explanation: '"Start with S3, always" — 11 nines of durability and every AWS analytics service reads from it.',
+    },
+    {
+      question: 'You need streaming delivery to S3 with zero code and automatic Parquet conversion. Which service?',
+      options: [
+        'Amazon MSK',
+        'Kinesis Firehose',
+        'AWS Glue batch ETL',
+        'Amazon EMR',
+      ],
+      answer: 1,
+      explanation: 'Firehose is the serverless "easy button": it buffers, optionally converts to Parquet, and delivers to S3 with no clusters.',
+    },
+    {
+      question: 'Rows failing a Glue Data Quality rule should be...',
+      options: [
+        'Silently deleted',
+        'Passed through with a comment',
+        'Quarantined with an alert, keeping the curated zone clean',
+        'Emailed to the CEO',
+      ],
+      answer: 2,
+      explanation: 'The quality-gate pattern routes failing rows to a quarantine bucket and fires an SNS alert — bad data never poisons curated tables.',
+    },
+    {
+      question: 'Which service discovers PII (credit cards, SSNs) hiding in your S3 buckets?',
+      options: [
+        'AWS Config',
+        'AWS KMS',
+        'CloudTrail',
+        'Amazon Macie',
+      ],
+      answer: 3,
+      explanation: 'Macie uses ML to classify S3 contents and alert on sensitive data. CloudTrail and Config are the audit twins; KMS manages keys.',
+    },
+    {
+      question: 'In the hands-on lab, what did the Glue crawler create after scanning raw/sales/?',
+      options: [
+        'A sales table in the Data Catalog with auto-inferred schema',
+        'A Parquet copy of the CSV',
+        'A QuickSight dashboard',
+        'A Redshift cluster',
+      ],
+      answer: 0,
+      explanation: 'The crawler inferred columns and types from sales.csv and registered a table Athena could immediately query.',
+    },
+    {
+      question: 'Your dashboards refresh nightly and stakeholders are happy. A teammate proposes a Kinesis real-time rebuild. What do the course\'s principles say?',
+      options: [
+        'Always upgrade to real-time — it future-proofs the stack',
+        'Don\'t — match pipeline speed to the decision\'s deadline; batch that satisfies stakeholders is correct',
+        'Rebuild only if it uses MSK',
+        'Real-time is always cheaper than batch',
+      ],
+      answer: 1,
+      explanation: 'Velocity\'s one-liner: match the pipeline\'s speed to the decision\'s deadline — no faster. Streaming adds cost and complexity with no added Value here.',
+    },
+  ]}
+/>
+
+<LessonComplete />

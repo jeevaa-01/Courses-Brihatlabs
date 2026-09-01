@@ -1,0 +1,208 @@
+---
+title: 'AWS Services for Velocity'
+sidebar_position: 4
+description: 'The AWS Velocity toolkit — Kinesis Data Streams, Firehose, Kinesis Analytics, MSK, Lambda — and how to choose by required freshness.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Distinguish Kinesis Data Streams (durable event stream) from Firehose (buffered delivery)
+- Describe Lambda's role as the universal event glue in streaming pipelines
+- Choose a velocity stack from the freshness decision tree — batch, Firehose, Kinesis, or MSK
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              AWS  FOR  VELOCITY                              |
+  |         "Move and process data in real time."                |
+  +==============================================================+
+```
+
+### The Velocity Lineup
+
+![Kinesis Streams](/img/courses/aws-icons/kinesis-streams.png) ![Firehose](/img/courses/aws-icons/kinesis-firehose.png) ![Kinesis Analytics](/img/courses/aws-icons/kinesis-analytics.png) ![MSK](/img/courses/aws-icons/msk.png) ![Lambda](/img/courses/aws-icons/lambda.png) ![EventBridge](/img/courses/aws-icons/eventbridge.png) ![SNS](/img/courses/aws-icons/sns.png) ![SQS](/img/courses/aws-icons/sqs.png)
+
+**Kinesis Streams** • **Firehose** • **Kinesis Analytics** • **MSK** • **Lambda** • **EventBridge** • **SNS** • **SQS**
+
+### The Velocity Toolkit
+
+| Service | Icon | Purpose |
+|---------|:---:|---------|
+| **Kinesis Data Streams** | <img src="aws-icons/kinesis-streams.png" width="32" height="32" alt="Kinesis Data Streams" /> | Real-time event stream (like Kafka) |
+| **Kinesis Firehose** | <img src="aws-icons/kinesis-firehose.png" width="32" height="32" alt="Kinesis Firehose" /> | Buffered streaming delivery to S3 / Redshift |
+| **Amazon MSK** | <img src="aws-icons/msk.png" width="32" height="32" alt="Amazon MSK" /> | Managed Apache Kafka |
+| **Kinesis Data Analytics** | <img src="aws-icons/kinesis-analytics.png" width="32" height="32" alt="Kinesis Analytics" /> | SQL / Flink on streams in real time |
+| **AWS Lambda** | <img src="aws-icons/lambda.png" width="32" height="32" alt="Lambda" /> | Event-driven serverless functions |
+| **Amazon EventBridge** | <img src="aws-icons/eventbridge.png" width="32" height="32" alt="EventBridge" /> | Serverless event bus across AWS |
+| **Amazon SNS / SQS** | <img src="aws-icons/sqs.png" width="32" height="32" alt="SNS / SQS" /> | Pub-sub / queue messaging |
+
+### Service Spotlight — Amazon Kinesis Data Streams
+
+![Kinesis Data Streams](/img/courses/aws-icons/kinesis-streams.png)
+
+```
+  +--------------------------------------------------------------+
+  |  KINESIS  DATA  STREAMS  -  Real-time Event Stream           |
+  +--------------------------------------------------------------+
+  |  Latency      :  Sub-second                                  |
+  |  Retention    :  24 hours (up to 365 days)                   |
+  |  Throughput   :  MB/sec per shard, scale by sharding         |
+  |  Ordering     :  Per-shard ordered                           |
+  |                                                              |
+  |  The "high-speed conveyor belt" for events.                  |
+  +--------------------------------------------------------------+
+```
+
+### Kinesis in Action — The Conveyor Belt
+
+```
+  PRODUCERS                KINESIS                   CONSUMERS
+  ------------             ---------                 ------------
+
+  App events        +----------------------+         Lambda
+  Clickstreams  --->|  >> >> >> >> >> >>   |--->    Kinesis Analytics
+  IoT sensors       |  durable, ordered,   |         Firehose -> S3
+  Transactions      |  up to 365d retention|         OpenSearch
+  Card swipes       +----------------------+         Redshift
+```
+
+Kinesis holds events **durably**. Multiple consumers read the same stream **independently**.
+
+### Service Spotlight — Kinesis Firehose
+
+![Firehose](/img/courses/aws-icons/kinesis-firehose.png)
+
+```
+  +--------------------------------------------------------------+
+  |  KINESIS  FIREHOSE  -  The Easy Button                       |
+  +--------------------------------------------------------------+
+  |  Model        :  Serverless, fully managed                   |
+  |  Buffer       :  60 sec or 5 MB (whichever first)            |
+  |  Transforms   :  Optional Lambda enrichment                  |
+  |  Sinks        :  S3 (Parquet!), Redshift, OpenSearch, HTTP   |
+  |                                                              |
+  |  No code, no cluster - the laziest streaming on AWS.         |
+  +--------------------------------------------------------------+
+```
+
+```
+  Producers  --->  Firehose  --->  Convert to Parquet  --->  S3
+                  (no servers,
+                   auto-scale)
+```
+
+### Kinesis Data Analytics — Continuous SQL
+
+```sql
+CREATE STREAM fraud_alerts AS
+SELECT user_id, amount, location
+FROM   transactions_stream
+WHERE  amount > 10000 OR is_foreign = TRUE;
+```
+
+Results in **milliseconds** — not after the nightly batch.
+
+### AWS Lambda — The Universal Event Glue
+
+```
+  S3 new file      +
+  Kinesis event    +--->  Lambda  --->  Redshift load
+  DynamoDB row     +         |
+  EventBridge      +         +---->  SNS / SQS alert
+```
+
+Perfect for: event reactions, enrichment, alerting, small transforms.
+
+### Real-World Velocity Pipeline — Rideshare App
+
+```
+  Rideshare app (1 million events/sec)
+              |
+              v
+       Kinesis Data Streams
+              |
+     +--------+--------+---------+
+     |        |        |         |
+     v        v        v         v
+   Lambda  Analytics  Firehose
+   fraud   real-time  buffer
+   flag    aggregate  --> S3 (Parquet)
+     |        |         |
+     v        v         v
+   SNS     QuickSight  Athena
+   alert   live dash.  historical BI
+```
+
+### Velocity Decision Tree
+
+```
+                       How fresh must the data be?
+                                 |
+        +---------+----------+---+---+-----------+
+        |         |          |       |           |
+     Next day  15 minutes  Seconds  Sub-second  Kafka shop
+        |         |          |       |           |
+        v         v          v       v           v
+     Glue       Firehose    Kinesis  Kinesis     MSK
+     batch      -> S3       + Lambda Analytics
+                                    (Flink)
+```
+
+:::tip[HitaVir Tech says]
+"Every team thinks they need real-time until they see the bill. Start with Firehose and 5-minute micro-batches — graduate later. Most of the time, you won't need to."
+:::
+
+<KeyTakeaways>
+
+- Kinesis Data Streams is the durable, ordered conveyor belt; multiple consumers read it independently
+- Firehose is the easy button — serverless, buffered delivery to S3 (Parquet), Redshift, or OpenSearch, no code
+- Lambda glues events together: reactions, enrichment, alerting, small transforms
+- Choose by freshness requirement — Glue batch, Firehose, Kinesis + Lambda, Kinesis Analytics, or MSK for Kafka shops
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Your team wants streaming into S3 with zero code and zero clusters. Which service?',
+      options: [
+        'Kinesis Firehose',
+        'Amazon MSK',
+        'Kinesis Data Streams with custom consumers',
+        'AWS Glue batch jobs',
+      ],
+      answer: 0,
+      explanation:
+        'Firehose is fully managed and serverless — it buffers (60 sec or 5 MB) and delivers to S3, optionally converting to Parquet.',
+    },
+    {
+      question: 'How long can Kinesis Data Streams retain events?',
+      options: [
+        'Exactly 1 hour',
+        'It never retains events',
+        '24 hours by default, configurable up to 365 days',
+        'Only until the first consumer reads them',
+      ],
+      answer: 2,
+      explanation:
+        'The stream is a durable log — default 24-hour retention, extendable to a year, and consumers can replay it independently.',
+    },
+    {
+      question: 'Your company already runs Apache Kafka and wants a managed equivalent on AWS. Best fit?',
+      options: [
+        'SQS',
+        'EventBridge',
+        'Lambda',
+        'Amazon MSK',
+      ],
+      answer: 3,
+      explanation:
+        'MSK is Managed Streaming for Apache Kafka — the drop-in choice for Kafka shops.',
+    },
+  ]}
+/>
+
+<LessonComplete />

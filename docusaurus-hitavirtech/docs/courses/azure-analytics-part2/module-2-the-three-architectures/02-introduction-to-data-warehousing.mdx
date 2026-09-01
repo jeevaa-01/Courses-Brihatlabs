@@ -1,0 +1,220 @@
+---
+title: 'Introduction to Data Warehousing'
+sidebar_position: 2
+description: 'Data warehouses on Azure — columnar MPP storage, star schemas, Synapse Dedicated vs Serverless SQL, and the canonical lake-vs-warehouse comparison.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Contrast row vs columnar storage and explain why warehouses aggregate billions of rows in seconds
+- Model measurable events with star schemas (fact + dimension tables)
+- Choose between Synapse Dedicated SQL Pools and Serverless SQL for a given workload
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |           ARCHITECTURE  2   -   DATA  WAREHOUSE              |
+  |           "Fast SQL on curated, trusted data."               |
+  +==============================================================+
+```
+
+![Synapse](/img/courses/azure-icons/synapse.svg) ![SQL DW](/img/courses/azure-icons/sql-dw.svg) ![Analysis Services](/img/courses/azure-icons/analysis-services.svg)
+
+### What is a Data Warehouse?
+
+🏛️ A **data warehouse** is a centralized, highly-structured database optimized for **analytical queries** — aggregations, joins, and scans across billions of rows — at interactive speeds.
+
+Key properties:
+
+| Property | Icon | What It Means |
+|----------|:---:|---------------|
+| **Schema-on-write** | 📝 | Every row fits a predefined schema at load time |
+| **Columnar storage** | 📊 | Stores columns together, not rows — 10-100× faster scans |
+| **MPP (Massively Parallel Processing)** | ⚡ | Splits work across many compute nodes automatically |
+| **Optimized for reads** | 📖 | Writes are slower; reads are lightning-fast |
+| **Business-user friendly** | 👥 | Clean star schemas; analysts can self-serve SQL |
+
+### Row vs Columnar Storage
+
+```
+  ROW STORE (OLTP, e.g. Azure SQL DB)
+  -----------------------------------
+  [id | name | country | amount]  <-- each row stored together
+
+  Great for:  "Get everything about order 1042"
+  Bad for:    "SUM(amount) across 1B rows"
+
+  COLUMNAR STORE (OLAP, e.g. Synapse Dedicated, Parquet)
+  ------------------------------------------------------
+  [id][id][id]...
+  [name][name][name]...
+  [country][country][country]...
+  [amount][amount][amount]...      <-- each column stored together
+
+  Great for:  "SUM(amount) across 1B rows"  (scan only one column)
+  Bad for:    "Get everything about order 1042"
+```
+
+**Warehouses use columnar.** That one design choice is why they can aggregate billions of rows in seconds.
+
+### Star Schema — The Warehouse Language
+
+Most warehouse tables follow the **star schema**:
+
+```
+                    +---------------------+
+                    |   DIM_CUSTOMER      |
+                    |   (who bought)      |
+                    +----------+----------+
+                               |
+                               |
+  +---------------+    +---------------+    +---------------+
+  | DIM_PRODUCT   |----|  FACT_SALES   |----|  DIM_DATE     |
+  | (what sold)   |    |  (the event)  |    | (when sold)   |
+  +---------------+    +-------+-------+    +---------------+
+                               |
+                               |
+                    +----------+----------+
+                    |   DIM_STORE         |
+                    |   (where sold)      |
+                    +---------------------+
+```
+
+- 🌟 **Fact table** — the measurable events (one row per sale, click, payment)
+- 📐 **Dimension tables** — the context (who, what, when, where)
+
+Star schemas make queries fast AND readable: `SELECT country, SUM(amount) FROM fact_sales JOIN dim_store ...`.
+
+### Service Spotlight — Azure Synapse Dedicated SQL Pool
+
+![Synapse](/img/courses/azure-icons/synapse.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  SYNAPSE  DEDICATED  SQL  POOL  (formerly SQL DW)            |
+  +--------------------------------------------------------------+
+  |  Category  :  Columnar MPP warehouse                         |
+  |  Distrib.  :  Round-robin, hash, replicated                  |
+  |  Scale     :  60-to-hundreds of DWUs, petabyte range         |
+  |  SQL       :  T-SQL (SQL Server flavored)                    |
+  |  Pairings  :  PolyBase, COPY statement, Power BI             |
+  |                                                              |
+  |  The engine behind Mars, Rolls-Royce, Walmart analytics.     |
+  +--------------------------------------------------------------+
+```
+
+### Synapse Serverless SQL — Warehouse Queries Over the Lake
+
+```
+                 +----------------------------+
+                 |  Dedicated SQL Pool         |
+                 |  (hot, curated tables)     |
+                 +-------------+--------------+
+                               |
+                               | joins across
+                               v
+                 +----------------------------+
+                 |  ADLS via Serverless SQL   |
+                 |  (cold, historical data)   |
+                 +----------------------------+
+```
+
+One T-SQL query spans **both** the warehouse (recent, hot) and the lake (years of history). No duplicate storage, no duplicate pipelines.
+
+### Warehouse Loading Patterns
+
+| Source | Icon | Loader | Speed |
+|--------|:---:|--------|:-----:|
+| ADLS files | 🪣 | `COPY` statement (parallel) | 🚀 |
+| Event Hubs | 🌊 | Synapse streaming ingestion | 🚀 |
+| Azure SQL / Postgres | 🗄️ | Azure Data Factory + CDC | 🏃 |
+| SaaS apps (Dynamics, Salesforce) | ☁️ | Data Factory connectors / Power Automate | 🚶 |
+
+### Data Warehouse Strengths and Weaknesses
+
+| Strength | Icon | Weakness | Icon |
+|----------|:---:|----------|:---:|
+| Sub-second SQL on billions of rows | ⚡ | Expensive per TB stored | 💸 |
+| Business-analyst friendly | 👥 | Rigid schema — changes need migrations | 🔒 |
+| Mature BI tool ecosystem (Power BI) | 📊 | Only handles structured data | 📋 |
+| ACID transactions and governance baked-in | 🛡️ | Locked into one vendor's engine | 🔗 |
+
+### Lake vs Warehouse — The Canonical Comparison
+
+```
+  +--------------------+------------------------+------------------------+
+  |  ATTRIBUTE         |  DATA  LAKE            |  DATA  WAREHOUSE       |
+  +--------------------+------------------------+------------------------+
+  |  Data type         |  Anything              |  Structured only       |
+  |  Schema            |  On read               |  On write              |
+  |  Cost / TB stored  |  $  (cheap)            |  $$$$  (expensive)     |
+  |  Query speed       |  Medium                |  Fast                  |
+  |  Users             |  Engineers, data sci.  |  Analysts, business    |
+  |  Azure example     |  ADLS + Serverless SQL |  Synapse Dedicated     |
+  +--------------------+------------------------+------------------------+
+```
+
+:::tip[HitaVir Tech says]
+"Warehouses are optimized for the answers you know you want. Lakes are optimized
+for the answers you haven't invented questions for yet. Real companies need both.
+The next lesson shows how to stop choosing and combine them."
+:::
+
+:::info[Warehouse in one line]
+Columnar + MPP + star schema = fast answers for business users.
+:::
+
+<KeyTakeaways>
+
+- Warehouses are schema-on-write, columnar, and MPP — optimized for reads, not writes
+- Columnar storage scans only the columns a query needs, making aggregations 10-100× faster
+- A star schema pairs one fact table (the events) with dimension tables (who, what, when, where)
+- Synapse Serverless SQL lets one T-SQL query span hot warehouse tables and cold lake files
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why can a warehouse sum one billion rows in seconds?',
+      options: [
+        'It caches the entire dataset in RAM',
+        'T-SQL is a compiled language',
+        'It stores data row-by-row for fast lookups',
+        'Columnar storage plus MPP splits a single-column scan across many nodes',
+      ],
+      answer: 3,
+      explanation:
+        'A SUM only needs the amount column; columnar layout reads just that column, and MPP parallelizes the scan across compute nodes.',
+    },
+    {
+      question: 'In a star schema, where does "one row per sale" live?',
+      options: [
+        'The fact table',
+        'A dimension table',
+        'The data catalog',
+        'The transaction log',
+      ],
+      answer: 0,
+      explanation:
+        'Fact tables hold measurable events (sales, clicks, payments); dimensions provide the who/what/when/where context.',
+    },
+    {
+      question: 'What does Synapse Serverless SQL enable?',
+      options: [
+        'Auto-scaling the Dedicated pool',
+        'Running T-SQL directly over ADLS lake files without loading them',
+        'Free Dedicated compute at night',
+        'Training ML models inside the warehouse',
+      ],
+      answer: 1,
+      explanation:
+        'Serverless SQL queries lake data in place — one query can even join Dedicated tables with years of history in ADLS.',
+    },
+  ]}
+/>
+
+<LessonComplete />

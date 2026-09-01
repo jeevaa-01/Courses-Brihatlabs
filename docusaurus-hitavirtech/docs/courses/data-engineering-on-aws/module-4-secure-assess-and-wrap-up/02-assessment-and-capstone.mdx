@@ -1,0 +1,376 @@
+---
+title: 'Assessment and capstone'
+sidebar_position: 2
+description: 'Review every stage with answered questions, run the pipeline end to end, and validate the gold revenue numbers against the known result — 1,308,944.99.'
+---
+
+<DurationBadge minutes={60} />
+
+<LearningObjectives>
+
+- Answer review questions spanning every stage of the track and check them against model answers
+- Trigger one full end-to-end run — crawl, transform, gold build — via Step Functions or by hand
+- Validate the gold table against the known revenue-by-region result
+- Score your readiness with the self-grading rubric
+
+</LearningObjectives>
+
+You have built a whole pipeline. This stage proves it stuck. First, review questions across
+every prior stage, each with its answer. Second, a hands-on capstone: one end-to-end run,
+raw to gold, validated by a real gold query. Third, a self-grading rubric.
+
+### The concept visual
+
+The assessment scorecard — `assets/06-assessment-scorecard.html` in the course materials
+repo — has one segment per topic, color-coded by concept hue, with a readiness ring that
+fills as you tick off what you have mastered.
+
+### Review: role, functions, lifecycle
+
+**Q1.** In one sentence, what is a data engineer responsible for delivering?
+
+:::tip[Answer]
+Trustworthy data, delivered on time, to the analysts, dashboards, and models
+downstream. Everything else exists to serve that single outcome.
+:::
+
+**Q2 (multiple choice).** Which is *not* one of the six key functions?
+A. Ingest from various sources  B. Train the production ML model  C. Catalog and document
+datasets  D. Ensure quality, security, and compliance
+
+:::tip[Answer]
+**B.** Training the model is the data scientist's job, downstream of you. The six
+functions are build infrastructure, ingest, prepare, catalog, automate, and govern.
+:::
+
+**Q3.** A stakeholder says "it would be nice if the dashboard were live." Build a streaming
+pipeline?
+
+:::tip[Answer]
+No, not on that basis. "Nice to have" is not a latency requirement. Batch is
+simpler and cheaper and is the right default for reporting. Reach for streaming only when a
+real requirement needs freshness batch cannot meet.
+:::
+
+### Review: discovery, crawlers, the catalog
+
+**Q4 (multiple choice).** What does a Glue **crawler** produce?
+A. A cleaned copy of the data  B. Table definitions in the Glue Data Catalog  C. A loaded
+Redshift table  D. A CloudWatch dashboard
+
+:::tip[Answer]
+**B.** A crawler infers schema and partitions and registers table metadata. It
+does not move the data; the rows stay in S3.
+:::
+
+**Q5.** Athena queried the raw CSVs without you loading them anywhere. What makes that
+possible?
+
+:::tip[Answer]
+Athena reads directly from S3 using the schema in the Glue catalog. This is
+schema-on-read: describe once, query in place.
+:::
+
+### Review: storage, Medallion, Parquet, partitioning
+
+**Q6.** Put the Medallion layers in order with the one-line job of each.
+
+:::tip[Answer]
+Raw, bronze, silver, gold. Raw is the untouched original. Bronze is that data
+ingested with typed columns. Silver is cleaned, conformed, partitioned. Gold is
+business-ready aggregates.
+:::
+
+**Q7 (multiple choice).** Why convert silver and gold to **Parquet** instead of CSV?
+A. Human-readable  B. Columnar and compressed, so queries scan less and cost less  C. No
+schema needed  D. Athena cannot read CSV
+
+:::tip[Answer]
+**B.** Parquet stores by column and compresses, so a query reads only the columns
+it needs. Athena bills by bytes scanned.
+:::
+
+**Q8.** Your gold table is partitioned by `region`. A query filters `WHERE region='West'`.
+What does partitioning save you?
+
+:::tip[Answer]
+Partition pruning. Athena reads only the `region=West` files and skips the
+rest. Less data scanned means faster, cheaper.
+:::
+
+### Review: transform with Glue ETL
+
+**Q9 (multiple choice).** Your Glue job reads `raw/` and writes `silver/`. What should it do?
+A. Copy bytes unchanged  B. Drop bad rows, fix types, standardize values, write partitioned
+Parquet  C. Delete raw  D. Load Redshift
+
+:::tip[Answer]
+**B.** Silver is where cleaning happens. Raw is never deleted; loading Redshift is
+a later serve step.
+:::
+
+**Q10.** Glue ETL is "serverless." What does that buy you versus Spark on your own EC2?
+
+:::tip[Answer]
+No cluster to provision, patch, or keep running. Glue spins up workers, runs
+your script, tears them down, and you pay only for the time used.
+:::
+
+### Review: serve, Redshift, the lake house
+
+**Q11 (multiple choice).** What does an Athena **CTAS** do here?
+A. Defines an empty table  B. Runs a SELECT over silver and writes a new gold table in S3
+C. Crawls to infer schema  D. Copies data into Redshift
+
+:::tip[Answer]
+**B.** CTAS runs the SELECT, materializes Parquet in S3, and registers the table
+in the catalog in one statement.
+:::
+
+**Q12.** When push gold into **Redshift** rather than querying S3 with Athena?
+
+:::tip[Answer]
+When you need consistent low-latency, high-concurrency serving. Athena is
+ideal for ad-hoc and pipeline queries; Redshift is tuned for fast, repeated, concurrent
+reads. Together they are the lake house.
+:::
+
+### Review: orchestration
+
+**Q13 (multiple choice).** Run a crawler, then a Glue job, then an Athena query in order
+with retries and branching. Which fits best?
+A. A cron job on EC2  B. AWS Step Functions  C. S3 event notifications alone  D. A Lambda
+that sleeps between steps
+
+:::tip[Answer]
+**B.** Step Functions sequences tasks, waits, retries, and branches as managed
+infrastructure.
+:::
+
+**Q14.** Division of labor between **Step Functions** and **EventBridge**?
+
+:::tip[Answer]
+Step Functions defines *what* runs and in what order. EventBridge decides
+*when* it runs. EventBridge starts the state machine; Step Functions takes it from there.
+:::
+
+### Review: security and monitoring
+
+**Q15 (multiple choice).** Your Glue job reads `raw/` and writes `silver/` in one bucket.
+Which follows least privilege?
+A. `AdministratorAccess`  B. Only `s3:GetObject` on `raw/*` and `s3:PutObject` on `silver/*`
+for that one bucket  C. Make the bucket public  D. Use root credentials
+
+:::tip[Answer]
+**B.** Least privilege means exactly what the job needs and nothing more, scoped
+to the one bucket.
+:::
+
+**Q16.** Name one thing **Lake Formation**, **KMS**, and **CloudTrail** each contribute.
+
+:::tip[Answer]
+Lake Formation gives table- and column-level access control. KMS encrypts data
+at rest with keys you control. CloudTrail records who called which API and when. Together:
+access control, encryption, audit.
+:::
+
+### Capstone: run the pipeline end to end
+
+Confirm the pieces still exist, then trigger one full run.
+
+```bash
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+aws s3 ls s3://hvt-retail-datalake-$ACCOUNT_ID/
+aws glue get-database --name hvt_retail_db --query 'Database.Name' --output text
+aws glue get-crawler  --name hvt-retail-raw-crawler --query 'Crawler.Name' --output text
+aws glue get-job      --job-name hvt-retail-bronze-to-silver --query 'Job.Name' --output text
+```
+
+**Plan A: trigger the Step Functions workflow**
+
+**Console path**
+
+1. Open **Step Functions**, the `hvt-retail-pipeline` state machine, **Start execution**,
+   input `{ "bucket": "hvt-retail-datalake-<your-account-id>" }`, start it.
+2. Watch each state turn green: crawl raw, run the raw-to-silver ETL, then the gold CTAS.
+
+**AWS CLI**
+
+```bash
+SM_ARN=$(aws stepfunctions list-state-machines \
+  --query "stateMachines[?name=='hvt-retail-pipeline'].stateMachineArn" \
+  --output text)
+
+EXEC_ARN=$(aws stepfunctions start-execution \
+  --state-machine-arn "$SM_ARN" \
+  --name "capstone-$(date +%Y%m%d-%H%M%S)" \
+  --input "{\"bucket\": \"hvt-retail-datalake-$ACCOUNT_ID\"}" \
+  --query executionArn --output text)
+
+aws stepfunctions describe-execution --execution-arn "$EXEC_ARN" --query 'status' --output text
+```
+
+Re-run the last command until it reads `SUCCEEDED`.
+
+**Plan B: run the three stages by hand** (only if you do not have the state machine)
+
+```bash
+aws glue start-crawler --name hvt-retail-raw-crawler
+aws glue get-crawler --name hvt-retail-raw-crawler --query 'Crawler.State' --output text
+
+RUN_ID=$(aws glue start-job-run \
+  --job-name hvt-retail-bronze-to-silver \
+  --query JobRunId --output text)
+aws glue get-job-run \
+  --job-name hvt-retail-bronze-to-silver --run-id "$RUN_ID" \
+  --query 'JobRun.JobRunState' --output text
+```
+
+Wait for the crawler to reach `READY` and the job to reach `SUCCEEDED`, then build gold with
+the CTAS below.
+
+:::warning[Run the stages in order]
+Run the stages in order and let each finish before starting the next. Kicking off the ETL
+before the crawler reaches `READY`, or the gold query before the ETL reaches `SUCCEEDED`,
+reads stale or missing data. The Step Functions workflow enforces this ordering for you.
+:::
+
+### Capstone: build and validate the gold query
+
+If Plan A ran the CTAS, `hvt_retail_db.daily_region_sales` already exists; skip to the
+validation query. If you used Plan B, build it first.
+
+```sql
+CREATE TABLE hvt_retail_db.daily_region_sales
+WITH (
+  format = 'PARQUET',
+  parquet_compression = 'SNAPPY',
+  external_location = 's3://hvt-retail-datalake-<your-account-id>/gold/daily_region_sales/'
+) AS
+SELECT
+    region,
+    order_date,
+    COUNT(order_id)  AS order_count,
+    SUM(quantity)    AS units_sold,
+    SUM(amount)      AS revenue
+FROM hvt_retail_db.orders
+WHERE status IN ('completed', 'shipped')
+GROUP BY region, order_date;
+```
+
+Now the validation query: total revenue by region.
+
+```sql
+SELECT region, SUM(revenue) AS total_revenue, SUM(order_count) AS order_count
+FROM hvt_retail_db.daily_region_sales
+GROUP BY region
+ORDER BY total_revenue DESC;
+```
+
+**AWS CLI**
+
+```bash
+QID=$(aws athena start-query-execution \
+  --work-group hvt-retail-wg \
+  --query-string "SELECT region, SUM(revenue) AS total_revenue, SUM(order_count) AS order_count FROM hvt_retail_db.daily_region_sales GROUP BY region ORDER BY total_revenue DESC;" \
+  --query-execution-context Database=hvt_retail_db \
+  --query QueryExecutionId --output text)
+
+aws athena get-query-results --query-execution-id "$QID" \
+  --query 'ResultSet.Rows[].Data[].VarCharValue' --output text
+```
+
+### Checkpoint: confirm the gold result and score yourself
+
+The dataset seed is fixed, so everyone gets exactly these numbers:
+
+```text
+region    total_revenue    order_count
+Central       300566.18            458
+East          267418.05            408
+North         214381.36            331
+South         259365.20            393
+West          267214.20            404
+```
+
+Total recognized revenue (orders that `completed` or `shipped`) across all regions is
+**1,308,944.99**. Confirm it with one line:
+
+```sql
+SELECT SUM(revenue) AS grand_total FROM hvt_retail_db.daily_region_sales;
+```
+
+:::tip[Pipeline validated]
+If the per-region totals match and the grand total reads `1308944.99`, your pipeline is
+correct end to end. You ingested, cataloged, transformed, and served real data, and the
+output reconciles to the source.
+:::
+
+:::warning[If your totals are off]
+If your totals are higher, your silver or CTAS step probably kept every order instead of
+filtering to `completed` and `shipped`. If they are lower or a region is missing, the
+crawler or ETL did not process all the raw data. Re-run the offending stage and re-validate.
+:::
+
+### Score your readiness
+
+Tick every box you can honestly check off without the codelab open, then add up.
+
+| Topic | I can do this | Pts |
+|---|---|---|
+| Foundation | Set up an account safely with an IAM admin user, budget, and billing alarm | 1 |
+| Role | Name the six functions and place a task in one; explain batch vs streaming | 1 |
+| Catalog | Crawl raw data and query it in place with Athena via the Glue catalog | 1 |
+| Storage | Explain the Medallion layers and why Parquet and partitioning save cost | 1 |
+| Transform | Read what a Glue PySpark raw-to-silver job does and why it is serverless | 1 |
+| Serve | Build a gold table with CTAS and say when to use Redshift over Athena | 1 |
+| Automate | Trigger the Step Functions workflow and explain its split with EventBridge | 1 |
+| Protect | Write a least-privilege S3 policy and name what Lake Formation, KMS, CloudTrail do | 1 |
+| Capstone | Ran the pipeline end to end and the gold query reconciled to 1,308,944.99 | 2 |
+
+| Score | Readiness |
+|---|---|
+| 9 to 10 | **Pipeline-ready.** You can build and reason about the whole lake house. |
+| 7 to 8 | **Nearly there.** Revisit the one or two topics you could not check, then re-score. |
+| 4 to 6 | **Foundations solid, gaps remain.** Redo the transform or serve steps hands-on. |
+| 0 to 3 | **Walk it again.** Restart from the first unchecked topic and run each step yourself. |
+
+<KeyTakeaways>
+
+- The capstone is a reconciliation test: a fixed dataset seed means every correct pipeline produces exactly `1308944.99` in recognized revenue
+- Stages must finish in order — crawler `READY`, then ETL `SUCCEEDED`, then the gold CTAS — and Step Functions enforces that for you
+- Totals too high means the completed/shipped filter is missing; too low means a stage skipped part of the raw data
+- The rubric maps one point per capability; the two-point item is the end-to-end validated run
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Your grand total comes out higher than 1,308,944.99. What is the most likely bug?',
+      options: [
+        'The crawler missed a CSV file',
+        'The silver or CTAS step kept every order instead of filtering to completed and shipped statuses',
+        'Redshift double-loaded the gold table',
+        'The lifecycle rule archived part of raw/',
+      ],
+      answer: 1,
+      explanation:
+        'Extra revenue means extra rows: cancelled or returned orders leaked into gold because the status filter is missing.',
+    },
+    {
+      question: 'Why does the capstone insist each stage finishes before the next starts?',
+      options: [
+        'AWS throttles concurrent API calls',
+        'Glue and Athena share the same workers',
+        'The ETL reads what the crawler cataloged and the CTAS reads what the ETL wrote — starting early reads stale or missing data',
+        'It reduces the Redshift bill',
+      ],
+      answer: 2,
+      explanation:
+        'The pipeline is a dependency chain. That is exactly why the Step Functions workflow with .sync integrations and a poll loop exists.',
+    },
+  ]}
+/>
+
+<LessonComplete />

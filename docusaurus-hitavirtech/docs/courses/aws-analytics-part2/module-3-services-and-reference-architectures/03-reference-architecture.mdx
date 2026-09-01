@@ -1,0 +1,271 @@
+---
+title: 'Reference Architecture'
+sidebar_position: 3
+description: 'Six whiteboard-ready AWS reference architectures — one for each use case — that you can copy, adapt, and defend in design reviews.'
+---
+
+<DurationBadge minutes={12} />
+
+<LearningObjectives>
+
+- Read and reproduce the six whiteboard-ready AWS reference architectures
+- Trace the data flow in each diagram from source to serving layer
+- Know when to pick each architecture and which services carry it
+- Compare all six shapes by dominant V, storage, compute, and serving layer
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |           SECTION  3  -  REFERENCE  ARCHITECTURES            |
+  +==============================================================+
+```
+
+For each use case, here is a whiteboard-ready AWS architecture you can copy, adapt, and defend in a design review.
+
+### Reference 1 — Batch BI on a Lake House
+
+![S3](/img/courses/aws-icons/s3.png) ![Glue](/img/courses/aws-icons/glue.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![QuickSight](/img/courses/aws-icons/quicksight.png)
+
+```
+  Operational DBs (RDS, Aurora)      SaaS apps (Salesforce)
+           |                                |
+           +---- AWS DMS (CDC) ----+  AppFlow
+                                   |
+                                   v
+            +--------------------------------------+
+            |     Amazon S3 Data Lake              |
+            |     raw -> curated (Parquet)         |
+            +---------------+----------------------+
+                            |
+                            v  (Glue ETL, Data Quality, Catalog)
+                            |
+            +---------------+----------------------+
+            |   Amazon Redshift (curated tables)   |
+            |   - Star schemas                     |
+            |   - Nightly loads via COPY           |
+            +---------------+----------------------+
+                            |
+                            v
+                   Amazon QuickSight
+                     (SPICE dashboards)
+                            |
+                            v
+                        Executives
+```
+
+**When to pick it:** Finance, ops, exec reporting. Stable queries, predictable loads.
+
+### Reference 2 — Real-Time Analytics
+
+![Kinesis Streams](/img/courses/aws-icons/kinesis-streams.png) ![Firehose](/img/courses/aws-icons/kinesis-firehose.png) ![Kinesis Analytics](/img/courses/aws-icons/kinesis-analytics.png) ![Lambda](/img/courses/aws-icons/lambda.png) ![OpenSearch](/img/courses/aws-icons/opensearch.png) ![S3](/img/courses/aws-icons/s3.png) ![QuickSight](/img/courses/aws-icons/quicksight.png)
+
+```
+  Producers (apps, IoT, clickstream)
+             |
+             v
+   +-------------------------+
+   |  Kinesis Data Streams   |
+   |  (durable, ordered)     |
+   +------------+------------+
+                |
+    +-----------+------------+------------+
+    |                        |            |
+    v                        v            v
+ Kinesis Analytics         Lambda       Firehose
+ (continuous SQL)       (alerting on    |
+    |                    anomalies)     v
+    |                        |        S3 lake
+    v                        v      (Parquet, hist.)
+ Live dashboard            SNS/SQS          |
+ (QuickSight or              |              v
+ OpenSearch dash.)        Ops team      Athena
+                          phone          ad-hoc
+```
+
+**When to pick it:** Fraud detection, live pricing, real-time personalization, IoT.
+
+### Reference 3 — Log & Application Observability
+
+![CloudTrail](/img/courses/aws-icons/cloudtrail.png) ![Firehose](/img/courses/aws-icons/kinesis-firehose.png) ![OpenSearch](/img/courses/aws-icons/opensearch.png) ![S3](/img/courses/aws-icons/s3.png)
+
+```
+  App servers / containers / Lambda / CloudTrail
+                      |
+                      v
+              Kinesis Firehose
+                      |
+           +----------+-----------+
+           |                      |
+           v                      v
+      OpenSearch               S3 (cold)
+      (hot, 30 days)           (cheap, years)
+           |                      |
+           v                      v
+      Kibana / OS           Athena for historical
+      Dashboards            search and audits
+```
+
+**When to pick it:** SRE and platform teams, security logs, microservice observability.
+
+### Reference 4 — Customer 360
+
+![S3](/img/courses/aws-icons/s3.png) ![Glue](/img/courses/aws-icons/glue.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png)
+
+```
+  CRM        Web events     Mobile app     Support tickets
+    |            |              |                |
+    +------------+------+-------+----------------+
+                        |
+                        v
+             S3 Data Lake (raw)
+                        |
+                        v  Glue ETL + Data Quality
+                        |
+             S3 Data Lake (curated)
+                        |
+                        v
+      +-----------------+------------------+
+      |                                    |
+      v                                    v
+   Redshift                          SageMaker
+   Unified Customer                  Features + Models
+   table (serving BI)               (churn, LTV, NBA)
+      |                                    |
+      v                                    v
+   QuickSight 360                  Marketing automation
+   dashboard                       (personalized offers)
+```
+
+**When to pick it:** Retail, banking, telecom, subscription SaaS.
+
+### Reference 5 — ML / Predictive Analytics
+
+![S3](/img/courses/aws-icons/s3.png) ![Glue](/img/courses/aws-icons/glue.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png) ![Lambda](/img/courses/aws-icons/lambda.png)
+
+```
+  +----------------------+
+  |   S3 Data Lake       |
+  |   (historical data)  |
+  +----------+-----------+
+             |
+             v
+  +----------------------+
+  |  Glue / EMR          |
+  |  Feature engineering |
+  +----------+-----------+
+             |
+             v
+  +-------------------------+
+  |  SageMaker Feature Store|
+  +-----+-----------+-------+
+        |           |
+  (training)    (serving)
+        v           v
+  SageMaker      Real-time
+  Training        endpoint
+   Jobs           (low-latency)
+        |           |
+        v           v
+     Models    Mobile / web app
+                (personalized UX)
+```
+
+**When to pick it:** Recommenders, fraud detection, demand forecasting, dynamic pricing.
+
+### Reference 6 — Data Mesh
+
+![Lake Formation](/img/courses/aws-icons/lake-formation.png) ![DataZone](/img/courses/aws-icons/datazone.png) ![S3](/img/courses/aws-icons/s3.png)
+
+```
+  Domain A (Orders)      Domain B (Marketing)     Domain C (Finance)
+  owns its own pipes     owns its own pipes       owns its own pipes
+     |                       |                         |
+     v                       v                         v
+  S3 bucket + Glue        S3 bucket + Glue          S3 bucket + Glue
+  Catalog (Orders)        Catalog (Marketing)       Catalog (Finance)
+     |                       |                         |
+     +-----------+-----------+-------------------------+
+                 |
+                 v
+       +-----------------------------------+
+       |   Lake Formation  (central RBAC)  |
+       |   + Amazon DataZone  (discovery)  |
+       +---------------+-------------------+
+                       |
+          +------------+------------+
+          |            |            |
+          v            v            v
+        Analyst    Data sci.    Executive
+       (Athena)   (SageMaker)   (QS / Q)
+```
+
+**When to pick it:** Large enterprises where domain teams must own their data products, but a central platform team guarantees governance.
+
+### Reference Architecture Comparison
+
+| # | Pattern | Primary V | Storage | Compute | Serve |
+|:-:|---------|:-------:|---------|---------|-------|
+| 1 | Batch BI | Volume | S3 + Redshift | Glue, Redshift | QuickSight |
+| 2 | Real-Time | Velocity | Kinesis + S3 | Kinesis Analytics, Lambda | OpenSearch, QuickSight |
+| 3 | Log Obs. | Velocity + Variety | OpenSearch + S3 | Firehose | Kibana, Athena |
+| 4 | 360 | Variety + Value | S3 + Redshift | Glue | QuickSight + apps |
+| 5 | ML | Value | S3 | Glue, SageMaker | Endpoint in app |
+| 6 | Mesh | Veracity + Value | Distributed S3 | Per-domain | Lake Formation + DataZone |
+
+:::tip[HitaVir Tech says]
+"Architects don't memorize 50 services — they memorize 6 shapes. When someone brings a new problem, they map it to a shape first, then pick services to fit. Copy these six patterns. Most of your career, you'll be adapting one of them."
+:::
+
+<KeyTakeaways>
+
+- Each of the six use cases has a whiteboard-ready reference architecture you can copy and adapt
+- Batch BI flows sources → S3 lake → Redshift star schemas → QuickSight dashboards
+- Real-Time fans a Kinesis stream out to continuous SQL, Lambda alerting, and Firehose-to-S3 history
+- Log Observability splits hot search (OpenSearch, ~30 days) from cold archive (S3 + Athena, years)
+- Data Mesh gives each domain its own S3 + Glue stack under central Lake Formation + DataZone governance
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In the Log Observability reference, why does Firehose write to BOTH OpenSearch and S3?',
+      options: [
+        'OpenSearch serves hot 30-day search; S3 keeps years of cheap history for Athena',
+        'OpenSearch cannot store logs at all',
+        'S3 is required to run Kibana',
+        'Firehose always needs two destinations to function',
+      ],
+      answer: 0,
+      explanation:
+        'The hot/cold split keeps recent logs instantly searchable while long-term history stays cheap and auditable via Athena.',
+    },
+    {
+      question: 'In the Batch BI reference, how does data get from operational databases into the S3 lake?',
+      options: [
+        'Kinesis Data Streams',
+        'AWS DMS with change data capture (CDC)',
+        'Redshift Spectrum',
+        'Amazon Macie',
+      ],
+      answer: 1,
+      explanation:
+        'DMS replicates operational DB changes into the lake (SaaS apps arrive via AppFlow); Glue then curates for Redshift.',
+    },
+    {
+      question: 'Which component serves low-latency predictions to a mobile app in the ML reference?',
+      options: [
+        'A nightly Redshift COPY job',
+        'An Athena query',
+        'A SageMaker real-time endpoint',
+        'A QuickSight dashboard',
+      ],
+      answer: 2,
+      explanation:
+        'Training jobs produce models; a SageMaker real-time endpoint serves them with low latency to the application.',
+    },
+  ]}
+/>
+
+<LessonComplete />

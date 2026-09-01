@@ -1,0 +1,224 @@
+---
+title: 'Set up your AWS workbench'
+sidebar_position: 1
+description: 'Create an AWS account, cost guardrails, a non-root IAM admin user, and a configured AWS CLI — the workbench every later lesson relies on.'
+---
+
+<DurationBadge minutes={30} />
+
+<LearningObjectives>
+
+- Create an AWS account and explain why the root user is off-limits for daily work
+- Set two cost guardrails before any resource exists: an AWS Budget and a CloudWatch billing alarm
+- Create the `hvt-admin` IAM user and configure the AWS CLI with its access key
+- Verify the workbench with `aws sts get-caller-identity` and `aws s3 ls`
+
+</LearningObjectives>
+
+This first stage gets your account ready so every later step just works. You will not
+touch a data service yet. Instead you build a safe, cheap place to work and prove your
+tools are wired up: a non-root admin user, cost guardrails, and a configured AWS CLI.
+
+### Create your AWS account
+
+If you already have an account you are happy to use, skip to the cost guardrails below.
+
+**Console path**
+
+1. Go to [aws.amazon.com](https://aws.amazon.com) and choose **Create an AWS Account**.
+2. Enter your email, a strong password, and an account name like `hvt-retail`.
+3. Add billing details, verify your phone, and choose the **Basic (free)** support plan.
+4. Sign in to the **AWS Management Console** as the root user.
+
+:::warning[The root user is not for daily work]
+The email and password you just created are the **root user**. The root user can do
+anything, including close the account and change billing. Never use it for daily work,
+and never create access keys for it. You will make a safer user next.
+:::
+
+### Turn on cost guardrails first
+
+Before any data service exists, give yourself a tripwire. This is the habit that
+separates engineers who get a surprise bill from those who never do.
+
+**Set a budget (console path)**
+
+1. In the console search bar, open **Billing and Cost Management**.
+2. Choose **Budgets**, then **Create budget**.
+3. Pick **Use a template**, then **Monthly cost budget**.
+4. Set the amount to `5` USD and add your email for alerts. Create the budget.
+
+**Set a budget (AWS CLI)**
+
+Once the CLI is configured two steps from now, the same budget looks like this. Save
+it as `budget.json`:
+
+```json
+{
+  "BudgetName": "hvt-retail-monthly",
+  "BudgetLimit": { "Amount": "5", "Unit": "USD" },
+  "TimeUnit": "MONTHLY",
+  "BudgetType": "COST"
+}
+```
+
+```bash
+aws budgets create-budget \
+  --account-id <your-account-id> \
+  --budget file://budget.json
+```
+
+**Add a billing alarm (console path)**
+
+A budget emails you on a schedule; a CloudWatch billing alarm fires the moment
+estimated charges cross a line. Use both.
+
+1. Open **CloudWatch** and switch the region selector to **US East (N. Virginia)**
+   (billing metrics only live there).
+2. Choose **Alarms**, then **Create alarm**, then **Select metric**.
+3. Pick **Billing**, then **Total Estimated Charge**, then the `USD` metric.
+4. Set the threshold to **greater than 5** and send the alert to an email topic.
+
+:::tip[Billing metrics live in us-east-1]
+Billing metrics are only published in `us-east-1`. If you cannot find the Billing
+metric, you are looking in the wrong region, not missing a setting. Cost guardrails
+before resources is the cost optimization pillar in practice.
+:::
+
+### Create a safe admin user with IAM
+
+You will work as an **IAM user** with admin rights, not as root. IAM is AWS's identity
+and access service: it decides who can do what.
+
+**Console path**
+
+1. Open **IAM**, choose **Users**, then **Create user**.
+2. Name the user `hvt-admin` and enable **console access**.
+3. Attach the **AdministratorAccess** policy directly.
+4. Create the user. On the next page, create an **access key** for **Command Line
+   Interface (CLI)** use and download the `.csv`.
+
+After this track, real production access should be least-privilege, not full admin.
+You will tighten exactly this kind of access later in the security stage.
+
+:::warning[Access keys are secrets]
+Your access key is a secret, like a password. Never paste it into code, a commit, or
+a chat. If it ever leaks, deactivate it in IAM immediately.
+:::
+
+### Install and configure the AWS CLI
+
+The AWS CLI lets you drive AWS from the terminal, which is how this track gives you
+copy-paste commands alongside every console path.
+
+```bash
+# macOS
+brew install awscli
+
+# Windows (PowerShell)
+msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi
+
+# Linux
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o awscliv2.zip
+unzip awscliv2.zip && sudo ./aws/install
+```
+
+Confirm it installed, then configure it:
+
+```bash
+aws --version
+aws configure
+```
+
+Paste your access key id and secret access key from the `.csv`, set the region to
+`us-east-1`, and set the output format to `json`.
+
+:::tip[Configure once, use everywhere]
+Run `aws configure` once and it writes `~/.aws/credentials` and `~/.aws/config`.
+Every command in this track reads those files, so you never type keys again.
+:::
+
+### Checkpoint: prove your tools work
+
+Confirm who you are and that you can reach S3.
+
+```bash
+aws sts get-caller-identity
+```
+
+You should see your account id and the `hvt-admin` user ARN. Note the account id; you
+will use it in bucket names. Now list your S3 buckets — a brand-new account has none,
+and an empty list is a success here, not an error.
+
+```bash
+aws s3 ls
+```
+
+If that command returns with no error, your workbench is ready. This is your first
+validation checkpoint: a concrete thing you can see that proves the step worked. Every
+stage in this track ends with one.
+
+### Troubleshooting
+
+- **`Unable to locate credentials`** — `aws configure` did not finish. Re-run it and
+  confirm `~/.aws/credentials` exists.
+- **`AccessDenied` on `get-caller-identity`** — the access key is deactivated or
+  mistyped. Create a fresh key for `hvt-admin` and reconfigure.
+- **`InvalidClientTokenId`** — the key id and secret do not match, often from a copy
+  that grabbed a trailing space. Re-paste both carefully.
+- **Billing metric missing in CloudWatch** — you are not in `us-east-1`. Switch the
+  region selector.
+- **CLI command not found after install** — open a new terminal so it picks up the
+  updated path.
+
+<KeyTakeaways>
+
+- The root user is for account emergencies only — daily work happens as the `hvt-admin` IAM user
+- Set **both** guardrails before creating resources: a monthly budget (scheduled emails) and a billing alarm (real-time tripwire)
+- Billing metrics are published only in `us-east-1`
+- `aws configure` writes your credentials once; `aws sts get-caller-identity` proves the CLI works
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why should you create the hvt-admin IAM user instead of working as the root user?',
+      options: [
+        'Root cannot use the AWS CLI',
+        'IAM users get more free-tier credit',
+        'Root can do anything, including close the account — daily work needs a scoped, revocable identity',
+        'The console refuses to let root create S3 buckets',
+      ],
+      answer: 2,
+      explanation:
+        'The root user is all-powerful and its keys cannot be scoped down. An IAM user can be limited, monitored, and deactivated if a key leaks.',
+    },
+    {
+      question: 'You cannot find the Billing metric when creating the CloudWatch alarm. Most likely cause?',
+      options: [
+        'Your region selector is not on us-east-1, the only region publishing billing metrics',
+        'Billing alarms require a paid support plan',
+        'You must wait 24 hours after account creation',
+        'The budget must be created first',
+      ],
+      answer: 0,
+      explanation:
+        'Billing metrics only live in US East (N. Virginia). Switch the region selector and the metric appears.',
+    },
+    {
+      question: 'What is the difference between the AWS Budget and the CloudWatch billing alarm you created?',
+      options: [
+        'They are identical; you only need one',
+        'The budget blocks spending; the alarm reports it',
+        'The alarm is free; the budget costs money',
+        'The budget emails on a schedule, while the alarm fires the moment estimated charges cross the threshold',
+      ],
+      answer: 3,
+      explanation:
+        'A budget evaluates periodically; a billing alarm reacts to the live EstimatedCharges metric. Using both gives you scheduled and real-time tripwires.',
+    },
+  ]}
+/>
+
+<LessonComplete />

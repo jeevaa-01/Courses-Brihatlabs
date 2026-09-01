@@ -1,0 +1,1022 @@
+---
+title: "Data Engineering Mini Project"
+description: "Data Engineering Mini Project — HitaVir Tech PySpark for Data Engineering."
+tags: [capstone]
+---
+
+# Data Engineering Mini Project
+
+*⏱ Estimated time: 180 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Assemble configuration, extract, transform, and load modules into an idempotent pipeline.
+- Implement validation with explicit rejection reasons and window-based deduplication.
+- Verify pipeline outputs and logs against expected record counts.
+
+:::
+
+:::warning[Environment note]
+
+This capstone uses a local Python project structure (modules, virtual environment, pytest) and is best completed with the [optional local Windows setup](/courses/pyspark/module-1-foundations/optional-local-windows-setup). To run it on Databricks instead: import the `src` package through a Git folder or copy the functions into notebook cells, point the paths in `config.py` at your volume (`/Volumes/workspace/default/hitavir/...`), use the built-in `spark` session instead of `create_spark_session()`, and remove `spark.stop()`.
+
+:::
+
+### Scenario
+
+HitaVir Tech processes sales data from branches across India.
+
+The pipeline must:
+
+- Read raw sales and product files.
+- Apply explicit schemas.
+- Standardize text.
+- Parse dates.
+- Validate required fields.
+- Remove duplicates.
+- Separate valid and rejected records.
+- Calculate revenue.
+- Enrich sales using product master data.
+- Aggregate by region and product.
+- Rank products by regional revenue.
+- Write Parquet outputs.
+- Partition clean sales by region.
+- Log the complete run.
+- Include tests.
+
+### Create project
+
+```powershell
+cd $HOME
+mkdir hitavir-pyspark-sales-pipeline
+cd hitavir-pyspark-sales-pipeline
+
+mkdir data
+mkdir data\raw
+mkdir data\processed
+mkdir data\rejected
+mkdir logs
+mkdir src
+mkdir tests
+
+New-Item src\__init__.py -ItemType File
+```
+
+### Create sales input
+
+Create `data/raw/sales.csv`:
+
+```csv
+transaction_id,transaction_date,region,product,quantity,unit_price
+T001,2026-07-01, South ,Laptop,2,65000
+T002,2026-07-01,NORTH,Monitor,3,15000
+T003,2026-07-02,south,Keyboard,5,2000
+T004,2026-07-02,WEST,Mouse,,800
+T005,2026-07-03,East,Laptop,1,65000
+T006,invalid-date,NORTH,Monitor,2,15000
+T007,2026-07-04,SOUTH,Keyboard,-1,2000
+T008,2026-07-04,unknown,Mouse,4,800
+T002,2026-07-01,NORTH,Monitor,3,15000
+T009,2026-07-05,WEST,Webcam,3,
+T010,2026-07-05,WEST,Webcam,4,4000
+```
+
+### Create product input
+
+Create `data/raw/products.csv`:
+
+```csv
+product,category,supplier
+Laptop,Computers,TechSource
+Monitor,Accessories,DisplayHub
+Keyboard,Accessories,InputWorks
+Mouse,Accessories,InputWorks
+Webcam,Accessories,VisionTech
+```
+
+### requirements.txt
+
+```text
+pyspark
+pytest
+```
+
+Install:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+### Configuration
+
+Create `src/config.py`:
+
+```python
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+RAW_SALES_PATH = (
+    PROJECT_ROOT / "data" / "raw" / "sales.csv"
+)
+PRODUCTS_PATH = (
+    PROJECT_ROOT / "data" / "raw" / "products.csv"
+)
+
+CLEAN_SALES_PATH = (
+    PROJECT_ROOT / "data" / "processed" / "clean_sales"
+)
+REGIONAL_SUMMARY_PATH = (
+    PROJECT_ROOT
+    / "data"
+    / "processed"
+    / "regional_summary"
+)
+PRODUCT_SUMMARY_PATH = (
+    PROJECT_ROOT
+    / "data"
+    / "processed"
+    / "product_summary"
+)
+REJECTED_PATH = (
+    PROJECT_ROOT / "data" / "rejected" / "sales"
+)
+LOG_PATH = PROJECT_ROOT / "logs" / "pipeline.log"
+
+ALLOWED_REGIONS = [
+    "NORTH",
+    "SOUTH",
+    "EAST",
+    "WEST",
+]
+
+REQUIRED_SALES_COLUMNS = {
+    "transaction_id",
+    "transaction_date",
+    "region",
+    "product",
+    "quantity",
+    "unit_price",
+}
+```
+
+### Spark session module
+
+Create `src/spark_session.py`:
+
+```python
+from pyspark.sql import SparkSession
+
+
+def create_spark_session() -> SparkSession:
+    """Create a local SparkSession."""
+    return (
+        SparkSession.builder
+        .appName("HitaVirTechSalesPipeline")
+        .master("local[*]")
+        .config("spark.sql.shuffle.partitions", "8")
+        .config("spark.sql.adaptive.enabled", "true")
+        .getOrCreate()
+    )
+```
+
+### Schemas
+
+Create `src/schemas.py`:
+
+```python
+from pyspark.sql.types import (
+    DoubleType,
+    IntegerType,
+    StringType,
+    StructField,
+    StructType,
+)
+
+sales_schema = StructType(
+    [
+        StructField(
+            "transaction_id",
+            StringType(),
+            True
+        ),
+        StructField(
+            "transaction_date",
+            StringType(),
+            True
+        ),
+        StructField(
+            "region",
+            StringType(),
+            True
+        ),
+        StructField(
+            "product",
+            StringType(),
+            True
+        ),
+        StructField(
+            "quantity",
+            IntegerType(),
+            True
+        ),
+        StructField(
+            "unit_price",
+            DoubleType(),
+            True
+        ),
+    ]
+)
+
+product_schema = StructType(
+    [
+        StructField(
+            "product",
+            StringType(),
+            False
+        ),
+        StructField(
+            "category",
+            StringType(),
+            True
+        ),
+        StructField(
+            "supplier",
+            StringType(),
+            True
+        ),
+    ]
+)
+```
+
+### Extract module
+
+Create `src/extract.py`:
+
+```python
+from pathlib import Path
+
+from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql.types import StructType
+
+
+def read_csv(
+    spark: SparkSession,
+    path: Path,
+    schema: StructType
+) -> DataFrame:
+    """Read a CSV file with an explicit schema."""
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Input file not found: {path}"
+        )
+
+    return (
+        spark.read
+        .option("header", True)
+        .option("mode", "PERMISSIVE")
+        .schema(schema)
+        .csv(str(path))
+    )
+```
+
+### Transform module
+
+Create `src/transform.py`:
+
+```python
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as F
+from pyspark.sql.window import Window
+
+
+def validate_required_columns(
+    df: DataFrame,
+    required_columns: set[str]
+) -> None:
+    """Validate required DataFrame columns."""
+    missing_columns = required_columns - set(df.columns)
+
+    if missing_columns:
+        raise ValueError(
+            f"Missing required columns: "
+            f"{sorted(missing_columns)}"
+        )
+
+
+def standardize_sales(df: DataFrame) -> DataFrame:
+    """Standardize raw sales values."""
+    return (
+        df
+        .withColumn(
+            "transaction_id",
+            F.upper(
+                F.trim(F.col("transaction_id"))
+            )
+        )
+        .withColumn(
+            "transaction_date",
+            F.try_to_date(
+                F.col("transaction_date"),
+                "yyyy-MM-dd"
+            )
+        )
+        .withColumn(
+            "region",
+            F.upper(F.trim(F.col("region")))
+        )
+        .withColumn(
+            "product",
+            F.initcap(F.trim(F.col("product")))
+        )
+        .withColumn(
+            "quantity",
+            F.col("quantity").cast("integer")
+        )
+        .withColumn(
+            "unit_price",
+            F.col("unit_price").cast("double")
+        )
+    )
+
+
+def add_validation_columns(
+    df: DataFrame,
+    allowed_regions: list[str]
+) -> DataFrame:
+    """Add record status and rejection reason."""
+    return (
+        df
+        .withColumn(
+            "rejection_reason",
+            F.when(
+                F.col("transaction_id").isNull(),
+                F.lit("MISSING_TRANSACTION_ID")
+            )
+            .when(
+                F.col("transaction_date").isNull(),
+                F.lit("INVALID_TRANSACTION_DATE")
+            )
+            .when(
+                ~F.col("region").isin(allowed_regions),
+                F.lit("INVALID_REGION")
+            )
+            .when(
+                F.col("product").isNull(),
+                F.lit("MISSING_PRODUCT")
+            )
+            .when(
+                F.col("quantity").isNull()
+                | (F.col("quantity") <= 0),
+                F.lit("INVALID_QUANTITY")
+            )
+            .when(
+                F.col("unit_price").isNull()
+                | (F.col("unit_price") < 0),
+                F.lit("INVALID_UNIT_PRICE")
+            )
+        )
+        .withColumn(
+            "record_status",
+            F.when(
+                F.col("rejection_reason").isNull(),
+                F.lit("VALID")
+            ).otherwise(F.lit("REJECTED"))
+        )
+    )
+
+
+def deduplicate_sales(df: DataFrame) -> DataFrame:
+    """Keep one row per transaction ID."""
+    dedup_window = (
+        Window
+        .partitionBy("transaction_id")
+        .orderBy(
+            F.col("transaction_date").asc_nulls_last()
+        )
+    )
+
+    return (
+        df
+        .withColumn(
+            "row_number",
+            F.row_number().over(dedup_window)
+        )
+        .filter(F.col("row_number") == 1)
+        .drop("row_number")
+    )
+
+
+def split_valid_and_rejected(
+    df: DataFrame
+) -> tuple[DataFrame, DataFrame]:
+    """Split valid and rejected records."""
+    valid_df = (
+        df
+        .filter(F.col("record_status") == "VALID")
+        .drop("record_status", "rejection_reason")
+    )
+
+    rejected_df = df.filter(
+        F.col("record_status") == "REJECTED"
+    )
+
+    return valid_df, rejected_df
+
+
+def enrich_sales(
+    sales_df: DataFrame,
+    products_df: DataFrame
+) -> DataFrame:
+    """Join sales with product master and add revenue."""
+    clean_products_df = (
+        products_df
+        .withColumn(
+            "product",
+            F.initcap(F.trim(F.col("product")))
+        )
+        .dropDuplicates(["product"])
+    )
+
+    return (
+        sales_df
+        .join(
+            F.broadcast(clean_products_df),
+            on="product",
+            how="left"
+        )
+        .withColumn(
+            "revenue",
+            F.round(
+                F.col("quantity")
+                * F.col("unit_price"),
+                2
+            )
+        )
+        .withColumn(
+            "transaction_year",
+            F.year("transaction_date")
+        )
+        .withColumn(
+            "transaction_month",
+            F.month("transaction_date")
+        )
+    )
+
+
+def build_regional_summary(
+    df: DataFrame
+) -> DataFrame:
+    """Build regional sales summary."""
+    return (
+        df
+        .groupBy("region")
+        .agg(
+            F.round(
+                F.sum("revenue"),
+                2
+            ).alias("total_revenue"),
+            F.sum(
+                "quantity"
+            ).alias("total_quantity"),
+            F.countDistinct(
+                "transaction_id"
+            ).alias("transaction_count"),
+            F.round(
+                F.avg("unit_price"),
+                2
+            ).alias("average_unit_price")
+        )
+        .orderBy(
+            F.col("total_revenue").desc()
+        )
+    )
+
+
+def build_product_summary(
+    df: DataFrame
+) -> DataFrame:
+    """Build ranked product summary by region."""
+    summary_df = (
+        df
+        .groupBy(
+            "region",
+            "product",
+            "category"
+        )
+        .agg(
+            F.round(
+                F.sum("revenue"),
+                2
+            ).alias("total_revenue"),
+            F.sum(
+                "quantity"
+            ).alias("total_quantity"),
+            F.countDistinct(
+                "transaction_id"
+            ).alias("transaction_count")
+        )
+    )
+
+    rank_window = (
+        Window
+        .partitionBy("region")
+        .orderBy(
+            F.col("total_revenue").desc()
+        )
+    )
+
+    return (
+        summary_df
+        .withColumn(
+            "revenue_rank",
+            F.dense_rank().over(rank_window)
+        )
+        .orderBy(
+            "region",
+            "revenue_rank",
+            "product"
+        )
+    )
+```
+
+### Load module
+
+Create `src/load.py`:
+
+```python
+from pathlib import Path
+
+from pyspark.sql import DataFrame
+
+
+def write_parquet(
+    df: DataFrame,
+    path: Path,
+    partition_columns: list[str] | None = None
+) -> None:
+    """Write DataFrame as Parquet."""
+    writer = df.write.mode("overwrite")
+
+    if partition_columns:
+        writer = writer.partitionBy(
+            *partition_columns
+        )
+
+    writer.parquet(str(path))
+
+
+def write_csv(
+    df: DataFrame,
+    path: Path
+) -> None:
+    """Write DataFrame as CSV."""
+    (
+        df.write
+        .mode("overwrite")
+        .option("header", True)
+        .csv(str(path))
+    )
+```
+
+### Pipeline
+
+Create `src/pipeline.py`:
+
+```python
+import logging
+import sys
+import time
+
+from src.config import (
+    ALLOWED_REGIONS,
+    CLEAN_SALES_PATH,
+    LOG_PATH,
+    PRODUCT_SUMMARY_PATH,
+    PRODUCTS_PATH,
+    RAW_SALES_PATH,
+    REGIONAL_SUMMARY_PATH,
+    REJECTED_PATH,
+    REQUIRED_SALES_COLUMNS,
+)
+from src.extract import read_csv
+from src.load import write_csv, write_parquet
+from src.schemas import product_schema, sales_schema
+from src.spark_session import create_spark_session
+from src.transform import (
+    add_validation_columns,
+    build_product_summary,
+    build_regional_summary,
+    deduplicate_sales,
+    enrich_sales,
+    split_valid_and_rejected,
+    standardize_sales,
+    validate_required_columns,
+)
+
+
+def configure_logging() -> None:
+    """Configure application logging."""
+    LOG_PATH.parent.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format=(
+            "%(asctime)s | %(levelname)s | "
+            "%(name)s | %(message)s"
+        ),
+        handlers=[
+            logging.FileHandler(
+                LOG_PATH,
+                encoding="utf-8"
+            ),
+            logging.StreamHandler(sys.stdout),
+        ],
+        force=True,
+    )
+
+
+def run_pipeline() -> None:
+    """Run HitaVir Tech PySpark pipeline."""
+    configure_logging()
+    logger = logging.getLogger(
+        "hitavir_pyspark_pipeline"
+    )
+
+    spark = create_spark_session()
+    spark.sparkContext.setLogLevel("WARN")
+
+    started_at = time.perf_counter()
+
+    try:
+        logger.info("Pipeline started")
+
+        raw_sales_df = read_csv(
+            spark,
+            RAW_SALES_PATH,
+            sales_schema
+        )
+
+        products_df = read_csv(
+            spark,
+            PRODUCTS_PATH,
+            product_schema
+        )
+
+        validate_required_columns(
+            raw_sales_df,
+            REQUIRED_SALES_COLUMNS
+        )
+
+        input_count = raw_sales_df.count()
+        logger.info(
+            "Input sales rows: %s",
+            input_count
+        )
+
+        standardized_df = standardize_sales(
+            raw_sales_df
+        )
+
+        validated_df = add_validation_columns(
+            standardized_df,
+            ALLOWED_REGIONS
+        )
+
+        deduplicated_df = deduplicate_sales(
+            validated_df
+        )
+
+        valid_df, rejected_df = (
+            split_valid_and_rejected(
+                deduplicated_df
+            )
+        )
+
+        valid_df = valid_df.cache()
+
+        valid_count = valid_df.count()
+        rejected_count = rejected_df.count()
+
+        logger.info(
+            "Valid rows: %s",
+            valid_count
+        )
+        logger.info(
+            "Rejected rows: %s",
+            rejected_count
+        )
+
+        enriched_df = enrich_sales(
+            valid_df,
+            products_df
+        )
+
+        regional_summary_df = (
+            build_regional_summary(
+                enriched_df
+            )
+        )
+
+        product_summary_df = (
+            build_product_summary(
+                enriched_df
+            )
+        )
+
+        write_parquet(
+            enriched_df,
+            CLEAN_SALES_PATH,
+            partition_columns=["region"]
+        )
+
+        write_csv(
+            rejected_df,
+            REJECTED_PATH
+        )
+
+        write_parquet(
+            regional_summary_df,
+            REGIONAL_SUMMARY_PATH
+        )
+
+        write_parquet(
+            product_summary_df,
+            PRODUCT_SUMMARY_PATH
+        )
+
+        valid_df.unpersist()
+
+        elapsed_seconds = (
+            time.perf_counter() - started_at
+        )
+
+        logger.info(
+            "Clean output: %s",
+            CLEAN_SALES_PATH
+        )
+        logger.info(
+            "Regional summary: %s",
+            REGIONAL_SUMMARY_PATH
+        )
+        logger.info(
+            "Product summary: %s",
+            PRODUCT_SUMMARY_PATH
+        )
+        logger.info(
+            "Pipeline completed in %.3f seconds",
+            elapsed_seconds
+        )
+
+    except Exception:
+        logger.exception("Pipeline failed")
+        raise
+
+    finally:
+        spark.stop()
+
+
+if __name__ == "__main__":
+    run_pipeline()
+```
+
+### Run project
+
+From project root:
+
+```powershell
+python -m src.pipeline
+```
+
+Expected log output resembles:
+
+```text
+Pipeline started
+Input sales rows: 11
+Valid rows: 5
+Rejected rows: 5
+Clean output: ...
+Regional summary: ...
+Product summary: ...
+Pipeline completed in ...
+```
+
+The 11 input rows contain one duplicate (`T002`). After deduplication, 10 rows remain and split into 5 valid and 5 rejected records.
+
+### Inspect output
+
+Read clean output:
+
+```python
+from src.spark_session import create_spark_session
+from src.config import CLEAN_SALES_PATH
+
+spark = create_spark_session()
+
+df = spark.read.parquet(
+    str(CLEAN_SALES_PATH)
+)
+
+df.show(truncate=False)
+df.printSchema()
+
+spark.stop()
+```
+
+### Expected valid records
+
+Expected valid transaction IDs:
+
+```text
+T001
+T002
+T003
+T005
+T010
+```
+
+Expected rejected records and reasons:
+
+```text
+T004 → INVALID_QUANTITY        (missing quantity)
+T006 → INVALID_TRANSACTION_DATE (unparseable date)
+T007 → INVALID_QUANTITY        (negative quantity)
+T008 → INVALID_REGION          (region not in allowed list)
+T009 → INVALID_UNIT_PRICE      (missing price)
+```
+
+Verify your rejected output against this list. Tracing each rejection back to its validation rule is a good habit for production debugging.
+
+### Add tests
+
+Create `tests/conftest.py`:
+
+```python
+import pytest
+from pyspark.sql import SparkSession
+
+
+@pytest.fixture(scope="session")
+def spark():
+    session = (
+        SparkSession.builder
+        .master("local[2]")
+        .appName("HitaVirTechTests")
+        .config(
+            "spark.sql.shuffle.partitions",
+            "2"
+        )
+        .getOrCreate()
+    )
+
+    yield session
+
+    session.stop()
+```
+
+Create `tests/test_transform.py`:
+
+```python
+from src.transform import (
+    add_validation_columns,
+    standardize_sales,
+)
+
+
+def test_standardize_sales(spark):
+    input_df = spark.createDataFrame(
+        [
+            (
+                " t001 ",
+                "2026-07-01",
+                " south ",
+                "laptop",
+                2,
+                1000.0,
+            )
+        ],
+        [
+            "transaction_id",
+            "transaction_date",
+            "region",
+            "product",
+            "quantity",
+            "unit_price",
+        ]
+    )
+
+    result = standardize_sales(input_df).collect()[0]
+
+    assert result.transaction_id == "T001"
+    assert result.region == "SOUTH"
+    assert result.product == "Laptop"
+
+
+def test_invalid_quantity_is_rejected(spark):
+    input_df = spark.createDataFrame(
+        [
+            (
+                "T001",
+                "2026-07-01",
+                "SOUTH",
+                "Laptop",
+                -1,
+                1000.0,
+            )
+        ],
+        [
+            "transaction_id",
+            "transaction_date",
+            "region",
+            "product",
+            "quantity",
+            "unit_price",
+        ]
+    )
+
+    standardized_df = standardize_sales(input_df)
+
+    result = add_validation_columns(
+        standardized_df,
+        ["NORTH", "SOUTH", "EAST", "WEST"]
+    ).collect()[0]
+
+    assert result.record_status == "REJECTED"
+    assert result.rejection_reason == "INVALID_QUANTITY"
+```
+
+Run:
+
+```powershell
+pytest -q
+```
+
+Expected output:
+
+```text
+2 passed
+```
+
+### ✅ Checkpoint
+
+Confirm:
+
+```text
+data/processed/clean_sales/
+data/processed/regional_summary/
+data/processed/product_summary/
+data/rejected/sales/
+logs/pipeline.log
+```
+
+### Project extensions
+
+1. Add customer master data.
+2. Add a date dimension.
+3. Add tax and discount calculations.
+4. Add daily incremental processing.
+5. Add a run ID.
+6. Add source file metadata.
+7. Write Delta Lake tables in Databricks.
+8. Add data quality metrics.
+9. Add schema evolution checks.
+10. Orchestrate with Airflow.
+
+### Capstone rubric (peer-review style)
+
+Review your own project — or a peer's — against these criteria before moving on:
+
+| Criterion | Meets expectations | Needs revision |
+|---|---|---|
+| Correctness | Log shows 11 input → 5 valid / 5 rejected; rejection reasons match the [expected valid records](/courses/pyspark/module-5-capstone-and-testing/data-engineering-mini-project#expected-valid-records) | Counts or reasons differ from expected |
+| Code structure | Config, schemas, extract, transform, load, and pipeline are separate modules with clear names | Logic concentrated in one file or unclear naming |
+| Validation | Rejected records preserved with explicit `rejection_reason` values | Records silently dropped or reasons missing |
+| Observability | Run logs include counts, output paths, duration, and status | Sparse or missing logging |
+| Tests | `pytest -q` reports 2 passed; at least one edge case covered | Tests failing or absent |
+
+:::info[📌 Key takeaways]
+
+- A production-style pipeline separates configuration, extraction, transformation, loading, and orchestration.
+- With the sample input, 11 rows deduplicate to 10 and split into 5 valid and 5 rejected records.
+- Production pipelines are restartable, idempotent, observable, testable, and governed.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Keep raw, clean, rejected, and aggregated datasets separate.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Production pipelines should be restartable, idempotent, observable, testable, and governed.
+
+:::

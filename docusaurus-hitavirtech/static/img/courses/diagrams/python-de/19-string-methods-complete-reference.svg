@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 643 418" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="643" height="418" rx="12" fill="#f8f9fa"/>
+  <text x="321" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">String Methods — Complete Reference</text>
+  <rect x="15" y="40" width="271" height="30" rx="6" fill="#1a73e8"/>
+  <text x="150" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Method</text>
+  <rect x="291" y="40" width="258" height="30" rx="6" fill="#1a73e8"/>
+  <text x="420" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">What it does</text>
+  <rect x="555" y="40" width="73" height="30" rx="6" fill="#1a73e8"/>
+  <text x="591" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Returns</text>
+  <rect x="15" y="76" width="271" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">upper() / lower()</text>
+  <rect x="291" y="76" width="258" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="301" y="94" font-size="12" fill="#1a73e8">Change case to all upper / lower</text>
+  <rect x="555" y="76" width="73" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="565" y="94" font-size="12" fill="#1a73e8">new str</text>
+  <rect x="15" y="108" width="271" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">title() / capitalize()</text>
+  <rect x="291" y="108" width="258" height="28" rx="4" fill="white"/>
+  <text x="301" y="126" font-size="12" fill="#3c4043">Title Case / Sentence case</text>
+  <rect x="555" y="108" width="73" height="28" rx="4" fill="white"/>
+  <text x="565" y="126" font-size="12" fill="#3c4043">new str</text>
+  <rect x="15" y="140" width="271" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">strip() / lstrip() / rstrip()</text>
+  <rect x="291" y="140" width="258" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="301" y="158" font-size="12" fill="#1a73e8">Trim whitespace (both / left / right)</text>
+  <rect x="555" y="140" width="73" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="565" y="158" font-size="12" fill="#1a73e8">new str</text>
+  <rect x="15" y="172" width="271" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">replace(old, new)</text>
+  <rect x="291" y="172" width="258" height="28" rx="4" fill="white"/>
+  <text x="301" y="190" font-size="12" fill="#3c4043">Replace every old with new</text>
+  <rect x="555" y="172" width="73" height="28" rx="4" fill="white"/>
+  <text x="565" y="190" font-size="12" fill="#3c4043">new str</text>
+  <rect x="15" y="204" width="271" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">split(sep)</text>
+  <rect x="291" y="204" width="258" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="301" y="222" font-size="12" fill="#1a73e8">Break the text into a list of pieces</text>
+  <rect x="555" y="204" width="73" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="565" y="222" font-size="12" font-family="monospace" fill="#1a73e8">list</text>
+  <rect x="15" y="236" width="271" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">join(iterable)</text>
+  <rect x="291" y="236" width="258" height="28" rx="4" fill="white"/>
+  <text x="301" y="254" font-size="12" fill="#3c4043">Glue strings together with a separator</text>
+  <rect x="555" y="236" width="73" height="28" rx="4" fill="white"/>
+  <text x="565" y="254" font-size="12" fill="#3c4043">new str</text>
+  <rect x="15" y="268" width="271" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">find(sub)</text>
+  <rect x="291" y="268" width="258" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="301" y="286" font-size="12" fill="#1a73e8">Index of the first match, or -1</text>
+  <rect x="555" y="268" width="73" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="565" y="286" font-size="12" font-family="monospace" fill="#1a73e8">int</text>
+  <rect x="15" y="300" width="271" height="28" rx="4" fill="white"/>
+  <text x="25" y="318" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">count(sub)</text>
+  <rect x="291" y="300" width="258" height="28" rx="4" fill="white"/>
+  <text x="301" y="318" font-size="12" fill="#3c4043">How many times sub appears</text>
+  <rect x="555" y="300" width="73" height="28" rx="4" fill="white"/>
+  <text x="565" y="318" font-size="12" font-family="monospace" fill="#3c4043">int</text>
+  <rect x="15" y="332" width="271" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="350" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">startswith(s) / endswith(s)</text>
+  <rect x="291" y="332" width="258" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="301" y="350" font-size="12" fill="#1a73e8">Does it start / end with s?</text>
+  <rect x="555" y="332" width="73" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="565" y="350" font-size="12" font-family="monospace" fill="#1a73e8">bool</text>
+  <rect x="15" y="364" width="271" height="28" rx="4" fill="white"/>
+  <text x="25" y="382" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">isdigit() / isalpha() / isalnum()</text>
+  <rect x="291" y="364" width="258" height="28" rx="4" fill="white"/>
+  <text x="301" y="382" font-size="12" fill="#3c4043">Content checks (digits / letters / both)</text>
+  <rect x="555" y="364" width="73" height="28" rx="4" fill="white"/>
+  <text x="565" y="382" font-size="12" font-family="monospace" fill="#3c4043">bool</text>
+  <text x="321" y="412" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

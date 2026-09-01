@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 633 226" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="633" height="226" rx="12" fill="#f8f9fa"/>
+  <text x="316" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Naming Rules for Variables</text>
+  <rect x="15" y="40" width="228" height="30" rx="6" fill="#1a73e8"/>
+  <text x="129" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Rule</text>
+  <rect x="248" y="40" width="145" height="30" rx="6" fill="#1a73e8"/>
+  <text x="321" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Good</text>
+  <rect x="398" y="40" width="219" height="30" rx="6" fill="#1a73e8"/>
+  <text x="508" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Bad</text>
+  <rect x="15" y="76" width="228" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">Use lowercase with underscores</text>
+  <rect x="248" y="76" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="258" y="94" font-size="12" font-family="monospace" fill="#1a73e8">total_records</text>
+  <rect x="398" y="76" width="219" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="408" y="94" font-size="12" font-family="monospace" fill="#1a73e8">TotalRecords, totalrecords</text>
+  <rect x="15" y="108" width="228" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" fill="#3c4043">Start with a letter or underscore</text>
+  <rect x="248" y="108" width="145" height="28" rx="4" fill="white"/>
+  <text x="258" y="126" font-size="12" font-family="monospace" fill="#3c4043">_internal, count</text>
+  <rect x="398" y="108" width="219" height="28" rx="4" fill="white"/>
+  <text x="408" y="126" font-size="12" font-family="monospace" fill="#3c4043">1count, 2records</text>
+  <rect x="15" y="140" width="228" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">Be descriptive</text>
+  <rect x="248" y="140" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="258" y="158" font-size="12" font-family="monospace" fill="#1a73e8">customer_email</text>
+  <rect x="398" y="140" width="219" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="408" y="158" font-size="12" font-family="monospace" fill="#1a73e8">x, tmp, data1</text>
+  <rect x="15" y="172" width="228" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" fill="#3c4043">Avoid Python keywords</text>
+  <rect x="248" y="172" width="145" height="28" rx="4" fill="white"/>
+  <text x="258" y="190" font-size="12" font-family="monospace" fill="#3c4043">pipeline_class</text>
+  <rect x="398" y="172" width="219" height="28" rx="4" fill="white"/>
+  <text x="408" y="190" font-size="12" font-family="monospace" fill="#3c4043">class, if, def</text>
+  <text x="316" y="220" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

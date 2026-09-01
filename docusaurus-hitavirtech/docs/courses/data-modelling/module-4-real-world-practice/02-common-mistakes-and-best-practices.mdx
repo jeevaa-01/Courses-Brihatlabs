@@ -1,0 +1,67 @@
+---
+title: 'Common Mistakes and Best Practices'
+sidebar_position: 2
+description: 'The most frequent data modelling mistakes, professional naming conventions, and the grain-statement discipline that prevents bad models.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Recognize the most common data modelling mistakes before they ship
+- Apply consistent, professional naming conventions to warehouse objects
+- Write a one-sentence grain statement for every fact table
+
+</LearningObjectives>
+
+### Top Data Modelling Mistakes
+
+![Common Mistakes](/img/courses/diagrams/common-mistakes.svg)
+
+### Naming Conventions
+
+![Naming Conventions](/img/courses/diagrams/naming-conventions.svg)
+
+:::tip[HitaVir Tech Best Practice]
+"Document your grain statement for every fact table. Example: 'One row per product per order per day.' If you cannot state the grain in one sentence, your model needs work."
+:::
+
+<KeyTakeaways>
+
+- Most modelling failures trace back to an undeclared or fuzzy fact table grain
+- Consistent prefixes (fact_, dim_) and snake_case names keep warehouses navigable
+- Write the grain statement in one sentence and store it with the table documentation
+- If you cannot state the grain in one sentence, the model needs rework
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is a well-formed grain statement?',
+      options: [
+        '"This table is partitioned by date"',
+        '"This table has 42 columns"',
+        '"One row per product per order per day"',
+        '"This table joins to dim_customer"',
+      ],
+      answer: 2,
+      explanation:
+        'A grain statement says exactly what one row represents — entity, event, and time level — in a single sentence.',
+    },
+    {
+      question: 'Which table name follows standard warehouse naming conventions?',
+      options: [
+        'SalesData2026',
+        'fact_sales',
+        'tbl_SALES_final_v2',
+        'MyFactTable',
+      ],
+      answer: 1,
+      explanation:
+        'Standard conventions use lowercase snake_case with role prefixes: fact_ for facts, dim_ for dimensions.',
+    },
+  ]}
+/>
+
+<LessonComplete />

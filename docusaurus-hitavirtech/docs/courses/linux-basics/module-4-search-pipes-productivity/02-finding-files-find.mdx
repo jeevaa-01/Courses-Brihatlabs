@@ -1,0 +1,138 @@
+---
+title: 'Finding Files — find'
+sidebar_position: 2
+description: 'Locate files and directories by name, pattern, and type with find — and combine it with wc and grep.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Find files by name pattern with `find . -name` and `-iname`
+- Filter results to files or directories with `-type f` and `-type d`
+- Pipe find output into `wc -l` or `xargs grep`
+
+</LearningObjectives>
+
+`find` searches for files and directories by name, type, size, or age.
+
+### Find by Name
+
+```bash
+cd ~/hitavir-workspace
+find . -name "*.txt"
+```
+
+**Expected output:**
+
+```
+./docs/session-notes.txt
+./docs/output.txt
+./docs/file-listing.txt
+./docs/report.txt
+./docs/file1.txt
+./docs/file2.txt
+./docs/file3.txt
+./projects/api/requirements.txt
+```
+
+The `.` means "search from current directory". `*.txt` matches any file ending in `.txt`.
+
+### Find by Type
+
+Find only directories:
+
+```bash
+find . -type d
+```
+
+Find only files:
+
+```bash
+find . -type f
+```
+
+### Find by Name Pattern (Case Insensitive)
+
+```bash
+find . -iname "*.conf"
+```
+
+**Expected output:**
+
+```
+./config/settings.conf
+./config/settings.conf.backup
+./config/database.conf
+```
+
+### Find and Count
+
+```bash
+find . -type f | wc -l
+```
+
+This counts how many files exist in the workspace.
+
+### Find by Extension
+
+```bash
+find . -name "*.js"
+find . -name "*.py"
+find . -name "*.html"
+```
+
+### Find Quick Reference
+
+| Command | What It Finds |
+|---------|-------------|
+| `find . -name "*.txt"` | Files ending in .txt |
+| `find . -type d` | Directories only |
+| `find . -type f` | Files only |
+| `find . -iname "readme*"` | Case-insensitive name search |
+| `find . -name "*.log"` | Log files |
+
+**Real-world analogy:** `find` is like a search dog that you send into a building. You tell it what to look for (name, type, size), and it searches every room and reports back.
+
+:::tip[HitaVir Tech says]
+"find + grep is the ultimate combo. Use `find` to locate files, then `grep` to search inside them. Together, they can answer any question about your codebase."
+:::
+
+<KeyTakeaways>
+
+- `find . -name "*.txt"` searches from the current directory downwards
+- `-type d` limits results to directories, `-type f` to files, `-iname` ignores case
+- find locates files; grep searches inside them — together they answer anything about a codebase
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which command lists only directories under the current path?',
+      options: [
+        'find . -type f',
+        'ls -d',
+        'find . -type d',
+        'find . -name d',
+      ],
+      answer: 2,
+      explanation:
+        'The -type d test restricts find results to directories; -type f would restrict to regular files.',
+    },
+    {
+      question: 'What does the . mean in find . -name "*.log"?',
+      options: [
+        'Match hidden files only',
+        'Start searching from the current directory',
+        'The root of the drive',
+        'Match any single character',
+      ],
+      answer: 1,
+      explanation:
+        'The first argument to find is the starting point; . means "search from here down through all subdirectories".',
+    },
+  ]}
+/>
+
+<LessonComplete />

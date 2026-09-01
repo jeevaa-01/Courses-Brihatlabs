@@ -1,0 +1,114 @@
+---
+title: 'Putting It All Together'
+sidebar_position: 1
+description: 'The complete end-to-end AWS analytics architecture — all 5 Vs combined into one living stack from ingest to decisions.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Assemble the services from all five Vs into one end-to-end architecture
+- Trace data from ingest (Kinesis, crawlers) through S3, processing, and query to the value layer
+- Identify which V each layer of the stack addresses
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |         END-TO-END  AWS  ANALYTICS  STACK                    |
+  +==============================================================+
+```
+
+### The Full Cast — Every Service You Will See Below
+
+![Kinesis](/img/courses/aws-icons/kinesis-streams.png) ![Firehose](/img/courses/aws-icons/kinesis-firehose.png) ![S3](/img/courses/aws-icons/s3.png) ![Glue](/img/courses/aws-icons/glue.png) ![Athena](/img/courses/aws-icons/athena.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![EMR](/img/courses/aws-icons/emr.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png) ![QuickSight](/img/courses/aws-icons/quicksight.png) ![Bedrock](/img/courses/aws-icons/bedrock.png)
+
+All 5 Vs combined into one living architecture:
+
+```
+  INGEST  (Velocity + Variety Layers)
+  +---------------------------+    +---------------------------+
+  |  Kinesis Data Streams     |    |  Glue Crawlers            |
+  |  Kinesis Firehose         |    |  Rekognition / Textract   |
+  |  Lambda                   |    |  Transcribe / Comprehend  |
+  |  MSK (Kafka)              |    |  Translate                |
+  +-------------+-------------+    +-------------+-------------+
+                |                                |
+                +----------------+---------------+
+                                 |
+                                 v
+  STORE  (Volume Layer)
+  +----------------------------------------------------------+
+  |   Amazon S3  Data Lake  (raw  /  curated  /  analytics)  |
+  |   <------>  AWS Glue Data Catalog  (metadata)            |
+  +-----------------------------+----------------------------+
+                                |
+                                v
+  PROCESS + VERACITY
+  +----------------------------------------------------------+
+  |   Glue ETL  /  EMR  (transform)                          |
+  |   <---  Glue Data Quality  /  DataBrew  /  Lake Formation|
+  +-----------------------------+----------------------------+
+                                |
+                                v
+  QUERY
+  +------------+  +------------+  +------------+
+  |  Athena    |  |  Redshift  |  | SageMaker  |
+  |  (SQL)     |  |  (MPP SQL) |  |  (ML)      |
+  +------+-----+  +------+-----+  +------+-----+
+         |               |                |
+         +---------------+----------------+
+                         |
+                         v
+  VALUE LAYER
+  +----------------------------------------------------------+
+  |   QuickSight     |    Forecast                           |
+  |   Amazon Q (NL)  |    Personalize                        |
+  +-----------------------------+----------------------------+
+                                |
+                                v
+                 Decisions  -  Revenue  -  Growth
+```
+
+Every box maps to a V. Every arrow is a managed AWS service.
+
+<KeyTakeaways>
+
+- The full stack layers the Vs: ingest (Velocity + Variety) → store (Volume) → process (Veracity) → query → value
+- The S3 data lake plus Glue Data Catalog sits at the center — everything reads from and writes to it
+- Athena, Redshift, and SageMaker are parallel query/analysis engines over the same lake
+- The architecture ends where analytics starts mattering: decisions, revenue, growth
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In the end-to-end stack, what sits at the storage core that every engine reads from?',
+      options: [
+        'A DynamoDB table',
+        'The S3 data lake with the Glue Data Catalog',
+        'An EC2 file server',
+        'QuickSight SPICE',
+      ],
+      answer: 1,
+      explanation:
+        'S3 (raw / curated / analytics zones) plus the Glue Catalog is the hub; Athena, Redshift, EMR, and SageMaker all read from it.',
+    },
+    {
+      question: 'Which V does the PROCESS layer (Glue Data Quality, DataBrew, Lake Formation) primarily address?',
+      options: [
+        'Volume',
+        'Velocity',
+        'Veracity',
+        'Value',
+      ],
+      answer: 2,
+      explanation:
+        'Quality rules, cleaning, and governance are the trust layer — Veracity guarding the curated zone.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,182 @@
+---
+title: 'Branching — Create, Switch, Delete'
+sidebar_position: 1
+description: 'Work in parallel universes for your code — create, list, switch, and delete branches with git branch and git switch, plus naming conventions.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Create, list, switch to, and delete branches
+- Use `git switch -c` to create and switch in one command
+- Apply professional branch naming conventions
+
+</LearningObjectives>
+
+Branches are one of Git's most powerful features. They let you work on different things without affecting the main code.
+
+### What is a Branch?
+
+Think of a branch as a **parallel universe** for your code. You can experiment freely, and if things go wrong, your main branch is untouched.
+
+```
+main:       A --- B --- C
+                         \
+feature:                  D --- E
+```
+
+### Create a Branch
+
+```bash
+git branch feature-homepage
+```
+
+This creates a new branch but does **not** switch to it.
+
+### List All Branches
+
+```bash
+git branch
+```
+
+**Expected output:**
+
+```
+  feature-homepage
+* main
+```
+
+The `*` shows your current branch.
+
+### Switch to a Branch
+
+```bash
+git switch feature-homepage
+```
+
+**Expected output:**
+
+```
+Switched to branch 'feature-homepage'
+```
+
+### Shortcut: Create and Switch in One Command
+
+```bash
+git switch -c feature-contact
+```
+
+This creates `feature-contact` and switches to it immediately.
+
+### Make Changes on the Branch
+
+```bash
+git switch feature-homepage
+echo "<h1>Welcome to HitaVir Portfolio</h1>" > index.html
+git add index.html
+git commit -m "Add homepage HTML"
+```
+
+### Switch Back to Main
+
+```bash
+git switch main
+```
+
+Now check — `index.html` does **not** exist on main:
+
+```bash
+ls
+```
+
+**Expected output:**
+
+```
+README.md  about.txt  project.txt
+```
+
+The file only exists on the `feature-homepage` branch!
+
+### Delete a Branch
+
+First, switch away from the branch you want to delete:
+
+```bash
+git switch main
+git branch -d feature-contact
+```
+
+**Expected output:**
+
+```
+Deleted branch feature-contact (was a1b2c3d).
+```
+
+Use `-d` for safe delete (only if merged). Use `-D` to force delete.
+
+### Branch Naming Conventions
+
+| Pattern | Example | Use Case |
+|---------|---------|----------|
+| `feature/name` | `feature/login-page` | New features |
+| `bugfix/name` | `bugfix/header-alignment` | Bug fixes |
+| `hotfix/name` | `hotfix/security-patch` | Urgent production fixes |
+| `release/version` | `release/v2.0` | Release preparation |
+
+:::tip[HitaVir Tech says]
+"Branches are free in Git — they cost almost nothing. Use them generously. Never work directly on `main` in a team project."
+:::
+
+<KeyTakeaways>
+
+- A branch is a parallel line of development — experiments never touch `main`
+- `git switch -c <name>` creates a branch and switches to it in one step
+- Files committed on a branch do not exist on `main` until you merge
+- `git branch -d` is a safe delete (merged only); `-D` force-deletes
+- Use conventions like `feature/login-page` and `bugfix/header-alignment`
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which command creates a branch AND switches to it in one step?',
+      options: [
+        'git branch feature-x',
+        'git checkout feature-x',
+        'git switch -c feature-x',
+        'git merge feature-x',
+      ],
+      answer: 2,
+      explanation:
+        'git switch -c creates the branch and moves you onto it. Plain git branch only creates it without switching.',
+    },
+    {
+      question: 'You committed index.html on feature-homepage, then switched to main. Why is index.html missing?',
+      options: [
+        'Git deleted it permanently',
+        'The file only exists on the feature-homepage branch until it is merged',
+        'You forgot to push',
+        'main is read-only',
+      ],
+      answer: 1,
+      explanation:
+        'Each branch has its own snapshot of the project. Switching branches swaps your working directory to that branch’s state.',
+    },
+    {
+      question: 'What is the difference between git branch -d and git branch -D?',
+      options: [
+        '-d deletes locally, -D deletes on GitHub',
+        'There is no difference',
+        '-d deletes the branch history, -D keeps it',
+        '-d only deletes merged branches; -D force-deletes even unmerged ones',
+      ],
+      answer: 3,
+      explanation:
+        'Lowercase -d refuses to delete a branch with unmerged commits; uppercase -D deletes regardless, so use it with care.',
+    },
+  ]}
+/>
+
+<LessonComplete />

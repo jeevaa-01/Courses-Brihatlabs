@@ -1,0 +1,153 @@
+---
+title: 'Step 8 — Practice the Debugging Protocol'
+sidebar_position: 1
+description: 'Trigger five intentional errors — path, permission, command, argument, and context — and classify each with the 7-step debugging protocol.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Trigger five intentional errors in a safe environment
+- Classify each error by type and identify its fix
+- Rewire your reaction to errors from fear to curiosity, and log the drills in your debug log
+
+</LearningObjectives>
+
+### Step Objective
+
+Trigger intentional errors and practice the 7-step debugging protocol on each one.
+
+### Commands
+
+```bash
+cd ~/hitavir-learning-system
+
+# ERROR DRILL 1: File not found
+cat this-file-does-not-exist.txt
+# STOP → READ the error → CLASSIFY it → What type is this?
+
+# ERROR DRILL 2: Permission denied
+touch /root/unauthorized-file.txt
+# STOP → READ the error → CLASSIFY it → What type is this?
+
+# ERROR DRILL 3: Command not found
+databrickzz --version
+# STOP → READ the error → CLASSIFY it → What is the fix?
+
+# ERROR DRILL 4: Invalid argument
+mkdir ""
+# STOP → READ the error → CLASSIFY it → What went wrong?
+
+# ERROR DRILL 5: Git error (if not in repo)
+cd /tmp && git log
+# STOP → READ the error → CLASSIFY it → What is the fix?
+
+# Return to your learning system
+cd ~/hitavir-learning-system
+```
+
+### Why This Step Matters
+
+**"Heat and cold, pleasure and pain come and go — they are fleeting. Endure them bravely."** *(Bhagavad Gita 2.14)* — Most learners freeze when they see an error. This drill rewires your response. After practicing intentional errors, you will read error messages with curiosity instead of fear. Production engineers encounter dozens of errors daily — the difference is they read them calmly and fix them systematically.
+
+### Expected Output
+
+```
+# Drill 1 — File not found:
+cat: this-file-does-not-exist.txt: No such file or directory
+  → Type: PATH ERROR | Fix: Check filename and current directory
+
+# Drill 2 — Permission denied:
+touch: cannot touch '/root/unauthorized-file.txt': Permission denied
+  → Type: PERMISSION ERROR | Fix: Use accessible path or check permissions
+
+# Drill 3 — Command not found:
+bash: databrickzz: command not found
+  → Type: COMMAND ERROR | Fix: Check spelling, verify installation
+
+# Drill 4 — Invalid argument:
+mkdir: cannot create directory '': No such file or directory
+  → Type: ARGUMENT ERROR | Fix: Provide a valid directory name
+
+# Drill 5 — Not a git repo:
+fatal: not a git repository (or any of the parent directories): .git
+  → Type: CONTEXT ERROR | Fix: Navigate to a git repository first
+```
+
+### Common Errors and Fixes
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Drill 2 does not error | Running as root | Use a non-root user or try a different protected path |
+| Drill 5 works (no error) | /tmp is a git repo | Use a different non-git directory |
+
+### Checkpoint
+
+```
+Verify before moving on:
+  [x] You triggered all 5 errors
+  [x] You classified each error by type
+  [x] You identified the fix for each
+  [x] You added at least 2 entries to your debug log
+```
+
+**Now update your debug log with the errors you just practiced:**
+
+```bash
+# Add your drill results to the debug log
+echo "| $(date +%Y-%m-%d) | Learning System | cat: No such file | Path | Wrong filename | Check spelling and pwd |" >> ~/hitavir-learning-system/debug-log/errors-and-fixes.md
+echo "| $(date +%Y-%m-%d) | Learning System | Permission denied | Permission | No write access | Use home directory |" >> ~/hitavir-learning-system/debug-log/errors-and-fixes.md
+```
+
+<KeyTakeaways>
+
+- Intentional error drills rewire your response: curiosity instead of fear
+- Each drill maps to a classification: path, permission, command, argument, and context errors
+- Production engineers hit dozens of errors daily — the difference is they read them calmly and fix them systematically
+- Every drill ends the same way: add the error and its fix to your debug log
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: '"bash: databrickzz: command not found" — what error type is this, and what is the first fix?',
+      options: [
+        'Permission error — run with sudo',
+        'Path error — cd to the right directory',
+        'Command error — check the spelling and verify the tool is installed',
+        'Context error — navigate to a git repository',
+      ],
+      answer: 2,
+      explanation:
+        'The shell cannot find an executable named databrickzz. Check spelling (databricks) and installation before anything else.',
+    },
+    {
+      question: 'Running "git log" in /tmp prints "fatal: not a git repository". How is this classified in the drill?',
+      options: [
+        'A context error — the command is valid but you are in the wrong place',
+        'A syntax error in the git command',
+        'A permission error on /tmp',
+        'A data error in the git history',
+      ],
+      answer: 0,
+      explanation:
+        'Nothing is broken — git log simply requires being inside a repository. Navigate to one and it works.',
+    },
+    {
+      question: 'Why does this lesson make you trigger errors ON PURPOSE?',
+      options: [
+        'To test whether your terminal is installed correctly',
+        'To fill your debug log as fast as possible',
+        'Because the errors delete temporary files',
+        'So you practice reading errors calmly before real ones happen under pressure',
+      ],
+      answer: 3,
+      explanation:
+        'Most learners freeze at errors. Practicing on harmless ones builds the calm, systematic response production work demands.',
+    },
+  ]}
+/>
+
+<LessonComplete />

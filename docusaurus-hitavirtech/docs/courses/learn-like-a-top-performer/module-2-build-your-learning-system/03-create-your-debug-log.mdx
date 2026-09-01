@@ -1,0 +1,110 @@
+---
+title: 'Step 3 — Create Your Debug Log'
+sidebar_position: 3
+description: 'Create a structured error database (errors-and-fixes.md) that turns every bug you hit into a searchable, reusable fix.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Create `debug-log/errors-and-fixes.md` with a structured error table
+- Understand how a personal error database mirrors production runbooks
+- Adopt the habit of logging every error with its type, root cause, and fix
+
+</LearningObjectives>
+
+### Step Objective
+
+Create a structured error database that you will maintain throughout the entire program.
+
+### Commands
+
+```bash
+cat > ~/hitavir-learning-system/debug-log/errors-and-fixes.md << 'DEBUGLOG'
+# Debug Log — Error Database
+
+### How to Use This Log
+After every error you encounter, add a row to the table below.
+Review this log weekly to identify patterns in your mistakes.
+
+### Error Log
+| Date | Codelab | Error Message | Type | Root Cause | Fix Applied |
+|------|---------|--------------|------|------------|-------------|
+| 2026-04-14 | Learning System | (example) Permission denied | Permission | No write access | Used home directory |
+
+### Patterns I Notice
+- (Update weekly: what types of errors do I hit most often?)
+
+### Key Debugging Lessons
+- Always read the ENTIRE error message before searching online
+- Change ONE thing at a time when debugging
+- Document the fix immediately — future you will thank present you
+DEBUGLOG
+
+# Verify
+cat ~/hitavir-learning-system/debug-log/errors-and-fixes.md
+```
+
+### Why This Step Matters
+
+**"Yield not to faint-heartedness — it does not become you. Cast off this weakness and arise."** *(Bhagavad Gita 2.3)* — The same error will try to beat you twice. Your debug log ensures it never wins a second time. Production engineers maintain runbooks for exactly this reason — a catalog of known issues and their fixes that turns hours of debugging into minutes.
+
+### Expected Output
+
+The full debug log template should display with the header, table format, and sections.
+
+### Common Errors and Fixes
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `bash: syntax error near unexpected token` | Heredoc delimiter not on its own line | Ensure `DEBUGLOG` closing tag has no leading spaces |
+| File appears empty | Heredoc syntax error | Check matching opening/closing tags |
+
+### Checkpoint
+
+```
+Verify before moving on:
+  [x] errors-and-fixes.md exists in debug-log/
+  [x] File contains the table header and example row
+  [x] You understand the 7-step debugging protocol
+```
+
+<KeyTakeaways>
+
+- The debug log is your personal runbook: date, codelab, error, type, root cause, fix — one row per error
+- Review the log weekly to spot patterns in your mistakes
+- Document the fix immediately — future you will thank present you
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What production artifact does the personal debug log mirror?',
+      options: [
+        'A sprint backlog',
+        'A runbook — a catalog of known issues and their fixes',
+        'A CI/CD pipeline definition',
+        'An architecture decision record',
+      ],
+      answer: 1,
+      explanation:
+        'Production engineers maintain runbooks so known issues take minutes, not hours. Your debug log serves the same purpose.',
+    },
+    {
+      question: 'Your heredoc command produced an empty file. What is the most likely cause?',
+      options: [
+        'The disk is full',
+        'Markdown files cannot be created from the terminal',
+        'A heredoc syntax error — e.g. the closing DEBUGLOG tag has leading spaces or does not match',
+        'Git blocked the write',
+      ],
+      answer: 2,
+      explanation:
+        'Heredocs require the closing delimiter alone on its own line with no leading whitespace, matching the opening tag exactly.',
+    },
+  ]}
+/>
+
+<LessonComplete />

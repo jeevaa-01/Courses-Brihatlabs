@@ -1,0 +1,151 @@
+---
+title: "Course Overview"
+description: "PySpark for Data Engineering \u2014 a HitaVir Tech Coursera-style course on Databricks Free Edition"
+tags: [overview]
+---
+
+# PySpark for Data Engineering
+
+> **Instructor:** HitaVir Tech · **Environment:** Databricks Free Edition (serverless) with optional local Windows setup · **Estimated total:** 25–30 hours
+
+This hands-on course takes you from zero PySpark knowledge through intermediate and advanced Data Engineering practices.
+
+You will work primarily in Databricks Free Edition notebooks, with an optional local Windows setup (Java, Python, Apache Spark, PySpark, and Visual Studio Code) for offline development. You will learn Spark architecture, DataFrames, schemas, transformations, joins, aggregations, window functions, file formats, partitioning, caching, optimization, logging, testing, and production project structure.
+
+The course is hands-on and scenario-based, organized Coursera-style into six modules with per-section learning objectives, knowledge checks, key takeaways, module discussion prompts, a peer-review-style capstone, and a graded final quiz. Every major section includes:
+
+- Learning objectives
+- Clear explanations
+- Databricks-ready notebook code (with Windows-compatible local commands where relevant)
+- Fully executable PySpark code
+- Expected outputs
+- ✅ Checkpoints
+- 🛠️ Exercises
+- Knowledge checks with answer feedback
+- Key takeaways
+- 💡 HitaVir Tech Tips
+- 🚀 Pro Tips
+
+The [capstone project](/courses/pyspark/module-5-capstone-and-testing/data-engineering-mini-project) builds a production-style sales pipeline for HitaVir Tech.
+
+## What you'll learn
+
+By the end of this course, you will be able to:
+
+- Explain Apache Spark and PySpark architecture.
+- Run PySpark in Databricks Free Edition, and optionally install and configure PySpark on Windows.
+- Create and manage a `SparkSession`.
+- Build DataFrames from CSV, JSON, Python objects, and explicit schemas.
+- Use transformations and actions.
+- Filter, select, rename, cast, and derive columns.
+- Handle nulls, duplicates, bad records, and schema drift.
+- Aggregate and group large datasets.
+- Join DataFrames using multiple join strategies.
+- Use window functions for rankings and running totals.
+- Read and write CSV, JSON, and Parquet.
+- Partition data for scalable processing.
+- Understand lazy evaluation and Spark execution plans.
+- Use caching and persistence appropriately.
+- Optimize shuffles, joins, partitions, and file sizes.
+- Build reusable ETL modules.
+- Add logging, validation, and exception handling.
+- Test PySpark transformations with `pytest`.
+- Build a production-style sales data pipeline.
+- Prepare for Databricks, Delta Lake, Airflow, and cloud platforms.
+
+## What you'll build
+
+You will build a distributed batch pipeline for **HitaVir Tech**.
+
+The pipeline will:
+
+1. Read raw sales CSV files.
+2. Apply an explicit schema.
+3. Validate required fields.
+4. Standardize dates, regions, and product names.
+5. Clean null and invalid records.
+6. Remove duplicate transactions.
+7. Calculate revenue and business metrics.
+8. Join sales with product master data.
+9. Generate regional and product summaries.
+10. Use window functions for rankings.
+11. Write clean data and reports in Parquet and CSV.
+12. Partition output by region.
+13. Log pipeline status and row counts.
+14. Include automated tests.
+
+Final project structure:
+
+```text
+hitavir-pyspark-sales-pipeline/
+│
+├── data/
+│   ├── raw/
+│   │   ├── sales.csv
+│   │   └── products.csv
+│   ├── rejected/
+│   └── processed/
+│       ├── clean_sales/
+│       ├── regional_summary/
+│       └── product_summary/
+│
+├── logs/
+│   └── pipeline.log
+│
+├── src/
+│   ├── __init__.py
+│   ├── config.py
+│   ├── spark_session.py
+│   ├── schemas.py
+│   ├── extract.py
+│   ├── transform.py
+│   ├── load.py
+│   └── pipeline.py
+│
+├── tests/
+│   ├── conftest.py
+│   └── test_transform.py
+│
+├── .gitignore
+├── README.md
+└── requirements.txt
+```
+
+## How this course works
+
+This course follows a Coursera-style learning path: six modules, each combining concept explanations, hands-on code, practice activities, and assessment.
+
+### Module map
+
+| Module | Sections | Focus |
+|---|---|---|
+| 1. Foundations of Spark and PySpark | Setup, 1–4 | Architecture, environments, sessions, schemas |
+| 2. Core Data Handling | 5–8 | Reading data, transformations, cleaning, aggregations |
+| 3. Advanced Data Engineering Patterns | 9–12 | Joins, window functions, Spark SQL, partitioned writes |
+| 4. Spark Internals and Performance | 13–16 | Execution plans, caching, optimization, observability |
+| 5. Capstone Project and Testing | 17–18 | Production-style pipeline and pytest |
+| 6. Production and Ecosystem | 19–25 | Debugging, best practices, Delta Lake, Airflow, final quiz |
+
+### Learning rhythm in every section
+
+1. **Learning objectives** — what you will be able to do.
+2. **Concept and hands-on code** — explanation followed by executable examples.
+3. **✅ Checkpoint** — confirm your environment produced the expected result.
+4. **🛠️ Exercise** — an ungraded hands-on lab with a solution.
+5. **Knowledge check** — two quick self-test questions with answer feedback.
+6. **Key takeaways** — the ideas to retain.
+7. **💡 Tips and 🚀 Pro Tips** — HitaVir Tech field experience.
+
+### Assessment structure
+
+- **Knowledge checks** — ungraded practice after each section.
+- **🛠️ Exercises** — hands-on labs; compare with the provided solutions.
+- **[Capstone project](/courses/pyspark/module-5-capstone-and-testing/data-engineering-mini-project)** — a peer-review-style project with a rubric. Exchange reviews with a cohort peer if you are learning in a group.
+- **[Final quiz](/courses/pyspark/module-6-production-and-ecosystem/final-quiz)** — the graded assessment; aim for at least 20 of 25.
+- **Discussion prompts** — at the end of each module, share and compare answers in your cohort channel or forum.
+
+:::tip[💡 HitaVir Tech Tip]
+
+Do not skip the knowledge checks even when a section feels easy — retrieval practice is what moves concepts into long-term memory.
+
+:::

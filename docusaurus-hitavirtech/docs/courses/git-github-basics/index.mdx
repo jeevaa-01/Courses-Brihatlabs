@@ -1,0 +1,112 @@
+---
+title: About this course
+sidebar_position: 0
+slug: /courses/git-github-basics
+description: Learn Git and GitHub from absolute zero using Git Bash on Windows — repositories, commits, branches, merging, remotes, and a real-world DevOps workflow.
+---
+
+# Git and GitHub Basics with Git Bash Command Line
+
+**Instructor:** HitaVir Tech · **Level:** Beginner · **Estimated total:** ~2 hours 10 minutes · **6 modules · 19 lessons**
+
+Welcome to **Git and GitHub Basics with Git Bash Command Line** by **HitaVirTech**!
+This hands-on course teaches you Git and GitHub from absolute zero using
+**Git Bash on Windows**. Whether you are in Data Engineering, Data Analytics,
+or AI — Git is a skill you cannot skip.
+
+<LearningObjectives>
+
+- Create and manage a Git repository from scratch with add, commit, status, and log
+- Work safely on branches and merge them back — including resolving conflicts
+- Connect a local repository to GitHub and master push, pull, and clone
+- Practice the real-world feature-branch workflow used by professional teams
+- Build a complete portfolio mini project: the HitaVir Tech Learning Repo
+
+</LearningObjectives>
+
+## What is Git?
+
+**Git** is a **version control system** that tracks changes to your files over time. It is like a time machine for your code.
+
+```
+Without Git:
+  project_final.py
+  project_final_v2.py
+  project_final_REAL_final.py
+  project_final_REAL_final_v3_fixed.py    ← Chaos!
+
+With Git:
+  project.py  (Git tracks every version internally)
+  → commit 1: "Initial project setup"
+  → commit 2: "Add data pipeline logic"
+  → commit 3: "Fix bug in ETL process"
+  → commit 4: "Add unit tests"              ← Clean!
+```
+
+## What is GitHub?
+
+**GitHub** is a cloud platform that hosts your Git repositories online. Think of it this way:
+
+| Git | GitHub |
+|-----|--------|
+| Tool on your computer | Website in the cloud |
+| Tracks changes locally | Stores code online |
+| Works offline | Requires internet |
+| Command line tool | Web interface + collaboration |
+
+## Why Git is Essential in Data Engineering and AI
+
+1. **Data Pipelines** — track changes to ETL scripts, DAGs, and configs
+2. **ML Models** — version your training scripts, notebooks, and parameters
+3. **Team Collaboration** — multiple data engineers working on the same pipeline
+4. **CI/CD** — automate testing and deployment of data applications
+5. **Portfolio** — GitHub is your resume in tech
+
+## The Git Workflow — Big Picture
+
+```
+  You write code
+       │
+       ▼
+  ┌──────────┐    git add     ┌──────────┐   git commit   ┌──────────┐
+  │ Working  │ ──────────────▶│ Staging  │ ──────────────▶│  Local   │
+  │Directory │               │  Area    │               │   Repo   │
+  └──────────┘               └──────────┘               └──────────┘
+                                                              │
+                                                         git push
+                                                              │
+                                                              ▼
+                                                        ┌──────────┐
+                                                        │  GitHub  │
+                                                        │ (Remote) │
+                                                        └──────────┘
+```
+
+## Prerequisites
+
+- A computer running **Windows 10 or 11**
+- A free **GitHub account** — [sign up here](https://github.com/join)
+- A text editor (VS Code recommended — [download here](https://code.visualstudio.com/))
+- **Zero prior Git experience needed** — we start from the very beginning
+
+## Syllabus
+
+| Module | Lessons | Time |
+|--------|---------|------|
+| **1 · Getting Started** | Prerequisites · Setup Git Bash | ~11 min |
+| **2 · Core Git Workflow** | First repository · add/commit/status · Multiple files · Log & history | ~28 min |
+| **3 · Branching & Merging** | Branching · Merge branches | ~18 min |
+| **4 · GitHub & Remotes** | GitHub integration · Push & pull · Clone | ~20 min |
+| **5 · Real-World Git** | Workflow simulation · Best practices · Common mistakes · Mini project | ~40 min |
+| **6 · Wrap Up** | Command cheat sheet · Final quiz · Next steps · Congratulations | ~13 min |
+
+:::tip[How to take this course]
+Work through the lessons **in order** — every lesson builds on the repository
+you create in Module 2, and the mini project uses everything that came before
+it. Each lesson ends with a short knowledge check and a **Mark lesson as
+complete** button so you can track where you left off.
+:::
+
+> **HitaVir Tech says:** "Git is not optional in tech. It is like electricity — everything runs on it. Master it now, and you will thank yourself for the rest of your career."
+
+Ready? Start with [Prerequisites](/courses/git-github-basics/module-1-getting-started/prerequisites).

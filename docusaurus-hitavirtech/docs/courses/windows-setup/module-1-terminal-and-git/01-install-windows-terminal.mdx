@@ -1,0 +1,84 @@
+---
+title: 'Install Windows Terminal'
+sidebar_position: 1
+description: 'Install Windows Terminal from the Microsoft Store and set it as your default terminal.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Install Windows Terminal from the Microsoft Store or winget
+- Set it as the default terminal application on Windows 11
+
+</LearningObjectives>
+
+**Windows Terminal** gives you a modern, tabbed terminal with Git Bash, PowerShell, and CMD all in one place.
+
+### Step 1 - Open Microsoft Store
+
+Press `Win + S`, type **Microsoft Store**, and open it.
+
+### Step 2 - Search and Install
+
+Search for **Windows Terminal** and click **Install**.
+
+Alternatively, open **PowerShell as Administrator** and run:
+
+```powershell
+winget install Microsoft.WindowsTerminal
+```
+
+### Step 3 - Set as Default Terminal
+
+1. Open Windows Terminal
+2. Click the **dropdown arrow** next to the + tab button
+3. Go to **Settings > Startup**
+4. Set **Default terminal application** to **Windows Terminal**
+5. Click **Save**
+
+### Verify
+
+```powershell
+wt --version
+# Windows Terminal v1.19.x
+```
+
+<KeyTakeaways>
+
+- Windows Terminal hosts Git Bash, PowerShell, and CMD in one tabbed window
+- `winget install Microsoft.WindowsTerminal` is the fastest install path
+- Set it as the **default terminal application** so every shell opens in it
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which command installs Windows Terminal from the command line?',
+      options: [
+        'winget install Microsoft.WindowsTerminal',
+        'apt install windows-terminal',
+        'pip install windows-terminal',
+        'choco install ms-terminal',
+      ],
+      answer: 0,
+      explanation:
+        'winget is the built-in Windows package manager; the Microsoft Store GUI works too.',
+    },
+    {
+      question: 'Where do you set Windows Terminal as the default terminal application?',
+      options: [
+        'Settings > Startup inside Windows Terminal',
+        'Control Panel > Programs',
+        'Task Manager > Startup tab',
+        'It is always the default after install',
+      ],
+      answer: 0,
+      explanation:
+        'Open the dropdown next to the + tab button, go to Settings > Startup, and choose Windows Terminal as the default.',
+    },
+  ]}
+/>
+
+<LessonComplete />

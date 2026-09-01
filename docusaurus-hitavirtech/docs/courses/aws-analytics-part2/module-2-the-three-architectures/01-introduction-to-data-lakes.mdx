@@ -1,0 +1,203 @@
+---
+title: 'Introduction to Data Lakes'
+sidebar_position: 1
+description: 'What a data lake is, why lakes emerged, the medallion zones, the AWS lake service stack, and how lakes turn into swamps.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Define a data lake and explain schema-on-read vs schema-on-write
+- Describe the medallion zones (raw, curated, analytics) and who reads each
+- Map the AWS data lake service stack: S3, Lake Formation, Glue, Athena
+- Explain how an ungoverned lake degenerates into a data swamp
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              ARCHITECTURE  1   -   DATA  LAKE                |
+  |              "Store first, schema later."                    |
+  +==============================================================+
+```
+
+![S3](/img/courses/aws-icons/s3.png) ![Lake Formation](/img/courses/aws-icons/lake-formation.png) ![Glue Catalog](/img/courses/aws-icons/glue-catalog.png)
+
+### What is a Data Lake?
+
+🪣 A **data lake** is a centralized repository that stores **any type of data** — structured, semi-structured, unstructured — **at any scale**, in its **native format**, typically on cheap object storage like Amazon S3.
+
+The defining move: you **ingest now** and **decide the schema later** (called *schema-on-read*). Contrast with warehouses, which demand *schema-on-write*.
+
+### Data Lake — The Core Idea
+
+```
+  +------------------------------------------------------------+
+  |                                                            |
+  |   ANY DATA  --->   S3 (object store)   --->  ANY ENGINE    |
+  |                                                            |
+  |   CSV, JSON,        cheap, durable,         Athena,        |
+  |   Parquet, logs,    infinite scale,         Redshift,      |
+  |   images, PDFs,     one source of truth     EMR,           |
+  |   Kafka events                              SageMaker      |
+  |                                                            |
+  +------------------------------------------------------------+
+```
+
+One lake. Many engines. That is the core promise.
+
+### Why Data Lakes Emerged
+
+Before ~2010, analytics meant **warehouses** — expensive, schema-strict, row-limited. Then data exploded:
+
+| Problem With Warehouse-Only World | Who Felt It |
+|-----------------------------------|-------------|
+| 💸 Warehouse storage cost $1000s / TB / month | Every CFO |
+| 🚫 Could not store PDFs, images, videos | Healthcare, retail, media |
+| 🐢 Schema changes took weeks | Fast-moving startups |
+| ⛔ Historical data deleted to save cost | Regulated industries |
+
+Data lakes fixed this by leveraging **cheap object storage** (S3 at ~$0.023 / GB / month) and **decoupling compute from storage**.
+
+### Data Lake Zones — The Medallion Pattern
+
+```
+  s3://hitavirtech-lake/
+    |
+    +-- raw/          <--  BRONZE:  untouched, as ingested
+    |                      + source of truth
+    |                      + can replay anything from here
+    |
+    +-- curated/      <--  SILVER:  cleaned, typed, Parquet
+    |                      + deduped, quality-checked
+    |                      + partitioned for fast scans
+    |
+    +-- analytics/    <--  GOLD:    pre-aggregated, BI-ready
+                           + joins done once
+                           + powers dashboards and ML features
+```
+
+| Zone | Icon | Shape | Readers |
+|------|:---:|-------|---------|
+| **Raw / Bronze** | 🥉 | Original bytes — CSV, JSON, images, dumps | Data engineers only |
+| **Curated / Silver** | 🥈 | Cleaned, typed, often Parquet + partitions | Analysts, ML engineers |
+| **Analytics / Gold** | 🥇 | Aggregated, ready for dashboards and models | Business users, BI tools |
+
+### Data Lake on AWS — The Service Stack
+
+![S3](/img/courses/aws-icons/s3.png) ![Lake Formation](/img/courses/aws-icons/lake-formation.png) ![Glue](/img/courses/aws-icons/glue.png) ![Glue Catalog](/img/courses/aws-icons/glue-catalog.png) ![Athena](/img/courses/aws-icons/athena.png)
+
+| Layer | Icon | Purpose | Service |
+|-------|:---:|---------|---------|
+| **Storage** | 🪣 | Raw bytes, infinite scale | Amazon S3 |
+| **Governance** | 🔐 | Permissions, row/column security | AWS Lake Formation |
+| **Cataloging** | 📚 | Schema + partitions metadata | AWS Glue Data Catalog |
+| **ETL** | 🕸️ | Move raw → curated → analytics | AWS Glue ETL, EMR |
+| **Query** | 🔍 | SQL on lake files | Amazon Athena |
+| **ML** | 🤖 | Train on lake data directly | Amazon SageMaker |
+
+### Service Spotlight — AWS Lake Formation
+
+![Lake Formation](/img/courses/aws-icons/lake-formation.png)
+
+```
+  +--------------------------------------------------------------+
+  |  AWS  LAKE  FORMATION  -  Governance for S3 Data Lakes       |
+  +--------------------------------------------------------------+
+  |  Permissions :  Table / column / row-level grants            |
+  |  Discovery   :  Blueprint ingestion from DBs, logs           |
+  |  Auditing    :  Every access logged to CloudTrail            |
+  |  Catalog     :  Wraps the Glue Data Catalog with RBAC        |
+  |                                                              |
+  |  Turns a raw S3 bucket into a governed, multi-tenant lake.   |
+  +--------------------------------------------------------------+
+```
+
+Lake Formation is what lets **one S3 bucket serve 20 teams** without everyone seeing everyone else's columns.
+
+### Data Lake Strengths and Weaknesses
+
+| Strength | Icon | Weakness | Icon |
+|----------|:---:|----------|:---:|
+| Cheap per GB | 💰 | Can become a "data swamp" without governance | 🐊 |
+| Any format | 🧩 | Query performance \< a warehouse on the same data | 🐢 |
+| Separates storage and compute | 🔀 | Schema enforcement is optional (and often skipped) | 🫥 |
+| Multi-engine access (Athena, Spark, Redshift, ML) | 🌐 | Harder for business users to self-serve | 😵 |
+
+### The Data Swamp — How Lakes Fail
+
+```
+  +--------------------------------------------------------------+
+  |                                                              |
+  |   NO CATALOG         ->  "Which bucket has customers?"       |
+  |   NO QUALITY RULES   ->  "Why are 40% of amounts negative?"  |
+  |   NO GOVERNANCE      ->  "Who deleted last quarter's data?"  |
+  |   NO LIFECYCLE       ->  "We're paying for 2014 clickstream" |
+  |                                                              |
+  |             ==>  DATA SWAMP  (useless, expensive)            |
+  +--------------------------------------------------------------+
+```
+
+Every successful data lake is paired with **Glue Catalog + Lake Formation + quality rules + lifecycle policies**. Skip these and your lake drowns.
+
+:::tip[HitaVir Tech says]
+"A data lake without a catalog is a data swamp. A data lake without quality rules is a liability. Governance is not optional — it is the difference between an asset and a landfill."
+:::
+
+:::tip[Data lake in one line]
+Store everything cheaply, govern it strictly, query it from any engine.
+:::
+
+<KeyTakeaways>
+
+- A data lake stores any data, at any scale, in native format — schema is decided at read time
+- The medallion pattern (raw → curated → analytics) gives each audience the right zone
+- On AWS the lake stack is S3 (storage) + Lake Formation (governance) + Glue Catalog (metadata) + Athena (query)
+- Lakes are cheap and flexible but slower to query than warehouses and easy to leave ungoverned
+- No catalog + no quality rules + no governance = data swamp
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What does "schema-on-read" mean for a data lake?',
+      options: [
+        'Every file must match a schema before it can be stored',
+        'The schema is applied at query time — you ingest first, decide structure later',
+        'Only schemaless formats like images can be stored',
+        'The schema is read from a warehouse',
+      ],
+      answer: 1,
+      explanation:
+        'Lakes ingest data in native format and apply structure when an engine reads it — the opposite of a warehouse’s schema-on-write.',
+    },
+    {
+      question: 'In the medallion pattern, who typically reads the raw (Bronze) zone?',
+      options: [
+        'Business users through BI dashboards',
+        'Analysts writing ad-hoc SQL',
+        'Data engineers only',
+        'External partners',
+      ],
+      answer: 2,
+      explanation:
+        'Raw holds untouched source-of-truth bytes. Analysts work from curated (Silver); business users get analytics (Gold).',
+    },
+    {
+      question: 'Which service enforces column- and row-level permissions on an S3 data lake?',
+      options: [
+        'Amazon Athena',
+        'AWS Glue ETL',
+        'Amazon Macie',
+        'AWS Lake Formation',
+      ],
+      answer: 3,
+      explanation:
+        'Lake Formation wraps the Glue Catalog with fine-grained RBAC, letting one bucket safely serve many teams.',
+    },
+  ]}
+/>
+
+<LessonComplete />

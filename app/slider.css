@@ -1,0 +1,21 @@
+/* Accessible horizontal catalog slider. */
+.responsive-slider{position:relative;min-width:0;max-width:100%;overflow:hidden}
+.responsive-slider-controls{display:flex;justify-content:flex-end;gap:7px;margin:0 0 10px}
+.responsive-slider-controls button{display:grid;place-items:center;width:32px;height:32px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--muted);cursor:pointer}
+.responsive-slider-controls button:disabled{opacity:.34;cursor:not-allowed}
+.responsive-slider-viewport{display:flex;gap:14px;max-width:100%;padding:4px 2px 13px;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x mandatory;scrollbar-color:rgba(154,140,255,.55) transparent;scrollbar-width:thin;overscroll-behavior-x:contain;cursor:grab;touch-action:pan-y;user-select:none}
+.responsive-slider-viewport:active{cursor:grabbing}
+.responsive-slider-viewport:focus-visible{outline:2px solid var(--brand);outline-offset:4px}
+.responsive-slider-item{display:flex;flex:0 0 min(360px,calc((100% - 28px)/3));min-width:0;scroll-snap-align:start}
+.responsive-slider-item>*{width:100%}
+.course-catalog-slider .course-catalog-slide{flex-basis:calc((100% - 28px)/3)}
+.course-catalog-slide .catalog-card{min-height:0;border-radius:16px}
+.course-catalog-slide .catalog-art{height:112px}
+.course-catalog-slide .catalog-body{padding:18px}
+.course-catalog-slide .catalog-body h2{min-height:0;margin:11px 0 7px;font-size:18px}
+.course-catalog-slide .catalog-body>p{min-height:0;font-size:11px;line-height:1.5}
+.course-catalog-slide .catalog-meta{grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;font-size:10px}
+.course-catalog-slide .course-tags{gap:5px}
+.course-catalog-slide .course-card-cta{min-height:38px;font-size:10px}
+@media(max-width:1050px){.course-catalog-slider .course-catalog-slide{flex-basis:calc((100% - 14px)/2)}}
+@media(max-width:700px){.responsive-slider-controls{margin-bottom:8px}.responsive-slider-viewport{gap:10px;padding-bottom:10px}.responsive-slider-item,.course-catalog-slider .course-catalog-slide{flex-basis:min(86vw,360px)}}

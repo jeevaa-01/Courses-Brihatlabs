@@ -1,0 +1,96 @@
+---
+title: 'Cleanup'
+sidebar_position: 4
+description: 'Nothing to delete — keep your entire learning system, push it to GitHub, and build the post-codelab cleanup habit.'
+---
+
+<DurationBadge minutes={1} />
+
+<LearningObjectives>
+
+- Keep (not delete) every file of your learning system and push it to GitHub
+- Adopt the 7-point post-codelab cleanup habit for all future labs
+
+</LearningObjectives>
+
+This codelab creates only local files and a Git repository. No cloud resources to clean up.
+
+### What to Keep (Everything)
+
+```
+KEEP your entire learning system:
+  ~/hitavir-learning-system/             <-- This is your knowledge base
+    README.md
+    journal/week-01.md
+    debug-log/errors-and-fixes.md
+    notes/topic-notes-template.md
+    challenges/rebuild-tracker.md
+    interview-prep/questions-bank.md
+```
+
+### Push to GitHub
+
+```bash
+cd ~/hitavir-learning-system
+git add .
+git commit -m "docs: complete learning system setup after HitaVir Tech Code codelab"
+# git push origin main
+```
+
+### For Future Codelabs — Cleanup Habit
+
+Build this habit now:
+
+```
+After EVERY codelab:
+  1. Stop running clusters, VMs, or services
+  2. Delete temporary cloud resources
+  3. Check cloud billing dashboard
+  4. Commit and push all work to GitHub
+  5. Write your journal entry
+  6. Update your debug log
+  7. Log your rebuild attempt
+```
+
+:::info
+Resource management is an engineering discipline. Practice it from day one.
+:::
+
+Proceed to the next course: [Data Engineering Environment Setup on Windows 11](/courses/windows-setup).
+
+<KeyTakeaways>
+
+- Unlike cloud labs, everything here is a keeper — the learning system IS the deliverable
+- Commit and push the finished system to GitHub as your final act of the course
+- The post-codelab habit: stop resources, check billing, push work, journal, update the debug log, log the rebuild
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What should you DELETE from this codelab during cleanup?',
+      options: [
+        'The debug log, since it is only an example',
+        'The journal, once the week is over',
+        'The Git history, to keep the repo small',
+        'Nothing — the entire learning system is your knowledge base and must be kept',
+      ],
+      answer: 3,
+      explanation: 'This lab creates no cloud resources. Every file is part of your permanent knowledge base.',
+    },
+    {
+      question: 'Which of these is part of the after-EVERY-codelab cleanup habit?',
+      options: [
+        'Check the cloud billing dashboard and stop running resources',
+        'Delete your local Git repository',
+        'Uninstall the tools you used',
+        'Clear your terminal history',
+      ],
+      answer: 0,
+      explanation: 'The habit list: stop clusters/VMs, delete temp cloud resources, check billing, push to GitHub, journal, update the debug log, log the rebuild.',
+    },
+  ]}
+/>
+
+<LessonComplete />

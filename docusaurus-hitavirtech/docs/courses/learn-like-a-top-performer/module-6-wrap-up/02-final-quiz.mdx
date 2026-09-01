@@ -1,0 +1,108 @@
+---
+title: 'Final Quiz'
+sidebar_position: 2
+description: 'The graded final quiz for the Learn Like a Top Performer course — aim for at least 6 of 8.'
+---
+
+<DurationBadge minutes={5} />
+
+# Final Quiz
+
+This quiz covers the whole course. **Aim for at least 6 of 8.** If you miss a
+question, revisit the lesson it came from before moving on to the next course.
+
+<Quiz
+  title="Graded final quiz"
+  questions={[
+    {
+      question: 'What are the three phases of the fundamental learning cycle taught in this course?',
+      options: [
+        'Read, Watch, Repeat',
+        'Execute, Understand, Explain',
+        'Plan, Build, Deploy',
+        'Copy, Paste, Verify',
+      ],
+      answer: 1,
+      explanation: 'Run it, understand why it worked, then explain it without the guide — that is when you are interview-ready.',
+    },
+    {
+      question: 'Put the 7-step Debugging Protocol in the correct starting order.',
+      options: [
+        'READ → STOP → TEST → DOCUMENT',
+        'HYPOTHESIZE → TEST → READ → STOP',
+        'STOP → READ → CLASSIFY → ISOLATE',
+        'ISOLATE → CLASSIFY → STOP → READ',
+      ],
+      answer: 2,
+      explanation: 'STOP (change nothing), READ the entire error, CLASSIFY it, ISOLATE the failure — then hypothesize, test one change, and document.',
+    },
+    {
+      question: 'A "timeout / ECONNREFUSED" message is which error type, and what do you check first?',
+      options: [
+        'Connection error — check endpoint, port, and network',
+        'Syntax error — check the exact line character by character',
+        'Permission error — check IAM roles',
+        'Resource error — scale up the cluster',
+      ],
+      answer: 0,
+      explanation: 'Timeouts and refused connections are connection errors; verify the endpoint, port, and network path first.',
+    },
+    {
+      question: 'In the 3-attempt rebuild system, what proves you truly OWN a skill?',
+      options: [
+        'Completing the lab once with the guide open',
+        'Explaining the lab to a friend',
+        'Finishing the lab twice with your notes',
+        'Completing Attempt 3 — a blind rebuild from a blank terminal',
+      ],
+      answer: 3,
+      explanation: 'Attempt 1 is guided, Attempt 2 uses notes, Attempt 3 is blind. Blind completion means ownership, not tutorial-following.',
+    },
+    {
+      question: 'You have been stuck on an error for 25 minutes. Per the productivity discipline, what should you do?',
+      options: [
+        'Keep grinding until you solve it alone',
+        'Ask for help — the 20-minute rule says do not waste 2 hours',
+        'Skip the step and continue the lab',
+        'Restart the codelab from the beginning',
+      ],
+      answer: 1,
+      explanation: 'The 20-minute rule: struggle productively for 20 minutes, then ask. Strong engineers ask early.',
+    },
+    {
+      question: 'What are the four questions of real-world thinking to ask at every step?',
+      options: [
+        'Who, what, when, where',
+        'Speed, size, shape, source',
+        'Reliability, scalability, cost, security',
+        'Input, output, schema, format',
+      ],
+      answer: 2,
+      explanation: 'What happens when this fails at 3 AM? Will it handle 100x data? Am I wasting resources? Am I hardcoding credentials?',
+    },
+    {
+      question: 'Which FinOps fix targets the #1 Databricks cost killer?',
+      options: [
+        'Auto-termination of idle clusters after 10-15 minutes',
+        'Using SELECT * to simplify queries',
+        'Doubling executor memory by default',
+        'Disabling autoscaling',
+      ],
+      answer: 0,
+      explanation: 'Idle clusters (running 24/7, used 2 hours/day) are cost killer #1 — auto-termination saves up to 90%.',
+    },
+    {
+      question: 'Which portfolio signal shows recruiters a deliberate-practice mentality?',
+      options: [
+        'A large number of forked repositories',
+        'A pinned tutorial project',
+        'Many GitHub stars',
+        'Improving rebuild times in your rebuild tracker',
+      ],
+      answer: 3,
+      explanation: 'Faster rebuild times over successive attempts demonstrate measured, deliberate skill development.',
+    },
+  ]}
+/>
+
+<LessonComplete />

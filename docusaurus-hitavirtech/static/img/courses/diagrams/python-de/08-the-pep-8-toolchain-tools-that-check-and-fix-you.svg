@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 629 288" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="629" height="288" rx="12" fill="#f8f9fa"/>
+  <text x="314" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">The PEP 8 Toolchain — Tools That Check (and Fix) Your Code</text>
+  <rect x="15" y="40" width="70" height="30" rx="6" fill="#1a73e8"/>
+  <text x="50" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Tool</text>
+  <rect x="90" y="40" width="360" height="30" rx="6" fill="#1a73e8"/>
+  <text x="270" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">What it does</text>
+  <rect x="455" y="40" width="159" height="30" rx="6" fill="#1a73e8"/>
+  <text x="534" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Install</text>
+  <rect x="15" y="76" width="70" height="43" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="101" font-size="12" font-weight="700" fill="#1a73e8">black</text>
+  <rect x="90" y="76" width="360" height="43" rx="4" fill="#e8f0fe"/>
+  <text x="100" y="94" font-size="12" fill="#1a73e8">Auto-formats your code to PEP 8 (opinionated, one true</text>
+  <text x="100" y="109" font-size="12" fill="#1a73e8">style)</text>
+  <rect x="455" y="76" width="159" height="43" rx="4" fill="#e8f0fe"/>
+  <text x="465" y="101" font-size="12" font-family="monospace" fill="#1a73e8">pip install black</text>
+  <rect x="15" y="123" width="70" height="28" rx="4" fill="white"/>
+  <text x="25" y="141" font-size="12" font-weight="700" fill="#3c4043">isort</text>
+  <rect x="90" y="123" width="360" height="28" rx="4" fill="white"/>
+  <text x="100" y="141" font-size="12" fill="#3c4043">Sorts and groups imports correctly</text>
+  <rect x="455" y="123" width="159" height="28" rx="4" fill="white"/>
+  <text x="465" y="141" font-size="12" font-family="monospace" fill="#3c4043">pip install isort</text>
+  <rect x="15" y="155" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="173" font-size="12" font-weight="700" fill="#1a73e8">flake8</text>
+  <rect x="90" y="155" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="100" y="173" font-size="12" fill="#1a73e8">Reports PEP 8 violations</text>
+  <rect x="455" y="155" width="159" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="465" y="173" font-size="12" font-family="monospace" fill="#1a73e8">pip install flake8</text>
+  <rect x="15" y="187" width="70" height="43" rx="4" fill="white"/>
+  <text x="25" y="212" font-size="12" font-weight="700" fill="#3c4043">ruff</text>
+  <rect x="90" y="187" width="360" height="43" rx="4" fill="white"/>
+  <text x="100" y="205" font-size="12" fill="#3c4043">Modern, fast linter+formatter (replaces black + flake8 +</text>
+  <text x="100" y="220" font-size="12" fill="#3c4043">isort)</text>
+  <rect x="455" y="187" width="159" height="43" rx="4" fill="white"/>
+  <text x="465" y="212" font-size="12" font-family="monospace" fill="#3c4043">pip install ruff</text>
+  <rect x="15" y="234" width="70" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="252" font-size="12" font-weight="700" fill="#1a73e8">mypy</text>
+  <rect x="90" y="234" width="360" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="100" y="252" font-size="12" fill="#1a73e8">Type-checks your annotations</text>
+  <rect x="455" y="234" width="159" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="465" y="252" font-size="12" font-family="monospace" fill="#1a73e8">pip install mypy</text>
+  <text x="314" y="282" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

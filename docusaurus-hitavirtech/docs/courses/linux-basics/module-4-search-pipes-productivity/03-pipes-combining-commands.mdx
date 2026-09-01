@@ -1,0 +1,203 @@
+---
+title: 'Pipes — Combining Commands'
+sidebar_position: 3
+description: 'Chain small commands into powerful pipelines with | — filter, sort, count, and build a real log analysis report.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Connect commands so output flows into the next with `|`
+- Use classic pipelines like `grep | wc -l` and `sort | uniq -c | sort -rn`
+- Build a multi-step log analysis report with pipes and redirection
+
+</LearningObjectives>
+
+Pipes (`|`) connect commands together. The output of one command becomes the input of the next.
+
+### How Pipes Work
+
+```
+Command1  |  Command2  |  Command3
+   ↓            ↓            ↓
+ Output → becomes Input → becomes Input → Final Output
+```
+
+### Example 1 — Count Error Lines
+
+```bash
+cd ~/hitavir-workspace
+grep "ERROR" logs/app.log | wc -l
+```
+
+**Expected output:**
+
+```
+3
+```
+
+How it works: `grep` finds ERROR lines → sends them to `wc -l` → counts them.
+
+### Example 2 — Sort Files by Size
+
+```bash
+ls -lS | head -5
+```
+
+`ls -lS` lists files sorted by **S**ize → `head -5` shows only the top 5.
+
+### Example 3 — Find and Search
+
+```bash
+find . -name "*.conf" | xargs grep "localhost"
+```
+
+`find` locates .conf files → `xargs grep` searches inside each one.
+
+### Example 4 — Filter and Count Unique Values
+
+```bash
+grep -o "INFO\|WARNING\|ERROR" logs/app.log | sort | uniq -c | sort -rn
+```
+
+**Expected output:**
+
+```
+      5 INFO
+      3 ERROR
+      2 WARNING
+```
+
+How it works:
+1. `grep -o` extracts just the matched words
+2. `sort` puts them in order
+3. `uniq -c` counts duplicates
+4. `sort -rn` sorts by count (highest first)
+
+### Example 5 — Search Command History
+
+```bash
+history | grep "mkdir"
+```
+
+Shows all previous `mkdir` commands you typed.
+
+### Example 6 — View Only Directories in ls
+
+```bash
+ls -l | grep "^d"
+```
+
+Lines starting with `d` are directories.
+
+### Build a Log Analysis Pipeline
+
+```bash
+echo "=== Log Analysis Report ===" > docs/log-report.txt
+echo "Generated: $(date)" >> docs/log-report.txt
+echo "" >> docs/log-report.txt
+echo "Total log entries:" >> docs/log-report.txt
+wc -l < logs/app.log >> docs/log-report.txt
+echo "" >> docs/log-report.txt
+echo "Errors:" >> docs/log-report.txt
+grep -c "ERROR" logs/app.log >> docs/log-report.txt
+echo "" >> docs/log-report.txt
+echo "Warnings:" >> docs/log-report.txt
+grep -c "WARNING" logs/app.log >> docs/log-report.txt
+echo "" >> docs/log-report.txt
+echo "Error details:" >> docs/log-report.txt
+grep "ERROR" logs/app.log >> docs/log-report.txt
+
+cat docs/log-report.txt
+```
+
+**Expected output:**
+
+```
+=== Log Analysis Report ===
+Generated: Sat Apr  5 10:30:00 2026
+
+Total log entries:
+10
+
+Errors:
+3
+
+Warnings:
+2
+
+Error details:
+[2026-04-05 10:02:30] ERROR: Failed to connect to cache server
+[2026-04-05 10:05:22] ERROR: Timeout on /api/users endpoint
+[2026-04-05 10:08:00] ERROR: Permission denied on /var/data
+```
+
+You just built a log analysis tool using only pipes and redirection!
+
+### Common Pipe Patterns
+
+| Pattern | What It Does |
+|---------|-------------|
+| `command \| head` | Show first few results |
+| `command \| tail` | Show last few results |
+| `command \| wc -l` | Count results |
+| `command \| sort` | Sort results |
+| `command \| grep "text"` | Filter results |
+| `command \| sort \| uniq` | Remove duplicates |
+
+:::tip[HitaVir Tech says]
+"Pipes are the magic of Linux. Each command does one small thing well. Pipes let you chain them together to do powerful things. This is the Unix philosophy — small tools, big results."
+:::
+
+<KeyTakeaways>
+
+- A pipe sends one command's output straight into the next command's input
+- `grep "ERROR" log | wc -l` counts errors in a single line
+- `sort | uniq -c | sort -rn` is the classic frequency-count pipeline
+- The Unix philosophy: small tools, chained together, do big things
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What does grep "ERROR" logs/app.log | wc -l output?',
+      options: [
+        'All the error lines themselves',
+        'The number of lines containing ERROR',
+        'The word count of the whole file',
+        'Only the first error line',
+      ],
+      answer: 1,
+      explanation:
+        'grep selects the ERROR lines and pipes them to wc -l, which prints how many lines it received.',
+    },
+    {
+      question: 'In the pipeline sort | uniq -c | sort -rn, why must sort come before uniq?',
+      options: [
+        'uniq only collapses adjacent duplicate lines',
+        'sort removes duplicates by itself',
+        'uniq requires numeric input',
+        'It is just a style convention',
+      ],
+      answer: 0,
+      explanation:
+        'uniq compares neighbouring lines only — sorting first groups identical lines together so uniq -c can count them.',
+    },
+    {
+      question: 'Which pipeline shows the 5 largest files in a directory?',
+      options: [
+        'ls | tail -5',
+        'ls -l | wc -5',
+        'du | grep 5',
+        'ls -lS | head -5',
+      ],
+      answer: 3,
+      explanation:
+        'ls -lS sorts by size (largest first) and head -5 keeps just the top five entries.',
+    },
+  ]}
+/>
+
+<LessonComplete />

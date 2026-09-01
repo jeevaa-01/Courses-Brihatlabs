@@ -1,0 +1,225 @@
+---
+title: 'Navigating the File System — cd'
+sidebar_position: 5
+description: 'Move around the file system with cd — relative and absolute paths, shortcuts like .., ~, and -, plus Tab completion.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Move between directories with `cd`, `cd ..`, `cd ~`, and `cd -`
+- Distinguish absolute paths from relative paths
+- Speed up typing and avoid typos with Tab completion
+
+</LearningObjectives>
+
+The `cd` command lets you move between directories (folders).
+
+### Understanding the File System
+
+The file system is like a tree:
+
+```
+/                        ← Root (top of everything)
+├── c/                   ← Your C: drive
+│   └── Users/
+│       └── YourName/    ← Your home directory (~)
+│           ├── Desktop/
+│           ├── Documents/
+│           └── Downloads/
+├── tmp/                 ← Temporary files
+└── etc/                 ← System configuration
+```
+
+### cd — Change Directory
+
+Move into a folder:
+
+```bash
+cd Documents
+```
+
+Verify you moved:
+
+```bash
+pwd
+```
+
+**Expected output:**
+
+```
+/c/Users/YourName/Documents
+```
+
+### Go Back One Level
+
+```bash
+cd ..
+```
+
+The `..` means "parent directory" (one level up).
+
+```bash
+pwd
+```
+
+**Expected output:**
+
+```
+/c/Users/YourName
+```
+
+### Go to Home Directory
+
+From anywhere, go straight home:
+
+```bash
+cd ~
+```
+
+Or simply:
+
+```bash
+cd
+```
+
+Both take you to your home directory.
+
+### Go to a Specific Path
+
+Jump directly to any location:
+
+```bash
+cd /c/Users
+```
+
+### Go Back to Previous Directory
+
+```bash
+cd -
+```
+
+This takes you back to wherever you were before. Like pressing the "Back" button.
+
+### Path Types
+
+| Type | Example | Description |
+|------|---------|-------------|
+| Absolute path | `/c/Users/YourName/Documents` | Full path from root |
+| Relative path | `Documents` or `../Downloads` | Path relative to current location |
+
+**Real-world analogy:**
+
+- Absolute: "Go to 123 Main Street, City, Country" (full address)
+- Relative: "Go two blocks north" (from where you are now)
+
+### Practice Navigation
+
+```bash
+cd ~
+pwd
+
+cd Documents
+pwd
+
+cd ..
+pwd
+
+cd /tmp
+pwd
+
+cd ~
+pwd
+```
+
+**Expected output pattern:**
+
+```
+/c/Users/YourName
+/c/Users/YourName/Documents
+/c/Users/YourName
+/tmp
+/c/Users/YourName
+```
+
+### Tab Completion
+
+Start typing a folder name and press **Tab** — Git Bash will auto-complete it:
+
+```bash
+cd Doc
+```
+
+Press **Tab** and it becomes:
+
+```bash
+cd Documents/
+```
+
+This saves time and prevents typos!
+
+:::tip[HitaVir Tech says]
+"Tab completion is your secret weapon. Press Tab early, press Tab often. It saves you from typos and speeds up your workflow by 10x."
+:::
+
+### Common Mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| `cd documents` (wrong case) | Case matters! Use `cd Documents` |
+| `cd My Documents` (space in name) | Use quotes: `cd "My Documents"` or escape: `cd My\ Documents` |
+| "No such file or directory" | Check spelling with `ls` first |
+
+### Beginner Foundations Recap
+
+You have completed the foundations! Here is what you learned:
+
+- What Linux, shells, and Git Bash are
+- How to check your location with `pwd`
+- How to list files with `ls` and its options
+- How to navigate with `cd` (relative and absolute paths)
+- Tab completion for faster typing
+- How to clear the screen with `clear`
+
+<KeyTakeaways>
+
+- `cd ..` goes up one level; `cd ~` (or plain `cd`) jumps home; `cd -` returns to the previous directory
+- Absolute paths start from root (`/c/Users/...`); relative paths start from where you are
+- Folder names are case-sensitive, and names with spaces need quotes or escaping
+- Press Tab early and often — completion prevents typos
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which command takes you back to the directory you were in previously?',
+      options: ['cd ..', 'cd ~', 'cd -', 'cd /'],
+      answer: 2,
+      explanation:
+        'cd - works like a "Back" button, returning to your previous directory. cd .. goes up one level instead.',
+    },
+    {
+      question: 'Which of these is an absolute path?',
+      options: ['Documents', '../Downloads', './notes', '/c/Users/YourName/Documents'],
+      answer: 3,
+      explanation:
+        'Absolute paths start from the root (/) and work from anywhere. The others are relative to your current location.',
+    },
+    {
+      question: 'What does pressing Tab while typing a folder name do?',
+      options: [
+        'Runs the command immediately',
+        'Auto-completes the file or folder name',
+        'Deletes the last word',
+        'Opens a new terminal tab',
+      ],
+      answer: 1,
+      explanation:
+        'Tab completion fills in the rest of a name for you — faster typing and no typos.',
+    },
+  ]}
+/>
+
+<LessonComplete />

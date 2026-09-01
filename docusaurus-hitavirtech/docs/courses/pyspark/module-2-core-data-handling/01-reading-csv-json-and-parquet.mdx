@@ -1,0 +1,262 @@
+---
+title: "Reading CSV, JSON, and Parquet"
+description: "Reading CSV, JSON, and Parquet — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Reading CSV, JSON, and Parquet
+
+*⏱ Estimated time: 80 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Read CSV, JSON (including multiline), and Parquet files with explicit schemas.
+- Select an appropriate reader mode (`PERMISSIVE`, `DROPMALFORMED`, `FAILFAST`).
+- Explain why Parquet is preferred for analytical storage.
+
+:::
+
+### Prepare the data location
+
+Make sure `BASE_PATH` is set for your environment (see the [setup guide](/courses/pyspark/module-1-foundations/databricks-free-edition-setup#set-the-base-path)).
+
+**Databricks:** you created the `workspace.default.hitavir` volume during setup. Files live under `/Volumes/workspace/default/hitavir/raw` and `/Volumes/workspace/default/hitavir/processed`.
+
+**Local:** create the folders:
+
+```powershell
+mkdir data
+mkdir data\raw
+mkdir data\processed
+```
+
+### Create a CSV file
+
+The file `sales.csv` contains:
+
+```csv
+transaction_id,transaction_date,region,product,quantity,unit_price
+T001,2026-07-01, South ,Laptop,2,65000
+T002,2026-07-01,NORTH,Monitor,3,15000
+T003,2026-07-02,south,Keyboard,5,2000
+T004,2026-07-02,WEST,Mouse,,800
+T005,2026-07-03,East,Laptop,1,65000
+```
+
+<Tabs groupId="env">
+<TabItem value="databricks" label="🧱 Databricks" default>
+
+```python
+sales_csv = """transaction_id,transaction_date,region,product,quantity,unit_price
+T001,2026-07-01, South ,Laptop,2,65000
+T002,2026-07-01,NORTH,Monitor,3,15000
+T003,2026-07-02,south,Keyboard,5,2000
+T004,2026-07-02,WEST,Mouse,,800
+T005,2026-07-03,East,Laptop,1,65000
+"""
+
+dbutils.fs.put(
+    f"{BASE_PATH}/raw/sales.csv",
+    sales_csv,
+    overwrite=True
+)
+```
+
+</TabItem>
+<TabItem value="local" label="🪟 Local Windows">
+
+Save the same content as `data/raw/sales.csv`.
+
+</TabItem>
+</Tabs>
+
+### Read CSV with schema
+
+```python
+from pyspark.sql.types import (
+    DoubleType,
+    IntegerType,
+    StringType,
+    StructField,
+    StructType,
+)
+
+schema = StructType(
+    [
+        StructField("transaction_id", StringType(), True),
+        StructField("transaction_date", StringType(), True),
+        StructField("region", StringType(), True),
+        StructField("product", StringType(), True),
+        StructField("quantity", IntegerType(), True),
+        StructField("unit_price", DoubleType(), True),
+    ]
+)
+
+sales_df = (
+    spark.read
+    .option("header", True)
+    .schema(schema)
+    .csv(f"{BASE_PATH}/raw/sales.csv")
+)
+
+sales_df.show()
+sales_df.printSchema()
+```
+
+### CSV options
+
+```python
+csv_df = (
+    spark.read
+    .option("header", True)
+    .option("delimiter", ",")
+    .option("quote", '"')
+    .option("escape", '"')
+    .option("mode", "PERMISSIVE")
+    .schema(schema)
+    .csv(f"{BASE_PATH}/raw/sales.csv")
+)
+```
+
+Modes:
+
+- `PERMISSIVE`
+- `DROPMALFORMED`
+- `FAILFAST`
+
+### Read JSON
+
+Create `events.json` in `{BASE_PATH}/raw` (on Databricks, use `dbutils.fs.put` as shown in [Create a CSV file](/courses/pyspark/module-2-core-data-handling/reading-csv-json-and-parquet#create-a-csv-file)):
+
+```json
+{"event_id":"E001","event_type":"view","user_id":"U001"}
+{"event_id":"E002","event_type":"purchase","user_id":"U002"}
+{"event_id":"E003","event_type":"view","user_id":"U001"}
+```
+
+Read:
+
+```python
+events_df = spark.read.json(f"{BASE_PATH}/raw/events.json")
+
+events_df.show()
+events_df.printSchema()
+```
+
+### Multiline JSON
+
+For a JSON array:
+
+```json
+[
+  {"event_id":"E001","event_type":"view"},
+  {"event_id":"E002","event_type":"purchase"}
+]
+```
+
+Use:
+
+```python
+events_df = (
+    spark.read
+    .option("multiline", True)
+    .json(f"{BASE_PATH}/raw/events_array.json")
+)
+```
+
+### Read Parquet
+
+```python
+parquet_df = spark.read.parquet(
+    f"{BASE_PATH}/processed/clean_sales"
+)
+```
+
+### Why Parquet is preferred
+
+Parquet is:
+
+- Columnar.
+- Compressed.
+- Schema-aware.
+- Efficient for analytics.
+- Compatible with predicate pushdown.
+- Widely supported.
+
+### Read multiple files
+
+```python
+sales_df = spark.read.schema(schema).csv(
+    f"{BASE_PATH}/raw/sales/*.csv"
+)
+```
+
+### ✅ Checkpoint
+
+You should be able to read:
+
+```text
+{BASE_PATH}/raw/sales.csv
+{BASE_PATH}/raw/events.json
+```
+
+You should see correct columns and schema.
+
+### 🛠️ Exercise
+
+Create `products.csv`:
+
+```csv
+product_id,product_name,category
+P001,Laptop,Computers
+P002,Monitor,Accessories
+P003,Keyboard,Accessories
+```
+
+Read it with an explicit schema.
+
+<Quiz
+  questions={[
+  {
+    "question": "The best format for large analytical storage is:",
+    "options": [
+      "CSV",
+      "JSON",
+      "Parquet"
+    ],
+    "answer": 2,
+    "explanation": "Parquet is columnar, compressed, and supports predicate pushdown."
+  },
+  {
+    "question": "To read a JSON file containing a JSON array, you need:",
+    "options": [
+      "`option(\"multiline\", True)`",
+      "`option(\"header\", True)`",
+      "`option(\"delimiter\", \",\")`"
+    ],
+    "answer": 0,
+    "explanation": "Arrays span lines; the default reader expects one JSON object per line."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- Use CSV and JSON for interchange, Parquet (or Delta) for analytical storage.
+- Always pair reads with an explicit schema in pipelines.
+- Reader modes control what happens to malformed records.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Use CSV for interchange and Parquet for scalable analytical storage.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+For large lakes, prefer many reasonably sized Parquet files instead of millions of tiny files.
+
+:::

@@ -1,0 +1,216 @@
+---
+title: 'Azure Services for Veracity'
+sidebar_position: 5
+description: 'The Azure toolkit for data trust — ADF Mapping Data Flows, Microsoft Purview, Defender for Cloud, Activity Log, and the data quality lifecycle.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Match ADF Data Flows, Purview, Defender, Activity Log, and Key Vault to their Veracity roles
+- Describe Purview's three pillars — catalog, lineage, and data-quality rules
+- Walk the data quality lifecycle from profiling to monitoring
+- Design a quality gate that quarantines failing rows instead of poisoning the lake
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              AZURE  FOR  VERACITY                            |
+  |         "Make sure the data is trustworthy."                 |
+  +==============================================================+
+```
+
+### The Veracity Lineup
+
+![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Policy](/img/courses/azure-icons/policy.svg) ![Info Protection](/img/courses/azure-icons/info-protection.svg) ![Activity Log](/img/courses/azure-icons/activity-log.svg) ![Defender](/img/courses/azure-icons/defender.svg) ![Key Vault](/img/courses/azure-icons/key-vault.svg) ![Monitor](/img/courses/azure-icons/monitor.svg)
+
+**Mapping Data Flows** • **Microsoft Purview** • **Info Protection** • **Activity Log** • **Defender for Cloud** • **Key Vault** • **Azure Monitor**
+
+### The Veracity Toolkit
+
+| Service | Icon | Purpose |
+|---------|:---:|---------|
+| **ADF Mapping Data Flows** | <img src="azure-icons/data-factory.svg" width="32" height="32" alt="ADF Data Flows" /> | Visual data cleaning and profiling |
+| **Microsoft Purview Data Quality** | <img src="azure-icons/info-protection.svg" width="32" height="32" alt="Purview DQ" /> | Rule-based DQ checks |
+| **Great Expectations / Deequ on Spark** | <img src="azure-icons/databricks.svg" width="32" height="32" alt="Databricks DQ" /> | Unit tests for data (open-source in Databricks) |
+| **Microsoft Purview** | <img src="azure-icons/data-shares.svg" width="32" height="32" alt="Purview" /> | Data catalog + lineage + policy |
+| **Azure Activity Log** | <img src="azure-icons/activity-log.svg" width="32" height="32" alt="Activity Log" /> | Audit every control-plane change |
+| **Azure Monitor + Log Analytics** | <img src="azure-icons/monitor.svg" width="32" height="32" alt="Azure Monitor" /> | Resource and pipeline telemetry |
+| **Microsoft Defender for Cloud** | <img src="azure-icons/defender.svg" width="32" height="32" alt="Defender" /> | Discover and classify PII, CSPM |
+| **Azure Key Vault** | <img src="azure-icons/key-vault.svg" width="32" height="32" alt="Key Vault" /> | Manage encryption keys and secrets |
+
+### Service Spotlight — ADF Mapping Data Flows
+
+![Data Factory](/img/courses/azure-icons/data-factory.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  ADF  MAPPING  DATA  FLOWS  -  No-Code Data Prep             |
+  +--------------------------------------------------------------+
+  |  Interface   :  Visual, drag-and-drop                        |
+  |  Transforms  :  90+ (nulls, dupes, dates, joins, aggs...)    |
+  |  Engine      :  Spark (managed, auto-scaled)                 |
+  |  Debug       :  Interactive, with sample data                |
+  |                                                              |
+  |  Hand this to business analysts - no Spark code needed.      |
+  +--------------------------------------------------------------+
+```
+
+```
+  Source  --->  Profile  --->  Apply transforms  --->  Sink
+                (stats,        (fill nulls, parse   (to ADLS,
+                 anomalies)     dates, dedupe)       Synapse)
+```
+
+### Microsoft Purview — Catalog + Quality + Lineage
+
+```
+  +--------------------------------------------------------------+
+  |  MICROSOFT  PURVIEW  -  Unified Data Governance              |
+  +--------------------------------------------------------------+
+  |  Catalog     :  Scan ADLS, Synapse, SQL, Power BI, S3, GCS   |
+  |  Lineage     :  End-to-end column-level lineage              |
+  |  DQ rules    :  Completeness, uniqueness, ranges, custom     |
+  |  Insights    :  Sensitivity labels, hotspots, adoption       |
+  |                                                              |
+  |  The "nervous system" for multi-cloud data governance.       |
+  +--------------------------------------------------------------+
+```
+
+```
+  RULES                                          CHECK RESULT
+  -----                                          -------------
+  order_id IS NOT NULL                     ...   PASS
+  amount BETWEEN 0 AND 1_000_000           ...   PASS
+  customer_id IN customers                 ...   PASS
+  COUNT(DISTINCT order_id) = COUNT(*)      ...   FAIL - 23 dupes!
+```
+
+### Service Spotlight — Microsoft Defender for Cloud
+
+![Defender](/img/courses/azure-icons/defender.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  MICROSOFT  DEFENDER  FOR  CLOUD  -  CSPM + PII detection    |
+  +--------------------------------------------------------------+
+  |  Method      :  ML-based classification of storage contents  |
+  |  Finds       :  Credit cards, SSNs, emails, addresses        |
+  |  Output      :  Severity alerts -> Sentinel SIEM             |
+  |                                                              |
+  |  Sniffs sensitive data hiding in your storage accounts.      |
+  +--------------------------------------------------------------+
+```
+
+### Activity Log + Policy — The Audit Twins
+
+![Activity Log](/img/courses/azure-icons/activity-log.svg) ![Policy](/img/courses/azure-icons/policy.svg)
+
+- 📜 **Activity Log** — "Who did WHAT and WHEN?" Every ARM API call logged.
+- ⚙️ **Azure Policy** — "What rules must resources follow?" Enforce compliance as code.
+
+Essential for regulated industries (finance, healthcare, gov).
+
+### The Data Quality Lifecycle
+
+```
+  PROFILE  --->  DEFINE RULES  --->  ENFORCE  --->  ALERT  --->  FIX  --->  MONITOR
+  (know)         (expected)           (every run)    (fail fast)  (fix)     (trends)
+     ^                                                                         |
+     |                                                                         |
+     +---------------------------- loop ---------------------------------------+
+```
+
+### Real-World Example — Sales Lake Quality Gate
+
+```
+  Raw sales CSV from 50 stores
+        |
+        v
+  ADF Mapping Data Flow reads it
+        |
+        v
+  Purview Data Quality rules:
+     PASS - order_id unique
+     PASS - amount in [0, 1M]
+     FAIL - store_id in valid list   (12 rows failed)
+        |
+        v
+     +--+--+
+     v     v
+  Quarantine   Curated
+  container +  zone
+  Teams alert  (Parquet)
+```
+
+:::tip[HitaVir Tech says]
+"Every pipeline must have quality rules — not 'someday', from day one. 10x
+cheaper to catch bad data at ingest than to explain a wrong dashboard to the CEO."
+:::
+
+<KeyTakeaways>
+
+- ADF Mapping Data Flows give analysts 90+ no-code transforms on a managed Spark engine
+- Microsoft Purview combines catalog, column-level lineage, and rule-based data quality — the governance nervous system
+- Defender for Cloud finds PII hiding in storage; Activity Log and Azure Policy are the audit twins for regulated industries
+- The quality lifecycle loops: profile → define rules → enforce → alert → fix → monitor
+- Failing rows go to quarantine with an alert — never silently into the curated zone
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which service provides data catalog, column-level lineage, AND rule-based data quality in one product?',
+      options: [
+        'Azure Key Vault',
+        'Microsoft Purview',
+        'Azure Event Grid',
+        'Azure Monitor',
+      ],
+      answer: 1,
+      explanation:
+        'Purview is the unified governance layer — catalog, lineage, DQ rules, and sensitivity insights.',
+    },
+    {
+      question: 'In the sales lake quality gate, what happens to the 12 rows that fail the store_id rule?',
+      options: [
+        'They are silently dropped',
+        'They are loaded into the curated zone anyway',
+        'They go to a quarantine container and a Teams alert fires',
+        'The whole pipeline is deleted',
+      ],
+      answer: 2,
+      explanation:
+        'Failing rows are quarantined for investigation while good rows continue — and someone gets alerted.',
+    },
+    {
+      question: 'Which pair answers "who did what and when" and "what rules must resources follow"?',
+      options: [
+        'Activity Log and Azure Policy',
+        'Key Vault and Defender',
+        'Purview and Power BI',
+        'Event Grid and Logic Apps',
+      ],
+      answer: 0,
+      explanation:
+        'Activity Log records every control-plane change; Azure Policy enforces compliance as code — the audit twins.',
+    },
+    {
+      question: 'What is the first stage of the data quality lifecycle?',
+      options: [
+        'Enforce rules on every run',
+        'Alert on failures',
+        'Monitor trends',
+        'Profile the data to know what you have',
+      ],
+      answer: 3,
+      explanation:
+        'You cannot define sensible rules until you profile the data — stats and anomalies come first.',
+    },
+  ]}
+/>
+
+<LessonComplete />

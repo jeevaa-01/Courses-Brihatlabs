@@ -1,0 +1,124 @@
+---
+title: 'Cheat Sheet - The One-Page Summary'
+sidebar_position: 3
+description: 'The one-page reference — every concept, all 5 Vs, the full AWS service-by-V table, the universal pipeline, and the decision rules.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Keep a one-page reference of concepts, the 5 Vs, and the AWS service map
+- Recall the universal analytics pipeline and the six decision rules
+- Know exactly where to look before an interview or a design review
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |           AWS  ANALYTICS  -  PART 1  CHEAT  SHEET             |
+  |                  (screenshot and keep)                        |
+  +==============================================================+
+```
+
+### The AWS Analytics Toolbox — At a Glance
+
+![S3](/img/courses/aws-icons/s3.png) ![Glacier](/img/courses/aws-icons/glacier.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![EMR](/img/courses/aws-icons/emr.png) ![Glue](/img/courses/aws-icons/glue.png) ![Athena](/img/courses/aws-icons/athena.png) ![Kinesis](/img/courses/aws-icons/kinesis-streams.png) ![Kinesis Firehose](/img/courses/aws-icons/kinesis-firehose.png) ![Lambda](/img/courses/aws-icons/lambda.png) ![Macie](/img/courses/aws-icons/macie.png) ![CloudTrail](/img/courses/aws-icons/cloudtrail.png) ![KMS](/img/courses/aws-icons/kms.png) ![QuickSight](/img/courses/aws-icons/quicksight.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png) ![Bedrock](/img/courses/aws-icons/bedrock.png)
+
+### 🧠 Concepts in a Sentence
+
+| Term | Definition |
+|------|------------|
+| 📊 **Analytics** | Turning data into decisions |
+| 🤖 **Machine Learning** | Algorithms that learn patterns instead of being programmed |
+| 📸 **Descriptive** → 🕵️ **Diagnostic** → 🔮 **Predictive** → 🎯 **Prescriptive** | The 4 levels of analytics maturity |
+
+### 📏 The 5 Vs in a Sentence
+
+| V | Icon | Question | One-Liner |
+|---|:---:|----------|-----------|
+| 1 | 📦 | How much? | Design for 100× your current data |
+| 2 | 🧩 | How many formats? | Structure is created, not found |
+| 3 | 🌊 | How fast? | Match speed to the decision's deadline |
+| 4 | 🛡️ | Can we trust it? | Quality rules are pipeline-level, not tribal |
+| 5 | 💎 | Worth it? | Start from the decision, work backwards |
+
+### ☁️ AWS Services — By V
+
+| V | Store | Process | Catalog / Quality | Deliver |
+|---|-------|---------|-------------------|---------|
+| 📦 **Volume** | 🪣 S3 • 🧊 Glacier | 🏛️ Redshift • 🐘 EMR | 🏗️ Lake Formation | — |
+| 🧩 **Variety** | 🪣 S3 • ⚡ DynamoDB | 🤖 Rekognition • 📝 Textract • 🔊 Transcribe • 💭 Comprehend | 🕸️ Glue • 📚 Catalog | 🔍 Athena |
+| 🌊 **Velocity** | 🌊 Kinesis • 🪐 MSK | ⚡ Lambda • 🎯 K. Analytics | 🚒 Firehose (→ S3) | 🔎 OpenSearch |
+| 🛡️ **Veracity** | — | 🧪 DataBrew | 🛡️ Glue DQ • 🕵️ Macie • 📜 CloudTrail • ⚙️ Config | 🏗️ Lake Formation |
+| 💎 **Value** | — | 🤖 SageMaker • 🔮 Forecast • 🎯 Personalize • 🧠 Redshift ML | — | 📊 QuickSight • 💬 Q • 🧠 Bedrock |
+
+### 🛠️ The Universal AWS Analytics Pipeline
+
+```
+   INGEST  -->  STORE  -->  CATALOG  -->  PROCESS  -->  QUERY  -->  VISUALIZE  -->  DECIDE
+     |          |           |             |             |            |               |
+   Kinesis     S3          Glue          Glue ETL       Athena       QuickSight      Human
+   Firehose    Redshift    Catalog       EMR            Redshift     SageMaker       action
+   DMS         Glacier     Lake Form.    DataBrew       Spectrum     Forecast
+```
+
+### 🎯 The Decision Rules
+
+- 📦 **Start with S3**, always. Every AWS analytics service reads from it.
+- 🗂️ **Use Parquet + partitioning** in S3. 10-100× cheaper queries.
+- 🌊 **Use Firehose** before full Kinesis Streams — it's 10× simpler.
+- 🛡️ **Add data-quality rules from day one** — not "someday".
+- 💎 **Lead with Value** — if nobody changes a decision, don't build it.
+- 💰 **Always clean up resources** after labs.
+
+### 📈 Next Steps
+
+1. Re-do the [hands-on lab](/courses/aws-analytics-part1/module-4-end-to-end-and-hands-on-lab/hands-on-lab-your-first-aws-analytics-pipeline) with a different dataset.
+2. Apply the [5 Vs self-assessment](/courses/aws-analytics-part1/module-5-wrap-up/bonus-self-assessment) to a real project.
+3. Watch the AWS Athena and Glue documentation pages.
+4. Move to **AWS Analytics Part 2** — Advanced Analytics on AWS (coming soon).
+
+---
+
+*AWS service icons used in this course are from the official AWS Architecture Icons deck, freely distributed by Amazon Web Services for use in architecture diagrams and educational materials.*
+
+<KeyTakeaways>
+
+- One page holds the course: 4 maturity levels, 5 Vs with one-liners, and the service-by-V matrix
+- The universal pipeline is ingest → store → catalog → process → query → visualize → decide
+- Six decision rules cover 90% of design calls — start with S3, Parquet + partitioning, Firehose first, quality from day one, lead with Value, always clean up
+- Screenshot this page — it is your interview and design-review companion
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Per the decision rules, which storage format and layout make Athena queries 10-100× cheaper?',
+      options: [
+        'Uncompressed CSV in one folder',
+        'Parquet with partitioning',
+        'JSON with gzip',
+        'XML with folders per user',
+      ],
+      answer: 1,
+      explanation:
+        'Columnar Parquet plus partition pruning slashes the bytes Athena scans — and Athena bills per byte scanned.',
+    },
+    {
+      question: 'Which streaming service do the decision rules say to try FIRST?',
+      options: [
+        'Amazon MSK',
+        'Kinesis Data Streams with custom consumers',
+        'A self-managed Kafka cluster on EC2',
+        'Kinesis Firehose',
+      ],
+      answer: 3,
+      explanation:
+        '"Use Firehose before full Kinesis Streams — it\'s 10× simpler." Graduate to Streams or MSK only when you need them.',
+    },
+  ]}
+/>
+
+<LessonComplete />

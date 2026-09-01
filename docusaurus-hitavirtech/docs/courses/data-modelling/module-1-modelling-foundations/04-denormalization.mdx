@@ -1,0 +1,115 @@
+---
+title: 'Denormalization'
+sidebar_position: 4
+description: 'Why data warehouses intentionally add redundancy — trading storage for dramatically faster read queries.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Explain why warehouses intentionally reintroduce redundancy
+- Compare a 4-JOIN normalized query with its denormalized equivalent
+- Know when denormalization is the right tool — and when it is not
+
+</LearningObjectives>
+
+Denormalization **intentionally adds redundancy** to speed up read queries. It is the opposite of normalization and is standard practice in data warehouses.
+
+### Why Denormalize?
+
+In a normalized database, answering a business question often requires joining 5-10 tables. In a denormalized model, the same question hits one or two tables.
+
+### Before vs After
+
+**Normalized (3NF) — 4 JOINs required:**
+
+```sql
+SELECT
+    c.customer_name,
+    p.product_name,
+    cat.category_name,
+    o.quantity,
+    o.total_amount,
+    s.store_name
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id
+JOIN products p ON o.product_id = p.product_id
+JOIN categories cat ON p.category_id = cat.category_id
+JOIN stores s ON o.store_id = s.store_id
+WHERE o.order_date >= '2025-01-01';
+```
+
+**Denormalized (Star Schema) — 0 JOINs:**
+
+```sql
+SELECT
+    customer_name,
+    product_name,
+    category_name,
+    quantity,
+    total_amount,
+    store_name
+FROM fact_sales_wide
+WHERE order_date >= '2025-01-01';
+```
+
+### When to Denormalize
+
+![When to Denormalize](/img/courses/diagrams/denormalize-when.svg)
+
+:::tip[HitaVir Tech says]
+"Normalization and denormalization are not enemies — they are tools for different jobs. Normalize your source systems, denormalize your warehouse. That is the Data Engineering way."
+:::
+
+<KeyTakeaways>
+
+- Denormalization deliberately duplicates data to eliminate JOINs on read-heavy workloads
+- A question that needs 4-5 JOINs in 3NF can hit one wide table in a denormalized model
+- The cost is redundant storage and more complex updates — acceptable in warehouses, not in OLTP
+- Normalize source systems, denormalize the warehouse
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What does denormalization trade away to gain query speed?',
+      options: [
+        'Storage efficiency and simple updates',
+        'Read performance',
+        'The ability to use SQL',
+        'Data types and constraints',
+      ],
+      answer: 0,
+      explanation:
+        'Denormalization duplicates data, so storage grows and updates touch more rows — the price for eliminating JOINs on reads.',
+    },
+    {
+      question: 'Where is denormalization standard practice?',
+      options: [
+        'Banking transaction databases',
+        'Data warehouses and analytical models',
+        'E-commerce checkout systems',
+        'Any system with frequent single-row UPDATEs',
+      ],
+      answer: 1,
+      explanation:
+        'Warehouses are read-optimized: analysts run large scans, so fewer JOINs matters more than redundant storage.',
+    },
+    {
+      question: 'A 3NF query needs 4 JOINs; its star-schema equivalent needs 0. Why is the star version usually faster?',
+      options: [
+        'Star schemas skip the WHERE clause',
+        'JOINs are impossible in warehouses',
+        'The data is pre-joined into a wide table, so the engine scans one table instead of five',
+        'The star version reads fewer columns',
+      ],
+      answer: 2,
+      explanation:
+        'Denormalization pre-computes the joins at load time, so query time drops to a single-table scan.',
+    },
+  ]}
+/>
+
+<LessonComplete />

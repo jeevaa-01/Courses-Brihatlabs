@@ -1,0 +1,99 @@
+---
+title: 'Clone a Repository'
+sidebar_position: 3
+description: 'Download a complete copy of any repository — full history, all branches, and the remote connection included.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Clone your own and public repositories with `git clone`
+- List what a clone includes: files, history, branches, and remote
+- Explain why cloning beats downloading a ZIP
+
+</LearningObjectives>
+
+Cloning downloads a complete copy of a remote repository to your computer.
+
+### Clone Your Own Repository
+
+```bash
+cd ~
+git clone https://github.com/YOUR_USERNAME/git-learning.git git-learning-clone
+```
+
+This creates a new folder `git-learning-clone` with the full repository.
+
+### Clone Any Public Repository
+
+```bash
+git clone https://github.com/firstcontributions/first-contributions.git
+```
+
+### What Cloning Gives You
+
+| What | Included? |
+|------|-----------|
+| All files | Yes |
+| Complete commit history | Yes |
+| All branches | Yes |
+| Remote connection (origin) | Yes, automatically |
+
+### Clone vs Download ZIP
+
+| Feature | `git clone` | Download ZIP |
+|---------|------------|-------------|
+| Commit history | Full history included | None |
+| Git tracking | Ready to use immediately | Must `git init` manually |
+| Remote connection | Set up automatically | Must add manually |
+| Branches | All branches included | Only default branch |
+
+> **HitaVir Tech says:** "Always use `git clone`, never download ZIP. Cloning gives you the full power of Git — history, branches, and remote connection. ZIP gives you a dead snapshot."
+
+### Clean Up
+
+```bash
+cd ~/git-learning
+```
+
+Go back to your main project.
+
+<KeyTakeaways>
+
+- `git clone <url>` downloads files, full commit history, and all branches
+- The clone's remote connection (`origin`) is set up automatically
+- Prefer `git clone` over Download ZIP — a ZIP is a dead snapshot with no history
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which of these does git clone include automatically?',
+      options: [
+        'Only the files of the default branch',
+        'Files, complete commit history, all branches, and the origin remote',
+        'Files and history, but you must add the remote manually',
+        'Only the README and license',
+      ],
+      answer: 1,
+      explanation:
+        'Cloning gives you the complete repository — history, branches, and a ready-to-use remote connection.',
+    },
+    {
+      question: 'Why does this course recommend git clone over Download ZIP?',
+      options: [
+        'ZIP files are larger than clones',
+        'GitHub charges for ZIP downloads',
+        'A ZIP has no Git history, tracking, or remote — a clone has all three',
+        'ZIP downloads are blocked on Windows',
+      ],
+      answer: 2,
+      explanation:
+        'A ZIP is a dead snapshot: no commits, no branches, no origin. A clone is a full, working Git repository.',
+    },
+  ]}
+/>
+
+<LessonComplete />

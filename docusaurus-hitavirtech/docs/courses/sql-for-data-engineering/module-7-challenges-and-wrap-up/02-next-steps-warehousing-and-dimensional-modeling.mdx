@@ -1,0 +1,109 @@
+---
+title: 'Step 19: Next steps — warehousing and dimensional modeling'
+sidebar_position: 2
+description: 'Where to go after this course — cloud warehouses, slowly changing dimensions, fact grains, and your continued learning path.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Name the distinguishing feature of Snowflake, BigQuery, and Redshift
+- Explain SCD Types 1, 2, and 3 and why fact-table grain matters
+- Pick your next course on the HitaVirTech learning portal
+
+</LearningObjectives>
+
+> *"In God we trust. All others must bring data."*
+> — W. Edwards Deming
+
+:::info[HitaVir Tech connection]
+You have the SQL. Now bring the data — to a real warehouse, in a real model, on a real schedule.
+:::
+
+:::tip[Why this matters now]
+Pick one warehouse and one modeling pattern. Go deep on both before sampling the next.
+:::
+
+### Cloud data warehouses to learn next
+
+| Warehouse  | What makes it distinct                                                                 |
+|------------|----------------------------------------------------------------------------------------|
+| Snowflake  | Multi-cloud, separation of storage and compute, zero-copy clones, time-travel queries  |
+| BigQuery   | Serverless, billed per byte scanned, deeply integrated with Google Cloud and Looker     |
+| Redshift   | AWS-native, tightly integrated with S3 (Spectrum) and the broader AWS data ecosystem    |
+
+### Dimensional modeling deeper dives
+
+- **Slowly Changing Dimensions (SCD)**
+  - **Type 1** — overwrite (no history)
+  - **Type 2** — add a new dimension row + effective dates (full history)
+  - **Type 3** — keep one prior value as a column (limited history)
+- **Fact table grains** — the level of detail per row (transaction, daily snapshot, periodic accumulating). Mixing grains in one fact is the most expensive modeling mistake you can make.
+- **Conformed dimensions** — a single `dim_customer` shared across multiple facts (sales, support, marketing). Conformity is what makes cross-subject reporting possible.
+
+### Suggested learning order
+
+1. **Star schema mechanics** — refine what you built in Step 14 until you can build it from blank in 10 minutes.
+2. **SCD Type 2** — add effective-from / effective-to columns to `dim_customer` and re-load it.
+3. **Pick one warehouse** — Snowflake if you want an industry-standard skill that transfers everywhere; BigQuery if you are already in GCP; Redshift if you are already in AWS.
+4. **Dimensional modeling deep-dive** — Kimball's *The Data Warehouse Toolkit* is still the canonical reference. Read it once a year for the rest of your career.
+
+### Continue on the HitaVirTech learning portal
+
+- [PySpark for Data Engineering](/courses/pyspark/intro) — apply the SQL mindset to distributed DataFrames; the natural next course after this one
+- [Data Engineering Environment Setup on Windows 11](/courses/windows-setup) — if you have not yet stood up Python, Spark, and Docker for the PySpark track
+- [Learn Like a Top Performer](/courses/learn-like-a-top-performer) — the study system HitaVirTech's best students use
+- **Data Modelling** and the **AWS / Azure analytics tracks** are coming to the portal soon — watch the [Announcements](/blog)
+- Browse everything on the [course home page](/)
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Name the distinguishing feature of Snowflake, BigQuery, and Redshift
+- ✅ Explain SCD Type 1 vs Type 2 in one sentence each
+- ✅ Define "fact table grain" and why mixing grains is dangerous
+- ✅ Explain "conformed dimensions" with an example
+
+---
+
+<KeyTakeaways>
+
+- Snowflake = separated storage/compute and zero-copy clones; BigQuery = serverless per-byte billing; Redshift = AWS-native S3 integration
+- SCD Type 1 overwrites, Type 2 adds rows with effective dates (full history), Type 3 keeps one prior value
+- Fact-table grain is the level of detail per row — mixing grains in one fact is the costliest modeling mistake
+- Conformed dimensions (one shared `dim_customer`) are what make cross-subject reporting possible
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Your team must keep full history of customer city changes. Which SCD type?',
+      options: [
+        'Type 1 — overwrite the city',
+        'Type 3 — keep one previous city column',
+        'Type 2 — add a new dimension row with effective dates',
+        'No SCD — store city in the fact table',
+      ],
+      answer: 2,
+      explanation:
+        'Type 2 preserves every historical value by versioning dimension rows with effective-from/effective-to dates.',
+    },
+    {
+      question: 'What is a "conformed dimension"?',
+      options: [
+        'A dimension normalized into third normal form',
+        'A single shared dimension (e.g. dim_customer) used consistently across multiple fact tables',
+        'A dimension with fewer than 100 rows',
+        'A dimension stored in a separate database',
+      ],
+      answer: 1,
+      explanation:
+        'Sharing one dimension across sales, support, and marketing facts is what lets you report across subjects with consistent attributes.',
+    },
+  ]}
+/>
+
+<LessonComplete />

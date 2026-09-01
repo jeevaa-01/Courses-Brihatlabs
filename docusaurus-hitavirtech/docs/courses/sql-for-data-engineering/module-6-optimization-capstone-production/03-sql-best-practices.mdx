@@ -1,0 +1,107 @@
+---
+title: 'Step 15: SQL best practices (consolidated)'
+sidebar_position: 3
+description: 'The one-page reference card — naming, style, correctness, performance, and operations rules for production SQL.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Recite the four pipeline naming prefixes (`stg_`, `dim_`, `fact_`, `v_`)
+- Apply the correctness rules that prevent the classic production SQL bugs
+- State when an index, a view materialization, or a transaction is justified
+
+</LearningObjectives>
+
+> *"Simplicity is prerequisite for reliability."*
+> — Edsger Dijkstra
+
+:::info[HitaVir Tech connection]
+A simple SQL convention applied everywhere outperforms a clever one applied somewhere. Reliability is the goal; simplicity is the path.
+:::
+
+:::tip[Why this matters now]
+Print this list. Tape it next to your monitor. Every PR you review for the rest of your career uses it as a checklist.
+:::
+
+### Naming
+- `snake_case` for everything: tables, columns, indexes, views.
+- Tables are plural (`customers`), columns are singular (`customer_id`).
+- Foreign keys end in `_id`; surrogate keys end in `_sk`.
+- Views start with `v_`, materialized summaries with no prefix, staging with `stg_`, fact with `fact_`, dimension with `dim_`.
+
+### Style
+- Uppercase SQL keywords, lowercase identifiers.
+- One clause per line. One column per line in long `SELECT` lists.
+- Always alias every table in a multi-table query. Always qualify columns.
+- Indent two spaces inside CTEs and subqueries.
+
+### Correctness
+- Never `SELECT *` in code that ships.
+- Never `UPDATE`/`DELETE` without a `WHERE` clause.
+- Half-open date intervals: `>= start AND < end`.
+- Use `DECIMAL` for money, never `FLOAT`.
+- `is None`-style: `IS NULL` / `IS NOT NULL`, never `= NULL`.
+
+### Performance
+- Add indexes only after you have an EXPLAIN that proves you need one.
+- Avoid functions on indexed columns in `WHERE`.
+- Prefer `EXISTS` over `IN` for "any matching row" checks.
+- Materialize expensive joins as views; materialize expensive views as tables only when refresh cost \< query cost × frequency.
+
+### Operations
+- Wrap multi-statement DML in `START TRANSACTION` … `COMMIT`.
+- Sanity-check row counts after every load.
+- Every pipeline writes its own metrics: rows in, rows out, rows rejected.
+- Every schema change ships with a migration file in version control.
+
+:::info[Pro Insight]
+The teams that move fastest in production are the ones with the *strictest* style. Boring, predictable SQL is a feature, not a limitation — it makes every query a five-minute read instead of a thirty-minute investigation.
+:::
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Recite the four naming prefixes (`stg_`, `dim_`, `fact_`, `v_`)
+- ✅ Explain why `DECIMAL` beats `FLOAT` for money
+- ✅ State the rule for adding a new index
+- ✅ Justify wrapping multi-statement DML in a transaction
+
+---
+
+<KeyTakeaways>
+
+- Naming: `snake_case`, plural tables, singular columns, `_id` foreign keys, `_sk` surrogate keys, `stg_`/`dim_`/`fact_`/`v_` prefixes
+- Correctness: no `SELECT *`, no `WHERE`-less DML, half-open dates, `DECIMAL` money, `IS NULL` checks
+- Performance: index only with an `EXPLAIN` that proves the need; keep filtered columns bare
+- Operations: transactions around multi-statement DML, row-count checks after every load, migrations in version control
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Per the house convention, a staging copy of raw orders should be named…',
+      options: ['orders_raw_v2', 'stg_orders', 'StagingOrders', 'tmp_orders_final'],
+      answer: 1,
+      explanation:
+        'Pipeline prefixes carry meaning: stg_ staging, dim_/fact_ warehouse, v_ views — all lowercase snake_case.',
+    },
+    {
+      question: 'When is adding a new index justified?',
+      options: [
+        'Whenever a table exceeds 1000 rows',
+        'On every foreign key automatically, no exceptions',
+        'Only after an EXPLAIN proves the query needs it',
+        'Whenever a query feels slow in Workbench',
+      ],
+      answer: 2,
+      explanation:
+        'Indexes cost every write. The rule from this course: measure first — no EXPLAIN, no index.',
+    },
+  ]}
+/>
+
+<LessonComplete />

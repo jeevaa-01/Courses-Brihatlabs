@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="s" x="-4%" y="-4%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+    <marker id="ar" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#5f6368"/>
+    </marker>
+  </defs>
+  <rect width="800" height="200" rx="12" fill="#f8f9fa"/>
+  <text x="400" y="26" text-anchor="middle" font-size="14" font-weight="600" fill="#5f6368">NORMALIZATION JOURNEY</text>
+
+  <!-- UNF -->
+  <rect x="20" y="50" width="130" height="80" rx="8" fill="#ef5350" filter="url(#s)"/>
+  <text x="85" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="white">Unnormalized</text>
+  <text x="85" y="96" text-anchor="middle" font-size="9" fill="#ffcdd2">All data in one</text>
+  <text x="85" y="110" text-anchor="middle" font-size="9" fill="#ffcdd2">messy table</text>
+  <text x="85" y="124" text-anchor="middle" font-size="8" fill="#ef9a9a">Redundant!</text>
+
+  <line x1="150" y1="90" x2="178" y2="90" stroke="#5f6368" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- 1NF -->
+  <rect x="183" y="50" width="130" height="80" rx="8" fill="#ffa726" filter="url(#s)"/>
+  <text x="248" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="white">1NF</text>
+  <text x="248" y="96" text-anchor="middle" font-size="9" fill="#fff3e0">Atomic values</text>
+  <text x="248" y="110" text-anchor="middle" font-size="9" fill="#fff3e0">No repeating</text>
+  <text x="248" y="124" text-anchor="middle" font-size="9" fill="#fff3e0">groups</text>
+
+  <line x1="313" y1="90" x2="341" y2="90" stroke="#5f6368" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- 2NF -->
+  <rect x="346" y="50" width="130" height="80" rx="8" fill="#66bb6a" filter="url(#s)"/>
+  <text x="411" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="white">2NF</text>
+  <text x="411" y="96" text-anchor="middle" font-size="9" fill="#e8f5e9">No partial</text>
+  <text x="411" y="110" text-anchor="middle" font-size="9" fill="#e8f5e9">dependencies</text>
+  <text x="411" y="124" text-anchor="middle" font-size="9" fill="#e8f5e9">(full PK dep.)</text>
+
+  <line x1="476" y1="90" x2="504" y2="90" stroke="#5f6368" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- 3NF -->
+  <rect x="509" y="50" width="130" height="80" rx="8" fill="#42a5f5" filter="url(#s)"/>
+  <text x="574" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="white">3NF</text>
+  <text x="574" y="96" text-anchor="middle" font-size="9" fill="#e3f2fd">No transitive</text>
+  <text x="574" y="110" text-anchor="middle" font-size="9" fill="#e3f2fd">dependencies</text>
+  <text x="574" y="124" text-anchor="middle" font-size="9" fill="#e3f2fd">(non-key to key)</text>
+
+  <line x1="639" y1="90" x2="667" y2="90" stroke="#5f6368" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- BCNF -->
+  <rect x="672" y="50" width="110" height="80" rx="8" fill="#7c3aed" filter="url(#s)"/>
+  <text x="727" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="white">BCNF</text>
+  <text x="727" y="96" text-anchor="middle" font-size="9" fill="#ede7f6">Every determinant</text>
+  <text x="727" y="110" text-anchor="middle" font-size="9" fill="#ede7f6">is a candidate</text>
+  <text x="727" y="124" text-anchor="middle" font-size="9" fill="#ede7f6">key</text>
+
+  <!-- Bottom labels -->
+  <text x="85" y="155" text-anchor="middle" font-size="9" fill="#ef5350">Most redundancy</text>
+  <text x="727" y="155" text-anchor="middle" font-size="9" fill="#7c3aed">Least redundancy</text>
+
+  <!-- Quality bar -->
+  <rect x="20" y="168" width="762" height="6" rx="3" fill="url(#qg2)"/>
+  <defs>
+    <linearGradient id="qg2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ef5350"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+  </defs>
+
+  <text x="400" y="192" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech — Each form eliminates one type of redundancy</text>
+</svg>

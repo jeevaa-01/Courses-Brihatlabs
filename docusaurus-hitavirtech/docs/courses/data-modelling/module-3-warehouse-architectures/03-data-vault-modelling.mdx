@@ -1,0 +1,129 @@
+---
+title: 'Data Vault Modelling'
+sidebar_position: 3
+description: 'Hubs, Links, and Satellites — the audit-friendly Data Vault methodology used in banking, insurance, and healthcare.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Identify the three Data Vault building blocks: Hubs, Links, and Satellites
+- Explain why regulated industries choose Data Vault for auditability
+- Position Data Vault as the integration (Silver) layer beneath star schemas
+
+</LearningObjectives>
+
+**Data Vault** is an enterprise modelling methodology designed for **auditability, scalability, and agility**. It is popular in regulated industries like banking, insurance, and healthcare.
+
+### Three Building Blocks
+
+![Data Vault](/img/courses/diagrams/data-vault.svg)
+
+### Hubs — Business Keys
+
+Hubs store the **unique business identifiers** that never change.
+
+```sql
+CREATE TABLE hub_customer (
+    hub_customer_hash   CHAR(32) PRIMARY KEY,  -- MD5 hash of business key
+    customer_id         VARCHAR(20) NOT NULL,   -- Business key
+    load_date           TIMESTAMP NOT NULL,
+    record_source       VARCHAR(50) NOT NULL
+);
+```
+
+### Links — Relationships
+
+Links capture the **relationships between hubs**.
+
+```sql
+CREATE TABLE link_customer_order (
+    link_hash           CHAR(32) PRIMARY KEY,
+    hub_customer_hash   CHAR(32) NOT NULL,
+    hub_order_hash      CHAR(32) NOT NULL,
+    load_date           TIMESTAMP NOT NULL,
+    record_source       VARCHAR(50) NOT NULL,
+    FOREIGN KEY (hub_customer_hash) REFERENCES hub_customer(hub_customer_hash),
+    FOREIGN KEY (hub_order_hash) REFERENCES hub_order(hub_order_hash)
+);
+```
+
+### Satellites — Descriptive Attributes
+
+Satellites store the **changing descriptive data** with full history.
+
+```sql
+CREATE TABLE sat_customer_details (
+    hub_customer_hash   CHAR(32),
+    load_date           TIMESTAMP,
+    first_name          VARCHAR(50),
+    last_name           VARCHAR(50),
+    email               VARCHAR(100),
+    city                VARCHAR(50),
+    segment             VARCHAR(20),
+    hash_diff           CHAR(32),       -- Hash of all attributes (change detection)
+    record_source       VARCHAR(50),
+    PRIMARY KEY (hub_customer_hash, load_date)
+);
+```
+
+### Data Vault vs Star Schema
+
+![Data Vault vs Star Schema](/img/courses/diagrams/dv-vs-star.svg)
+
+:::tip[HitaVir Tech says]
+"Data Vault is used as the integration layer (Silver), and then star schemas are built on top for reporting (Gold). They are complementary, not competing approaches."
+:::
+
+<KeyTakeaways>
+
+- **Hubs** hold immutable business keys; **Links** hold relationships between hubs; **Satellites** hold changing attributes with full history
+- hash_diff in satellites enables cheap change detection; record_source gives full auditability
+- Data Vault shines in regulated industries needing multi-source integration and compliance
+- It is the integration/Silver layer — star schemas are still built on top for reporting (Gold)
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In Data Vault, where do unique business keys like customer_id live?',
+      options: [
+        'Satellites',
+        'Hubs',
+        'Links',
+        'Fact tables',
+      ],
+      answer: 1,
+      explanation:
+        'Hubs store the never-changing business identifiers, hashed for the primary key, with load_date and record_source.',
+    },
+    {
+      question: 'A customer changes email and city. Which Data Vault structure records that change with full history?',
+      options: [
+        'The hub — it is overwritten',
+        'The link — relationships track attributes',
+        'A new fact table row',
+        'The satellite — a new row with load_date and hash_diff',
+      ],
+      answer: 3,
+      explanation:
+        'Satellites carry the descriptive attributes; every change appends a new row, detected via hash_diff.',
+    },
+    {
+      question: 'How do Data Vault and star schema relate in a modern architecture?',
+      options: [
+        'They are competitors — pick exactly one',
+        'Star schema replaced Data Vault entirely',
+        'Data Vault is the integration (Silver) layer, with star schemas built on top for reporting (Gold)',
+        'Data Vault is only for OLTP systems',
+      ],
+      answer: 2,
+      explanation:
+        'They are complementary: Data Vault integrates and audits sources; star schemas serve analytics on top.',
+    },
+  ]}
+/>
+
+<LessonComplete />

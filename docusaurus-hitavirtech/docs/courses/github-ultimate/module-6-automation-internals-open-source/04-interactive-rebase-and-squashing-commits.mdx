@@ -1,0 +1,193 @@
+---
+title: 'Interactive Rebase and Squashing Commits'
+sidebar_position: 4
+description: 'Rewrite history with git rebase -i — squash four messy commits into one clean commit and learn pick, squash, fixup, reword, edit, and drop.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Start an interactive rebase with `git rebase -i HEAD~N`
+- Squash multiple commits into one clean commit
+- Choose the right action: pick, squash, fixup, reword, edit, or drop
+
+</LearningObjectives>
+
+Interactive rebase lets you rewrite commit history — reorder, edit, combine, or delete commits.
+
+### When to Use Interactive Rebase
+
+- Clean up messy commits before creating a PR
+- Combine multiple small commits into one meaningful commit
+- Edit a commit message
+- Remove accidental commits
+
+### Hands-On: Squash Commits
+
+**Step 1 — Create messy commits**
+
+```bash
+git switch -c feature-nav
+echo "<nav>Home</nav>" > nav.html
+git add nav.html
+git commit -m "Add nav"
+
+echo "<nav>Home | About</nav>" > nav.html
+git add nav.html
+git commit -m "Add about link"
+
+echo "<nav>Home | About | Contact</nav>" > nav.html
+git add nav.html
+git commit -m "Add contact link"
+
+echo "<nav>Home | About | Skills | Contact</nav>" > nav.html
+git add nav.html
+git commit -m "Add skills link"
+```
+
+**Step 2 — View the commits**
+
+```bash
+git log --oneline -4
+```
+
+**Expected output:**
+
+```
+d4e5f6g Add skills link
+c3d4e5f Add contact link
+b2c3d4e Add about link
+a1b2c3d Add nav
+```
+
+Four commits for one navigation bar — messy! Let us squash them.
+
+**Step 3 — Interactive rebase**
+
+```bash
+git rebase -i HEAD~4
+```
+
+This opens your editor with:
+
+```
+pick a1b2c3d Add nav
+pick b2c3d4e Add about link
+pick c3d4e5f Add contact link
+pick d4e5f6g Add skills link
+```
+
+**Step 4 — Change `pick` to `squash` (or `s`) for all except the first**
+
+```
+pick a1b2c3d Add nav
+squash b2c3d4e Add about link
+squash c3d4e5f Add contact link
+squash d4e5f6g Add skills link
+```
+
+Save and close the editor.
+
+**Step 5 — Edit the combined commit message**
+
+A new editor opens with all four messages. Replace with:
+
+```
+Add navigation bar with all links
+
+Includes: Home, About, Skills, Contact
+```
+
+Save and close.
+
+**Step 6 — Verify**
+
+```bash
+git log --oneline -2
+```
+
+**Expected output:**
+
+```
+e5f6g7h (HEAD -> feature-nav) Add navigation bar with all links
+... (previous commits)
+```
+
+Four messy commits are now one clean commit!
+
+### Merge and Clean Up
+
+```bash
+git switch main
+git merge feature-nav
+git branch -d feature-nav
+```
+
+### Interactive Rebase Commands
+
+| Command | Short | What It Does |
+|---------|-------|-------------|
+| `pick` | `p` | Keep the commit as-is |
+| `squash` | `s` | Combine with previous commit |
+| `fixup` | `f` | Combine and discard the message |
+| `reword` | `r` | Change the commit message |
+| `edit` | `e` | Pause to amend the commit |
+| `drop` | `d` | Delete the commit entirely |
+
+:::tip[HitaVir Tech says]
+"Squashing commits is like editing a rough draft into a polished essay. Your final PR should tell a clear story, not show every typo you fixed along the way."
+:::
+
+<KeyTakeaways>
+
+- `git rebase -i HEAD~N` opens an editable plan for the last N commits
+- Change `pick` to `squash` (or `s`) to fold a commit into the one above it
+- `fixup` squashes AND discards the message; `reword` edits just the message; `drop` deletes
+- Squash messy work-in-progress commits before opening a PR
+- Interactive rebase rewrites history — do it only on branches nobody else uses
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'You have 4 messy commits and want them combined into one. Which command starts the process?',
+      options: [
+        'git merge --squash HEAD~4',
+        'git commit --amend -4',
+        'git rebase -i HEAD~4',
+        'git squash 4',
+      ],
+      answer: 2,
+      explanation:
+        'Interactive rebase over the last 4 commits lets you mark three of them as squash into the first.',
+    },
+    {
+      question: 'In the rebase editor, what is the difference between squash and fixup?',
+      options: [
+        'squash keeps the commit message for editing; fixup discards it',
+        'fixup only works on merge commits',
+        'squash deletes the commit entirely',
+        'They are unrelated commands',
+      ],
+      answer: 0,
+      explanation:
+        'Both fold the commit into the previous one; squash lets you combine messages, fixup silently drops the folded message.',
+    },
+    {
+      question: 'Why should you squash BEFORE pushing a branch for review, not after others have pulled it?',
+      options: [
+        'GitHub blocks squashed commits',
+        'Squashing after pushing is slower',
+        'Squashed commits cannot be merged',
+        'Squashing rewrites history, which breaks branches other people already have',
+      ],
+      answer: 3,
+      explanation:
+        'Interactive rebase creates new commits with new hashes. Anyone holding the old ones ends up with divergent history.',
+    },
+  ]}
+/>
+
+<LessonComplete />

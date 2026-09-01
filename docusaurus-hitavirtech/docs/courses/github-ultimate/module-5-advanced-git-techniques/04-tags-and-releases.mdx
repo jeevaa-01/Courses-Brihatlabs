@@ -1,0 +1,123 @@
+---
+title: 'Tags and Releases'
+sidebar_position: 4
+description: 'Mark milestones with lightweight and annotated tags, push them to GitHub, and turn a tag into a published GitHub Release.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Create lightweight and annotated tags
+- Push tags to GitHub (they are not pushed by default)
+- Publish a GitHub Release from a tag
+
+</LearningObjectives>
+
+Tags mark specific points in history, typically for releases (v1.0, v2.0, etc.).
+
+### Create a Lightweight Tag
+
+```bash
+git tag v1.0
+```
+
+### Create an Annotated Tag (Recommended)
+
+```bash
+git tag -a v1.0.0 -m "First stable release of HitaVir Portfolio"
+```
+
+### List Tags
+
+```bash
+git tag
+```
+
+**Expected output:**
+
+```
+v1.0
+v1.0.0
+```
+
+### View Tag Details
+
+```bash
+git show v1.0.0
+```
+
+### Push Tags to GitHub
+
+```bash
+git push origin v1.0.0
+```
+
+Push all tags:
+
+```bash
+git push origin --tags
+```
+
+### Create a GitHub Release
+
+On GitHub:
+
+1. Go to your repository
+2. Click **Releases** on the right sidebar
+3. Click **Create a new release**
+4. Choose tag: `v1.0.0`
+5. Title: "v1.0.0 — First Stable Release"
+6. Add release notes
+7. Click **Publish release**
+
+### Delete a Tag
+
+```bash
+git tag -d v1.0
+git push origin --delete v1.0
+```
+
+:::tip[HitaVir Tech says]
+"Tags are like bookmarks in your project's timeline. Use them to mark important milestones like releases, demos, or major features."
+:::
+
+<KeyTakeaways>
+
+- Annotated tags (`git tag -a v1.0.0 -m "..."`) store author, date, and message — prefer them for releases
+- Tags are NOT pushed with regular commits — use `git push origin <tag>` or `--tags`
+- A GitHub Release wraps a tag with release notes and downloadable assets
+- Delete a tag locally with `git tag -d` and remotely with `git push origin --delete`
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which command creates an annotated tag?',
+      options: [
+        'git tag v1.0.0',
+        'git tag -a v1.0.0 -m "First stable release"',
+        'git release v1.0.0',
+        'git commit --tag v1.0.0',
+      ],
+      answer: 1,
+      explanation:
+        'The -a flag makes an annotated tag with metadata and a message. Plain git tag creates a lightweight tag.',
+    },
+    {
+      question: 'You created tag v1.0.0 locally, but it does not appear on GitHub. Why?',
+      options: [
+        'Tags expire after 24 hours',
+        'GitHub only supports lightweight tags',
+        'Tags must be created on GitHub first',
+        'Tags are not pushed by default — run git push origin v1.0.0',
+      ],
+      answer: 3,
+      explanation:
+        'A normal git push sends commits, not tags. Push the tag explicitly or use git push origin --tags.',
+    },
+  ]}
+/>
+
+<LessonComplete />

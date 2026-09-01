@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 635 322" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="635" height="322" rx="12" fill="#f8f9fa"/>
+  <text x="317" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Common Python Exceptions in Data Engineering</text>
+  <rect x="15" y="40" width="152" height="30" rx="6" fill="#1a73e8"/>
+  <text x="91" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Exception</text>
+  <rect x="172" y="40" width="217" height="30" rx="6" fill="#1a73e8"/>
+  <text x="281" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">When it happens</text>
+  <rect x="394" y="40" width="226" height="30" rx="6" fill="#1a73e8"/>
+  <text x="507" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">How to handle</text>
+  <rect x="15" y="76" width="152" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">FileNotFoundError</text>
+  <rect x="172" y="76" width="217" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="182" y="94" font-size="12" fill="#1a73e8">The path does not exist</text>
+  <rect x="394" y="76" width="226" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="404" y="94" font-size="12" fill="#1a73e8">Log a warning, return empty data</text>
+  <rect x="15" y="108" width="152" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">ValueError</text>
+  <rect x="172" y="108" width="217" height="28" rx="4" fill="white"/>
+  <text x="182" y="126" font-size="12" fill="#3c4043">Bad type conversion (int("abc"))</text>
+  <rect x="394" y="108" width="226" height="28" rx="4" fill="white"/>
+  <text x="404" y="126" font-size="12" fill="#3c4043">Skip that record, keep going</text>
+  <rect x="15" y="140" width="152" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">KeyError</text>
+  <rect x="172" y="140" width="217" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="182" y="158" font-size="12" fill="#1a73e8">Dict key missing</text>
+  <rect x="394" y="140" width="226" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="404" y="158" font-size="12" fill="#1a73e8">Use .get(key, default)</text>
+  <rect x="15" y="172" width="152" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">TypeError</text>
+  <rect x="172" y="172" width="217" height="28" rx="4" fill="white"/>
+  <text x="182" y="190" font-size="12" fill="#3c4043">Wrong type passed to a function</text>
+  <rect x="394" y="172" width="226" height="28" rx="4" fill="white"/>
+  <text x="404" y="190" font-size="12" fill="#3c4043">Validate types before the call</text>
+  <rect x="15" y="204" width="152" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">ZeroDivisionError</text>
+  <rect x="172" y="204" width="217" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="182" y="222" font-size="12" fill="#1a73e8">Divide by 0</text>
+  <rect x="394" y="204" width="226" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="404" y="222" font-size="12" fill="#1a73e8">Check denominator first</text>
+  <rect x="15" y="236" width="152" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">ConnectionError</text>
+  <rect x="172" y="236" width="217" height="28" rx="4" fill="white"/>
+  <text x="182" y="254" font-size="12" fill="#3c4043">Network or DB unreachable</text>
+  <rect x="394" y="236" width="226" height="28" rx="4" fill="white"/>
+  <text x="404" y="254" font-size="12" fill="#3c4043">Retry with backoff</text>
+  <rect x="15" y="268" width="152" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">PermissionError</text>
+  <rect x="172" y="268" width="217" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="182" y="286" font-size="12" fill="#1a73e8">Cannot write to file</text>
+  <rect x="394" y="268" width="226" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="404" y="286" font-size="12" fill="#1a73e8">Log critical, alert team</text>
+  <text x="317" y="316" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

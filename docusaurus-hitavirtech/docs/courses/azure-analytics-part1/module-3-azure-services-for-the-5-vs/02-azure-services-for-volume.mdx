@@ -1,0 +1,204 @@
+---
+title: 'Azure Services for Volume'
+sidebar_position: 2
+description: 'The Azure toolkit for data scale — ADLS Gen2, Blob tiers, Synapse, HDInsight, Databricks, the medallion architecture, and the volume decision tree.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Match ADLS Gen2, Blob Storage, Synapse, HDInsight, and Databricks to their Volume roles
+- Choose the right Blob storage tier — hot, cool, cold, archive — by access pattern
+- Lay out a data lake with the raw / curated / analytics medallion architecture
+- Use the volume decision tree to pick a stack by data size
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              AZURE  FOR  VOLUME                              |
+  |         "Store any amount of data, affordably."              |
+  +==============================================================+
+```
+
+### The Volume Lineup
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Storage Account](/img/courses/azure-icons/storage-accounts.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![HDInsight](/img/courses/azure-icons/hdinsight.svg) ![Databricks](/img/courses/azure-icons/databricks.svg)
+
+**ADLS Gen2** • **Blob Storage** • **Synapse Analytics** • **HDInsight** • **Databricks**
+
+### The Volume Toolkit
+
+| Service | Icon | Purpose |
+|---------|:---:|---------|
+| **Azure Data Lake Storage Gen2** | <img src="azure-icons/adls-gen2.svg" width="32" height="32" alt="ADLS Gen2" /> | Object storage built on Blob, hierarchical namespace — the data-lake foundation |
+| **Azure Blob Storage** | <img src="azure-icons/storage-accounts.svg" width="32" height="32" alt="Blob Storage" /> | Raw object storage — hot / cool / archive tiers |
+| **Azure Archive Storage** | <img src="azure-icons/recovery-vault.svg" width="32" height="32" alt="Archive" /> | Cheapest long-term vault (hours-to-retrieve) |
+| **Azure Synapse Analytics** | <img src="azure-icons/synapse.svg" width="32" height="32" alt="Synapse" /> | Analytics platform — dedicated + serverless SQL + Spark |
+| **Azure HDInsight** | <img src="azure-icons/hdinsight.svg" width="32" height="32" alt="HDInsight" /> | Managed Hadoop / Spark / Kafka clusters |
+| **Azure Databricks** | <img src="azure-icons/databricks.svg" width="32" height="32" alt="Databricks" /> | Managed Apache Spark + MLflow + Delta Lake |
+
+### Service Spotlight — Azure Data Lake Storage Gen2
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  AZURE  DATA  LAKE  STORAGE  GEN2                            |
+  +--------------------------------------------------------------+
+  |  Built on    :  Azure Blob Storage                           |
+  |  Durability  :  99.999999999%  (11 nines, GRS)               |
+  |  Scale       :  Exabytes (practically unlimited)             |
+  |  Pricing     :  ~$0.018 / GB / month (hot LRS)               |
+  |  Features    :  Hierarchical namespace, POSIX ACLs           |
+  |  Read by     :  Synapse, Databricks, HDInsight, Power BI     |
+  |                                                              |
+  |  If you remember only one Azure service - make it ADLS Gen2. |
+  +--------------------------------------------------------------+
+```
+
+### Blob Storage Tiers — The Cost Pyramid
+
+| Tier | Icon | Access Pattern | Relative Cost |
+|------|:---:|----------------|:-------------:|
+| **Hot** | 🔥 | Hot, frequent access | $$$$ |
+| **Cool** | ❄️ | Monthly access | $$ |
+| **Cold** | 🧊 | Every 90+ days | $ |
+| **Archive** | 🏔️ | Compliance vault, hours to rehydrate | ¢ |
+
+### Service Spotlight — Azure Synapse Analytics
+
+![Synapse](/img/courses/azure-icons/synapse.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  AZURE  SYNAPSE  ANALYTICS  -  Unified Analytics             |
+  +--------------------------------------------------------------+
+  |  Engines     :  Dedicated SQL Pool (MPP) + Serverless SQL +  |
+  |                 Apache Spark pools + Data Explorer pools     |
+  |  Storage     :  ADLS Gen2 under the hood                     |
+  |  SQL         :  T-SQL (SQL Server flavored)                  |
+  |  Integration :  One workspace, notebooks, pipelines, Power BI|
+  |                                                              |
+  |  One UI for lake, warehouse, Spark, and BI.                  |
+  +--------------------------------------------------------------+
+```
+
+### Service Spotlight — Azure Databricks
+
+![Databricks](/img/courses/azure-icons/databricks.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  AZURE  DATABRICKS  -  Managed Spark + Delta Lake            |
+  +--------------------------------------------------------------+
+  |  Engine      :  Apache Spark (Photon-accelerated)            |
+  |  Superpower  :  Delta Lake (ACID on the data lake)           |
+  |  ML          :  MLflow, Feature Store, AutoML                |
+  |  Governance  :  Unity Catalog                                |
+  |                                                              |
+  |  Use for petabyte-scale custom Spark + ML workloads.         |
+  +--------------------------------------------------------------+
+```
+
+### ADLS Data Lake — Medallion Architecture
+
+```
+  abfss://lake@hitavirtechanalytics.dfs.core.windows.net/
+    |
+    +-- raw/             <-- Bronze:  untouched source data
+    |     +-- sales/2026/04/22/orders.csv
+    |     +-- inventory/2026/04/22/stock.json
+    |
+    +-- curated/         <-- Silver:  cleaned, typed Parquet/Delta
+    |     +-- sales_fact/year=2026/month=04/day=22/part-001.parquet
+    |
+    +-- analytics/       <-- Gold:    pre-aggregated for BI
+          +-- daily_revenue/year=2026/month=04/day=22/part-001.parquet
+```
+
+- 🥉 **Raw (bronze)** — the lake's truth. Reprocess from here if anything goes wrong.
+- 🥈 **Curated (silver)** — cleaned, typed. Parquet or Delta for fast analytics.
+- 🥇 **Analytics (gold)** — pre-aggregated. Powers dashboards.
+
+### Volume Decision Tree
+
+```
+                      How much data?
+                            |
+       +--------------------+--------------------+
+       |                    |                    |
+     < 1 TB              1-100 TB             > 100 TB
+       |                    |                    |
+       v                    v                    v
+    Azure SQL DB          ADLS +              ADLS + Databricks +
+    or Synapse            Synapse             Synapse Dedicated +
+    Serverless            Serverless          Purview governance
+    (small + cheap)       (most common)        (huge platform)
+```
+
+:::tip[HitaVir Tech says]
+"Start with ADLS Gen2. Every Azure analytics service reads from it. You'll never
+regret putting data into the lake — you may regret putting it anywhere else first."
+:::
+
+<KeyTakeaways>
+
+- ADLS Gen2 is the data-lake foundation: 11-nines durability, exabyte scale, hierarchical namespace
+- Blob tiers trade cost against access speed: hot, cool, cold, archive
+- Synapse unifies dedicated SQL, serverless SQL, Spark, and BI in one workspace; Databricks is managed Spark + Delta Lake
+- The medallion layout (raw / curated / analytics) keeps bronze truth, silver cleanliness, and gold aggregates separate
+- Under 1 TB: Azure SQL or Serverless. 1-100 TB: ADLS + Synapse Serverless. Beyond: add Databricks, Dedicated pools, and Purview
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which Blob storage tier is the cheapest but takes hours to retrieve data?',
+      options: ['Hot', 'Cool', 'Archive', 'Cold'],
+      answer: 2,
+      explanation:
+        'Archive is the compliance vault — pennies to store, but rehydration takes hours.',
+    },
+    {
+      question: 'In the medallion architecture, where does untouched source data live?',
+      options: [
+        'The raw (bronze) zone',
+        'The curated (silver) zone',
+        'The analytics (gold) zone',
+        'A Synapse dedicated pool',
+      ],
+      answer: 0,
+      explanation:
+        'Raw/bronze is the lake’s truth — if anything downstream goes wrong, you reprocess from here.',
+    },
+    {
+      question: 'What feature distinguishes ADLS Gen2 from plain Blob Storage?',
+      options: [
+        'It is hosted outside Azure',
+        'Hierarchical namespace with POSIX ACLs on top of Blob',
+        'It only stores Parquet files',
+        'It requires a Synapse workspace',
+      ],
+      answer: 1,
+      explanation:
+        'ADLS Gen2 is Blob Storage plus a hierarchical namespace (real directories) and POSIX-style ACLs — what analytics engines need.',
+    },
+    {
+      question: 'A team has ~20 TB of data and standard SQL analytics needs. Per the decision tree, what is the most common fit?',
+      options: [
+        'A single Azure SQL Database',
+        'HDInsight Kafka cluster',
+        'Power BI Premium only',
+        'ADLS Gen2 + Synapse Serverless',
+      ],
+      answer: 3,
+      explanation:
+        'The 1-100 TB middle branch — data in the lake, queried by Synapse Serverless — is the most common pattern.',
+    },
+  ]}
+/>
+
+<LessonComplete />

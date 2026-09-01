@@ -1,0 +1,193 @@
+---
+title: 'Step 10: Views, indexes (intro), temporary tables'
+sidebar_position: 1
+description: 'Hide complex joins behind views, use temp tables as session scratch space, and create your first index.'
+---
+
+<DurationBadge minutes={20} />
+
+<LearningObjectives>
+
+- Create a view that hides a complex multi-table join behind a stable name
+- Use a temporary table as session-scoped scratch space
+- Create a simple index and state the read/write trade-off every index carries
+
+</LearningObjectives>
+
+> *"Data is a precious thing and will last longer than the systems themselves."*
+> — Tim Berners-Lee
+
+:::info[HitaVir Tech connection]
+Views, indexes, and temp tables are how you preserve query intent and performance against a schema that will outlive every line of application code touching it today.
+:::
+
+:::tip[Why this matters now]
+Every artifact you create here should have a name a teammate can read in 6 months. No `tmp1`, no `view_v2_final_FINAL`.
+:::
+
+### 10.1 — A VIEW: a saved query that looks like a table
+
+```sql
+-- Reusable: every "delivered order line" with customer and product
+CREATE OR REPLACE VIEW v_delivered_order_lines AS
+SELECT
+    o.order_id,
+    o.order_date,
+    c.customer_id,
+    c.full_name      AS customer,
+    p.product_id,
+    p.product_name,
+    p.category,
+    oi.quantity,
+    oi.line_amount
+FROM order_items AS oi
+JOIN orders    AS o ON o.order_id    = oi.order_id
+JOIN customers AS c ON c.customer_id = o.customer_id
+JOIN products  AS p ON p.product_id  = oi.product_id
+WHERE o.status = 'DELIVERED';
+
+-- Now query it like a table
+SELECT
+    category,
+    SUM(line_amount) AS revenue
+FROM v_delivered_order_lines
+GROUP BY category
+ORDER BY revenue DESC;
+```
+
+**Expected output (categories ranked by revenue):**
+
+```
++-------------+------------+
+| category    | revenue    |
++-------------+------------+
+| Electronics | 1394734.00 |
+| Furniture   |  139476.00 |
+| Apparel     |   64133.00 |
+| Fitness     |   56467.00 |
+| Footwear    |   55984.00 |
+| Home        |   46161.00 |
+| Stationery  |   13820.00 |
++-------------+------------+
+```
+
+:::tip[HitaVir Tech Tip]
+Views are a contract: downstream queries name *the view*, not the underlying tables. When the schema changes, you fix the view in one place — every consumer keeps working.
+:::
+
+### 10.2 — A TEMPORARY TABLE: scratch space for one session
+
+```sql
+-- A temp table lives only for this connection
+CREATE TEMPORARY TABLE tmp_top_customers AS
+SELECT
+    customer_id,
+    SUM(line_amount) AS total_spent
+FROM v_delivered_order_lines
+GROUP BY customer_id
+ORDER BY total_spent DESC
+LIMIT 5;
+
+SELECT
+    t.customer_id,
+    c.full_name,
+    t.total_spent
+FROM tmp_top_customers AS t
+JOIN customers AS c ON c.customer_id = t.customer_id
+ORDER BY t.total_spent DESC;
+```
+
+**Expected output:**
+
+```
++-------------+----------------+-------------+
+| customer_id | full_name      | total_spent |
++-------------+----------------+-------------+
+|           1 | Asha Sharma    |   317478.00 |
+|          30 | Tara Bhat      |   203293.00 |
+|           4 | Arjun Reddy    |   197292.00 |
+|           3 | Priya Patel    |   129286.00 |
+|           9 | Anjali Desai   |   105687.00 |
++-------------+----------------+-------------+
+```
+
+When you close the connection, MySQL drops the temp table automatically. Reset earlier with `DROP TEMPORARY TABLE tmp_top_customers;`.
+
+### 10.3 — An INDEX: faster lookups (intro — Step 13 goes deeper)
+
+```sql
+-- Index orders by date so date-range queries can skip the full scan
+CREATE INDEX idx_orders_order_date ON orders(order_date);
+
+-- Confirm the index exists
+SHOW INDEXES FROM orders;
+```
+
+You will see `idx_orders_order_date` listed alongside the auto-created `PRIMARY` index. Step 13 measures the speedup with `EXPLAIN`.
+
+:::info[Pro Insight]
+Every index you add speeds up reads but slows down writes (`INSERT`, `UPDATE`, `DELETE`) because MySQL has to maintain the index too. In OLTP systems, *indexes pay for themselves*. In write-heavy staging tables, an extra index can double load time. Pick deliberately.
+:::
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Create a view that hides a complex join
+- ✅ Use a temporary table as scratch space inside a session
+- ✅ Create a simple non-unique index
+- ✅ State the read/write trade-off of every index
+
+---
+
+<KeyTakeaways>
+
+- A view is a saved query that reads like a table — a stable contract over changing schemas
+- Temporary tables live only for the current connection and drop themselves on disconnect
+- Indexes speed up reads but slow down every write that must maintain them
+- Name artifacts for the reader: `v_` views, `tmp_` temp tables, `idx_` indexes
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'The orders table gets renamed columns. Why do consumers of v_delivered_order_lines keep working?',
+      options: [
+        'Views cache the old data forever',
+        'You fix the view definition in one place; consumers query the view, not the tables',
+        'MySQL automatically rewrites all downstream queries',
+        'They do not — every consumer must be updated',
+      ],
+      answer: 1,
+      explanation:
+        'That is the view-as-contract pattern: downstream code names the view, so schema changes are absorbed in one definition.',
+    },
+    {
+      question: 'What happens to a TEMPORARY TABLE when you close the connection?',
+      options: [
+        'It becomes a permanent table',
+        'It moves to the information_schema',
+        'MySQL drops it automatically',
+        'It is emptied but the structure remains',
+      ],
+      answer: 2,
+      explanation:
+        'Temp tables are session-scoped scratch space — no cleanup migration needed.',
+    },
+    {
+      question: 'Adding an index on a write-heavy staging table can…',
+      options: [
+        'only ever make things faster',
+        'noticeably slow down loads, because every INSERT must maintain the index',
+        'corrupt existing rows',
+        'disable foreign key checks',
+      ],
+      answer: 1,
+      explanation:
+        'Each index is an extra structure MySQL updates on every write — on staging tables that cost often outweighs the read benefit.',
+    },
+  ]}
+/>
+
+<LessonComplete />

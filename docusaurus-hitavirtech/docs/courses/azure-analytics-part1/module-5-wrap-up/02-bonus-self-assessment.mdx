@@ -1,0 +1,80 @@
+---
+title: 'Bonus - Self-Assessment'
+sidebar_position: 2
+description: 'Diagnose your own project with the 5 Vs — score each V from 1 to 5, find your bottleneck, and know which Azure services to study next.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Run any real project through the five diagnostic questions
+- Score each V from 1 (healthy) to 5 (painful) to locate your bottleneck
+- Map your bottleneck V to the Azure services worth studying first
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |        DIAGNOSE  YOUR  OWN  PROJECT  WITH  THE  5  Vs        |
+  +==============================================================+
+```
+
+Think of a data project you work on (or want to build). Run it through these five questions. The V that feels **most stressful** is your bottleneck — that's where to focus first.
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Defender](/img/courses/azure-icons/defender.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg) ![ML](/img/courses/azure-icons/ml.svg)
+
+| # | Question | Your V | Azure Services to Study |
+|:-:|----------|:------:|-------------------------|
+| 1 | "Do we have somewhere cheap and durable to store everything?" | 📦 Volume | 🪣 ADLS Gen2 • 🏛️ Synapse • 🔥 Databricks |
+| 2 | "Do we have to handle more than one data format?" | 🧩 Variety | 🕸️ ADF • 🔍 Synapse Serverless • 🤖 AI Vision • 📝 Doc Intelligence |
+| 3 | "Is the current data freshness good enough for stakeholders?" | 🌊 Velocity | 🌊 Event Hubs • 🎯 Stream Analytics • ⚡ Functions |
+| 4 | "Do stakeholders trust the numbers we publish?" | 🛡️ Veracity | 🧪 ADF Data Flows • 🛡️ Purview • 🕵️ Defender |
+| 5 | "Is anyone actually acting on our outputs?" | 💎 Value | 📊 Power BI • 🤖 Azure ML • 🎯 Personalizer |
+
+Score each V from 1 (healthy) to 5 (painful). The highest score is where a senior engineer should lead the next sprint.
+
+:::tip[Pro Tip]
+"Stacking solutions for Velocity when Veracity is the real problem is the most
+common and expensive Azure mistake. Diagnose honestly before you build."
+:::
+
+<KeyTakeaways>
+
+- The five diagnostic questions turn the 5 Vs into a practical project audit
+- Score each V 1-5; the highest score is your bottleneck and your next sprint's focus
+- Each bottleneck V comes with a short list of Azure services to study first
+- Misdiagnosing the bottleneck (e.g. buying streaming when trust is the problem) is the most expensive mistake
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In the self-assessment, what does a score of 5 on a V mean?',
+      options: [
+        'That V is completely healthy',
+        'That V is painful — it is likely your bottleneck',
+        'You should skip that V',
+        'You need five Azure services for it',
+      ],
+      answer: 1,
+      explanation:
+        '1 means healthy, 5 means painful. The highest-scoring V is where to focus the next sprint.',
+    },
+    {
+      question: 'Stakeholders do not trust the numbers your team publishes. Which V is the bottleneck and what should you study?',
+      options: [
+        'Velocity — Event Hubs and Stream Analytics',
+        'Volume — ADLS Gen2 and Databricks',
+        'Veracity — ADF Data Flows, Purview, and Defender',
+        'Value — Power BI and Personalizer',
+      ],
+      answer: 2,
+      explanation:
+        'Trust is Veracity. Quality rules (ADF Data Flows, Purview DQ) and governance are the fix — not faster pipelines.',
+    },
+  ]}
+/>
+
+<LessonComplete />

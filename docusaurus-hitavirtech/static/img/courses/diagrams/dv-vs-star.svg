@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 310" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="780" height="310" rx="12" fill="#f8f9fa"/>
+  <text x="390" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Data Vault vs Star Schema</text>
+
+  <!-- Header -->
+  <rect x="20" y="40" width="240" height="30" rx="6" fill="#5f6368"/>
+  <text x="140" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Feature</text>
+  <rect x="265" y="40" width="240" height="30" rx="6" fill="#7c3aed"/>
+  <text x="385" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Data Vault</text>
+  <rect x="510" y="40" width="250" height="30" rx="6" fill="#1a73e8"/>
+  <text x="635" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Star Schema</text>
+
+  <!-- Rows -->
+  <rect x="20" y="76" width="240" height="28" rx="4" fill="#e8eaed"/>
+  <text x="32" y="95" font-size="11" font-weight="600" fill="#202124">Purpose</text>
+  <rect x="265" y="76" width="240" height="28" rx="4" fill="#ede7f6"/>
+  <text x="385" y="95" text-anchor="middle" font-size="11" fill="#7c3aed">Integration and history</text>
+  <rect x="510" y="76" width="250" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="635" y="95" text-anchor="middle" font-size="11" fill="#1a73e8">Reporting and analytics</text>
+
+  <rect x="20" y="108" width="240" height="28" rx="4" fill="white"/>
+  <text x="32" y="127" font-size="11" font-weight="600" fill="#202124">Complexity</text>
+  <rect x="265" y="108" width="240" height="28" rx="4" fill="white"/>
+  <text x="385" y="127" text-anchor="middle" font-size="11" fill="#3c4043">High</text>
+  <rect x="510" y="108" width="250" height="28" rx="4" fill="white"/>
+  <text x="635" y="127" text-anchor="middle" font-size="11" fill="#3c4043">Medium</text>
+
+  <rect x="20" y="140" width="240" height="28" rx="4" fill="#e8eaed"/>
+  <text x="32" y="159" font-size="11" font-weight="600" fill="#202124">Flexibility</text>
+  <rect x="265" y="140" width="240" height="28" rx="4" fill="#ede7f6"/>
+  <text x="385" y="159" text-anchor="middle" font-size="11" font-weight="600" fill="#7c3aed">Very flexible</text>
+  <rect x="510" y="140" width="250" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="635" y="159" text-anchor="middle" font-size="11" fill="#1a73e8">Moderate</text>
+
+  <rect x="20" y="172" width="240" height="28" rx="4" fill="white"/>
+  <text x="32" y="191" font-size="11" font-weight="600" fill="#202124">Auditability</text>
+  <rect x="265" y="172" width="240" height="28" rx="4" fill="white"/>
+  <text x="385" y="191" text-anchor="middle" font-size="11" font-weight="600" fill="#7c3aed">Full</text>
+  <rect x="510" y="172" width="250" height="28" rx="4" fill="white"/>
+  <text x="635" y="191" text-anchor="middle" font-size="11" fill="#3c4043">Limited</text>
+
+  <rect x="20" y="204" width="240" height="28" rx="4" fill="#e8eaed"/>
+  <text x="32" y="223" font-size="11" font-weight="600" fill="#202124">Query performance</text>
+  <rect x="265" y="204" width="240" height="28" rx="4" fill="#ede7f6"/>
+  <text x="385" y="223" text-anchor="middle" font-size="11" fill="#7c3aed">Slower (many JOINs)</text>
+  <rect x="510" y="204" width="250" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="635" y="223" text-anchor="middle" font-size="11" font-weight="600" fill="#1a73e8">Faster (fewer JOINs)</text>
+
+  <rect x="20" y="236" width="240" height="28" rx="4" fill="white"/>
+  <text x="32" y="255" font-size="11" font-weight="600" fill="#202124">Best layer</text>
+  <rect x="265" y="236" width="240" height="28" rx="4" fill="white"/>
+  <text x="385" y="255" text-anchor="middle" font-size="11" fill="#3c4043">Silver / integration</text>
+  <rect x="510" y="236" width="250" height="28" rx="4" fill="white"/>
+  <text x="635" y="255" text-anchor="middle" font-size="11" fill="#3c4043">Gold / presentation</text>
+
+  <rect x="20" y="268" width="240" height="28" rx="4" fill="#e8eaed"/>
+  <text x="32" y="287" font-size="11" font-weight="600" fill="#202124">Industry use</text>
+  <rect x="265" y="268" width="240" height="28" rx="4" fill="#ede7f6"/>
+  <text x="385" y="287" text-anchor="middle" font-size="11" fill="#7c3aed">Banking, insurance, govt</text>
+  <rect x="510" y="268" width="250" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="635" y="287" text-anchor="middle" font-size="11" fill="#1a73e8">Retail, analytics, BI</text>
+
+  <text x="390" y="306" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech — They are complementary, not competing</text>
+</svg>

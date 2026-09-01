@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 548" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="740" height="548" rx="12" fill="#f8f9fa"/>
+  <text x="370" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#202124">Logical Execution Order of a SQL Query</text>
+  <text x="370" y="50" text-anchor="middle" font-size="12" fill="#5f6368">Written order &#8800; run order — you type SELECT first, but it executes 5th</text>
+
+  <!-- flow rail -->
+  <line x1="56" y1="94" x2="56" y2="486" stroke="#cfd8dc" stroke-width="2"/>
+
+  <!-- 1 FROM / JOIN -->
+  <rect x="92" y="72" width="576" height="44" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="1.5"/>
+  <text x="112" y="92" font-size="14" font-weight="700" font-family="monospace" fill="#11519e">FROM / JOIN</text>
+  <text x="112" y="109" font-size="11.5" fill="#5f6368">Assemble the working set of rows from the tables</text>
+  <circle cx="56" cy="94" r="15" fill="#1a73e8"/>
+  <text x="56" y="99" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">1</text>
+
+  <!-- 2 WHERE -->
+  <rect x="92" y="128" width="576" height="44" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="1.5"/>
+  <text x="112" y="148" font-size="14" font-weight="700" font-family="monospace" fill="#11519e">WHERE</text>
+  <text x="112" y="165" font-size="11.5" fill="#5f6368">Keep only rows that match the row filter (no aggregates yet)</text>
+  <circle cx="56" cy="150" r="15" fill="#1a73e8"/>
+  <text x="56" y="155" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">2</text>
+
+  <!-- 3 GROUP BY -->
+  <rect x="92" y="184" width="576" height="44" rx="8" fill="#efe9fb" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="112" y="204" font-size="14" font-weight="700" font-family="monospace" fill="#5b21b6">GROUP BY</text>
+  <text x="112" y="221" font-size="11.5" fill="#5f6368">Collapse the surviving rows into groups</text>
+  <circle cx="56" cy="206" r="15" fill="#7c3aed"/>
+  <text x="56" y="211" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">3</text>
+
+  <!-- 4 HAVING -->
+  <rect x="92" y="240" width="576" height="44" rx="8" fill="#efe9fb" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="112" y="260" font-size="14" font-weight="700" font-family="monospace" fill="#5b21b6">HAVING</text>
+  <text x="112" y="277" font-size="11.5" fill="#5f6368">Keep only groups that match the group filter (aggregates allowed)</text>
+  <circle cx="56" cy="262" r="15" fill="#7c3aed"/>
+  <text x="56" y="267" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">4</text>
+
+  <!-- 5 SELECT -->
+  <rect x="92" y="296" width="576" height="44" rx="8" fill="#e6f4ea" stroke="#1e8e3e" stroke-width="1.5"/>
+  <text x="112" y="316" font-size="14" font-weight="700" font-family="monospace" fill="#0b5a26">SELECT</text>
+  <text x="112" y="333" font-size="11.5" fill="#5f6368">Compute and choose the output columns — aliases are born here</text>
+  <circle cx="56" cy="318" r="15" fill="#1e8e3e"/>
+  <text x="56" y="323" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">5</text>
+
+  <!-- 6 DISTINCT -->
+  <rect x="92" y="352" width="576" height="44" rx="8" fill="#e6f4ea" stroke="#1e8e3e" stroke-width="1.5"/>
+  <text x="112" y="372" font-size="14" font-weight="700" font-family="monospace" fill="#0b5a26">DISTINCT</text>
+  <text x="112" y="389" font-size="11.5" fill="#5f6368">Remove duplicate rows from the result</text>
+  <circle cx="56" cy="374" r="15" fill="#1e8e3e"/>
+  <text x="56" y="379" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">6</text>
+
+  <!-- 7 ORDER BY -->
+  <rect x="92" y="408" width="576" height="44" rx="8" fill="#fdeede" stroke="#ef6c00" stroke-width="1.5"/>
+  <text x="112" y="428" font-size="14" font-weight="700" font-family="monospace" fill="#9a4a00">ORDER BY</text>
+  <text x="112" y="445" font-size="11.5" fill="#5f6368">Sort the result — may use SELECT aliases (they exist now)</text>
+  <circle cx="56" cy="430" r="15" fill="#ef6c00"/>
+  <text x="56" y="435" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">7</text>
+
+  <!-- 8 LIMIT -->
+  <rect x="92" y="464" width="576" height="44" rx="8" fill="#fdeede" stroke="#ef6c00" stroke-width="1.5"/>
+  <text x="112" y="484" font-size="14" font-weight="700" font-family="monospace" fill="#9a4a00">LIMIT / OFFSET</text>
+  <text x="112" y="501" font-size="11.5" fill="#5f6368">Return only the first N rows of the sorted result</text>
+  <circle cx="56" cy="486" r="15" fill="#ef6c00"/>
+  <text x="56" y="491" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">8</text>
+
+  <text x="370" y="532" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech &#183; blue = rows, purple = groups, green = columns, orange = output</text>
+</svg>

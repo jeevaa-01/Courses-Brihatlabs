@@ -1,0 +1,156 @@
+---
+title: 'Creating Directories — mkdir'
+sidebar_position: 1
+description: 'Create single and nested directories with mkdir and mkdir -p, and build the hitavir-workspace project structure.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Create directories with `mkdir` and nested trees with `mkdir -p`
+- Create several directories in one command
+- Build the hitavir-workspace structure used throughout the rest of the course
+
+</LearningObjectives>
+
+Now let us start building things! We will create our project workspace.
+
+### mkdir — Make Directory
+
+Create a single folder:
+
+```bash
+cd ~
+mkdir hitavir-workspace
+```
+
+Verify it was created:
+
+```bash
+ls
+```
+
+You should see `hitavir-workspace` in the list.
+
+### Create Nested Directories
+
+Create multiple levels at once with `-p`:
+
+```bash
+mkdir -p hitavir-workspace/projects/web-app
+mkdir -p hitavir-workspace/projects/api
+mkdir -p hitavir-workspace/logs
+mkdir -p hitavir-workspace/backups
+mkdir -p hitavir-workspace/config
+```
+
+### Verify the Structure
+
+```bash
+ls hitavir-workspace
+```
+
+**Expected output:**
+
+```
+backups  config  logs  projects
+```
+
+```bash
+ls hitavir-workspace/projects
+```
+
+**Expected output:**
+
+```
+api  web-app
+```
+
+### Create Multiple Directories at Once
+
+```bash
+mkdir -p hitavir-workspace/docs hitavir-workspace/scripts hitavir-workspace/temp
+```
+
+### Enter the Workspace
+
+```bash
+cd ~/hitavir-workspace
+pwd
+```
+
+**Expected output:**
+
+```
+/c/Users/YourName/hitavir-workspace
+```
+
+### Our Project Structure
+
+```
+hitavir-workspace/
+├── backups/
+├── config/
+├── docs/
+├── logs/
+├── projects/
+│   ├── api/
+│   └── web-app/
+├── scripts/
+└── temp/
+```
+
+**Real-world analogy:** Creating directories is like organizing a filing cabinet. You create drawers (folders) and sub-drawers to keep everything organized.
+
+:::tip[HitaVir Tech says]
+"A well-organized directory structure is the sign of a professional developer. Take 5 minutes to plan your folders and save hours of confusion later."
+:::
+
+### Common Mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| `mkdir projects/web-app` without parent | Use `mkdir -p` to create parents automatically |
+| Space in folder name | Use quotes `mkdir "my folder"` or avoid spaces |
+| Creating in wrong location | Always check `pwd` before creating |
+
+<KeyTakeaways>
+
+- `mkdir` creates one folder; `mkdir -p` creates any missing parent folders automatically
+- You can pass several paths to a single `mkdir -p` command
+- Always check `pwd` before creating folders so they land in the right place
+- The hitavir-workspace tree is your sandbox for every remaining lesson
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What does the -p flag in mkdir -p do?',
+      options: [
+        'Prints the created path',
+        'Creates parent directories as needed',
+        'Protects the directory from deletion',
+        'Makes the directory private',
+      ],
+      answer: 1,
+      explanation:
+        'With -p, mkdir builds every missing level of the path — mkdir -p a/b/c creates a, then b, then c.',
+    },
+    {
+      question: 'You run mkdir projects/web-app but the projects folder does not exist yet. What happens without -p?',
+      options: [
+        'Both folders are created anyway',
+        'Only projects is created',
+        'The command fails with an error',
+        'web-app is created in the current folder',
+      ],
+      answer: 2,
+      explanation:
+        'Plain mkdir refuses to create a folder inside a parent that does not exist — that is exactly what -p solves.',
+    },
+  ]}
+/>
+
+<LessonComplete />

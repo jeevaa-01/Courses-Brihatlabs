@@ -1,0 +1,253 @@
+---
+title: 'The 11 Guidelines'
+sidebar_position: 1
+description: 'The 11 battle-tested guidelines that separate top performers from tutorial followers — from Learn by Doing to Loyalty to the Process.'
+---
+
+<DurationBadge minutes={15} />
+
+<LearningObjectives>
+
+- Name and explain the 11 guidelines of the top-performer playbook
+- Apply the Execute-Understand-Explain cycle to every new concept
+- Recite the 7-step Debugging Protocol and classify errors into 5 types
+- Use the 3-attempt rebuild system and the 20-minute rule in daily practice
+
+</LearningObjectives>
+
+These 11 guidelines are your playbook. Read them carefully. Come back to them when you are stuck. Practise them until they become instinct.
+
+### 1. Learn by Doing
+
+Do not read passively. Execute every command yourself. Your fingers on the keyboard are worth more than hours of passive reading.
+
+**"Perform your prescribed duty, for action is far better than inaction."** *(Bhagavad Gita 3.8)* — Open the terminal right now. The learning starts when you start typing.
+
+```
+The Learning Pyramid (Retention Rates):
+  Lecture                  →   5%
+  Reading                  →  10%
+  Video                    →  20%
+  Watching a demo          →  30%
+  Discussion               →  50%
+  Practice by Doing        →  75%
+  Teaching Others           →  90%
+```
+
+HitaVir Tech codelabs operate in the 75-90% zone. Every step has a command to run, an output to verify, and a concept to explain.
+
+**Rules:**
+- Type every command yourself — never copy-paste blindly
+- Read every output — do not skip to the next step
+- Break things on purpose — intentional errors teach more than successes
+
+### 2. Execute, Understand, Explain Cycle
+
+First run it. Then understand why it works. Then explain it to someone else.
+
+**"Yoga is skill in action."** *(Bhagavad Gita 2.50)* — In interviews and production, hesitation kills. Build muscle memory through repetition.
+
+```
+  EXECUTE     →  Run the command, write the code
+       |
+  UNDERSTAND  →  Read the output, trace the logic, check what changed
+       |
+  EXPLAIN     →  Say out loud or write down WHY it worked
+```
+
+| Phase | Question to Ask |
+|-------|----------------|
+| Execute | What do I expect this to produce? |
+| Understand | Was the output what I expected? If not, why? |
+| Explain | Can I explain this to a teammate without looking at the guide? |
+
+If you can execute but cannot explain, you are not ready for an interview.
+
+### 3. Debugging Mindset
+
+Errors are puzzles to solve, not failures. Every stack trace is a clue.
+
+**"Yield not to faint-heartedness — it does not become you. Cast off this weakness and arise."** *(Bhagavad Gita 2.3)* — The bug thinks it can beat you. Prove it wrong.
+
+```
+The Debugging Protocol:
+  1. STOP       → Do not change anything yet
+  2. READ       → Read the ENTIRE error message
+  3. CLASSIFY   → Syntax? Connection? Permission? Data? Resource?
+  4. ISOLATE    → What specific line or component failed?
+  5. HYPOTHESIZE → What is the most likely cause?
+  6. TEST       → Change ONE thing and test again
+  7. DOCUMENT   → Write down what fixed it
+```
+
+Error Classification Quick Reference:
+
+| Type | Signs | First Check |
+|------|-------|-------------|
+| Syntax | `SyntaxError`, `unexpected token` | Check the exact line character by character |
+| Connection | `timeout`, `ECONNREFUSED` | Check endpoint, port, network |
+| Permission | `AccessDenied`, `403` | Check IAM roles, credentials |
+| Data | `NullPointer`, `TypeError` | Check input for nulls, type mismatches |
+| Resource | `OutOfMemory`, `quota exceeded` | Scale up or optimize the query |
+
+### 4. Checkpoint Validation
+
+After every step, verify your output matches the expected result before moving on.
+
+**"As a lamp in a windless place does not flicker, so is the steady mind of the disciplined."** *(Bhagavad Gita 6.19)* — Precision matters. Validate every checkpoint like your deployment depends on it — because one day, it will.
+
+```
+After CREATING a resource  → Verify it exists
+After LOADING data         → Check row counts and sample records
+After RUNNING a pipeline   → Check job status AND output quality
+After CONFIGURING          → Test the connection immediately
+```
+
+A missed validation in Step 3 becomes an impossible-to-debug failure in Step 15. Never skip a checkpoint.
+
+### 5. Rebuild Without the Guide
+
+After completing the lab, close this document and rebuild the entire project from memory.
+
+**"The restless mind is subdued through steady practice and detachment."** *(Bhagavad Gita 6.35)* — If you cannot rebuild it blind, you have not learned it. You have only followed instructions.
+
+```
+The 3-Attempt System:
+  Attempt 1 (Guided)  → Complete the lab, take notes, rebuild with guide open
+  Attempt 2 (Notes)   → Close the lab, use only your notes
+  Attempt 3 (Blind)   → Close everything, rebuild from a blank terminal
+
+  If you complete Attempt 3, you OWN that skill.
+```
+
+### 6. Learning Journal
+
+Write down what surprised you, what broke, and what clicked.
+
+**"Nothing in this world purifies like knowledge; in time you find it within yourself."** *(Bhagavad Gita 4.38)* — Your journal trains your engineering intuition. What you write down today becomes the instinct you rely on tomorrow.
+
+Every session, document:
+- Key concepts learned (one sentence each)
+- Commands you practiced
+- Errors you hit and how you fixed them
+- What clicked today (aha moments)
+- What is still confusing (to revisit)
+
+### 7. Productivity Discipline
+
+Set a timer. No distractions. One codelab equals one focused session.
+
+**"You have a right to your actions, but never to the fruits of your actions."** *(Bhagavad Gita 2.47)* — Block the time. Silence the noise. Execute.
+
+```
+Daily System:
+  First 15 min   → Review yesterday's notes, set today's goal
+  Core Block      → 2-3 hours of FOCUSED execution (no phone, no tabs)
+  After Lab       → Write journal entry, attempt rebuild
+  End of Day      → Commit to GitHub, plan tomorrow
+```
+
+The 20-Minute Rule: If stuck for 20 minutes, ask for help. Do not waste 2 hours.
+
+### 8. Real-World Thinking
+
+At every step, ask: "How would this work in a production environment with 10TB of data?"
+
+**"Perform your duty without attachment, and you will attain the highest."** *(Bhagavad Gita 3.19)* — The codelab is training. The real goal is your career. Think production from day one.
+
+```
+Four Questions for Every Step:
+  RELIABILITY  → What happens when this fails at 3 AM?
+  SCALABILITY  → Will this work with 100x the data?
+  COST         → Am I wasting cloud resources?
+  SECURITY     → Am I hardcoding credentials? (NEVER do this)
+```
+
+### 9. Team Mindset
+
+Share knowledge. Help your batchmates. Review each other's work.
+
+**"Whatever a great person does, others follow; the standard they set, the world pursues."** *(Bhagavad Gita 3.21)* — In real engineering teams, nobody ships alone. Start that habit now.
+
+- Explain a concept to a peer — teaching is the highest form of learning
+- Review someone else's code — you learn new patterns every time
+- Ask for help when stuck — strong engineers ask early, not late
+
+### 10. Let Go of Fear
+
+Do not be afraid to break things in a dev environment. That is how you learn what not to break in production.
+
+**"Heat and cold, pleasure and pain come and go — they are fleeting. Endure them bravely."** *(Bhagavad Gita 2.14)* — Fear of errors is the biggest enemy of learning. Break it, fix it, own it.
+
+```
+Things you SHOULD break on purpose:
+  - Run a command with wrong parameters (see what happens)
+  - Delete a file and recover it with Git
+  - Crash a Spark job with bad data (learn to read the stack trace)
+  - Misconfigure IAM and see what AccessDenied looks like
+```
+
+### 11. Loyalty to the Process
+
+When the lab gets hard, do not skip ahead. Stay with the struggle.
+
+**"The highest yogi sees all beings as their own self, sharing their joy and their pain."** *(Bhagavad Gita 6.32)* — The hard step you are stuck on right now? That is the one that will separate you in interviews.
+
+The moment you want to skip is the moment you need to stay. The struggle is the learning.
+
+### Your Goal
+
+Your goal is clear: land the dream job. Every command you type, every error you debug, every checkpoint you validate brings you one step closer. The only thing standing between you and that offer letter is execution. So stop thinking about it — and start building.
+
+<KeyTakeaways>
+
+- Learning happens at the keyboard: type every command, read every output, break things on purpose
+- Execute → Understand → Explain: if you cannot explain it without the guide, you are not interview-ready
+- Debug systematically with the 7-step protocol (STOP → READ → CLASSIFY → ISOLATE → HYPOTHESIZE → TEST → DOCUMENT)
+- Validate every checkpoint and rebuild every lab with the 3-attempt system — Attempt 3 (blind) means you OWN the skill
+- Use the 20-minute rule: if stuck for 20 minutes, ask for help instead of losing 2 hours
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'According to the Learning Pyramid in this lesson, which activity has the highest retention rate?',
+      options: [
+        'Watching a demo',
+        'Reading',
+        'Teaching others',
+        'Listening to a lecture',
+      ],
+      answer: 2,
+      explanation:
+        'Teaching others sits at ~90% retention; lectures are only ~5%. HitaVir codelabs aim for the 75-90% zone: practice by doing and teaching.',
+    },
+    {
+      question: 'What is the FIRST step of the 7-step Debugging Protocol?',
+      options: [
+        'Change one thing and test again',
+        'STOP — do not change anything yet',
+        'Search the error online',
+        'Restart the service',
+      ],
+      answer: 1,
+      explanation:
+        'STOP comes first. Then READ the entire error, CLASSIFY, ISOLATE, HYPOTHESIZE, TEST one change, and DOCUMENT the fix.',
+    },
+    {
+      question: 'In the 3-attempt rebuild system, what does Attempt 3 require?',
+      options: [
+        'Rebuilding with the guide open',
+        'Rebuilding using only your notes',
+        'Pair-rebuilding with a batchmate',
+        'Rebuilding blind — from a blank terminal with everything closed',
+      ],
+      answer: 3,
+      explanation:
+        'Attempt 1 is guided, Attempt 2 uses only notes, Attempt 3 is blind. Completing Attempt 3 means you truly own the skill.',
+    },
+  ]}
+/>
+
+<LessonComplete />

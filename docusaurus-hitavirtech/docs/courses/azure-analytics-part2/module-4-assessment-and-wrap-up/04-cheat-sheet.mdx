@@ -1,0 +1,142 @@
+---
+title: 'Cheat Sheet - The One-Page Summary'
+sidebar_position: 4
+description: 'The one-page recall aid — lake, warehouse, and lakehouse in 30 seconds each, the six reference architectures, and the golden rules.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Keep a one-page recall aid for lakes, warehouses, and the lakehouse
+- Apply the golden rules whenever you start a new Azure analytics project
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |          AZURE  ANALYTICS  -  PART 2  CHEAT  SHEET           |
+  |                  (screenshot and keep)                       |
+  +==============================================================+
+```
+
+### The Lakehouse Toolbox — At a Glance
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Databricks](/img/courses/azure-icons/databricks.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Data Explorer](/img/courses/azure-icons/data-explorer.svg) ![Cosmos DB](/img/courses/azure-icons/cosmos-db.svg) ![Data Shares](/img/courses/azure-icons/data-shares.svg) ![Key Vault](/img/courses/azure-icons/key-vault.svg) ![Defender](/img/courses/azure-icons/defender.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg) ![ML](/img/courses/azure-icons/ml.svg) ![OpenAI](/img/courses/azure-icons/openai.svg) ![AI Search](/img/courses/azure-icons/ai-search.svg)
+
+### 🪣 Data Lake in 30 Seconds
+
+```
+  Store ANY data  --->  ADLS Gen2 (raw | curated | analytics)
+  Schema-on-READ  --->  decided at query time
+  Read by         --->  Synapse, Databricks, Power BI, Azure ML
+  Governed by     --->  Microsoft Purview + Azure Policy
+```
+
+### 🏛️ Data Warehouse in 30 Seconds
+
+```
+  Columnar + MPP  --->  fast aggregation on billions of rows
+  Schema-on-WRITE --->  decided before load
+  Star schema     --->  fact + dimensions
+  Azure service   --->  Synapse Dedicated / Fabric Warehouse
+```
+
+### 🏡 Modern Data Architecture in 30 Seconds
+
+```
+  One lake  +  many engines  +  one catalog  +  one security model  +  native AI/ML
+```
+
+| Pillar | Icon | Services |
+|--------|:---:|----------|
+| Scalable lake | 🪣 | ADLS Gen2 / OneLake |
+| Purpose-built engines | 🧰 | Synapse, Databricks, Data Explorer, Cosmos DB |
+| Seamless movement | 🔀 | Mirroring, Shortcuts, Direct Lake, ADF |
+| Unified governance | 🔐 | Purview, Entra ID, Key Vault, Defender, Policy |
+| Built-in AI | 🤖 | Azure ML, OpenAI, AI Search, Copilot |
+
+### 🗺️ The Six Reference Architectures
+
+| # | Pattern | When | Core |
+|:-:|---------|------|------|
+| 1 | Batch BI | Daily dashboards | 🏛️ Synapse + 📊 Power BI |
+| 2 | Real-Time | Fraud, IoT, live | 🌊 Event Hubs + 🎯 Stream Analytics |
+| 3 | Log Obs. | Search production logs | 🔬 Data Explorer / Sentinel |
+| 4 | 360 | Unify customer view | 🪣 ADLS + 🕸️ ADF + 🏛️ Synapse |
+| 5 | ML | Predict & personalize | 🤖 Azure ML + 🔥 Databricks |
+| 6 | Data Mesh | Enterprise domain ownership | 🏗️ Purview + 🏡 Fabric |
+
+### 🎯 The Golden Rules
+
+- 🪣 **ADLS Gen2 is always the floor.** Never start an Azure analytics platform on anything else.
+- 📚 **No catalog = data swamp.** Microsoft Purview from day one.
+- 🗂️ **Delta / Parquet + partitioning** — 10-100× cheaper queries.
+- 🔭 **Use Serverless / Direct Lake** before duplicating lake data into Dedicated pools.
+- 🚀 **Try Fabric Mirroring** before writing any new replication pipeline.
+- 🛡️ **Enforce data quality at ingest** — not in a dashboard post-mortem.
+- 🗺️ **Map every new project to one of the six patterns** — don't invent a seventh without very good reason.
+- 💰 **Delete the resource group** after labs. Simplest cost guardrail on Azure.
+
+### 🧠 The One-Sentence Takeaways
+
+- 📦 **Volume** — design for 100× (Part 1).
+- 🧩 **Variety** — structure is created, not found (Part 1).
+- 🌊 **Velocity** — match speed to decisions, no faster (Part 1).
+- 🛡️ **Veracity** — quality rules are pipeline-level (Part 1).
+- 💎 **Value** — start from the decision, work backwards (Part 1).
+- 🪣 **Data Lake** — store everything cheaply, govern strictly (Part 2).
+- 🏛️ **Warehouse** — columnar + MPP + star schema (Part 2).
+- 🏡 **Lakehouse** — one lake, many engines, one catalog (Part 2).
+
+### 📈 Next Steps
+
+1. Redraw one of the six architectures for a project in your current job.
+2. Extend the Part 1 lab: add an ADF pipeline to convert CSV to Parquet.
+3. Try Fabric free trial with the sample lakehouse dataset.
+4. Read the Azure Well-Architected Framework end-to-end.
+5. Move to **Part 3** — Hands-On Lakehouse (ADF + Synapse + Power BI capstone).
+
+---
+
+*Azure service icons used in this course are from the official Microsoft Azure Public Service Icons set (V23), freely distributed by Microsoft for use in architecture diagrams and educational materials.*
+
+<KeyTakeaways>
+
+- ADLS Gen2 is always the floor, and Purview belongs in the stack from day one
+- Delta/Parquet with partitioning makes queries 10-100× cheaper
+- Reach for Serverless, Direct Lake, or Mirroring before copying data anywhere
+- Map every new project to one of the six patterns — and delete the resource group after every lab
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'According to the golden rules, which storage should every Azure analytics platform start on?',
+      options: [
+        'Azure SQL Database',
+        'Cosmos DB',
+        'ADLS Gen2',
+        'Blob archive tier only',
+      ],
+      answer: 2,
+      explanation:
+        'ADLS Gen2 (or OneLake) is always the floor — every engine and every one of the six patterns builds on it.',
+    },
+    {
+      question: 'What is the simplest cost guardrail after finishing an Azure lab?',
+      options: [
+        'Scale the Dedicated pool down to 60 DWUs',
+        'Delete the resource group the same day',
+        'Pause Power BI refreshes',
+        'Email the finance team',
+      ],
+      answer: 1,
+      explanation:
+        'Deleting the resource group removes every billable resource in one action — the one habit that keeps labs free.',
+    },
+  ]}
+/>
+
+<LessonComplete />

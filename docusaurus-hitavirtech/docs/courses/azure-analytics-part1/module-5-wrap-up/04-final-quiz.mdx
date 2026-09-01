@@ -1,0 +1,129 @@
+---
+title: 'Final Quiz'
+sidebar_position: 4
+description: 'The graded final quiz for Azure Analytics Part 1 — concepts, the 5 Vs, the Azure service map, and the hands-on lab. Aim for at least 7 of 9.'
+---
+
+<DurationBadge minutes={7} />
+
+# Final Quiz
+
+This quiz covers the whole course. **Aim for at least 7 of 9.** If you miss a
+question, revisit the lesson it came from before moving on to Azure Analytics
+Part 2.
+
+<Quiz
+  title="Graded final quiz"
+  questions={[
+    {
+      question: '"What will happen next month?" belongs to which analytics maturity level, and what powers it?',
+      options: [
+        'L3 Predictive — machine learning',
+        'L1 Descriptive — SQL and BI',
+        'L2 Diagnostic — drill-down SQL',
+        'L4 Prescriptive — manual reports',
+      ],
+      answer: 0,
+      explanation:
+        'Forecasting is predictive (L3) analytics, and it is the first level that requires machine learning.',
+    },
+    {
+      question: 'Which list contains the complete 5 Vs of Big Data?',
+      options: [
+        'Volume, Velocity, Validity, Veracity, Vision',
+        'Volume, Variety, Velocity, Veracity, Value',
+        'Variety, Velocity, Vision, Value, Volume',
+        'Volume, Variety, Version, Veracity, Value',
+      ],
+      answer: 1,
+      explanation:
+        'Doug Laney’s original Volume, Variety, Velocity plus the industry additions Veracity and Value.',
+    },
+    {
+      question: 'Which Azure service is "the one to remember" — the storage foundation every analytics service reads from?',
+      options: [
+        'Azure Cosmos DB',
+        'Azure Event Grid',
+        'Azure Data Lake Storage Gen2',
+        'Azure Key Vault',
+      ],
+      answer: 2,
+      explanation:
+        'ADLS Gen2 — 11-nines durability, exabyte scale, hierarchical namespace — is the data-lake foundation of the whole stack.',
+    },
+    {
+      question: 'A team must correlate PDFs, call recordings, and SQL tables in one analysis. Which V is their main challenge?',
+      options: [
+        'Volume',
+        'Velocity',
+        'Value',
+        'Variety',
+      ],
+      answer: 3,
+      explanation:
+        'Multiple formats needing different pipelines (Doc Intelligence, AI Speech, relational SQL) is a Variety problem.',
+    },
+    {
+      question: 'Which Azure service pair handles real-time ingestion and continuous SQL over that stream?',
+      options: [
+        'Event Hubs + Stream Analytics',
+        'ADLS Gen2 + Synapse Dedicated',
+        'Data Factory + Power BI',
+        'Key Vault + Azure Policy',
+      ],
+      answer: 0,
+      explanation:
+        'Event Hubs is the durable event conveyor belt; Stream Analytics runs continuous SQL over it in milliseconds.',
+    },
+    {
+      question: 'In the medallion data lake, cleaned and typed Parquet/Delta data lives in which zone?',
+      options: [
+        'The raw (bronze) zone',
+        'The curated (silver) zone',
+        'The analytics (gold) zone',
+        'The archive tier',
+      ],
+      answer: 1,
+      explanation:
+        'Bronze is untouched truth, silver is cleaned and typed, gold is pre-aggregated for BI.',
+    },
+    {
+      question: 'Which service gives you data catalog, column-level lineage, and data-quality rules for governance?',
+      options: [
+        'Azure Monitor',
+        'Azure Functions',
+        'Microsoft Purview',
+        'Azure Archive Storage',
+      ],
+      answer: 2,
+      explanation:
+        'Purview is the governance nervous system — catalog, lineage, DQ rules, and sensitivity insights.',
+    },
+    {
+      question: 'In the hands-on lab, why did you assign Storage Blob Data Contributor to the Synapse managed identity?',
+      options: [
+        'To make the storage account cheaper',
+        'To enable Power BI dashboards',
+        'To turn on the hierarchical namespace',
+        'So Synapse Serverless SQL could read files in the lake',
+      ],
+      answer: 3,
+      explanation:
+        'Without that RBAC role, the workspace identity cannot read the ADLS container and every OPENROWSET query fails.',
+    },
+    {
+      question: 'Before building any dashboard or pipeline, what is the Value-first question to ask?',
+      options: [
+        'What decision will change because of this?',
+        'Which chart types should we use?',
+        'How many services can we include?',
+        'Can it run in real time?',
+      ],
+      answer: 0,
+      explanation:
+        'If nobody can name a decision the insight changes, it belongs in the dashboard graveyard — don’t build it.',
+    },
+  ]}
+/>
+
+<LessonComplete />

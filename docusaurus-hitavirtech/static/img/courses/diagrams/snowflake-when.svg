@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 220" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="780" height="220" rx="12" fill="#f8f9fa"/>
+  <text x="390" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#202124">When to Use Which Schema?</text>
+
+  <rect x="15" y="44" width="380" height="34" rx="6" fill="#ea8600"/>
+  <text x="205" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="white">Use Snowflake Schema When</text>
+  <rect x="400" y="44" width="365" height="34" rx="6" fill="#1a73e8"/>
+  <text x="582" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="white">Use Star Schema When</text>
+
+  <rect x="15" y="84" width="380" height="30" rx="4" fill="#fef7e0"/>
+  <text x="205" y="104" text-anchor="middle" font-size="12" fill="#b06000">Storage costs are very high</text>
+  <rect x="400" y="84" width="365" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="582" y="104" text-anchor="middle" font-size="12" fill="#1557b0">Query speed is the priority</text>
+
+  <rect x="15" y="118" width="380" height="30" rx="4" fill="white"/>
+  <text x="205" y="138" text-anchor="middle" font-size="12" fill="#3c4043">Dimension data changes frequently</text>
+  <rect x="400" y="118" width="365" height="30" rx="4" fill="white"/>
+  <text x="582" y="138" text-anchor="middle" font-size="12" fill="#3c4043">Simplicity is valued</text>
+
+  <rect x="15" y="152" width="380" height="30" rx="4" fill="#fef7e0"/>
+  <text x="205" y="172" text-anchor="middle" font-size="12" fill="#b06000">Data governance requires normalization</text>
+  <rect x="400" y="152" width="365" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="582" y="172" text-anchor="middle" font-size="12" fill="#1557b0">Analysts write their own queries</text>
+
+  <rect x="15" y="186" width="380" height="30" rx="4" fill="white"/>
+  <text x="205" y="206" text-anchor="middle" font-size="12" fill="#3c4043">Dimension tables are very large</text>
+  <rect x="400" y="186" width="365" height="30" rx="4" fill="white"/>
+  <text x="582" y="206" text-anchor="middle" font-size="12" font-weight="600" fill="#1a73e8">Dashboard performance matters</text>
+</svg>

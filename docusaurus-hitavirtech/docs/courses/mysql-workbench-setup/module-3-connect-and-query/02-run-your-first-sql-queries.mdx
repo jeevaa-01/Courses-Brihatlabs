@@ -1,0 +1,230 @@
+---
+title: 'Run Your First SQL Queries'
+sidebar_position: 2
+description: 'Create the hitavir_db database and a students table, then insert, select, filter, group, and update real data.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Create a database with `CREATE DATABASE` and switch to it with `USE`
+- Build a `students` table with a primary key and defaults
+- Insert rows and read them back with `SELECT`, `WHERE`, and `GROUP BY`
+- Modify existing rows with `UPDATE`
+
+</LearningObjectives>
+
+Let us write real SQL queries to create a database, tables, and insert data.
+
+### Query 1 — Show All Databases
+
+```sql
+SHOW DATABASES;
+```
+
+Click the **lightning bolt** to execute. **Expected output:**
+
+```
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+```
+
+These are built-in system databases. You will add your own next.
+
+### Query 2 — Create Your First Database
+
+```sql
+CREATE DATABASE hitavir_db;
+```
+
+**Expected output:**
+
+```
+1 row(s) affected
+```
+
+### Query 3 — Verify It Was Created
+
+```sql
+SHOW DATABASES;
+```
+
+You should now see `hitavir_db` in the list!
+
+### Query 4 — Use Your Database
+
+```sql
+USE hitavir_db;
+```
+
+This tells MySQL: "I want to work with the hitavir_db database now."
+
+### Query 5 — Create a Table
+
+```sql
+CREATE TABLE students (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100),
+    batch INT DEFAULT 5,
+    enrollment_date DATE DEFAULT (CURRENT_DATE)
+);
+```
+
+**Expected output:**
+
+```
+0 row(s) affected
+```
+
+### Query 6 — Insert Data
+
+```sql
+INSERT INTO students (first_name, last_name, email, batch) VALUES
+('Priya', 'Sharma', 'priya@hitavir.tech', 5),
+('Rahul', 'Patil', 'rahul@hitavir.tech', 5),
+('Sneha', 'Kulkarni', 'sneha@hitavir.tech', 5),
+('Amit', 'Joshi', 'amit@hitavir.tech', 4),
+('Kavya', 'Reddy', 'kavya@hitavir.tech', 4);
+```
+
+**Expected output:**
+
+```
+5 row(s) affected
+```
+
+### Query 7 — Read Your Data
+
+```sql
+SELECT * FROM students;
+```
+
+**Expected output:**
+
+```
++------------+------------+-----------+--------------------+-------+-----------------+
+| student_id | first_name | last_name | email              | batch | enrollment_date |
++------------+------------+-----------+--------------------+-------+-----------------+
+|          1 | Priya      | Sharma    | priya@hitavir.tech |     5 | 2026-04-06      |
+|          2 | Rahul      | Patil     | rahul@hitavir.tech |     5 | 2026-04-06      |
+|          3 | Sneha      | Kulkarni  | sneha@hitavir.tech |     5 | 2026-04-06      |
+|          4 | Amit       | Joshi     | amit@hitavir.tech  |     4 | 2026-04-06      |
+|          5 | Kavya      | Reddy     | kavya@hitavir.tech |     4 | 2026-04-06      |
++------------+------------+-----------+--------------------+-------+-----------------+
+```
+
+### Query 8 — Filter Data
+
+```sql
+SELECT first_name, last_name, email
+FROM students
+WHERE batch = 5;
+```
+
+### Query 9 — Count Records
+
+```sql
+SELECT batch, COUNT(*) AS total_students
+FROM students
+GROUP BY batch;
+```
+
+**Expected output:**
+
+```
++-------+----------------+
+| batch | total_students |
++-------+----------------+
+|     4 |              2 |
+|     5 |              3 |
++-------+----------------+
+```
+
+### Query 10 — Update Data
+
+```sql
+UPDATE students
+SET email = 'priya.sharma@hitavir.tech'
+WHERE student_id = 1;
+```
+
+### Quick SQL Reference
+
+| Command | Purpose | Example |
+|---------|---------|---------|
+| `SHOW DATABASES;` | List all databases | |
+| `CREATE DATABASE` | Create new database | `CREATE DATABASE mydb;` |
+| `USE` | Switch to a database | `USE mydb;` |
+| `CREATE TABLE` | Create a new table | See above |
+| `INSERT INTO` | Add rows to a table | See above |
+| `SELECT` | Read data | `SELECT * FROM table;` |
+| `UPDATE` | Modify existing data | `UPDATE table SET col=val;` |
+| `DELETE` | Remove rows | `DELETE FROM table WHERE id=1;` |
+| `DROP TABLE` | Delete a table | `DROP TABLE students;` |
+| `DROP DATABASE` | Delete a database | `DROP DATABASE mydb;` |
+
+:::tip[HitaVir Tech says]
+"You just created a database, built a table, inserted data, and queried it — all in 10 minutes. This is exactly what data engineers do every day. The SQL you just wrote is the same SQL used at Google, Amazon, and Netflix."
+:::
+
+<KeyTakeaways>
+
+- `SHOW DATABASES;` lists everything; new installs ship four **system databases**
+- Run `USE database_name;` before creating tables or querying them
+- `AUTO_INCREMENT PRIMARY KEY` numbers rows for you; `DEFAULT` fills omitted columns
+- `SELECT … WHERE` filters rows; `GROUP BY` + `COUNT(*)` summarizes them
+- Every SQL statement ends with a **semicolon**
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which statement must you run before creating tables inside hitavir_db?',
+      options: [
+        'OPEN hitavir_db;',
+        'USE hitavir_db;',
+        'SELECT hitavir_db;',
+        'SHOW hitavir_db;',
+      ],
+      answer: 1,
+      explanation:
+        'USE switches the active database so subsequent CREATE TABLE and SELECT statements target it.',
+    },
+    {
+      question: 'What does AUTO_INCREMENT do on the student_id column?',
+      options: [
+        'MySQL assigns the next number automatically for each new row',
+        'It increases every student\'s batch by one',
+        'It sorts results in ascending order',
+        'It encrypts the ID for security',
+      ],
+      answer: 0,
+      explanation:
+        'AUTO_INCREMENT generates 1, 2, 3, … so you never insert the primary key manually.',
+    },
+    {
+      question: 'Which query counts students per batch?',
+      options: [
+        'SELECT COUNT(batch) FROM students WHERE batch = ALL;',
+        'SHOW COUNT FROM students;',
+        'SELECT batch, COUNT(*) FROM students GROUP BY batch;',
+        'COUNT students BY batch;',
+      ],
+      answer: 2,
+      explanation:
+        'GROUP BY collapses rows per batch value and COUNT(*) tallies each group.',
+    },
+  ]}
+/>
+
+<LessonComplete />

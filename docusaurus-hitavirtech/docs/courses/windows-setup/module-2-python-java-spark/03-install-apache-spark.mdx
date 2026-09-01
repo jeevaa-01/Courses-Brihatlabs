@@ -1,0 +1,114 @@
+---
+title: 'Install Apache Spark (Local)'
+sidebar_position: 3
+description: 'Extract Spark 3.5.1, add winutils.exe, set SPARK_HOME/HADOOP_HOME, and run your first PySpark DataFrame.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Extract Spark 3.5.1 pre-built for Hadoop 3.3
+- Install `winutils.exe` — the Windows-specific Hadoop shim
+- Set `SPARK_HOME`, `HADOOP_HOME`, and `PYSPARK_PYTHON`
+- Verify with a real PySpark DataFrame
+
+</LearningObjectives>
+### Step 1 - Download Spark 3.5.1
+
+Go to [https://spark.apache.org/downloads.html](https://spark.apache.org/downloads.html)
+
+Select: Spark **3.5.1**, Pre-built for **Hadoop 3.3**
+
+### Step 2 - Extract Spark
+
+```bash
+mkdir -p /c/spark
+mv ~/Downloads/spark-3.5.1-bin-hadoop3.tgz /c/spark/
+cd /c/spark && tar -xzf spark-3.5.1-bin-hadoop3.tgz
+ls spark-3.5.1-bin-hadoop3/
+```
+
+### Step 3 - Download winutils.exe (Windows-specific)
+
+PySpark on Windows needs `winutils.exe` to work correctly:
+
+```bash
+mkdir -p /c/hadoop/bin
+curl -L -o /c/hadoop/bin/winutils.exe \
+  https://github.com/cdarlint/winutils/raw/master/hadoop-3.3.5/bin/winutils.exe
+```
+
+### Step 4 - Set Environment Variables
+
+```powershell
+# PowerShell as Administrator
+[System.Environment]::SetEnvironmentVariable("SPARK_HOME", "C:\spark\spark-3.5.1-bin-hadoop3", "Machine")
+[System.Environment]::SetEnvironmentVariable("HADOOP_HOME", "C:\hadoop", "Machine")
+[System.Environment]::SetEnvironmentVariable("PYSPARK_PYTHON", "python", "Machine")
+
+$path = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
+[System.Environment]::SetEnvironmentVariable("Path", $path + ";C:\spark\spark-3.5.1-bin-hadoop3\bin", "Machine")
+```
+
+### Step 5 - Verify PySpark
+
+```bash
+python -c "
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.appName('Test').getOrCreate()
+df = spark.createDataFrame([('Alice', 25), ('Bob', 30)], ['name', 'age'])
+df.show()
+spark.stop()
+print('PySpark works!')"
+```
+
+Expected output:
+```
++-----+---+
+| name|age|
++-----+---+
+|Alice| 25|
+|  Bob| 30|
++-----+---+
+PySpark works!
+```
+
+<KeyTakeaways>
+
+- Spark on Windows needs `winutils.exe` under `HADOOP_HOME/bin` — without it you get cryptic native-IO errors
+- Three env vars make it work: `SPARK_HOME`, `HADOOP_HOME`, `PYSPARK_PYTHON`
+- The `df.show()` smoke test proves the whole chain: Python → Java → Spark
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is winutils.exe for?',
+      options: [
+        'It provides Hadoop native Windows binaries that Spark needs for file operations',
+        'It is the Spark job scheduler',
+        'It converts Windows paths to Unix paths',
+        'It installs Java automatically',
+      ],
+      answer: 0,
+      explanation:
+        'Hadoop ships POSIX-oriented native code; winutils.exe is the Windows port Spark calls for local filesystem operations.',
+    },
+    {
+      question: 'SPARK_HOME should point to…',
+      options: [
+        'The extracted spark-3.5.1-bin-hadoop3 folder',
+        'The folder containing winutils.exe',
+        'C:\\spark\\bin',
+        'The Python site-packages directory',
+      ],
+      answer: 0,
+      explanation:
+        'SPARK_HOME is the Spark distribution root; HADOOP_HOME (C:\\hadoop) is where winutils lives.',
+    },
+  ]}
+/>
+
+<LessonComplete />

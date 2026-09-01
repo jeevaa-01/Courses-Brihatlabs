@@ -1,0 +1,98 @@
+---
+title: 'Step 1 — Set Up Your Learning Directory'
+sidebar_position: 1
+description: 'Create the five-directory structure of your personal learning system with a single mkdir -p command and verify it with find.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Create the full `hitavir-learning-system` directory tree with one `mkdir -p` command
+- Verify the structure with `find` and explain what the `-p` flag does
+
+</LearningObjectives>
+
+### Step Objective
+
+Create the complete directory structure for your personal learning system.
+
+### Commands
+
+```bash
+# Create the full directory structure
+mkdir -p ~/hitavir-learning-system/{journal,debug-log,notes,challenges,interview-prep}
+
+# Verify the structure
+find ~/hitavir-learning-system -type d | sort
+```
+
+### Why This Step Matters
+
+Every production system starts with a well-organized structure. Your learning system is no different. Engineers who organize their knowledge systematically learn faster and retain more. This directory becomes your personal engineering knowledge base.
+
+### Expected Output
+
+```
+/home/user/hitavir-learning-system
+/home/user/hitavir-learning-system/challenges
+/home/user/hitavir-learning-system/debug-log
+/home/user/hitavir-learning-system/interview-prep
+/home/user/hitavir-learning-system/journal
+/home/user/hitavir-learning-system/notes
+```
+
+### Common Errors and Fixes
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `mkdir: cannot create directory` | Parent path does not exist | The `-p` flag handles this — verify you included it |
+| `Permission denied` | No write access to home directory | Check with `ls -la ~` or use a different base path |
+
+### Checkpoint
+
+```
+Verify before moving on:
+  [x] All 5 subdirectories exist
+  [x] You typed the command yourself (not copy-pasted)
+  [x] You can explain what -p does in mkdir
+```
+
+<KeyTakeaways>
+
+- One command creates the whole tree: `mkdir -p ~/hitavir-learning-system/{journal,debug-log,notes,challenges,interview-prep}`
+- The `-p` flag creates missing parent directories and never errors if a directory already exists
+- A well-organized structure is the foundation of every production system — including your knowledge base
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What does the -p flag do in mkdir -p?',
+      options: [
+        'Prints each directory as it is created',
+        'Sets directory permissions to public',
+        'Creates missing parent directories as needed (and does not error if they exist)',
+        'Creates the directory in your private home folder',
+      ],
+      answer: 2,
+      explanation:
+        'With -p, mkdir builds the whole path at once and is idempotent — exactly why the one-liner with brace expansion works.',
+    },
+    {
+      question: 'How many subdirectories does the learning system have, and which command verifies them?',
+      options: [
+        'Three, verified with ls -la',
+        'Five, verified with find ~/hitavir-learning-system -type d',
+        'Five, verified with git status',
+        'Six, verified with tree -L 3',
+      ],
+      answer: 1,
+      explanation:
+        'journal, debug-log, notes, challenges, and interview-prep — find ... -type d | sort lists them all.',
+    },
+  ]}
+/>
+
+<LessonComplete />

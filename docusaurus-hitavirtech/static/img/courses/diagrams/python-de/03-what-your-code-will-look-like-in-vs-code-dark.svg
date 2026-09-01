@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 632 418" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="632" height="418" rx="12" fill="#f8f9fa"/>
+  <text x="316" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">What Your Code Will Look Like in VS Code Dark+</text>
+  <rect x="15" y="40" width="185" height="30" rx="6" fill="#1a73e8"/>
+  <text x="107" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Token type</text>
+  <rect x="205" y="40" width="120" height="30" rx="6" fill="#1a73e8"/>
+  <text x="266" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Color in Dark+</text>
+  <rect x="331" y="40" width="286" height="30" rx="6" fill="#1a73e8"/>
+  <text x="474" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Example</text>
+  <rect x="15" y="76" width="185" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">Keywords</text>
+  <rect x="205" y="76" width="120" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="215" y="94" font-size="12" fill="#1a73e8">pink / magenta</text>
+  <rect x="331" y="76" width="286" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="341" y="94" font-size="12" font-family="monospace" fill="#1a73e8">def, if, for, return, import, class</text>
+  <rect x="15" y="108" width="185" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" fill="#3c4043">Strings</text>
+  <rect x="205" y="108" width="120" height="28" rx="4" fill="white"/>
+  <text x="215" y="126" font-size="12" fill="#3c4043">orange / salmon</text>
+  <rect x="331" y="108" width="286" height="28" rx="4" fill="white"/>
+  <text x="341" y="126" font-size="12" font-family="monospace" fill="#3c4043">"HitaVir Tech", 'sales.csv'</text>
+  <rect x="15" y="140" width="185" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">Numbers</text>
+  <rect x="205" y="140" width="120" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="215" y="158" font-size="12" fill="#1a73e8">light green</text>
+  <rect x="331" y="140" width="286" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="341" y="158" font-size="12" font-family="monospace" fill="#1a73e8">1500, 99.7, 0.05</text>
+  <rect x="15" y="172" width="185" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" fill="#3c4043">Function names (definition)</text>
+  <rect x="205" y="172" width="120" height="28" rx="4" fill="white"/>
+  <text x="215" y="190" font-size="12" fill="#3c4043">yellow</text>
+  <rect x="331" y="172" width="286" height="28" rx="4" fill="white"/>
+  <text x="341" y="190" font-size="12" font-family="monospace" fill="#3c4043">extract, transform, validate_record</text>
+  <rect x="15" y="204" width="185" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" fill="#1a73e8">Function calls</text>
+  <rect x="205" y="204" width="120" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="215" y="222" font-size="12" fill="#1a73e8">yellow</text>
+  <rect x="331" y="204" width="286" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="341" y="222" font-size="12" font-family="monospace" fill="#1a73e8">print(...), len(...)</text>
+  <rect x="15" y="236" width="185" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" fill="#3c4043">Built-ins</text>
+  <rect x="205" y="236" width="120" height="28" rx="4" fill="white"/>
+  <text x="215" y="254" font-size="12" fill="#3c4043">sky blue</text>
+  <rect x="331" y="236" width="286" height="28" rx="4" fill="white"/>
+  <text x="341" y="254" font-size="12" font-family="monospace" fill="#3c4043">int, float, str, True, False, None</text>
+  <rect x="15" y="268" width="185" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" fill="#1a73e8">Comments</text>
+  <rect x="205" y="268" width="120" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="215" y="286" font-size="12" fill="#1a73e8">green (italic)</text>
+  <rect x="331" y="268" width="286" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="341" y="286" font-size="12" font-family="monospace" fill="#1a73e8"># this is a comment</text>
+  <rect x="15" y="300" width="185" height="28" rx="4" fill="white"/>
+  <text x="25" y="318" font-size="12" font-weight="700" fill="#3c4043">Class names</text>
+  <rect x="205" y="300" width="120" height="28" rx="4" fill="white"/>
+  <text x="215" y="318" font-size="12" fill="#3c4043">teal / mint</text>
+  <rect x="331" y="300" width="286" height="28" rx="4" fill="white"/>
+  <text x="341" y="318" font-size="12" font-family="monospace" fill="#3c4043">DataPipeline, SalesTransformer</text>
+  <rect x="15" y="332" width="185" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="350" font-size="12" font-weight="700" fill="#1a73e8">Operators</text>
+  <rect x="205" y="332" width="120" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="215" y="350" font-size="12" fill="#1a73e8">white</text>
+  <rect x="331" y="332" width="286" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="341" y="350" font-size="12" font-family="monospace" fill="#1a73e8">+ - * / = == != &lt; &gt;</text>
+  <rect x="15" y="364" width="185" height="28" rx="4" fill="white"/>
+  <text x="25" y="382" font-size="12" font-weight="700" fill="#3c4043">Decorators</text>
+  <rect x="205" y="364" width="120" height="28" rx="4" fill="white"/>
+  <text x="215" y="382" font-size="12" fill="#3c4043">yellow</text>
+  <rect x="331" y="364" width="286" height="28" rx="4" fill="white"/>
+  <text x="341" y="382" font-size="12" font-family="monospace" fill="#3c4043">@timer, @retry</text>
+  <text x="316" y="412" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

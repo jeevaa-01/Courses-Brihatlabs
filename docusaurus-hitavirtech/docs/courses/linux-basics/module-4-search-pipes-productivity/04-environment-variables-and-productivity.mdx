@@ -1,0 +1,224 @@
+---
+title: 'Environment Variables and Productivity'
+sidebar_position: 4
+description: 'Work faster with environment variables, command history, Ctrl+R reverse search, aliases, and permanent .bashrc shortcuts.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Read built-in variables like `$HOME` and `$PATH` and create your own
+- Recall and re-run commands with `history`, `!!`, and Ctrl + R
+- Create aliases and make them permanent in `~/.bashrc`
+
+</LearningObjectives>
+
+Environment variables store system-wide settings. Productivity tools save you time every day.
+
+### View Environment Variables
+
+```bash
+echo $HOME
+```
+
+**Expected output:**
+
+```
+/c/Users/YourName
+```
+
+```bash
+echo $PATH
+```
+
+This shows all directories where the system looks for commands.
+
+```bash
+echo $USER
+```
+
+Shows your username.
+
+### Common Environment Variables
+
+| Variable | What It Stores |
+|----------|---------------|
+| `$HOME` | Your home directory |
+| `$PATH` | Where to find programs |
+| `$USER` | Your username |
+| `$SHELL` | Your current shell |
+| `$PWD` | Current directory |
+
+### Create Your Own Variable
+
+```bash
+MY_PROJECT="hitavir-workspace"
+echo $MY_PROJECT
+```
+
+**Expected output:**
+
+```
+hitavir-workspace
+```
+
+### Export for Child Processes
+
+```bash
+export MY_NAME="HitaVir Tech"
+echo "Welcome, $MY_NAME!"
+```
+
+### history — View Command History
+
+```bash
+history
+```
+
+Shows all commands you have typed. Each has a number.
+
+```bash
+history | tail -10
+```
+
+Shows the last 10 commands.
+
+### Re-run a Previous Command
+
+```bash
+!!
+```
+
+Runs the last command again.
+
+```bash
+!50
+```
+
+Runs command number 50 from history.
+
+### alias — Create Shortcuts
+
+```bash
+alias ll='ls -la'
+alias cls='clear'
+alias workspace='cd ~/hitavir-workspace'
+```
+
+Now try them:
+
+```bash
+workspace
+ll
+```
+
+### Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl + C` | Cancel current command |
+| `Ctrl + L` | Clear screen (same as `clear`) |
+| `Ctrl + R` | Search command history (reverse search) |
+| `Ctrl + A` | Move cursor to beginning of line |
+| `Ctrl + E` | Move cursor to end of line |
+| `Ctrl + U` | Delete from cursor to beginning |
+| `Ctrl + K` | Delete from cursor to end |
+| `Tab` | Auto-complete file/directory names |
+| `Tab Tab` | Show all possible completions |
+| `Up Arrow` | Previous command |
+| `Down Arrow` | Next command |
+
+### Ctrl + R — Reverse Search
+
+This is the most useful shortcut. Press `Ctrl + R` and start typing. It searches your history:
+
+```
+(reverse-i-search)`gre': grep "ERROR" logs/app.log
+```
+
+Press Enter to run the matched command, or `Ctrl + R` again for the next match.
+
+### Make Aliases Permanent
+
+Add aliases to your `~/.bashrc` file:
+
+```bash
+echo "" >> ~/.bashrc
+echo "# HitaVir Tech Custom Aliases" >> ~/.bashrc
+echo "alias ll='ls -la'" >> ~/.bashrc
+echo "alias cls='clear'" >> ~/.bashrc
+echo "alias workspace='cd ~/hitavir-workspace'" >> ~/.bashrc
+```
+
+Reload the configuration:
+
+```bash
+source ~/.bashrc
+```
+
+Now your aliases will work every time you open Git Bash.
+
+:::tip[HitaVir Tech says]
+"Productivity in the terminal is all about saving keystrokes. Aliases, tab completion, and Ctrl+R will save you hours every week. The fastest developers are not the fastest typists — they are the ones who type the least."
+:::
+
+### Intermediate Level Recap
+
+Outstanding! You have completed the Intermediate Level. Here is what you learned:
+
+- Search file contents with `grep` and all its options
+- Find files by name, type, and pattern with `find`
+- Chain commands together with pipes (`|`)
+- Use redirection (`>`, `>>`) to save output
+- Environment variables (`$HOME`, `$PATH`, custom)
+- Command history and reverse search
+- Create aliases for frequently used commands
+- Keyboard shortcuts for maximum speed
+
+<KeyTakeaways>
+
+- `$PATH` lists the directories searched for commands; `$HOME` is your home directory
+- `export` makes a variable visible to child processes
+- Ctrl + R reverse-searches your history — the single biggest speed boost
+- Aliases last one session unless added to `~/.bashrc` and reloaded with `source`
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which variable tells the shell where to look for programs when you type a command?',
+      options: ['$HOME', '$USER', '$SHELL', '$PATH'],
+      answer: 3,
+      explanation:
+        '$PATH is a list of directories the shell searches, in order, to find the executable you typed.',
+    },
+    {
+      question: 'What does the !! shortcut do?',
+      options: [
+        'Logs you out',
+        'Repeats the last command',
+        'Clears your history',
+        'Force-quits the current program',
+      ],
+      answer: 1,
+      explanation:
+        '!! re-runs the previous command — handy when you forgot a prefix or want to run it again.',
+    },
+    {
+      question: 'Why add aliases to ~/.bashrc instead of just typing them in the terminal?',
+      options: [
+        'Aliases do not work otherwise',
+        'It makes them work in PowerShell too',
+        'So they load automatically in every new session',
+        'To encrypt them',
+      ],
+      answer: 2,
+      explanation:
+        'Aliases typed at the prompt vanish when the session closes; ~/.bashrc runs at every startup, restoring them.',
+    },
+  ]}
+/>
+
+<LessonComplete />

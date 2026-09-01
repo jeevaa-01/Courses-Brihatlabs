@@ -1,0 +1,129 @@
+---
+title: 'Install MySQL Server'
+sidebar_position: 1
+description: 'Run the MySQL Installer with the Developer Default setup type to install Server, Workbench, and Shell in one pass.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Run the MySQL Installer with administrator permission
+- Select the **Developer Default** setup type and understand what it installs
+- Resolve missing requirements (Visual C++ Redistributable) during setup
+
+</LearningObjectives>
+
+Now let us install MySQL Server, Workbench, and Shell together using the MySQL Installer.
+
+### Step 1 — Run the Installer
+
+1. Open your **Downloads** folder
+2. Double-click the file: `mysql-installer-community-8.0.xx.msi`
+3. If Windows asks for permission (User Account Control), click **Yes**
+
+### Step 2 — Choose Setup Type
+
+The installer opens with a "Choosing a Setup Type" screen. You will see these options:
+
+| Setup Type | What It Installs |
+|-----------|-----------------|
+| **Developer Default** | MySQL Server + Workbench + Shell + Connectors (Recommended) |
+| Server only | Just the MySQL Server |
+| Client only | Client tools without the server |
+| Full | Everything MySQL offers |
+| Custom | Pick exactly what you want |
+
+**Select "Developer Default"** and click **Next**.
+
+This installs:
+- MySQL Server (the database engine)
+- MySQL Workbench (the graphical tool)
+- MySQL Shell (command-line interface)
+- MySQL Router (for clustering)
+
+### Step 3 — Check Requirements
+
+The installer may show missing requirements (like Visual C++ Redistributable). Click **Execute** to install them automatically, then click **Next**.
+
+### Step 4 — Installation
+
+Click **Execute** to begin downloading and installing all selected products.
+
+You will see a progress screen:
+
+```
+Product                    Status      Progress
+MySQL Server 8.0.xx        Complete    ████████████ 100%
+MySQL Workbench 8.0.xx     Complete    ████████████ 100%
+MySQL Shell 8.0.xx         Complete    ████████████ 100%
+```
+
+Wait until all products show **Complete**, then click **Next**.
+
+### Using Custom Installation (Alternative)
+
+If you chose **Custom** instead of Developer Default:
+
+1. In the left panel, expand **MySQL Servers** and select the latest version
+2. Click the **right arrow** to move it to "Products To Be Installed"
+3. Expand **Applications** and add:
+   - MySQL Workbench
+   - MySQL Shell
+4. Click **Next** then **Execute**
+
+:::tip[HitaVir Tech says]
+"Developer Default is the best choice for learners. It installs everything you need in one click. You can always add or remove components later using the MySQL Installer."
+:::
+
+<KeyTakeaways>
+
+- **Developer Default** installs Server + Workbench + Shell + Router in one click
+- Click **Yes** on the User Account Control prompt — the installer needs admin rights
+- Missing requirements like Visual C++ Redistributable are fixed with **Execute**
+- Wait for every product to show **Complete** before clicking Next
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which setup type does this course recommend?',
+      options: [
+        'Server only',
+        'Client only',
+        'Custom',
+        'Developer Default',
+      ],
+      answer: 3,
+      explanation:
+        'Developer Default installs the Server, Workbench, Shell, and connectors — everything a learner needs in one pass.',
+    },
+    {
+      question: 'The installer reports a missing Visual C++ Redistributable. What do you do?',
+      options: [
+        'Click Execute — the installer downloads and installs it automatically',
+        'Cancel and reinstall Windows',
+        'Skip it — MySQL does not really need it',
+        'Manually compile it from source',
+      ],
+      answer: 0,
+      explanation:
+        'The requirements screen fixes missing dependencies itself when you click Execute.',
+    },
+    {
+      question: 'Which component is the actual database engine?',
+      options: [
+        'MySQL Workbench',
+        'MySQL Server',
+        'MySQL Shell',
+        'MySQL Router',
+      ],
+      answer: 1,
+      explanation:
+        'MySQL Server stores and serves the data; Workbench and Shell are tools that connect to it.',
+    },
+  ]}
+/>
+
+<LessonComplete />

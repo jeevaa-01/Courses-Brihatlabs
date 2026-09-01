@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 420" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="s" x="-2%" y="-2%" width="104%" height="108%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect width="780" height="420" rx="12" fill="#f8f9fa"/>
+  <text x="390" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">OLTP vs OLAP — Comparison</text>
+
+  <!-- Header row -->
+  <rect x="20" y="40" width="240" height="32" rx="6" fill="#5f6368"/>
+  <text x="140" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Feature</text>
+  <rect x="265" y="40" width="240" height="32" rx="6" fill="#1a73e8"/>
+  <text x="385" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">OLTP</text>
+  <rect x="510" y="40" width="250" height="32" rx="6" fill="#34a853"/>
+  <text x="635" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">OLAP</text>
+
+  <!-- Row template: y starts at 78, each row height=32, gap=2 -->
+  <!-- Row 1: Purpose -->
+  <rect x="20" y="78" width="240" height="30" rx="4" fill="#e8eaed"/>
+  <text x="32" y="98" font-size="11" font-weight="600" fill="#202124">Purpose</text>
+  <rect x="265" y="78" width="240" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="385" y="98" text-anchor="middle" font-size="11" fill="#1a73e8">Run the business</text>
+  <rect x="510" y="78" width="250" height="30" rx="4" fill="#e6f4ea"/>
+  <text x="635" y="98" text-anchor="middle" font-size="11" fill="#34a853">Analyze the business</text>
+
+  <!-- Row 2: Operations -->
+  <rect x="20" y="112" width="240" height="30" rx="4" fill="white"/>
+  <text x="32" y="132" font-size="11" font-weight="600" fill="#202124">Operations</text>
+  <rect x="265" y="112" width="240" height="30" rx="4" fill="white"/>
+  <text x="385" y="132" text-anchor="middle" font-size="11" fill="#3c4043">INSERT, UPDATE, DELETE</text>
+  <rect x="510" y="112" width="250" height="30" rx="4" fill="white"/>
+  <text x="635" y="132" text-anchor="middle" font-size="11" fill="#3c4043">SELECT (mostly reads)</text>
+
+  <!-- Row 3: Query Type -->
+  <rect x="20" y="146" width="240" height="30" rx="4" fill="#e8eaed"/>
+  <text x="32" y="166" font-size="11" font-weight="600" fill="#202124">Query type</text>
+  <rect x="265" y="146" width="240" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="385" y="166" text-anchor="middle" font-size="11" fill="#1a73e8">Simple, single-row</text>
+  <rect x="510" y="146" width="250" height="30" rx="4" fill="#e6f4ea"/>
+  <text x="635" y="166" text-anchor="middle" font-size="11" fill="#34a853">Complex, multi-table JOINs</text>
+
+  <!-- Row 4: Data volume -->
+  <rect x="20" y="180" width="240" height="30" rx="4" fill="white"/>
+  <text x="32" y="200" font-size="11" font-weight="600" fill="#202124">Data volume per query</text>
+  <rect x="265" y="180" width="240" height="30" rx="4" fill="white"/>
+  <text x="385" y="200" text-anchor="middle" font-size="11" fill="#3c4043">Few rows</text>
+  <rect x="510" y="180" width="250" height="30" rx="4" fill="white"/>
+  <text x="635" y="200" text-anchor="middle" font-size="11" fill="#3c4043">Millions of rows</text>
+
+  <!-- Row 5: Normalization -->
+  <rect x="20" y="214" width="240" height="30" rx="4" fill="#e8eaed"/>
+  <text x="32" y="234" font-size="11" font-weight="600" fill="#202124">Normalization</text>
+  <rect x="265" y="214" width="240" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="385" y="234" text-anchor="middle" font-size="11" fill="#1a73e8">Highly normalized (3NF)</text>
+  <rect x="510" y="214" width="250" height="30" rx="4" fill="#e6f4ea"/>
+  <text x="635" y="234" text-anchor="middle" font-size="11" fill="#34a853">Denormalized (Star)</text>
+
+  <!-- Row 6: Users -->
+  <rect x="20" y="248" width="240" height="30" rx="4" fill="white"/>
+  <text x="32" y="268" font-size="11" font-weight="600" fill="#202124">Users</text>
+  <rect x="265" y="248" width="240" height="30" rx="4" fill="white"/>
+  <text x="385" y="268" text-anchor="middle" font-size="11" fill="#3c4043">Thousands (app users)</text>
+  <rect x="510" y="248" width="250" height="30" rx="4" fill="white"/>
+  <text x="635" y="268" text-anchor="middle" font-size="11" fill="#3c4043">Hundreds (analysts)</text>
+
+  <!-- Row 7: Response time -->
+  <rect x="20" y="282" width="240" height="30" rx="4" fill="#e8eaed"/>
+  <text x="32" y="302" font-size="11" font-weight="600" fill="#202124">Response time</text>
+  <rect x="265" y="282" width="240" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="385" y="302" text-anchor="middle" font-size="11" fill="#1a73e8">Milliseconds</text>
+  <rect x="510" y="282" width="250" height="30" rx="4" fill="#e6f4ea"/>
+  <text x="635" y="302" text-anchor="middle" font-size="11" fill="#34a853">Seconds to minutes</text>
+
+  <!-- Row 8: Data freshness -->
+  <rect x="20" y="316" width="240" height="30" rx="4" fill="white"/>
+  <text x="32" y="336" font-size="11" font-weight="600" fill="#202124">Data freshness</text>
+  <rect x="265" y="316" width="240" height="30" rx="4" fill="white"/>
+  <text x="385" y="336" text-anchor="middle" font-size="11" fill="#3c4043">Real-time</text>
+  <rect x="510" y="316" width="250" height="30" rx="4" fill="white"/>
+  <text x="635" y="336" text-anchor="middle" font-size="11" fill="#3c4043">Near real-time to batch</text>
+
+  <!-- Row 9: Examples -->
+  <rect x="20" y="350" width="240" height="30" rx="4" fill="#e8eaed"/>
+  <text x="32" y="370" font-size="11" font-weight="600" fill="#202124">Example systems</text>
+  <rect x="265" y="350" width="240" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="385" y="370" text-anchor="middle" font-size="11" fill="#1a73e8">MySQL, PostgreSQL, Oracle</text>
+  <rect x="510" y="350" width="250" height="30" rx="4" fill="#e6f4ea"/>
+  <text x="635" y="370" text-anchor="middle" font-size="11" fill="#34a853">Snowflake, BigQuery, Redshift</text>
+
+  <!-- Row 10: Model type -->
+  <rect x="20" y="384" width="240" height="26" rx="4" fill="white"/>
+  <text x="32" y="402" font-size="11" font-weight="600" fill="#202124">Model type</text>
+  <rect x="265" y="384" width="240" height="26" rx="4" fill="white"/>
+  <text x="385" y="402" text-anchor="middle" font-size="11" font-weight="600" fill="#1a73e8">ER Model (normalized)</text>
+  <rect x="510" y="384" width="250" height="26" rx="4" fill="white"/>
+  <text x="635" y="402" text-anchor="middle" font-size="11" font-weight="600" fill="#34a853">Dimensional (star schema)</text>
+</svg>

@@ -6,8 +6,6 @@ This repository contains only the course-learning workflow:
 
 ## Run locally
 
-Certification is the final course milestone. Eligibility is recomputed server-side at exact 100% of required lessons, assessments, and both projects. No final certificate artwork is bundled; connect a versioned renderer using `docs/CERTIFICATE_TEMPLATE_INTEGRATION.md` before enabling issuance.
-
 ```powershell
 npm install
 npm run dev

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <linearGradient id="blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a73e8"/>
+      <stop offset="100%" style="stop-color:#1557b0"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#34a853"/>
+      <stop offset="100%" style="stop-color:#2d8f47"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ea8600"/>
+      <stop offset="100%" style="stop-color:#d07800"/>
+    </linearGradient>
+    <linearGradient id="purple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed"/>
+      <stop offset="100%" style="stop-color:#6d28d9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="320" rx="12" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-size="14" font-weight="600" fill="#5f6368">WHERE DATA MODELLING FITS</text>
+
+  <!-- Step 1: Business Requirements -->
+  <rect x="280" y="48" width="240" height="44" rx="8" fill="#e8eaed" filter="url(#shadow)"/>
+  <text x="400" y="75" text-anchor="middle" font-size="13" font-weight="500" fill="#3c4043">Business Requirements</text>
+
+  <!-- Arrow 1 -->
+  <line x1="400" y1="92" x2="400" y2="112" stroke="#9aa0a6" stroke-width="2"/>
+  <polygon points="394,108 406,108 400,118" fill="#9aa0a6"/>
+
+  <!-- Step 2: DATA MODEL (highlighted) -->
+  <rect x="250" y="120" width="300" height="52" rx="10" fill="url(#blue)" filter="url(#shadow)"/>
+  <text x="400" y="147" text-anchor="middle" font-size="15" font-weight="700" fill="white">DATA MODEL (Blueprint)</text>
+  <text x="400" y="164" text-anchor="middle" font-size="11" fill="#c2d9f7">You are learning THIS</text>
+
+  <!-- Arrow 2 -->
+  <line x1="400" y1="172" x2="400" y2="196" stroke="#9aa0a6" stroke-width="2"/>
+  <polygon points="394,192 406,192 400,202" fill="#9aa0a6"/>
+
+  <!-- Bottom row: 3 boxes -->
+  <!-- ETL -->
+  <rect x="40" y="204" width="210" height="52" rx="8" fill="url(#green)" filter="url(#shadow)"/>
+  <text x="145" y="228" text-anchor="middle" font-size="13" font-weight="600" fill="white">ETL / ELT Pipelines</text>
+  <text x="145" y="246" text-anchor="middle" font-size="10" fill="#b8e6c4">Move and transform data</text>
+
+  <!-- Arrow -->
+  <line x1="250" y1="230" x2="280" y2="230" stroke="#9aa0a6" stroke-width="2" stroke-dasharray="4"/>
+  <polygon points="276,225 286,230 276,235" fill="#9aa0a6"/>
+
+  <!-- Data Warehouse -->
+  <rect x="290" y="204" width="220" height="52" rx="8" fill="url(#orange)" filter="url(#shadow)"/>
+  <text x="400" y="228" text-anchor="middle" font-size="13" font-weight="600" fill="white">Data Warehouse / Lake</text>
+  <text x="400" y="246" text-anchor="middle" font-size="10" fill="#fce4b8">Store processed data</text>
+
+  <!-- Arrow -->
+  <line x1="510" y1="230" x2="540" y2="230" stroke="#9aa0a6" stroke-width="2" stroke-dasharray="4"/>
+  <polygon points="536,225 546,230 536,235" fill="#9aa0a6"/>
+
+  <!-- Dashboards -->
+  <rect x="550" y="204" width="210" height="52" rx="8" fill="url(#purple)" filter="url(#shadow)"/>
+  <text x="655" y="228" text-anchor="middle" font-size="13" font-weight="600" fill="white">Dashboards &amp; Reports</text>
+  <text x="655" y="246" text-anchor="middle" font-size="10" fill="#d4bffc">Deliver insights</text>
+
+  <!-- Footer -->
+  <text x="400" y="290" text-anchor="middle" font-size="11" fill="#9aa0a6">HitaVir Tech - Data Modelling for Data Engineering</text>
+</svg>

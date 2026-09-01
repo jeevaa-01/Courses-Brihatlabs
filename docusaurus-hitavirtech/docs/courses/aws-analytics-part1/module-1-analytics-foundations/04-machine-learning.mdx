@@ -1,0 +1,119 @@
+---
+title: 'Machine Learning'
+sidebar_position: 4
+description: 'Machine learning explained — traditional programming vs ML, the three flavors (supervised, unsupervised, reinforcement), and how ML powers L3-L4 analytics.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Contrast traditional programming (rules + data) with machine learning (data + answers)
+- Name the three flavors of ML and a real use case for each
+- Connect ML to the analytics maturity levels it unlocks (L3-L4)
+
+</LearningObjectives>
+
+### What is Machine Learning?
+
+🤖 **Machine Learning (ML)** is a branch of AI where algorithms **learn patterns from data** instead of being explicitly programmed.
+
+### Traditional Programming vs Machine Learning
+
+```
+  +-----------------------------+      +-----------------------------+
+  |    TRADITIONAL PROGRAMMING  |      |    MACHINE LEARNING         |
+  |  -------------------------  |      |  -------------------------  |
+  |                             |      |                             |
+  |   Rules + Data              |      |   Data + Answers            |
+  |         |                   |      |         |                   |
+  |         v                   |      |         v                   |
+  |     Program                 |      |    Learned Model            |
+  |         |                   |      |         |                   |
+  |         v                   |      |         v                   |
+  |     Answer                  |      |    Rules (weights)          |
+  |                             |      |                             |
+  |  Human writes the rules.    |      |  Machine learns the rules.  |
+  +-----------------------------+      +-----------------------------+
+```
+
+### The Three Flavors of ML
+
+| Flavor | Icon | Data Needed | Example | AWS Service |
+|--------|:---:|-------------|---------|-------------|
+| **Supervised** | 🎯 | Labeled examples | Spam filter, fraud detection, image classification | 🤖 SageMaker |
+| **Unsupervised** | 🔎 | No labels | Customer segmentation, anomaly detection, topic modeling | 🤖 SageMaker • 💭 Comprehend |
+| **Reinforcement** | 🎮 | Reward signals | Game AI, robotics, recommenders | 🤖 SageMaker RL • 🏎️ DeepRacer |
+
+### How ML Powers Analytics
+
+```
+  Level  Stops at SQL               Needs ML
+  -----  --------------------       --------------------
+  L1     Descriptive     OK          -
+  L2     Diagnostic      OK          -
+  L3     Predictive                  Machine learning
+  L4     Prescriptive                ML + optimization
+```
+
+:::tip[HitaVir Tech says]
+"ML is not magic — it's statistics at scale. If your analytics foundations are shaky, your ML models will be too. Clean data first, cool models second."
+:::
+
+### Preview — AWS ML Services
+
+![SageMaker](/img/courses/aws-icons/sagemaker.png) ![Bedrock](/img/courses/aws-icons/bedrock.png) ![Comprehend](/img/courses/aws-icons/comprehend.png) ![Personalize](/img/courses/aws-icons/personalize.png) ![Forecast](/img/courses/aws-icons/forecast.png) ![Fraud Detector](/img/courses/aws-icons/fraud-detector.png)
+
+*Coming up in "AWS Services for Value" (L3-L4 analytics).*
+
+<KeyTakeaways>
+
+- Traditional programming: humans write rules. ML: the machine learns rules (weights) from data and answers
+- Supervised ML needs labels, unsupervised finds structure without them, reinforcement learns from rewards
+- ML is what unlocks predictive (L3) and prescriptive (L4) analytics
+- Clean data comes before clever models — shaky foundations produce shaky ML
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In machine learning, what does the machine produce from data plus answers?',
+      options: [
+        'A learned model — the rules, as weights',
+        'A SQL query',
+        'A hand-written program',
+        'A dashboard',
+      ],
+      answer: 0,
+      explanation:
+        'ML inverts traditional programming: instead of humans writing rules, the algorithm learns the rules (model weights) from examples.',
+    },
+    {
+      question: 'Customer segmentation with no labeled examples is which flavor of ML?',
+      options: [
+        'Supervised',
+        'Reinforcement',
+        'Unsupervised',
+        'Prescriptive',
+      ],
+      answer: 2,
+      explanation:
+        'No labels means unsupervised learning — the algorithm discovers structure (segments, anomalies, topics) on its own.',
+    },
+    {
+      question: 'A spam filter trained on emails already marked "spam" or "not spam" is an example of...',
+      options: [
+        'Reinforcement learning',
+        'Supervised learning',
+        'Unsupervised learning',
+        'Descriptive analytics',
+      ],
+      answer: 1,
+      explanation:
+        'The marked emails are labeled examples — the defining ingredient of supervised learning.',
+    },
+  ]}
+/>
+
+<LessonComplete />

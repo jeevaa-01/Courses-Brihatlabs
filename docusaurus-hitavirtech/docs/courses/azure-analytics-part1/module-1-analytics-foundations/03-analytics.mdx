@@ -1,0 +1,143 @@
+---
+title: 'Analytics'
+sidebar_position: 3
+description: 'What analytics really is, the four maturity levels from descriptive to prescriptive, and the HitaVir Coffee example that ties them together.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Define analytics as the practice of turning raw data into decisions
+- Distinguish the four levels of analytics maturity — descriptive, diagnostic, predictive, prescriptive
+- Identify what analytics is NOT (data engineering, only BI, only ML)
+
+</LearningObjectives>
+
+### What is Analytics?
+
+📊 **Analytics** is the practice of turning raw data into useful insights that help people make better decisions.
+
+That one line is the whole discipline. SQL queries, dashboards, ML models, data lakes — all of it is just tooling in service of that idea.
+
+### Real-World Example — HitaVir Coffee
+
+Imagine **HitaVir Coffee** — 50 locations across India. Every day, each store generates data:
+
+| Data Stream | Icon | Data Stream | Icon |
+|-------------|:---:|-------------|:---:|
+| Orders | ☕ | Payments | 💰 |
+| Loyalty | 👥 | Inventory | 📦 |
+| Shifts | 🕐 | Equipment | 🌡️ |
+| Deliveries | 🚚 | Reviews | ⭐ |
+
+One transaction alone is meaningless. But aggregate across 50 stores for a year and patterns emerge:
+
+| Observation | Action |
+|-------------|--------|
+| 🐢 Mondays are slowest | 🎯 Launch "Monday BOGO" |
+| 📈 Store #23 sells 2x pastries | 🔍 Copy their layout |
+| 📉 Cappuccinos drop in summer | 🧊 Push cold brew |
+
+That journey — **from raw events to actions** — is analytics.
+
+### The Four Levels of Analytics
+
+```
+  +================================================================+
+  |                                                                |
+  |     L4   PRESCRIPTIVE       "What should we do?"               |
+  |                                                                |
+  |                  ^                                             |
+  |                  |                                             |
+  |     L3   PREDICTIVE         "What will happen?"                |
+  |                                                                |
+  |                  ^                                             |
+  |                  |                                             |
+  |     L2   DIAGNOSTIC         "Why did it happen?"               |
+  |                                                                |
+  |                  ^                                             |
+  |                  |                                             |
+  |     L1   DESCRIPTIVE        "What happened?"                   |
+  |                                                                |
+  +================================================================+
+```
+
+| Level | Icon | Question | Example | Powered By |
+|-------|:---:|----------|---------|------------|
+| **L1 Descriptive** | 📸 | What happened? | "Sold 12,400 cappuccinos" | 🔍 SQL / BI |
+| **L2 Diagnostic** | 🕵️ | Why did it happen? | "Bean shortage hit week 3" | 🔍 SQL + drill-down |
+| **L3 Predictive** | 🔮 | What will happen? | "June sales up 15%" | 🤖 Machine learning |
+| **L4 Prescriptive** | 🎯 | What should we do? | "Order 200kg by May 25" | 🤖 ML + optimization |
+
+Most companies live at L1-L2. **Analytics engineers build the foundation** that makes L3-L4 possible.
+
+### What Analytics Is NOT
+
+- ❌ Not the same as data engineering (that builds pipes — analytics drinks from them)
+- ❌ Not only Business Intelligence (BI is a subset)
+- ❌ Not only Machine Learning (ML is a specialized branch)
+
+:::tip[HitaVir Tech says]
+"Never build a dashboard nobody looks at. Always ask — *what decision will this
+insight change?* If the answer is 'none', don't build it."
+:::
+
+### Preview — Azure Services Across Analytics Maturity
+
+![Synapse](/img/courses/azure-icons/synapse.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg) ![ML](/img/courses/azure-icons/ml.svg) ![OpenAI](/img/courses/azure-icons/openai.svg)
+
+L1-L2 is **Synapse + Power BI**. L3-L4 adds **Azure ML + Azure OpenAI**.
+
+<KeyTakeaways>
+
+- Analytics = turning raw data into insights that change decisions
+- The four maturity levels: Descriptive (what), Diagnostic (why), Predictive (what next), Prescriptive (what to do)
+- Most companies operate at L1-L2; L3-L4 require machine learning
+- On Azure: L1-L2 is Synapse + Power BI, L3-L4 adds Azure ML + Azure OpenAI
+- The litmus test for any dashboard: what decision will this change?
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: '"Why did sales drop in week 3?" is a question at which analytics level?',
+      options: [
+        'L1 Descriptive',
+        'L2 Diagnostic',
+        'L3 Predictive',
+        'L4 Prescriptive',
+      ],
+      answer: 1,
+      explanation:
+        'Diagnostic analytics explains WHY something happened — typically SQL plus drill-down analysis.',
+    },
+    {
+      question: 'Which levels of analytics typically require machine learning?',
+      options: [
+        'L1 and L2',
+        'Only L1',
+        'L3 and L4',
+        'All four levels equally',
+      ],
+      answer: 2,
+      explanation:
+        'Predictive (L3) needs ML to forecast, and Prescriptive (L4) adds optimization on top of ML.',
+    },
+    {
+      question: 'According to this lesson, what question should you ask before building any dashboard?',
+      options: [
+        'Which chart library looks best?',
+        'How much data can it show?',
+        'Can it refresh in real time?',
+        'What decision will this insight change?',
+      ],
+      answer: 3,
+      explanation:
+        'If no decision changes because of the insight, the dashboard is not worth building.',
+    },
+  ]}
+/>
+
+<LessonComplete />

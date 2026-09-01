@@ -1,0 +1,132 @@
+---
+title: 'Variety'
+sidebar_position: 3
+description: 'The second V — structured, semi-structured, and unstructured data, why each format needs different tooling, and how real projects mix them all.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Classify data as structured, semi-structured, or unstructured
+- Explain why each format demands different tooling and pipelines
+- Recognize real-world variety mixes across industries
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              THE  2nd  V   -   VARIETY                       |
+  |              "How many kinds of data?"                       |
+  +==============================================================+
+```
+
+### What is Variety?
+
+🧩 **Variety** is the diversity of data — formats, schemas, and sources.
+
+Twenty years ago, "data" meant rows in a database. Today, it means far more:
+
+| Type | Icon | Examples | Schema |
+|------|:---:|----------|--------|
+| **Structured** | 📊 | SQL tables, CSV, spreadsheets | Fixed |
+| **Semi-structured** | 🧩 | JSON from APIs, XML, Parquet, Avro | Flexible |
+| **Unstructured** | 🎞️ | Images, video, audio, PDFs, free text | None |
+
+### Why Variety is Hard
+
+Each format needs different tooling:
+
+| Format | Tool Needed |
+|--------|-------------|
+| SQL tables | Relational engine |
+| JSON | Document parser |
+| PDF | OCR |
+| Image | Computer vision |
+| Audio | Speech-to-text |
+| Free text | NLP / embeddings |
+
+Most real projects combine these. Example — "Correlate support emails + call recordings + order history into one insight." **Three completely different pipelines** feeding one answer.
+
+### Real-World Variety
+
+| Industry | Variety Mix |
+|----------|-------------|
+| 🏥 Healthcare | Patient records + X-rays + doctor's notes |
+| 🛒 Retail | Orders + product photos + reviews |
+| 🏦 Banking | Transactions + scanned checks + call transcripts |
+| 🚗 Autonomous cars | Sensors + video + maps + LiDAR |
+
+### Questions Variety Forces You to Ask
+
+- 🪣 Can **one storage system** hold all my types?
+- 📚 How do I **catalog** schemas that keep changing?
+- 🔍 Which engine queries **JSON, CSV, Parquet** in one SQL?
+- 🤖 How do I extract insights from **unstructured** data?
+
+:::tip[HitaVir Tech says]
+"90% of the world's data is unstructured. But 90% of analytics happens on
+structured data. Your job is often to convert chaos into order."
+:::
+
+:::info[Variety in one line]
+Structure is created, not found — choose tools that embrace format diversity.
+:::
+
+### Preview — Azure Services That Solve Variety
+
+![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Cosmos DB](/img/courses/azure-icons/cosmos-db.svg) ![AI Vision](/img/courses/azure-icons/ai-vision.svg) ![Doc Intelligence](/img/courses/azure-icons/doc-intelligence.svg) ![AI Language](/img/courses/azure-icons/ai-language.svg)
+
+*Coming up in "Azure Services for Variety".*
+
+<KeyTakeaways>
+
+- Variety spans structured (fixed schema), semi-structured (flexible schema), and unstructured (no schema) data
+- Every format needs its own tooling — relational engines, parsers, OCR, vision, speech-to-text, NLP
+- Real projects routinely combine multiple pipelines into a single insight
+- Most of the world's data is unstructured; most analytics runs on structured data — converting chaos into order is the job
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'JSON returned by a REST API is an example of which data type?',
+      options: [
+        'Structured',
+        'Unstructured',
+        'Semi-structured',
+        'Binary',
+      ],
+      answer: 2,
+      explanation:
+        'JSON has a flexible, self-describing schema — the hallmark of semi-structured data.',
+    },
+    {
+      question: 'Why is Variety hard in practice?',
+      options: [
+        'Every format needs different tooling, and real projects combine several formats',
+        'Unstructured data is always too big to store',
+        'SQL cannot read CSV files',
+        'Cloud storage rejects mixed file types',
+      ],
+      answer: 0,
+      explanation:
+        'A relational engine, a document parser, OCR, and speech-to-text are different pipelines — and one insight often needs all of them.',
+    },
+    {
+      question: 'What does "structure is created, not found" mean?',
+      options: [
+        'All data arrives with a schema already attached',
+        'Engineers deliberately transform chaotic raw formats into ordered, queryable data',
+        'Databases automatically structure any input',
+        'Unstructured data cannot be analyzed',
+      ],
+      answer: 1,
+      explanation:
+        'Roughly 90% of data is unstructured; analytics teams create the structure that analysis needs.',
+    },
+  ]}
+/>
+
+<LessonComplete />

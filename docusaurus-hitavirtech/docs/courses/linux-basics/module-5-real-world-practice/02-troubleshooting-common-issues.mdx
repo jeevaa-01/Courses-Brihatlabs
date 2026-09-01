@@ -1,0 +1,136 @@
+---
+title: 'Troubleshooting Common Issues'
+sidebar_position: 2
+description: 'Fix the classic terminal errors — command not found, Permission denied, No such file or directory, and frozen sessions.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Diagnose "command not found" and "No such file or directory" errors
+- Fix "Permission denied" with `chmod +x`
+- Escape frozen programs and cancel runaway commands
+
+</LearningObjectives>
+
+When things go wrong, here is how to fix them.
+
+### "command not found"
+
+```
+bash: somecmd: command not found
+```
+
+**Causes and fixes:**
+
+| Cause | Fix |
+|-------|-----|
+| Typo in command | Check spelling |
+| Command not installed | Install the package |
+| Wrong case | Use lowercase (`ls` not `LS`) |
+| PATH not set | Check `echo $PATH` |
+
+### "Permission denied"
+
+```
+bash: ./script.sh: Permission denied
+```
+
+**Fix:**
+
+```bash
+chmod +x script.sh
+```
+
+### "No such file or directory"
+
+```
+ls: cannot access 'myfile': No such file or directory
+```
+
+**Fix:**
+
+```bash
+pwd
+ls
+```
+
+Check you are in the right directory and the file name is correct.
+
+### Terminal Frozen
+
+| Situation | Fix |
+|-----------|-----|
+| Command running too long | Press `Ctrl + C` to cancel |
+| Screen looks stuck | Press `Enter` or `Ctrl + C` |
+| Stuck in a program (less, vim) | Press `q` to quit |
+| Accidentally opened vim | Type `:q!` and press Enter |
+
+### "Argument list too long"
+
+When using `*` with too many files:
+
+```bash
+# Instead of: rm *.log
+find . -name "*.log" -exec rm {} \;
+```
+
+### Accidentally Deleted Something
+
+Unfortunately, there is no undo. Prevention is the best cure:
+
+1. Use `rm -i` for interactive confirmation
+2. Always make backups before bulk operations
+3. Double-check `pwd` before running destructive commands
+
+:::tip[HitaVir Tech says]
+"Every developer has accidentally deleted something important at least once. That is how we learn to make backups. The terminal is powerful — and power demands respect."
+:::
+
+<KeyTakeaways>
+
+- "command not found" usually means a typo, wrong case, or a missing PATH entry
+- "Permission denied" on a script means it needs `chmod +x`
+- Ctrl + C cancels a running command; q quits less; `:q!` escapes vim
+- There is no undo for rm — backups and `rm -i` are your only protection
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'You see "./script.sh: Permission denied". What is the fix?',
+      options: [
+        'Run pwd first',
+        'chmod +x script.sh',
+        'Reinstall Git Bash',
+        'Rename the script',
+      ],
+      answer: 1,
+      explanation:
+        'The script lacks the execute permission — chmod +x grants it, and ./script.sh will then run.',
+    },
+    {
+      question: 'You are stuck inside vim. How do you exit without saving?',
+      options: [
+        'Press Ctrl + L',
+        'Close the laptop',
+        'Type :q! and press Enter',
+        'Press Tab twice',
+      ],
+      answer: 2,
+      explanation:
+        ':q! tells vim to quit and discard any changes — the classic escape hatch.',
+    },
+    {
+      question: 'A command has been running for minutes and you want to stop it. Which key combo cancels it?',
+      options: ['Ctrl + R', 'Ctrl + A', 'Ctrl + K', 'Ctrl + C'],
+      answer: 3,
+      explanation:
+        'Ctrl + C sends an interrupt signal that cancels the currently running command.',
+    },
+  ]}
+/>
+
+<LessonComplete />

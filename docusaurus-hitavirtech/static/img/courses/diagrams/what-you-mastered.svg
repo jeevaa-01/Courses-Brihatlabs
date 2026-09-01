@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 640">
+  <defs>
+    <style>
+      text { font-family: "Google Sans", "Segoe UI", Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="780" height="640" rx="12" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="390" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#202124">What You Mastered</text>
+
+  <!-- Column Headers -->
+  <rect x="20" y="40" width="240" height="26" rx="6" fill="#1a73e8"/>
+  <text x="140" y="58" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">Module</text>
+  <rect x="264" y="40" width="496" height="26" rx="6" fill="#1a73e8"/>
+  <text x="512" y="58" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">Key Concepts</text>
+
+  <!-- Row 1 (tinted) -->
+  <rect x="20" y="70" width="240" height="30" rx="4" fill="#e8f0fe"/>
+  <rect x="264" y="70" width="496" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="140" y="90" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Fundamentals</text>
+  <text x="512" y="90" text-anchor="middle" font-size="12" fill="#3c4043">Conceptual, logical, physical models</text>
+
+  <!-- Row 2 (white) -->
+  <rect x="20" y="102" width="240" height="30" rx="4" fill="#ffffff"/>
+  <rect x="264" y="102" width="496" height="30" rx="4" fill="#ffffff"/>
+  <text x="140" y="122" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">OLTP vs OLAP</text>
+  <text x="512" y="122" text-anchor="middle" font-size="12" fill="#3c4043">Transactional vs analytical modelling</text>
+
+  <!-- Row 3 (tinted) -->
+  <rect x="20" y="134" width="240" height="30" rx="4" fill="#e8f0fe"/>
+  <rect x="264" y="134" width="496" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="140" y="154" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Normalization</text>
+  <text x="512" y="154" text-anchor="middle" font-size="12" fill="#3c4043">1NF, 2NF, 3NF, BCNF</text>
+
+  <!-- Row 4 (white) -->
+  <rect x="20" y="166" width="240" height="30" rx="4" fill="#ffffff"/>
+  <rect x="264" y="166" width="496" height="30" rx="4" fill="#ffffff"/>
+  <text x="140" y="186" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Denormalization</text>
+  <text x="512" y="186" text-anchor="middle" font-size="12" fill="#3c4043">Performance optimization for warehouses</text>
+
+  <!-- Row 5 (tinted) -->
+  <rect x="20" y="198" width="240" height="30" rx="4" fill="#e8f0fe"/>
+  <rect x="264" y="198" width="496" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="140" y="218" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Star Schema</text>
+  <text x="512" y="218" text-anchor="middle" font-size="12" fill="#3c4043">Fact tables, dimension tables, grain</text>
+
+  <!-- Row 6 (white) -->
+  <rect x="20" y="230" width="240" height="30" rx="4" fill="#ffffff"/>
+  <rect x="264" y="230" width="496" height="30" rx="4" fill="#ffffff"/>
+  <text x="140" y="250" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Snowflake Schema</text>
+  <text x="512" y="250" text-anchor="middle" font-size="12" fill="#3c4043">Normalized dimensions, trade-offs</text>
+
+  <!-- Row 7 (tinted) -->
+  <rect x="20" y="262" width="240" height="30" rx="4" fill="#e8f0fe"/>
+  <rect x="264" y="262" width="496" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="140" y="282" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Fact Table Types</text>
+  <text x="512" y="282" text-anchor="middle" font-size="12" fill="#3c4043">Transaction, periodic snapshot, accumulating</text>
+
+  <!-- Row 8 (white) -->
+  <rect x="20" y="294" width="240" height="30" rx="4" fill="#ffffff"/>
+  <rect x="264" y="294" width="496" height="30" rx="4" fill="#ffffff"/>
+  <text x="140" y="314" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">SCD Types</text>
+  <text x="512" y="314" text-anchor="middle" font-size="12" fill="#3c4043">Type 0, 1, 2, 3, 6 with SQL and PySpark</text>
+
+  <!-- Row 9 (tinted) -->
+  <rect x="20" y="326" width="240" height="30" rx="4" fill="#e8f0fe"/>
+  <rect x="264" y="326" width="496" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="140" y="346" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Keys</text>
+  <text x="512" y="346" text-anchor="middle" font-size="12" fill="#3c4043">Surrogate vs natural keys</text>
+
+  <!-- Row 10 (white) -->
+  <rect x="20" y="358" width="240" height="30" rx="4" fill="#ffffff"/>
+  <rect x="264" y="358" width="496" height="30" rx="4" fill="#ffffff"/>
+  <text x="140" y="378" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Warehouse Approaches</text>
+  <text x="512" y="378" text-anchor="middle" font-size="12" fill="#3c4043">Kimball vs Inmon</text>
+
+  <!-- Row 11 (tinted) -->
+  <rect x="20" y="390" width="240" height="30" rx="4" fill="#e8f0fe"/>
+  <rect x="264" y="390" width="496" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="140" y="410" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Lakehouse</text>
+  <text x="512" y="410" text-anchor="middle" font-size="12" fill="#3c4043">Medallion architecture (Bronze/Silver/Gold)</text>
+
+  <!-- Row 12 (white) -->
+  <rect x="20" y="422" width="240" height="30" rx="4" fill="#ffffff"/>
+  <rect x="264" y="422" width="496" height="30" rx="4" fill="#ffffff"/>
+  <text x="140" y="442" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Data Vault</text>
+  <text x="512" y="442" text-anchor="middle" font-size="12" fill="#3c4043">Hubs, links, satellites</text>
+
+  <!-- Row 13 (tinted) -->
+  <rect x="20" y="454" width="240" height="30" rx="4" fill="#e8f0fe"/>
+  <rect x="264" y="454" width="496" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="140" y="474" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Cloud Modelling</text>
+  <text x="512" y="474" text-anchor="middle" font-size="12" fill="#3c4043">Snowflake, Databricks, Redshift, BigQuery</text>
+
+  <!-- Row 14 (white) -->
+  <rect x="20" y="486" width="240" height="30" rx="4" fill="#ffffff"/>
+  <rect x="264" y="486" width="496" height="30" rx="4" fill="#ffffff"/>
+  <text x="140" y="506" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Performance</text>
+  <text x="512" y="506" text-anchor="middle" font-size="12" fill="#3c4043">Partitioning, clustering, Z-ORDER</text>
+
+  <!-- Row 15 (tinted) -->
+  <rect x="20" y="518" width="240" height="30" rx="4" fill="#e8f0fe"/>
+  <rect x="264" y="518" width="496" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="140" y="538" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Enterprise Project</text>
+  <text x="512" y="538" text-anchor="middle" font-size="12" fill="#3c4043">Full insurance claims data platform</text>
+
+  <!-- Row 16 (white) -->
+  <rect x="20" y="550" width="240" height="30" rx="4" fill="#ffffff"/>
+  <rect x="264" y="550" width="496" height="30" rx="4" fill="#ffffff"/>
+  <text x="140" y="570" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Best Practices</text>
+  <text x="512" y="570" text-anchor="middle" font-size="12" fill="#3c4043">Naming, governance, documentation</text>
+
+  <!-- Row 17 (tinted) -->
+  <rect x="20" y="582" width="240" height="30" rx="4" fill="#e8f0fe"/>
+  <rect x="264" y="582" width="496" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="140" y="602" text-anchor="middle" font-size="12" font-weight="600" fill="#3c4043">Interview Prep</text>
+  <text x="512" y="602" text-anchor="middle" font-size="12" fill="#3c4043">10 questions across all levels</text>
+
+  <!-- Footer -->
+  <text x="390" y="632" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

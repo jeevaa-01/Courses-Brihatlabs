@@ -1,0 +1,118 @@
+---
+title: 'Final Quiz'
+sidebar_position: 4
+description: 'The graded final quiz for SQL for Data Engineering — aim for at least 7 of 9.'
+---
+
+<DurationBadge minutes={10} />
+
+# Final Quiz
+
+This quiz covers the whole course. **Aim for at least 7 of 9.** If you miss a
+question, revisit the lesson it came from before moving on to the next course.
+
+<Quiz
+  title="Graded final quiz"
+  questions={[
+    {
+      question: 'Which clause runs FIRST in the logical execution order, even though you write SELECT first?',
+      options: ['SELECT', 'FROM / JOIN', 'WHERE', 'ORDER BY'],
+      answer: 1,
+      explanation:
+        'The engine builds the row set from FROM and the JOINs before anything else — SELECT runs fifth.',
+    },
+    {
+      question: 'Why must money columns be DECIMAL rather than FLOAT?',
+      options: [
+        'DECIMAL is exact — FLOAT accumulates binary rounding drift',
+        'FLOAT cannot store values above 1000',
+        'DECIMAL compresses better on disk',
+        'FLOAT is deprecated in MySQL 8.0',
+      ],
+      answer: 0,
+      explanation:
+        'DECIMAL(10,2) keeps 0.10 + 0.20 exactly 0.30; FLOAT/DOUBLE round in binary and drift in aggregates.',
+    },
+    {
+      question: '"Every customer, even those with zero orders, plus their order count" needs which pattern?',
+      options: [
+        'INNER JOIN with COUNT(*)',
+        'RIGHT JOIN with COUNT(*)',
+        'LEFT JOIN from customers with COUNT(orders.order_id)',
+        'CROSS JOIN with DISTINCT',
+      ],
+      answer: 2,
+      explanation:
+        'LEFT JOIN keeps zero-order customers, and counting a right-side column makes their count 0 instead of 1.',
+    },
+    {
+      question: 'Which filter is ILLEGAL, and where does that logic belong instead?',
+      options: [
+        'WHERE status = "DELIVERED" — belongs in HAVING',
+        'HAVING COUNT(*) > 4 — belongs in WHERE',
+        'WHERE SUM(line_amount) > 100 — aggregates belong in HAVING',
+        'ORDER BY total_revenue — aliases belong in WHERE',
+      ],
+      answer: 2,
+      explanation:
+        'WHERE runs before grouping, so no aggregate exists yet; group-level conditions go in HAVING.',
+    },
+    {
+      question: 'Three products tie at rank 1. Which function then assigns the next product rank 2, not 4?',
+      options: ['RANK()', 'DENSE_RANK()', 'ROW_NUMBER()', 'NTILE()'],
+      answer: 1,
+      explanation:
+        'DENSE_RANK leaves no gaps after ties (1, 1, 1, 2); RANK would jump to 4.',
+    },
+    {
+      question: 'How do you get FULL OUTER JOIN behavior in MySQL?',
+      options: [
+        'FULL OUTER JOIN is native since MySQL 8.0',
+        'CROSS JOIN plus a WHERE filter',
+        'Nested EXISTS subqueries',
+        'UNION a LEFT JOIN with a RIGHT JOIN of the same tables',
+      ],
+      answer: 3,
+      explanation:
+        'MySQL has no native FULL OUTER JOIN; the LEFT ∪ RIGHT workaround covers unmatched rows from both sides.',
+    },
+    {
+      question: 'EXPLAIN shows type = ALL for WHERE YEAR(order_date) = 2026 despite an index on order_date. Why?',
+      options: [
+        'The YEAR() function makes the predicate non-sargable, so the index cannot be used',
+        'Indexes never apply to WHERE clauses',
+        'type = ALL means the index worked',
+        'EXPLAIN ignores date columns',
+      ],
+      answer: 0,
+      explanation:
+        'Wrap-free, half-open ranges (>= "2026-01-01" AND < "2027-01-01") keep the column bare so the index applies.',
+    },
+    {
+      question: 'In the capstone star schema, what sits at the center joined directly to each dimension?',
+      options: [
+        'dim_customer',
+        'daily_sales_summary',
+        'fact_sales',
+        'stg_orders_raw',
+      ],
+      answer: 2,
+      explanation:
+        'The fact table holds the measures (quantity, line_amount) and joins one hop to dim_customer and dim_product — that shape is the "star".',
+    },
+    {
+      question: 'A daily Airflow job must be safe to re-run. What made the course DAG idempotent?',
+      options: [
+        'Running it inside a CROSS JOIN',
+        'Deleting yesterday’s summary row before re-inserting it',
+        'Using INSERT IGNORE everywhere',
+        'Scheduling it twice a day',
+      ],
+      answer: 1,
+      explanation:
+        'Delete-then-insert for the target date means a retry or backfill produces exactly the same row, never a duplicate.',
+    },
+  ]}
+/>
+
+<LessonComplete />

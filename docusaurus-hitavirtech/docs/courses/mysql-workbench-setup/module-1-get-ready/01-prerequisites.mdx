@@ -1,0 +1,73 @@
+---
+title: 'Prerequisites'
+sidebar_position: 1
+description: 'Check the Windows, disk space, and admin-access requirements before installing MySQL.'
+---
+
+<DurationBadge minutes={2} />
+
+<LearningObjectives>
+
+- Confirm your PC meets the Windows, disk, and admin-access requirements
+- Prepare a safe place to record your future MySQL root password
+
+</LearningObjectives>
+
+### Required
+
+- A computer running **Windows 10 or 11** (64-bit)
+- **Administrator access** (needed to install software)
+- At least **2 GB** free disk space
+- Stable internet connection (to download the installer, approximately 450 MB)
+
+### No Prior Knowledge Needed
+
+This guide assumes **zero experience** with databases or SQL. We start from downloading the installer.
+
+### What You Will Need Later
+
+- A **root password** — you will create this during installation. **Write it down!**
+- A browser to download from the MySQL website
+
+:::warning[HitaVir Tech says]
+"The most common mistake students make is forgetting their root password during setup. Write it down on paper or save it in a password manager BEFORE you proceed. You will need it every time you open MySQL Workbench."
+:::
+
+<KeyTakeaways>
+
+- You need a 64-bit Windows 10/11 machine with **admin rights** and ~2 GB free disk
+- The installer download is about **450 MB**, so a stable connection matters
+- Decide where you will record the **root password** before you start installing
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why do you need administrator access for this course?',
+      options: [
+        'MySQL only runs for the Administrator user',
+        'Installing software (MySQL Server) on Windows requires it',
+        'It makes SQL queries run faster',
+        'Workbench refuses to open otherwise',
+      ],
+      answer: 1,
+      explanation:
+        'Admin rights are needed to install MySQL Server and register it as a Windows service; running queries later does not need them.',
+    },
+    {
+      question: 'What should you do about the root password before installing?',
+      options: [
+        'Write it down or store it in a password manager',
+        'Use a blank password to keep things simple',
+        'Let MySQL generate and remember it for you',
+        'Email it to HitaVir Tech for backup',
+      ],
+      answer: 0,
+      explanation:
+        'Forgetting the root password is the most common setup mistake — you will need it every time you connect with Workbench.',
+    },
+  ]}
+/>
+
+<LessonComplete />

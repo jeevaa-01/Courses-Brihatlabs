@@ -1,0 +1,142 @@
+/* HitaVir Tech design system — deep navy palette, Space Grotesk / Inter */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --ifm-color-primary: #0b3d91;
+  --ifm-color-primary-dark: #0a3782;
+  --ifm-color-primary-darker: #09347b;
+  --ifm-color-primary-darkest: #072b65;
+  --ifm-color-primary-light: #0c43a0;
+  --ifm-color-primary-lighter: #0d46a7;
+  --ifm-color-primary-lightest: #0f4fbd;
+  --ifm-font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+  --ifm-heading-font-family: 'Space Grotesk', 'Inter', sans-serif;
+  --ifm-code-font-size: 92%;
+  --ifm-navbar-background-color: #0b1f3a;
+  --ifm-navbar-link-color: #e8edf7;
+  --ifm-navbar-link-hover-color: #7fb3ff;
+  --docusaurus-highlighted-code-line-bg: rgba(11, 61, 145, 0.12);
+  --hv-accent: #f2a900; /* turmeric gold accent */
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #7fb3ff;
+  --ifm-color-primary-dark: #5d9ffe;
+  --ifm-color-primary-darker: #4c95fe;
+  --ifm-color-primary-darkest: #1877fd;
+  --ifm-color-primary-light: #a1c7ff;
+  --ifm-color-primary-lighter: #b2d1ff;
+  --ifm-color-primary-lightest: #e5efff;
+  --ifm-background-color: #0a1526;
+  --ifm-background-surface-color: #0e1d33;
+  --docusaurus-highlighted-code-line-bg: rgba(127, 179, 255, 0.15);
+}
+
+.navbar__title { font-family: 'Space Grotesk', sans-serif; letter-spacing: 0.02em; }
+h1, h2, h3 { letter-spacing: -0.01em; }
+
+/* Hero */
+.hv-hero {
+  background: linear-gradient(160deg, #0b1f3a 0%, #0b3d91 65%, #114fb8 100%);
+  color: #f5f7fb;
+  padding: 4.5rem 1rem 4rem;
+  text-align: center;
+}
+.hv-hero h1 { font-size: 2.8rem; color: #fff; }
+.hv-hero .hv-tagline { font-size: 1.15rem; opacity: 0.92; max-width: 760px; margin: 0.75rem auto 1.75rem; }
+.hv-hero .hv-sanskrit { color: var(--hv-accent); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.85rem; }
+
+.hv-badges { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.hv-badge {
+  background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 999px; padding: 0.3rem 0.9rem; font-size: 0.85rem;
+}
+
+.hv-buttons { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+
+/* Module cards */
+.hv-modules { padding: 3.5rem 0; }
+.hv-card {
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 14px; padding: 1.4rem; height: 100%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  background: var(--ifm-background-surface-color);
+}
+.hv-card:hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(11, 31, 58, 0.18); }
+.hv-card .hv-module-no {
+  font-family: 'Space Grotesk', sans-serif; color: var(--hv-accent);
+  font-weight: 700; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.hv-card h3 { margin: 0.35rem 0 0.5rem; font-size: 1.15rem; }
+.hv-card p { font-size: 0.92rem; margin-bottom: 0.75rem; color: var(--ifm-color-emphasis-700); }
+.hv-card a { font-weight: 600; }
+
+/* Portal course cards */
+.hv-portal-heading { font-size: 1.6rem; margin-bottom: 1.5rem; }
+.hv-course-card { display: flex; flex-direction: column; }
+.hv-course-card .button { margin-top: auto; }
+.hv-course-meta {
+  display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center;
+  font-size: 0.82rem; color: var(--ifm-color-emphasis-600); margin-bottom: 1rem;
+}
+.hv-course-tag {
+  background: var(--ifm-color-emphasis-100); border-radius: 999px;
+  padding: 0.1rem 0.6rem; font-weight: 600;
+}
+
+/* Lesson: learning objectives */
+.hv-objectives {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-left: 5px solid var(--hv-accent);
+  border-radius: 12px; padding: 1rem 1.3rem 0.4rem; margin: 1.25rem 0 1.75rem;
+  background: var(--ifm-background-surface-color);
+}
+.hv-objectives-title, .hv-takeaways-title {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700; margin-bottom: 0.5rem;
+}
+
+/* Lesson: key takeaways */
+.hv-takeaways {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-left: 5px solid #1a7f37;
+  border-radius: 12px; padding: 1rem 1.3rem 0.4rem; margin: 1.75rem 0 1.25rem;
+  background: var(--ifm-background-surface-color);
+}
+
+/* Lesson: duration pill */
+.hv-duration {
+  display: inline-block; background: var(--ifm-color-emphasis-100);
+  border-radius: 999px; padding: 0.15rem 0.75rem; font-size: 0.82rem;
+  font-weight: 600; color: var(--ifm-color-emphasis-700); margin-bottom: 0.75rem;
+}
+
+/* Lesson: mark-as-complete */
+.hv-complete { margin: 2rem 0 0.5rem; }
+.hv-complete-btn {
+  font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.92rem;
+  border: 1.5px solid var(--ifm-color-primary); color: var(--ifm-color-primary);
+  background: transparent; border-radius: 999px; padding: 0.5rem 1.2rem;
+  cursor: pointer; transition: all 0.15s ease;
+}
+.hv-complete-btn:hover { background: var(--ifm-color-primary); color: #fff; }
+.hv-complete-btn.done {
+  background: #1a7f37; border-color: #1a7f37; color: #fff;
+}
+
+/* Quiz component */
+.hv-quiz {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-left: 5px solid var(--ifm-color-primary);
+  border-radius: 12px; padding: 1.25rem 1.4rem; margin: 1.5rem 0;
+  background: var(--ifm-background-surface-color);
+}
+.hv-quiz-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; margin-bottom: 0.75rem; }
+.hv-quiz-q { margin: 1rem 0 0.5rem; font-weight: 600; }
+.hv-quiz-option { display: block; margin: 0.3rem 0; cursor: pointer; padding: 0.45rem 0.7rem; border-radius: 8px; border: 1px solid transparent; }
+.hv-quiz-option:hover { background: var(--ifm-color-emphasis-100); }
+.hv-quiz-option input { margin-right: 0.55rem; }
+.hv-quiz-option.correct { border-color: #1a7f37; background: rgba(26, 127, 55, 0.1); }
+.hv-quiz-option.incorrect { border-color: #cf222e; background: rgba(207, 34, 46, 0.08); }
+.hv-quiz-explain { font-size: 0.9rem; margin: 0.35rem 0 0; padding-left: 0.2rem; }
+.hv-quiz-check { margin-top: 1rem; }
+.hv-quiz-score { font-weight: 700; margin-left: 0.9rem; }

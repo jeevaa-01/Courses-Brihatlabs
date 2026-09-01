@@ -1,0 +1,89 @@
+---
+title: 'Analytics Concepts'
+sidebar_position: 2
+description: 'The three anchor ideas of the course — analytics, machine learning, and the 5 Vs — and how each maps to an AWS service family.'
+---
+
+<DurationBadge minutes={4} />
+
+<LearningObjectives>
+
+- Name the three anchor ideas this course is built on
+- See how analytics, ML, and the 5 Vs relate to each other
+- Preview the AWS service family behind each anchor
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |         SECTION  1   -   ANALYTICS  CONCEPTS                 |
+  +==============================================================+
+```
+
+Before we touch AWS, we need three anchor ideas:
+
+```
+                    +----------------------+
+                    |  1.  ANALYTICS       |
+                    |  turn data into      |
+                    |  decisions           |
+                    +----------+-----------+
+                               |
+                               | powered by
+                               v
+                    +----------------------+
+                    |  2.  MACHINE LEARNING|
+                    |  algorithms that     |
+                    |  learn patterns      |
+                    +----------+-----------+
+                               |
+                               | challenged by
+                               v
+                    +----------------------+
+                    |  3.  THE 5 Vs        |
+                    |  of Big Data         |
+                    +----------------------+
+```
+
+### Each Anchor Maps to an AWS Service Family
+
+![Athena](/img/courses/aws-icons/athena.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png) ![S3](/img/courses/aws-icons/s3.png)
+
+<KeyTakeaways>
+
+- The course rests on three anchors: analytics (decisions), machine learning (patterns), and the 5 Vs (challenges)
+- Analytics is powered by ML and challenged by the 5 Vs of big data
+- Each anchor has a matching AWS service family — Athena for analytics, SageMaker for ML, S3 for big data
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which three anchor ideas does this course build on?',
+      options: [
+        'Analytics, Machine Learning, and the 5 Vs of Big Data',
+        'Storage, Compute, and Networking',
+        'EC2, S3, and Lambda',
+        'Dashboards, Reports, and Alerts',
+      ],
+      answer: 0,
+      explanation:
+        'Everything in the course hangs off these three: analytics turns data into decisions, ML learns patterns, and the 5 Vs describe the challenges.',
+    },
+    {
+      question: 'In the anchor diagram, what is the relationship between analytics and machine learning?',
+      options: [
+        'They are unrelated disciplines',
+        'Machine learning replaces analytics',
+        'Analytics is powered by machine learning',
+        'Analytics is a subset of machine learning',
+      ],
+      answer: 2,
+      explanation:
+        'ML powers the higher levels of analytics (predictive and prescriptive) — it serves analytics, not the other way around.',
+    },
+  ]}
+/>
+
+<LessonComplete />

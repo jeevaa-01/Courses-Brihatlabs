@@ -1,0 +1,133 @@
+---
+title: 'Cloud Data Modelling and Performance'
+sidebar_position: 4
+description: 'Partitioning, clustering, distribution, and Z-ORDER — platform-specific performance patterns for Snowflake, Databricks, BigQuery, and Redshift.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Compare partitioning and clustering syntax across Snowflake, Databricks, BigQuery, and Redshift
+- Apply Databricks Z-ORDER to co-locate frequently filtered columns
+- Use the two golden rules: partition by date, cluster by common filter columns
+
+</LearningObjectives>
+
+Each cloud platform has specific modelling considerations.
+
+### Platform Comparison
+
+![Cloud Platforms](/img/courses/diagrams/cloud-platforms.svg)
+
+### Partitioning Strategies
+
+Partitioning divides large tables into smaller, manageable chunks.
+
+```sql
+-- Snowflake: Automatic micro-partitioning + cluster keys
+CREATE TABLE fact_sales (
+    sale_date   DATE,
+    customer_id INT,
+    amount      DECIMAL(12,2)
+)
+CLUSTER BY (sale_date, customer_id);
+
+-- Databricks: Delta table with explicit partitioning
+CREATE TABLE fact_sales (
+    sale_date   DATE,
+    customer_id INT,
+    amount      DECIMAL(12,2)
+)
+USING DELTA
+PARTITIONED BY (sale_date);
+
+-- BigQuery: Partitioned + clustered
+CREATE TABLE dataset.fact_sales (
+    sale_date   DATE,
+    customer_id INT64,
+    amount      NUMERIC
+)
+PARTITION BY sale_date
+CLUSTER BY customer_id;
+
+-- Redshift: Distribution + sort keys
+CREATE TABLE fact_sales (
+    sale_date   DATE,
+    customer_id INT,
+    amount      DECIMAL(12,2)
+)
+DISTSTYLE KEY
+DISTKEY (customer_id)
+SORTKEY (sale_date);
+```
+
+### Databricks Z-ORDER Optimization
+
+```sql
+-- Z-ORDER physically co-locates related data for faster queries
+OPTIMIZE gold.fact_sales
+ZORDER BY (customer_id, product_id);
+
+-- This makes WHERE customer_id = X AND product_id = Y blazing fast
+```
+
+### Performance Optimization Checklist
+
+![Performance Optimization](/img/courses/diagrams/perf-optimization.svg)
+
+:::tip[HitaVir Tech Best Practice]
+"Always partition fact tables by date. Always cluster/sort by your most common WHERE clause columns. These two rules alone solve 80% of performance problems."
+:::
+
+<KeyTakeaways>
+
+- Each platform tunes differently: Snowflake CLUSTER BY, Databricks PARTITIONED BY + Z-ORDER, BigQuery PARTITION/CLUSTER BY, Redshift DISTKEY/SORTKEY
+- Z-ORDER physically co-locates rows sharing filter-column values, accelerating multi-column WHERE clauses
+- Partition fact tables by date; cluster or sort by your most common filter columns
+- Those two rules alone solve roughly 80% of cloud warehouse performance problems
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which platform uses DISTKEY and SORTKEY for table layout?',
+      options: [
+        'Redshift',
+        'Snowflake',
+        'BigQuery',
+        'Databricks',
+      ],
+      answer: 0,
+      explanation:
+        'Redshift distributes rows across nodes with DISTKEY and orders them within nodes with SORTKEY.',
+    },
+    {
+      question: 'What does OPTIMIZE ... ZORDER BY (customer_id, product_id) do on Databricks?',
+      options: [
+        'Creates a B-tree index on both columns',
+        'Converts the table to Parquet',
+        'Physically co-locates rows with related values so multi-column filters scan fewer files',
+        'Deletes duplicate rows',
+      ],
+      answer: 2,
+      explanation:
+        'Z-ORDER rewrites files so related values sit together, letting queries with those WHERE columns skip most files.',
+    },
+    {
+      question: 'What are the two golden rules for fact table performance in the cloud?',
+      options: [
+        'Normalize to 3NF and add more indexes',
+        'Partition by date and cluster/sort by the most common WHERE columns',
+        'Use VARCHAR keys and avoid partitioning',
+        'Store everything in one unpartitioned table',
+      ],
+      answer: 1,
+      explanation:
+        'Date partitioning plus clustering on frequent filter columns solves ~80% of performance problems.',
+    },
+  ]}
+/>
+
+<LessonComplete />

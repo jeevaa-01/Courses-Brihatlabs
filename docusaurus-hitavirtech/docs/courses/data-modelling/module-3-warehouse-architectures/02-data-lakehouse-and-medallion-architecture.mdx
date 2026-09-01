@@ -1,0 +1,151 @@
+---
+title: 'Data Lakehouse and Medallion Architecture'
+sidebar_position: 2
+description: 'Bronze, Silver, and Gold — the industry-standard lakehouse layering, implemented end-to-end in PySpark with Delta Lake.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Describe the purpose of the Bronze, Silver, and Gold layers
+- Implement each layer in PySpark with Delta Lake (ingest, cleanse, model)
+- Explain why the medallion pattern is the lakehouse industry standard
+
+</LearningObjectives>
+
+The **Data Lakehouse** combines the best of data lakes (raw storage, flexibility) and data warehouses (structure, performance). The **Medallion Architecture** organizes data into three quality layers.
+
+### Medallion Architecture
+
+![Medallion Architecture](/img/courses/diagrams/medallion.svg)
+
+### Bronze Layer (Raw)
+
+Data lands exactly as it comes from source systems. No transformation.
+
+```python
+# PySpark — Bronze layer ingestion
+bronze_df = (spark.read
+    .format("json")
+    .option("multiline", "true")
+    .load("/mnt/raw/sales/2026/04/06/")
+)
+
+(bronze_df.write
+    .format("delta")
+    .mode("append")
+    .option("mergeSchema", "true")
+    .saveAsTable("bronze.raw_sales")
+)
+```
+
+### Silver Layer (Cleansed)
+
+Data is cleaned, validated, deduplicated, and standardized.
+
+```python
+# PySpark — Silver layer transformation
+from pyspark.sql.functions import col, trim, upper, current_timestamp
+
+silver_df = (spark.read.table("bronze.raw_sales")
+    .dropDuplicates(["transaction_id"])
+    .filter(col("amount") > 0)
+    .filter(col("customer_id").isNotNull())
+    .withColumn("customer_name", trim(upper(col("customer_name"))))
+    .withColumn("processed_at", current_timestamp())
+)
+
+(silver_df.write
+    .format("delta")
+    .mode("overwrite")
+    .option("overwriteSchema", "true")
+    .saveAsTable("silver.cleaned_sales")
+)
+```
+
+### Gold Layer (Business-Ready)
+
+Data is modelled into star schemas, aggregated, and optimized for consumption.
+
+```python
+# PySpark — Gold layer star schema
+from pyspark.sql.functions import sum, count, avg, round
+
+gold_daily_sales = (spark.read.table("silver.cleaned_sales")
+    .groupBy("sale_date", "store_id", "product_category")
+    .agg(
+        sum("amount").alias("total_revenue"),
+        count("*").alias("num_transactions"),
+        round(avg("amount"), 2).alias("avg_transaction"),
+        sum("profit").alias("total_profit")
+    )
+)
+
+(gold_daily_sales.write
+    .format("delta")
+    .mode("overwrite")
+    .partitionBy("sale_date")
+    .saveAsTable("gold.daily_sales_summary")
+)
+```
+
+### Layer Comparison
+
+![Layer Comparison](/img/courses/diagrams/layer-comparison.svg)
+
+:::tip[HitaVir Tech says]
+"Medallion architecture is the industry standard for Databricks, Azure Synapse, and modern data lakehouses. If you are interviewing for any cloud data engineering role, you MUST know Bronze-Silver-Gold."
+:::
+
+<KeyTakeaways>
+
+- **Bronze** = raw, as-is from source, append-only; **Silver** = cleaned, deduplicated, validated; **Gold** = business-ready star schemas and aggregates
+- Each layer raises data quality; Data Engineers build the transformations between layers
+- Delta Lake features (mergeSchema, MERGE, partitionBy) power the pattern in PySpark
+- Bronze-Silver-Gold is required knowledge for any Databricks or cloud data engineering interview
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Raw JSON lands from the source system with zero transformation. Which layer is it written to?',
+      options: [
+        'Gold',
+        'Silver',
+        'Staging',
+        'Bronze',
+      ],
+      answer: 3,
+      explanation:
+        'Bronze holds data exactly as it arrives — append-only, no cleansing — preserving the original for reprocessing.',
+    },
+    {
+      question: 'Deduplication on transaction_id, null filtering, and name standardization happen in which layer?',
+      options: [
+        'Bronze',
+        'Silver',
+        'Gold',
+        'The BI tool',
+      ],
+      answer: 1,
+      explanation:
+        'Silver is the cleansed layer: validated, deduplicated, standardized data with enforced schema.',
+    },
+    {
+      question: 'Where do star schemas and pre-aggregated KPI tables belong in the medallion architecture?',
+      options: [
+        'Bronze — so they are never lost',
+        'Silver — next to the cleaned data',
+        'Gold — the business-ready consumption layer',
+        'Outside the lakehouse entirely',
+      ],
+      answer: 2,
+      explanation:
+        'Gold is where data is modelled for consumption: star schemas, aggregates, and dashboard-optimized tables.',
+    },
+  ]}
+/>
+
+<LessonComplete />

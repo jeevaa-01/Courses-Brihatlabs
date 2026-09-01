@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 641 450" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="641" height="450" rx="12" fill="#f8f9fa"/>
+  <text x="320" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">List Methods — Complete Reference</text>
+  <rect x="15" y="40" width="145" height="30" rx="6" fill="#1a73e8"/>
+  <text x="87" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Method</text>
+  <rect x="165" y="40" width="291" height="30" rx="6" fill="#1a73e8"/>
+  <text x="310" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">What it does</text>
+  <rect x="461" y="40" width="77" height="30" rx="6" fill="#1a73e8"/>
+  <text x="499" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Returns</text>
+  <rect x="543" y="40" width="83" height="30" rx="6" fill="#1a73e8"/>
+  <text x="585" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Mutates?</text>
+  <rect x="15" y="76" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">append(x)</text>
+  <rect x="165" y="76" width="291" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="175" y="94" font-size="12" fill="#1a73e8">Add one item to the end</text>
+  <rect x="461" y="76" width="77" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="471" y="94" font-size="12" font-family="monospace" fill="#1a73e8">None</text>
+  <rect x="543" y="76" width="83" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="553" y="94" font-size="12" fill="#1a73e8">Yes</text>
+  <rect x="15" y="108" width="145" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">extend(iterable)</text>
+  <rect x="165" y="108" width="291" height="28" rx="4" fill="white"/>
+  <text x="175" y="126" font-size="12" fill="#3c4043">Add all items from an iterable</text>
+  <rect x="461" y="108" width="77" height="28" rx="4" fill="white"/>
+  <text x="471" y="126" font-size="12" font-family="monospace" fill="#3c4043">None</text>
+  <rect x="543" y="108" width="83" height="28" rx="4" fill="white"/>
+  <text x="553" y="126" font-size="12" fill="#3c4043">Yes</text>
+  <rect x="15" y="140" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">insert(i, x)</text>
+  <rect x="165" y="140" width="291" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="175" y="158" font-size="12" fill="#1a73e8">Insert x at index i</text>
+  <rect x="461" y="140" width="77" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="471" y="158" font-size="12" font-family="monospace" fill="#1a73e8">None</text>
+  <rect x="543" y="140" width="83" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="553" y="158" font-size="12" fill="#1a73e8">Yes</text>
+  <rect x="15" y="172" width="145" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">remove(x)</text>
+  <rect x="165" y="172" width="291" height="28" rx="4" fill="white"/>
+  <text x="175" y="190" font-size="12" fill="#3c4043">Delete the first item equal to x</text>
+  <rect x="461" y="172" width="77" height="28" rx="4" fill="white"/>
+  <text x="471" y="190" font-size="12" font-family="monospace" fill="#3c4043">None</text>
+  <rect x="543" y="172" width="83" height="28" rx="4" fill="white"/>
+  <text x="553" y="190" font-size="12" fill="#3c4043">Yes</text>
+  <rect x="15" y="204" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">pop(i=-1)</text>
+  <rect x="165" y="204" width="291" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="175" y="222" font-size="12" fill="#1a73e8">Remove and return item at i (last by default)</text>
+  <rect x="461" y="204" width="77" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="471" y="222" font-size="12" fill="#1a73e8">the item</text>
+  <rect x="543" y="204" width="83" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="553" y="222" font-size="12" fill="#1a73e8">Yes</text>
+  <rect x="15" y="236" width="145" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">clear()</text>
+  <rect x="165" y="236" width="291" height="28" rx="4" fill="white"/>
+  <text x="175" y="254" font-size="12" fill="#3c4043">Remove all items</text>
+  <rect x="461" y="236" width="77" height="28" rx="4" fill="white"/>
+  <text x="471" y="254" font-size="12" font-family="monospace" fill="#3c4043">None</text>
+  <rect x="543" y="236" width="83" height="28" rx="4" fill="white"/>
+  <text x="553" y="254" font-size="12" fill="#3c4043">Yes</text>
+  <rect x="15" y="268" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">index(x)</text>
+  <rect x="165" y="268" width="291" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="175" y="286" font-size="12" fill="#1a73e8">Index of the first item equal to x</text>
+  <rect x="461" y="268" width="77" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="471" y="286" font-size="12" font-family="monospace" fill="#1a73e8">int</text>
+  <rect x="543" y="268" width="83" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="553" y="286" font-size="12" fill="#1a73e8">No</text>
+  <rect x="15" y="300" width="145" height="28" rx="4" fill="white"/>
+  <text x="25" y="318" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">count(x)</text>
+  <rect x="165" y="300" width="291" height="28" rx="4" fill="white"/>
+  <text x="175" y="318" font-size="12" fill="#3c4043">Number of times x appears</text>
+  <rect x="461" y="300" width="77" height="28" rx="4" fill="white"/>
+  <text x="471" y="318" font-size="12" font-family="monospace" fill="#3c4043">int</text>
+  <rect x="543" y="300" width="83" height="28" rx="4" fill="white"/>
+  <text x="553" y="318" font-size="12" fill="#3c4043">No</text>
+  <rect x="15" y="332" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="350" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">sort()</text>
+  <rect x="165" y="332" width="291" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="175" y="350" font-size="12" fill="#1a73e8">Sort the list in place</text>
+  <rect x="461" y="332" width="77" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="471" y="350" font-size="12" font-family="monospace" fill="#1a73e8">None</text>
+  <rect x="543" y="332" width="83" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="553" y="350" font-size="12" fill="#1a73e8">Yes</text>
+  <rect x="15" y="364" width="145" height="28" rx="4" fill="white"/>
+  <text x="25" y="382" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">reverse()</text>
+  <rect x="165" y="364" width="291" height="28" rx="4" fill="white"/>
+  <text x="175" y="382" font-size="12" fill="#3c4043">Reverse the list in place</text>
+  <rect x="461" y="364" width="77" height="28" rx="4" fill="white"/>
+  <text x="471" y="382" font-size="12" font-family="monospace" fill="#3c4043">None</text>
+  <rect x="543" y="364" width="83" height="28" rx="4" fill="white"/>
+  <text x="553" y="382" font-size="12" fill="#3c4043">Yes</text>
+  <rect x="15" y="396" width="145" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="414" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">copy()</text>
+  <rect x="165" y="396" width="291" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="175" y="414" font-size="12" fill="#1a73e8">Return a shallow copy</text>
+  <rect x="461" y="396" width="77" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="471" y="414" font-size="12" fill="#1a73e8">new list</text>
+  <rect x="543" y="396" width="83" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="553" y="414" font-size="12" fill="#1a73e8">No</text>
+  <text x="320" y="444" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

@@ -1,0 +1,79 @@
+name: Build & Deploy PySpark Course
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  PAGES_PROJECT: hitavirtech-docusaurus
+
+jobs:
+  build-and-deploy:
+    name: Build Docusaurus & Deploy to Cloudflare Pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static site
+        run: npm run build
+
+      # Creates the Pages project on the very first run (no-op afterwards),
+      # then pushes the access-gate secrets from GitHub repo secrets into the
+      # Pages project so the dashboard never has to be touched. Runs BEFORE
+      # the deploy so the new deployment picks the values up immediately.
+      - name: Ensure project exists & sync access-gate secrets
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+        run: |
+          npx --yes wrangler pages project create "$PAGES_PROJECT" --production-branch=main || true
+          for VAR in GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET SESSION_SECRET; do
+            VAL="${!VAR}"
+            if [ -n "$VAL" ]; then
+              printf '%s' "$VAL" | npx --yes wrangler pages secret put "$VAR" --project-name="$PAGES_PROJECT"
+              echo "Synced $VAR to Pages project"
+            else
+              echo "::warning::$VAR is not set in GitHub repo secrets - the OAuth gate will not work until it is added"
+            fi
+          done
+
+      # `wrangler pages deploy build` bundles the ./functions directory
+      # (the OAuth access gate) alongside the static assets in ./build.
+      - name: Deploy to Cloudflare Pages
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy build --project-name=hitavirtech-docusaurus
+
+      - name: Deployment Summary
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          echo '## Deployment Complete' >> $GITHUB_STEP_SUMMARY
+          echo 'Deployed the PySpark course to Cloudflare Pages.' >> $GITHUB_STEP_SUMMARY
+          echo 'Live URL: https://learn.hitavirtech.com' >> $GITHUB_STEP_SUMMARY

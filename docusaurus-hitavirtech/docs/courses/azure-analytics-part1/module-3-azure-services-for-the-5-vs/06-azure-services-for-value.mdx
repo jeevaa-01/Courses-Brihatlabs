@@ -1,0 +1,253 @@
+---
+title: 'Azure Services for Value'
+sidebar_position: 6
+description: 'The Azure toolkit for business outcomes — Power BI, Azure ML, Azure OpenAI, Personalizer, Copilot, Synapse ML, and the value stack.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Match Power BI, Azure ML, Azure OpenAI, and the applied AI services to their Value roles
+- Explain how Power BI Copilot turns natural language into DAX and visuals
+- Recognize the RAG pattern that grounds Azure OpenAI in your own lake data
+- Read the value stack from build layer to business value
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              AZURE  FOR  VALUE                               |
+  |       "Turn data into decisions and ROI."                    |
+  +==============================================================+
+```
+
+### The Value Lineup
+
+![Power BI](/img/courses/azure-icons/power-bi.svg) ![Azure ML](/img/courses/azure-icons/ml.svg) ![Azure OpenAI](/img/courses/azure-icons/openai.svg) ![Anomaly Detector](/img/courses/azure-icons/anomaly-detector.svg) ![Personalizer](/img/courses/azure-icons/personalizer.svg) ![Metrics Advisor](/img/courses/azure-icons/metrics-advisor.svg)
+
+**Power BI** • **Azure ML** • **Azure OpenAI** • **Anomaly Detector** • **Personalizer** • **Metrics Advisor**
+
+### The Value Toolkit
+
+| Service | Icon | Purpose |
+|---------|:---:|---------|
+| **Microsoft Power BI** | <img src="azure-icons/power-bi.svg" width="32" height="32" alt="Power BI" /> | Dashboards, BI, natural-language analytics |
+| **Azure Machine Learning** | <img src="azure-icons/ml.svg" width="32" height="32" alt="Azure ML" /> | Build, train, deploy ML models |
+| **Azure AI Anomaly Detector** | <img src="azure-icons/anomaly-detector.svg" width="32" height="32" alt="Anomaly Detector" /> | No-code time-series anomaly detection |
+| **Azure AI Personalizer** | <img src="azure-icons/personalizer.svg" width="32" height="32" alt="Personalizer" /> | Contextual recommendation engine |
+| **Azure AI Metrics Advisor** | <img src="azure-icons/metrics-advisor.svg" width="32" height="32" alt="Metrics Advisor" /> | Proactive KPI anomaly monitoring |
+| **Azure OpenAI Service** | <img src="azure-icons/openai.svg" width="32" height="32" alt="Azure OpenAI" /> | GPT, Claude-competitive LLMs on Azure |
+| **Power BI Copilot** | <img src="azure-icons/power-bi.svg" width="32" height="32" alt="Power BI Copilot" /> | Ask data questions in natural language |
+| **Synapse ML / Fabric ML** | <img src="azure-icons/synapse.svg" width="32" height="32" alt="Synapse ML" /> | ML in notebooks next to your data |
+| **Microsoft Fabric** | <img src="azure-icons/synapse.svg" width="32" height="32" alt="Fabric" /> | SaaS analytics: Lakehouse + Warehouse + BI |
+
+### Service Spotlight — Microsoft Power BI
+
+![Power BI](/img/courses/azure-icons/power-bi.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  MICROSOFT  POWER  BI  -  Business Intelligence              |
+  +--------------------------------------------------------------+
+  |  Sources     :  Synapse, SQL, ADLS, Fabric, 100+ connectors  |
+  |  Engine      :  VertiPaq (in-memory columnar)                |
+  |  Superpowers :  Copilot (natural language) + Embedded        |
+  |  Editions    :  Free  |  Pro  |  Premium  |  Fabric          |
+  |                                                              |
+  |  The leader in Gartner's BI Magic Quadrant for 17 years.     |
+  +--------------------------------------------------------------+
+```
+
+### Power BI Flow
+
+```
+  Synapse / SQL / ADLS  --->  Dataset  --->  Visuals  --->  Report  --->  App
+  (data source)              (VertiPaq       (charts)       (pages)       (share)
+                              cache)
+```
+
+### Service Spotlight — Azure Machine Learning
+
+![Azure ML](/img/courses/azure-icons/ml.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  AZURE  MACHINE  LEARNING  -  Full-Lifecycle ML              |
+  +--------------------------------------------------------------+
+  |  Studio      :  Browser IDE for ML                           |
+  |  AutoML      :  Tries many models automatically              |
+  |  Pipelines   :  Train / evaluate / deploy as YAML + CLI v2   |
+  |  MLOps       :  Model registry, endpoints, monitoring        |
+  |                                                              |
+  |  From raw data to deployed model - one platform.             |
+  +--------------------------------------------------------------+
+```
+
+### Service Spotlight — Azure OpenAI Service
+
+![Azure OpenAI](/img/courses/azure-icons/openai.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  AZURE  OPENAI  SERVICE                                      |
+  +--------------------------------------------------------------+
+  |  Models      :  GPT-4, GPT-4o, embeddings, DALL-E, whisper   |
+  |  Compliance  :  SOC, HIPAA, FedRAMP, private network         |
+  |  Integration :  RAG with AI Search, Cognitive Services       |
+  |                                                              |
+  |  Same OpenAI models, but your data never leaves Azure.       |
+  +--------------------------------------------------------------+
+```
+
+```
+  Your docs (ADLS)
+       |
+       v
+  AI Search (vector index)
+       |
+       v
+  Azure OpenAI (GPT-4o with RAG)
+       |
+       v
+  Chat / Copilot experiences
+```
+
+### Service Spotlight — Azure AI Personalizer
+
+![Personalizer](/img/courses/azure-icons/personalizer.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  AZURE  AI  PERSONALIZER  -  Netflix-Style Recs              |
+  +--------------------------------------------------------------+
+  |  Inputs      :  Context features + reward signals            |
+  |  Use cases   :  "You may like...", "Related items..."        |
+  |  Real-time   :  Inference in milliseconds                    |
+  |                                                              |
+  |  Contextual-bandit reinforcement learning, no PhD required.  |
+  +--------------------------------------------------------------+
+```
+
+### Power BI Copilot — Natural-Language BI
+
+```
+  User types:   "Show me top 5 products last quarter"
+                        |
+                        v
+     Copilot interprets -> writes DAX -> runs -> visualizes
+                        |
+                        v
+            Bar chart appears in 2 seconds
+```
+
+Analysts no longer gatekeep simple questions.
+
+### Synapse ML — SQL-Native Machine Learning
+
+```sql
+CREATE EXTERNAL MODEL churn_model
+FROM   (SELECT * FROM customer_features)
+WITH  (MODEL_TYPE = 'Binary Classification',
+       LABEL_COLUMN = 'churned');
+
+-- then use it
+SELECT customer_id, PREDICT(MODEL = churn_model, DATA = features) AS risk
+FROM   customers
+WHERE  risk > 0.8;
+```
+
+ML without leaving your Synapse warehouse.
+
+### The Value Stack
+
+```
+  +==============================================================+
+  |                                                              |
+  |   BUSINESS  VALUE      revenue - savings - growth            |
+  |        ^                                                     |
+  |        |                                                     |
+  |   APPLICATION LAYER    Personalizer, Metrics Advisor, AD     |
+  |        ^                                                     |
+  |        |                                                     |
+  |   ML LAYER             Azure ML, Synapse ML, OpenAI          |
+  |        ^                                                     |
+  |        |                                                     |
+  |   ANALYSIS LAYER       Synapse + Power BI + Fabric           |
+  |        ^                                                     |
+  |        |                                                     |
+  |   BUILD LAYER          ADLS + ADF + Event Hubs + Purview     |
+  |                                                              |
+  +==============================================================+
+```
+
+:::tip[HitaVir Tech says]
+"The best data platform is worthless if nobody uses the outputs. Start from
+Value and work backwards — who sees which insight, and what decision changes?
+Design everything else to serve that."
+:::
+
+<KeyTakeaways>
+
+- Power BI (VertiPaq engine, Copilot, Embedded) is the delivery end of the Azure value chain
+- Azure ML covers the full lifecycle — Studio, AutoML, pipelines, MLOps registry and endpoints
+- Azure OpenAI serves GPT-class models inside your compliance boundary; RAG with AI Search grounds them in your lake
+- Applied AI services (Personalizer, Anomaly Detector, Metrics Advisor) deliver ML outcomes without building models
+- The value stack: build layer → analysis layer → ML layer → application layer → business value
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What does Power BI Copilot do with "Show me top 5 products last quarter"?',
+      options: [
+        'Emails the question to an analyst',
+        'Interprets it, writes DAX, runs it, and renders a visual',
+        'Creates a new Synapse workspace',
+        'Exports the model to Excel',
+      ],
+      answer: 1,
+      explanation:
+        'Copilot converts natural language to DAX, executes it, and visualizes the answer in seconds.',
+    },
+    {
+      question: 'What is the key enterprise selling point of Azure OpenAI versus calling public model APIs?',
+      options: [
+        'The models are more accurate',
+        'It is always free',
+        'Your data stays inside your Azure compliance boundary (SOC, HIPAA, private network)',
+        'It requires no authentication',
+      ],
+      answer: 2,
+      explanation:
+        'Same model families, but hosted with Azure compliance controls — data never leaves your tenant boundary.',
+    },
+    {
+      question: 'You want Netflix-style "you may like" recommendations without building a model from scratch. Which service?',
+      options: [
+        'Azure AI Personalizer',
+        'Azure Key Vault',
+        'Azure Data Explorer',
+        'Event Hubs Capture',
+      ],
+      answer: 0,
+      explanation:
+        'Personalizer is a managed contextual-bandit recommender — context features and reward signals in, recommendations out.',
+    },
+    {
+      question: 'In the value stack, which layer sits directly beneath business value?',
+      options: [
+        'The build layer (ADLS + ADF)',
+        'The analysis layer (Synapse + Power BI)',
+        'The ML layer (Azure ML)',
+        'The application layer (Personalizer, Metrics Advisor, Anomaly Detector)',
+      ],
+      answer: 3,
+      explanation:
+        'Applied AI applications turn ML into user-facing outcomes — the last stop before revenue, savings, and growth.',
+    },
+  ]}
+/>
+
+<LessonComplete />

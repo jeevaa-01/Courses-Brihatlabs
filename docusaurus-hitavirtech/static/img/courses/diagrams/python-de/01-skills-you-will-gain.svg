@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 418 386" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="418" height="386" rx="12" fill="#f8f9fa"/>
+  <text x="209" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Skills You Will Gain</text>
+  <rect x="15" y="40" width="275" height="30" rx="6" fill="#1a73e8"/>
+  <text x="152" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Skill</text>
+  <rect x="295" y="40" width="107" height="30" rx="6" fill="#1a73e8"/>
+  <text x="349" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Level</text>
+  <rect x="15" y="76" width="275" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">Python syntax, variables, types</text>
+  <rect x="295" y="76" width="107" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="305" y="94" font-size="12" fill="#1a73e8">Beginner</text>
+  <rect x="15" y="108" width="275" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" fill="#3c4043">Control flow (if/else, loops)</text>
+  <rect x="295" y="108" width="107" height="28" rx="4" fill="white"/>
+  <text x="305" y="126" font-size="12" fill="#3c4043">Beginner</text>
+  <rect x="15" y="140" width="275" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">Functions and modular code</text>
+  <rect x="295" y="140" width="107" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="305" y="158" font-size="12" fill="#1a73e8">Beginner</text>
+  <rect x="15" y="172" width="275" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" fill="#3c4043">Data structures (lists, dicts, sets, tuples)</text>
+  <rect x="295" y="172" width="107" height="28" rx="4" fill="white"/>
+  <text x="305" y="190" font-size="12" fill="#3c4043">Beginner</text>
+  <rect x="15" y="204" width="275" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" fill="#1a73e8">File I/O (CSV, JSON, text)</text>
+  <rect x="295" y="204" width="107" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="305" y="222" font-size="12" fill="#1a73e8">Intermediate</text>
+  <rect x="15" y="236" width="275" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" fill="#3c4043">Error handling and logging</text>
+  <rect x="295" y="236" width="107" height="28" rx="4" fill="white"/>
+  <text x="305" y="254" font-size="12" fill="#3c4043">Intermediate</text>
+  <rect x="15" y="268" width="275" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" fill="#1a73e8">pandas data manipulation</text>
+  <rect x="295" y="268" width="107" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="305" y="286" font-size="12" fill="#1a73e8">Intermediate</text>
+  <rect x="15" y="300" width="275" height="28" rx="4" fill="white"/>
+  <text x="25" y="318" font-size="12" font-weight="700" fill="#3c4043">ETL pipeline development</text>
+  <rect x="295" y="300" width="107" height="28" rx="4" fill="white"/>
+  <text x="305" y="318" font-size="12" fill="#3c4043">Intermediate</text>
+  <rect x="15" y="332" width="275" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="350" font-size="12" font-weight="700" fill="#1a73e8">Industry best practices</text>
+  <rect x="295" y="332" width="107" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="305" y="350" font-size="12" fill="#1a73e8">Intermediate</text>
+  <text x="209" y="380" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

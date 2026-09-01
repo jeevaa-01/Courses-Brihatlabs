@@ -1,0 +1,83 @@
+---
+title: 'Install Databricks CLI'
+sidebar_position: 3
+description: 'Install the Databricks CLI and configure a token-based profile for your workspace.'
+---
+
+<DurationBadge minutes={4} />
+
+<LearningObjectives>
+
+- Install the Databricks CLI via winget or pip
+- Configure a named profile with a personal access token
+- Verify connectivity by listing workspace clusters
+
+</LearningObjectives>
+### Step 1 - Install
+
+```powershell
+winget install Databricks.DatabricksCLI
+```
+
+Or via pip:
+```bash
+pip install databricks-cli
+```
+
+### Step 2 - Configure
+
+```bash
+databricks configure --token --profile hitavir-dev
+# Databricks Host: https://adb-XXXXXXXXXX.azuredatabricks.net
+# Token: dapiXXXXXXXXXXXXXXXX
+```
+
+Generate token: Databricks > **User Settings > Developer > Access Tokens > Generate New Token**
+
+### Verify
+
+```bash
+databricks --version
+# Databricks CLI v0.x.x
+
+databricks clusters list --profile hitavir-dev
+```
+
+<KeyTakeaways>
+
+- Profiles (`--profile hitavir-dev`) let you target multiple workspaces from one machine
+- Tokens are generated in Databricks under **User Settings → Developer → Access Tokens**
+- Treat access tokens like passwords — never commit them to a repository
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Where do you generate the token the CLI asks for?',
+      options: [
+        'Databricks → User Settings → Developer → Access Tokens',
+        'GitHub → Settings → Tokens',
+        'The CLI generates one automatically',
+        'Azure Portal → Key Vault',
+      ],
+      answer: 0,
+      explanation:
+        'Personal access tokens are minted in the Databricks workspace UI and pasted into databricks configure.',
+    },
+    {
+      question: 'What is the advantage of configuring the CLI with --profile?',
+      options: [
+        'You can keep credentials for multiple workspaces and pick one per command',
+        'It encrypts the token',
+        'It makes commands run faster',
+        'Profiles are required for the CLI to work',
+      ],
+      answer: 0,
+      explanation:
+        'Named profiles live in ~/.databrickscfg; pass --profile to point any command at the right workspace.',
+    },
+  ]}
+/>
+
+<LessonComplete />

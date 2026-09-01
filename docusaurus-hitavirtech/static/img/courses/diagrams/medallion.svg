@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 260" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="s" x="-4%" y="-4%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+    <marker id="arrowR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#5f6368"/>
+    </marker>
+  </defs>
+  <rect width="820" height="260" rx="12" fill="#f8f9fa"/>
+  <text x="410" y="28" text-anchor="middle" font-size="14" font-weight="600" fill="#5f6368">MEDALLION ARCHITECTURE (Bronze / Silver / Gold)</text>
+
+  <!-- Source Systems -->
+  <rect x="20" y="70" width="120" height="100" rx="8" fill="#e8eaed" filter="url(#s)"/>
+  <text x="80" y="112" text-anchor="middle" font-size="11" font-weight="600" fill="#3c4043">Source</text>
+  <text x="80" y="128" text-anchor="middle" font-size="11" font-weight="600" fill="#3c4043">Systems</text>
+  <text x="80" y="148" text-anchor="middle" font-size="9" fill="#5f6368">APIs, DBs, Files</text>
+
+  <!-- Arrow Source to Bronze -->
+  <line x1="140" y1="120" x2="170" y2="120" stroke="#5f6368" stroke-width="2" marker-end="url(#arrowR)"/>
+
+  <!-- Bronze -->
+  <rect x="175" y="55" width="175" height="130" rx="10" fill="#78909c" filter="url(#s)"/>
+  <text x="262" y="82" text-anchor="middle" font-size="15" font-weight="700" fill="white">BRONZE</text>
+  <text x="262" y="100" text-anchor="middle" font-size="10" fill="#cfd8dc">Raw Layer</text>
+  <line x1="192" y1="108" x2="332" y2="108" stroke="#90a4ae" stroke-width="1"/>
+  <text x="262" y="126" text-anchor="middle" font-size="10" fill="white">Raw ingestion</text>
+  <text x="262" y="142" text-anchor="middle" font-size="10" fill="white">As-is from source</text>
+  <text x="262" y="158" text-anchor="middle" font-size="10" fill="white">No transformation</text>
+  <text x="262" y="176" text-anchor="middle" font-size="9" fill="#cfd8dc">Schema-on-read</text>
+
+  <!-- Arrow Bronze to Silver -->
+  <line x1="350" y1="120" x2="385" y2="120" stroke="#5f6368" stroke-width="2" marker-end="url(#arrowR)"/>
+
+  <!-- Silver -->
+  <rect x="390" y="55" width="175" height="130" rx="10" fill="#607d8b" filter="url(#s)"/>
+  <text x="477" y="82" text-anchor="middle" font-size="15" font-weight="700" fill="white">SILVER</text>
+  <text x="477" y="100" text-anchor="middle" font-size="10" fill="#eceff1">Cleansed Layer</text>
+  <line x1="407" y1="108" x2="547" y2="108" stroke="#90a4ae" stroke-width="1"/>
+  <text x="477" y="126" text-anchor="middle" font-size="10" fill="white">Cleaned, validated</text>
+  <text x="477" y="142" text-anchor="middle" font-size="10" fill="white">Deduplicated</text>
+  <text x="477" y="158" text-anchor="middle" font-size="10" fill="white">Standardized types</text>
+  <text x="477" y="176" text-anchor="middle" font-size="9" fill="#eceff1">Enforced schema</text>
+
+  <!-- Arrow Silver to Gold -->
+  <line x1="565" y1="120" x2="600" y2="120" stroke="#5f6368" stroke-width="2" marker-end="url(#arrowR)"/>
+
+  <!-- Gold -->
+  <rect x="605" y="55" width="195" height="130" rx="10" fill="#f9a825" filter="url(#s)"/>
+  <text x="702" y="82" text-anchor="middle" font-size="15" font-weight="700" fill="#3e2723">GOLD</text>
+  <text x="702" y="100" text-anchor="middle" font-size="10" fill="#5d4037">Business Layer</text>
+  <line x1="622" y1="108" x2="782" y2="108" stroke="#fbc02d" stroke-width="1"/>
+  <text x="702" y="126" text-anchor="middle" font-size="10" fill="#3e2723">Aggregated, enriched</text>
+  <text x="702" y="142" text-anchor="middle" font-size="10" fill="#3e2723">Star schemas</text>
+  <text x="702" y="158" text-anchor="middle" font-size="10" fill="#3e2723">Business KPIs</text>
+  <text x="702" y="176" text-anchor="middle" font-size="9" fill="#5d4037">Dashboards + Reports</text>
+
+  <!-- Bottom bar: Data quality gradient -->
+  <rect x="175" y="200" width="625" height="8" rx="4" fill="#e8eaed"/>
+  <rect x="175" y="200" width="625" height="8" rx="4" fill="url(#qg)"/>
+  <defs>
+    <linearGradient id="qg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ef5350"/>
+      <stop offset="50%" style="stop-color:#ffa726"/>
+      <stop offset="100%" style="stop-color:#66bb6a"/>
+    </linearGradient>
+  </defs>
+  <text x="175" y="228" font-size="9" fill="#9aa0a6">Low quality</text>
+  <text x="410" y="228" text-anchor="middle" font-size="10" font-weight="600" fill="#5f6368">Data Quality Increases</text>
+  <text x="770" y="228" font-size="9" fill="#9aa0a6" text-anchor="end">High quality</text>
+
+  <text x="410" y="252" text-anchor="middle" font-size="10" fill="#bdbdbd">HitaVir Tech</text>
+</svg>

@@ -1,0 +1,9 @@
+{
+  "label": "Module 2 \u00b7 Core Data Handling",
+  "position": 4,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "description": "Reading CSV, JSON, and Parquet, transformations, cleaning, and aggregations."
+  }
+}

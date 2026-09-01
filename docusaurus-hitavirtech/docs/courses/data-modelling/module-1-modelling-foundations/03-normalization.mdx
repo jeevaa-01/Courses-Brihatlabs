@@ -1,0 +1,200 @@
+---
+title: 'Normalization'
+sidebar_position: 3
+description: 'Eliminate redundancy and anomalies with 1NF, 2NF, 3NF, and BCNF — the foundation of OLTP database design, with worked SQL examples.'
+---
+
+<DurationBadge minutes={12} />
+
+<LearningObjectives>
+
+- Explain the update, insert, and delete anomalies that normalization prevents
+- Apply 1NF (atomic values), 2NF (no partial dependencies), and 3NF (no transitive dependencies)
+- Decide when a design should be normalized and when it should not
+
+</LearningObjectives>
+
+Normalization organizes data to **eliminate redundancy** and **ensure data integrity**. It is the foundation of OLTP database design.
+
+### Why Normalize?
+
+**Without normalization (one messy table):**
+
+| order_id | cust_name | cust_email | product_name | prod_cat | amount |
+|----------|-----------|------------|-------------|----------|--------|
+| 1 | Alice | alice@mail | Laptop | Electronics | 999.99 |
+| 2 | Alice | alice@mail | Mouse | Electronics | 29.99 |
+| 3 | Bob | bob@mail | Laptop | Electronics | 999.99 |
+
+**Problems with this design:**
+
+- Alice's email is stored **TWICE** (update anomaly)
+- Laptop info **repeated** for every order (redundancy)
+- Delete order 3 and you **lose Bob entirely** (delete anomaly)
+
+### First Normal Form (1NF)
+
+**Rule:** Every column contains only atomic (single) values. No repeating groups.
+
+**Before 1NF (violating):**
+
+| emp_id | name | phone_numbers |
+|--------|------|---------------|
+| 1 | Alice | **9876543210, 911234** -- VIOLATION: not atomic! |
+| 2 | Bob | 8765432109 |
+
+**After 1NF:**
+
+```sql
+CREATE TABLE employee_phones (
+    emp_id    INT,
+    name      VARCHAR(50),
+    phone     VARCHAR(15),
+    PRIMARY KEY (emp_id, phone)
+);
+
+INSERT INTO employee_phones VALUES
+(1, 'Alice', '9876543210'),
+(1, 'Alice', '9111234567'),
+(2, 'Bob',   '8765432109');
+```
+
+### Second Normal Form (2NF)
+
+**Rule:** Must be in 1NF + every non-key column depends on the **entire** primary key (no partial dependency).
+
+**Before 2NF (composite key with partial dependency):**
+
+| student_id | course_id | student_name | course_name |
+|-----------|-----------|--------------|-------------|
+| 1 | CS101 | Alice | Python |
+| 1 | CS102 | Alice | SQL |
+| 2 | CS101 | Bob | Python |
+
+**PK** = (student_id, course_id). But `student_name` depends **only** on `student_id` -- partial dependency -- **NOT 2NF!**
+
+**After 2NF (split into separate tables):**
+
+```sql
+CREATE TABLE students (
+    student_id   INT PRIMARY KEY,
+    student_name VARCHAR(50)
+);
+
+CREATE TABLE courses (
+    course_id   VARCHAR(10) PRIMARY KEY,
+    course_name VARCHAR(50)
+);
+
+CREATE TABLE enrollments (
+    student_id INT,
+    course_id  VARCHAR(10),
+    PRIMARY KEY (student_id, course_id),
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (course_id)  REFERENCES courses(course_id)
+);
+```
+
+### Third Normal Form (3NF)
+
+**Rule:** Must be in 2NF + no transitive dependencies (non-key column depending on another non-key column).
+
+**Before 3NF:**
+
+| emp_id | emp_name | dept_id | dept_name |
+|--------|----------|---------|-----------|
+| 1 | Alice | 10 | Engineering |
+| 2 | Bob | 10 | Engineering |
+| 3 | Charlie | 20 | Marketing |
+
+`dept_name` depends on `dept_id`, **NOT** on `emp_id` -- this is a **transitive dependency** -- NOT 3NF!
+
+**After 3NF:**
+
+```sql
+CREATE TABLE departments (
+    dept_id   INT PRIMARY KEY,
+    dept_name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE employees (
+    emp_id    INT PRIMARY KEY,
+    emp_name  VARCHAR(50) NOT NULL,
+    dept_id   INT NOT NULL,
+    FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
+);
+```
+
+### BCNF (Boyce-Codd Normal Form)
+
+**Rule:** Must be in 3NF + every determinant is a candidate key.
+
+BCNF handles rare edge cases where 3NF still has anomalies. In practice, most 3NF designs already satisfy BCNF.
+
+### Normalization Journey
+
+![Normalization Flow](/img/courses/diagrams/normalization-flow.svg)
+
+### Normalization Summary
+
+![Normalization Summary](/img/courses/diagrams/normalization-summary.svg)
+
+### When to Use Normalization
+
+![When to Normalize](/img/courses/diagrams/normalize-when.svg)
+
+:::tip[HitaVir Tech says]
+"Normalize for OLTP (where data is written), denormalize for OLAP (where data is read). This is the golden rule of data modelling that separates juniors from seniors in interviews."
+:::
+
+<KeyTakeaways>
+
+- Normalization removes redundancy and prevents update, insert, and delete anomalies
+- **1NF** = atomic values only; **2NF** = no partial dependency on a composite key; **3NF** = no transitive dependencies
+- BCNF tightens 3NF for rare edge cases — most 3NF designs already satisfy it
+- Golden rule: normalize where data is written (OLTP), denormalize where data is read (OLAP)
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'A column stores "9876543210, 9111234567" as a comma-separated list. Which normal form does this violate?',
+      options: [
+        '3NF',
+        '2NF',
+        'BCNF',
+        '1NF',
+      ],
+      answer: 3,
+      explanation:
+        '1NF requires atomic values — one value per column per row. Comma-separated lists are the classic 1NF violation.',
+    },
+    {
+      question: 'In a table with PK (student_id, course_id), student_name depends only on student_id. What is this problem called?',
+      options: [
+        'A transitive dependency (3NF violation)',
+        'A partial dependency (2NF violation)',
+        'A repeating group (1NF violation)',
+        'A missing surrogate key',
+      ],
+      answer: 1,
+      explanation:
+        '2NF requires every non-key column to depend on the ENTIRE composite key. Depending on just part of it is a partial dependency.',
+    },
+    {
+      question: 'dept_name depends on dept_id, which depends on emp_id. Fixing this by splitting out a departments table achieves which normal form?',
+      options: [
+        '3NF — it removes a transitive dependency',
+        '1NF — it removes repeating groups',
+        '2NF — it removes a partial dependency',
+        'No normal form; it is denormalization',
+      ],
+      answer: 0,
+      explanation:
+        'A non-key column depending on another non-key column is a transitive dependency; removing it is exactly what 3NF requires.',
+    },
+  ]}
+/>
+
+<LessonComplete />

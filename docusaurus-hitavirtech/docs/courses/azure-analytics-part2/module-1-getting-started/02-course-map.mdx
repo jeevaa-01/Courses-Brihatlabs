@@ -1,0 +1,91 @@
+---
+title: 'Course Map'
+sidebar_position: 2
+description: 'The three architecture patterns — data lake, data warehouse, and lakehouse — that power 95% of modern analytics, and how Part 2 tours them.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Name the three architecture patterns behind roughly 95% of production analytics
+- See how the data lake, data warehouse, and lakehouse evolved from one another
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |         SECTION  1  -  ARCHITECTURES (the big three)         |
+  +==============================================================+
+```
+
+### The Three Architecture Icons
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Databricks](/img/courses/azure-icons/databricks.svg)
+
+Three architecture patterns power **95% of modern analytics** in production:
+
+```
+                    +----------------------+
+                    |  1.  DATA LAKE       |
+                    |  Store anything,     |
+                    |  cheap and forever   |
+                    +----------+-----------+
+                               |
+                               | grew alongside
+                               v
+                    +----------------------+
+                    |  2.  DATA WAREHOUSE  |
+                    |  Fast SQL on         |
+                    |  curated tables      |
+                    +----------+-----------+
+                               |
+                               | combined into
+                               v
+                    +----------------------+
+                    |  3.  LAKEHOUSE       |
+                    |  (Modern Data Arch.) |
+                    |  Best of both        |
+                    +----------------------+
+```
+
+**Part 2 tours each architecture**, shows the Azure services that implement it, then demonstrates how real companies blend all three for different use cases.
+
+<KeyTakeaways>
+
+- Three patterns power most modern analytics: the data lake, the data warehouse, and the lakehouse
+- Lakes store anything cheaply and forever; warehouses serve fast SQL on curated tables
+- The lakehouse combines the strengths of both — it is the "modern data architecture" this course builds toward
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which architecture pattern combines the strengths of the data lake and the data warehouse?',
+      options: [
+        'The data mart',
+        'The operational data store',
+        'The OLTP database',
+        'The lakehouse (modern data architecture)',
+      ],
+      answer: 3,
+      explanation:
+        'The lakehouse keeps cheap, open lake storage and adds warehouse features (fast SQL, ACID, governance) on top.',
+    },
+    {
+      question: 'What does this course claim about the three architecture patterns?',
+      options: [
+        'They power roughly 95% of modern analytics in production',
+        'They were all invented after 2023',
+        'Only one of them is still used today',
+        'Each requires a separate Azure subscription',
+      ],
+      answer: 0,
+      explanation:
+        'Lake, warehouse, and lakehouse are the shapes behind nearly all production analytics platforms — master the shapes and the services follow.',
+    },
+  ]}
+/>
+
+<LessonComplete />

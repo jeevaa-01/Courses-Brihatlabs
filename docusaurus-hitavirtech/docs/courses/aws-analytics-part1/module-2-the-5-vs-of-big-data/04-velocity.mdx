@@ -1,0 +1,128 @@
+---
+title: 'Velocity'
+sidebar_position: 4
+description: 'The 3rd V — Velocity. The freshness spectrum from nightly batch to sub-millisecond real-time, and why batch still wins most workloads.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Define Velocity and place workloads on the batch → streaming → real-time spectrum
+- Match business scenarios (fraud, dashboards, month close) to required latency
+- Explain why most real-world analytics still runs on batch
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              THE  3rd  V   -   VELOCITY                      |
+  |              "How fast is the data?"                         |
+  +==============================================================+
+```
+
+### What is Velocity?
+
+🌊 **Velocity** is the speed at which data **arrives**, **moves**, and must be **processed** to deliver value.
+
+### The Velocity Spectrum
+
+| Freshness | Icon | Approach | Example Use Case |
+|-----------|:---:|----------|------------------|
+| Next day | 🐌 | Batch (nightly) | Finance reports |
+| Every hour | 🐇 | Mini-batch | Ops dashboards |
+| Seconds | 🚀 | Streaming | Live pricing |
+| Sub-millisecond | ⚡ | Real-time | Fraud detection, HFT |
+
+### Why Velocity is Hard
+
+| Problem | Solution |
+|---------|----------|
+| Disks too slow | In-memory / caches |
+| Batch SQL too slow | Stream-processing engines |
+| One machine too small | Horizontal auto-scaling |
+| Failures = data loss | Durable logs (Kafka / Kinesis) |
+
+### Real-World Velocity
+
+| Scenario | Required Latency |
+|----------|------------------|
+| 💳 Credit card fraud | Under 100 ms |
+| 📈 Stock trading | Microseconds |
+| 📱 Social feed | Seconds |
+| 🚚 Delivery tracking | Minutes |
+| 📊 Exec dashboard | Hourly |
+| 🧾 Month close | Daily batch |
+
+### Questions Velocity Forces You to Ask
+
+- 🕒 Do we **really** need real-time, or is 5 minutes fine?
+- 🐌 How do we handle **late-arriving** events?
+- 📈 What if the stream **falls behind** during a spike?
+- 🔁 How do we **replay** events on failure?
+
+:::tip[HitaVir Tech says]
+"Streaming is fashionable. Batch is profitable. 80% of real-world analytics runs on batch — don't reach for streaming unless the business truly cannot wait."
+:::
+
+:::info[Velocity in one line]
+Match the pipeline's speed to the decision's deadline — no faster.
+:::
+
+### Preview — AWS Services That Solve Velocity
+
+![Kinesis Data Streams](/img/courses/aws-icons/kinesis-streams.png) ![Kinesis Firehose](/img/courses/aws-icons/kinesis-firehose.png) ![Kinesis Analytics](/img/courses/aws-icons/kinesis-analytics.png) ![Lambda](/img/courses/aws-icons/lambda.png) ![EventBridge](/img/courses/aws-icons/eventbridge.png)
+
+*Coming up in "AWS Services for Velocity".*
+
+<KeyTakeaways>
+
+- Velocity is about how fast data arrives, moves, and must be processed to matter
+- The spectrum runs nightly batch → mini-batch → streaming → sub-millisecond real-time
+- Roughly 80% of real-world analytics is batch — streaming is the exception, not the default
+- Match pipeline speed to the decision's deadline, no faster
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Credit card fraud detection typically requires which latency class?',
+      options: [
+        'Nightly batch',
+        'Hourly mini-batch',
+        'Under 100 ms — real-time',
+        'Next-day reporting',
+      ],
+      answer: 2,
+      explanation:
+        'The decision (approve or block the swipe) happens in the moment — the pipeline must answer in well under a second.',
+    },
+    {
+      question: 'What is the guiding rule for choosing pipeline speed?',
+      options: [
+        'Always build real-time — it future-proofs the platform',
+        'Match the pipeline\'s speed to the decision\'s deadline, no faster',
+        'Always start with microsecond latency',
+        'Batch is obsolete',
+      ],
+      answer: 1,
+      explanation:
+        'Faster pipelines cost more to build and run. If the decision can wait 5 minutes, a 5-minute pipeline is the right one.',
+    },
+    {
+      question: 'Roughly what share of real-world analytics runs on batch, per this lesson?',
+      options: [
+        '80%',
+        '20%',
+        '50%',
+        '5%',
+      ],
+      answer: 0,
+      explanation:
+        '"Streaming is fashionable. Batch is profitable." Most analytics workloads are perfectly served by batch.',
+    },
+  ]}
+/>
+
+<LessonComplete />

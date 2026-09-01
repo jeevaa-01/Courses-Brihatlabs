@@ -1,0 +1,155 @@
+---
+title: 'Rebasing vs Merging'
+sidebar_position: 1
+description: 'Understand how rebase rewrites history into a linear timeline, when to prefer it over merge, and the golden rule of never rebasing shared branches.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Explain how rebase moves commits to create linear history
+- Rebase a feature branch onto `main`, then fast-forward merge
+- State the golden rule: never rebase shared branches
+
+</LearningObjectives>
+
+Both rebasing and merging combine changes from one branch into another, but they do it differently.
+
+### What is Rebase?
+
+Rebase moves your branch's commits to start from the latest main. It rewrites history to create a **linear** timeline.
+
+```
+Before rebase:
+main:       A --- B --- C
+                   \
+feature:            D --- E
+
+After rebase:
+main:       A --- B --- C
+                         \
+feature:                  D' --- E'
+```
+
+### Hands-On: Rebase a Branch
+
+**Step 1 — Create a feature branch**
+
+```bash
+git switch -c feature-footer
+echo "<footer>HitaVir Tech 2026</footer>" > footer.html
+git add footer.html
+git commit -m "Add footer"
+```
+
+**Step 2 — Simulate changes on main**
+
+```bash
+git switch main
+echo "Version: 1.0" >> README.md
+git add README.md
+git commit -m "Add version to README"
+```
+
+**Step 3 — Rebase feature onto main**
+
+```bash
+git switch feature-footer
+git rebase main
+```
+
+**Expected output:**
+
+```
+Successfully rebased and updated refs/heads/feature-footer.
+```
+
+**Step 4 — View the linear history**
+
+```bash
+git log --oneline --graph --all
+```
+
+The history is now a straight line — no merge commits.
+
+**Step 5 — Merge into main (fast-forward)**
+
+```bash
+git switch main
+git merge feature-footer
+git branch -d feature-footer
+```
+
+### Merge vs Rebase Comparison
+
+| Aspect | Merge | Rebase |
+|--------|-------|--------|
+| History | Preserves all branch history | Creates linear history |
+| Merge commits | Creates merge commits | No merge commits |
+| Safety | Safe for shared branches | Dangerous for shared branches |
+| Complexity | Simpler to understand | Cleaner but riskier |
+| Use case | Team branches, main | Local feature branches |
+
+### The Golden Rule of Rebasing
+
+**Never rebase a branch that other people are working on.**
+
+Rebasing rewrites commit history. If others have pulled the old commits, their history will conflict with yours.
+
+:::tip[HitaVir Tech says]
+"Use rebase for your local feature branches to keep history clean. Use merge for shared branches. When in doubt, merge — it is always safe."
+:::
+
+<KeyTakeaways>
+
+- Rebase replays your branch commits on top of the latest `main`, producing a straight-line history
+- After a rebase, merging into `main` becomes a clean fast-forward
+- Rebase **rewrites history** — the replayed commits are new commits
+- Golden rule: never rebase a branch that other people are working on
+- When in doubt, merge — it never rewrites anything
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is the key difference between merge and rebase?',
+      options: [
+        'Merge is local, rebase happens on GitHub',
+        'Merge preserves branch history; rebase rewrites it into a linear timeline',
+        'Rebase is just a faster merge',
+        'Merge deletes the feature branch automatically',
+      ],
+      answer: 1,
+      explanation:
+        'Merge records the true branching history (possibly with merge commits); rebase replays commits to fake a straight line.',
+    },
+    {
+      question: 'Why is rebasing a shared branch dangerous?',
+      options: [
+        'It deletes the remote branch',
+        'It makes the repository larger',
+        'It rewrites commits others have already pulled, causing conflicting histories',
+        'It disables pull requests',
+      ],
+      answer: 2,
+      explanation:
+        'Rebasing replaces old commits with new ones. Anyone holding the old commits now has a history that conflicts with yours.',
+    },
+    {
+      question: 'You rebased feature-footer onto main. What kind of merge happens when you now run git merge feature-footer from main?',
+      options: [
+        'A fast-forward merge with no merge commit',
+        'A three-way merge with a merge commit',
+        'A conflict that must be resolved',
+        'Nothing — rebase already merged it',
+      ],
+      answer: 0,
+      explanation:
+        'After the rebase, feature-footer sits directly ahead of main, so Git simply moves the main pointer forward.',
+    },
+  ]}
+/>
+
+<LessonComplete />

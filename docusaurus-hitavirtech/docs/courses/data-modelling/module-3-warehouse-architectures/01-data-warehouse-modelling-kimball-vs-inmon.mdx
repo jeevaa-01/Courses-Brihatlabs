@@ -1,0 +1,90 @@
+---
+title: 'Data Warehouse Modelling — Kimball vs Inmon'
+sidebar_position: 1
+description: 'The two legendary warehouse architectures — Kimball bottom-up data marts vs Inmon top-down enterprise warehouse — and the modern hybrid.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Contrast Kimball's bottom-up approach with Inmon's top-down approach
+- Identify which approach fits agile delivery vs enterprise governance
+- Describe the hybrid pattern most modern companies actually use
+
+</LearningObjectives>
+
+Two legendary approaches to data warehouse architecture.
+
+### Kimball (Bottom-Up)
+
+**Ralph Kimball's approach:** Build dimensional data marts first, then integrate them into an enterprise warehouse.
+
+![Kimball vs Inmon](/img/courses/diagrams/kimball-vs-inmon.svg)
+
+**Key principles (Inmon, top-down):**
+
+- Single source of truth first
+- Normalized (3NF) enterprise model
+- Data marts derived from the warehouse
+- More upfront design work
+
+### Comparison
+
+![Kimball vs Inmon Table](/img/courses/diagrams/kimball-inmon-table.svg)
+
+:::tip[HitaVir Tech says]
+"In the real world, most modern companies use a hybrid approach — Kimball-style star schemas for analytics, with Inmon-level governance. Know both, but start with Kimball for practical projects."
+:::
+
+<KeyTakeaways>
+
+- **Kimball** (bottom-up): star-schema data marts first, integrated later — faster delivery, agile-friendly
+- **Inmon** (top-down): normalized 3NF enterprise warehouse first, marts derived from it — heavier governance
+- Kimball delivers value in weeks; Inmon takes months but suits large regulated enterprises
+- Most modern companies run a hybrid: Kimball-style stars with Inmon-level governance
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which statement describes the Kimball approach?',
+      options: [
+        'Build a normalized 3NF enterprise warehouse first, then derive marts',
+        'Build dimensional data marts first, then integrate them bottom-up',
+        'Skip modelling entirely and query the data lake',
+        'Store everything in Data Vault hubs and links',
+      ],
+      answer: 1,
+      explanation:
+        'Kimball is bottom-up: star-schema marts ship quickly and are later integrated with conformed dimensions.',
+    },
+    {
+      question: 'A heavily regulated bank wants a single governed source of truth before any reporting. Which approach aligns best?',
+      options: [
+        'Kimball',
+        'Snowflake schema only',
+        'Inmon',
+        'No modelling — schema-on-read',
+      ],
+      answer: 2,
+      explanation:
+        'Inmon’s top-down normalized enterprise warehouse prioritizes governance and a single source of truth.',
+    },
+    {
+      question: 'What do most modern companies actually do?',
+      options: [
+        'Pure Inmon with no star schemas',
+        'Pure Kimball with no governance',
+        'Pick one at random per project',
+        'A hybrid: Kimball-style star schemas with Inmon-level governance',
+      ],
+      answer: 3,
+      explanation:
+        'The pragmatic industry pattern combines Kimball’s fast dimensional delivery with Inmon-grade governance and conformed dimensions.',
+    },
+  ]}
+/>
+
+<LessonComplete />

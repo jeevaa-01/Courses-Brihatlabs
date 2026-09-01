@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 425 162" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="425" height="162" rx="12" fill="#f8f9fa"/>
+  <text x="212" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Tuple Methods — Complete Reference</text>
+  <rect x="15" y="40" width="85" height="30" rx="6" fill="#1a73e8"/>
+  <text x="57" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Method</text>
+  <rect x="105" y="40" width="226" height="30" rx="6" fill="#1a73e8"/>
+  <text x="218" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">What it does</text>
+  <rect x="336" y="40" width="73" height="30" rx="6" fill="#1a73e8"/>
+  <text x="373" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Returns</text>
+  <rect x="15" y="76" width="85" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">count(x)</text>
+  <rect x="105" y="76" width="226" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="115" y="94" font-size="12" fill="#1a73e8">Number of times x appears</text>
+  <rect x="336" y="76" width="73" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="346" y="94" font-size="12" font-family="monospace" fill="#1a73e8">int</text>
+  <rect x="15" y="108" width="85" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">index(x)</text>
+  <rect x="105" y="108" width="226" height="28" rx="4" fill="white"/>
+  <text x="115" y="126" font-size="12" fill="#3c4043">Index of the first item equal to x</text>
+  <rect x="336" y="108" width="73" height="28" rx="4" fill="white"/>
+  <text x="346" y="126" font-size="12" font-family="monospace" fill="#3c4043">int</text>
+  <text x="212" y="156" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

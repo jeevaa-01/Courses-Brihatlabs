@@ -1,0 +1,260 @@
+---
+title: 'Star Schema'
+sidebar_position: 1
+description: 'Build a complete retail star schema hands-on — dimension tables, a fact table, sample data, and real analytical queries.'
+---
+
+<DurationBadge minutes={15} />
+
+<LearningObjectives>
+
+- Define fact tables, dimension tables, measures, grain, and surrogate keys
+- Build a complete retail star schema in SQL (dimensions, fact, sample data)
+- Write analytical queries that join facts to dimensions for business answers
+
+</LearningObjectives>
+
+The **Star Schema** is the most popular data warehouse modelling pattern. It is called "star" because the diagram looks like a star — a central fact table surrounded by dimension tables.
+
+### Structure
+
+![Star Schema](/img/courses/diagrams/star-schema.svg)
+
+### Key Concepts
+
+| Concept | Definition | Example |
+|---------|-----------|---------|
+| **Fact table** | Stores measurable events/transactions | Sales, orders, claims |
+| **Dimension table** | Stores descriptive context | Customer, product, date |
+| **Measure** | Numeric values you aggregate | Revenue, quantity, profit |
+| **Grain** | The level of detail per row | One row per order line item |
+| **Surrogate key** | Auto-generated integer PK | `customer_key = 1001` |
+| **Foreign key** | Links fact to dimension | `fact.customer_key -> dim.customer_key` |
+
+### Hands-On: Build a Retail Star Schema
+
+**Step 1 — Create Dimension Tables**
+
+```sql
+-- Date dimension
+CREATE TABLE dim_date (
+    date_key      INT PRIMARY KEY,
+    full_date     DATE NOT NULL,
+    day_name      VARCHAR(10),
+    day_of_week   SMALLINT,
+    day_of_month  SMALLINT,
+    month_number  SMALLINT,
+    month_name    VARCHAR(10),
+    quarter       SMALLINT,
+    year          SMALLINT,
+    is_weekend    BOOLEAN,
+    is_holiday    BOOLEAN
+);
+
+-- Customer dimension
+CREATE TABLE dim_customer (
+    customer_key  INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id   VARCHAR(20) NOT NULL,
+    first_name    VARCHAR(50),
+    last_name     VARCHAR(50),
+    email         VARCHAR(100),
+    segment       VARCHAR(20),
+    city          VARCHAR(50),
+    state         VARCHAR(50),
+    country       VARCHAR(50),
+    effective_date DATE,
+    expiry_date   DATE,
+    is_current    BOOLEAN DEFAULT TRUE
+);
+
+-- Product dimension
+CREATE TABLE dim_product (
+    product_key   INT PRIMARY KEY AUTO_INCREMENT,
+    product_id    VARCHAR(20) NOT NULL,
+    product_name  VARCHAR(100),
+    category      VARCHAR(50),
+    sub_category  VARCHAR(50),
+    brand         VARCHAR(50),
+    unit_cost     DECIMAL(10,2),
+    unit_price    DECIMAL(10,2)
+);
+
+-- Store dimension
+CREATE TABLE dim_store (
+    store_key     INT PRIMARY KEY AUTO_INCREMENT,
+    store_id      VARCHAR(20) NOT NULL,
+    store_name    VARCHAR(100),
+    store_type    VARCHAR(30),
+    region        VARCHAR(30),
+    state         VARCHAR(50),
+    city          VARCHAR(50),
+    manager_name  VARCHAR(50),
+    open_date     DATE
+);
+```
+
+**Step 2 — Create Fact Table**
+
+```sql
+CREATE TABLE fact_sales (
+    sale_key        BIGINT PRIMARY KEY AUTO_INCREMENT,
+    date_key        INT NOT NULL,
+    customer_key    INT NOT NULL,
+    product_key     INT NOT NULL,
+    store_key       INT NOT NULL,
+    quantity        INT NOT NULL,
+    unit_price      DECIMAL(10,2),
+    discount_pct    DECIMAL(5,2) DEFAULT 0,
+    total_amount    DECIMAL(12,2),
+    cost_amount     DECIMAL(12,2),
+    profit          DECIMAL(12,2),
+    FOREIGN KEY (date_key)     REFERENCES dim_date(date_key),
+    FOREIGN KEY (customer_key) REFERENCES dim_customer(customer_key),
+    FOREIGN KEY (product_key)  REFERENCES dim_product(product_key),
+    FOREIGN KEY (store_key)    REFERENCES dim_store(store_key)
+);
+```
+
+**Step 3 — Insert Sample Data**
+
+```sql
+-- Sample date dimension data
+INSERT INTO dim_date (date_key, full_date, day_name, day_of_week,
+    day_of_month, month_number, month_name, quarter, year, is_weekend, is_holiday)
+VALUES
+(20260101, '2026-01-01', 'Thursday', 5, 1, 1, 'January', 1, 2026, FALSE, TRUE),
+(20260102, '2026-01-02', 'Friday', 6, 2, 1, 'January', 1, 2026, FALSE, FALSE),
+(20260103, '2026-01-03', 'Saturday', 7, 3, 1, 'January', 1, 2026, TRUE, FALSE);
+
+-- Sample customers
+INSERT INTO dim_customer (customer_id, first_name, last_name, segment, city, state, country, effective_date, is_current)
+VALUES
+('C001', 'Priya', 'Sharma', 'Premium', 'Mumbai', 'Maharashtra', 'India', '2025-01-01', TRUE),
+('C002', 'Rahul', 'Patil', 'Standard', 'Pune', 'Maharashtra', 'India', '2025-03-15', TRUE),
+('C003', 'Sneha', 'Reddy', 'Premium', 'Bangalore', 'Karnataka', 'India', '2025-06-01', TRUE);
+
+-- Sample products
+INSERT INTO dim_product (product_id, product_name, category, sub_category, brand, unit_cost, unit_price)
+VALUES
+('P001', 'Laptop Pro 15', 'Electronics', 'Laptops', 'TechBrand', 600.00, 999.99),
+('P002', 'Wireless Mouse', 'Electronics', 'Accessories', 'PeriphCo', 10.00, 29.99),
+('P003', 'Office Chair', 'Furniture', 'Chairs', 'ComfortPlus', 150.00, 349.99);
+
+-- Sample stores
+INSERT INTO dim_store (store_id, store_name, store_type, region, state, city, manager_name, open_date)
+VALUES
+('S001', 'Mumbai Central', 'Flagship', 'West', 'Maharashtra', 'Mumbai', 'Amit Kumar', '2020-01-15'),
+('S002', 'Pune Mall', 'Mall', 'West', 'Maharashtra', 'Pune', 'Kavya Singh', '2021-06-01');
+
+-- Sample fact data
+INSERT INTO fact_sales (date_key, customer_key, product_key, store_key, quantity, unit_price, discount_pct, total_amount, cost_amount, profit)
+VALUES
+(20260101, 1, 1, 1, 2, 999.99, 10.00, 1799.98, 1200.00, 599.98),
+(20260101, 2, 2, 2, 5, 29.99, 0.00, 149.95, 50.00, 99.95),
+(20260102, 3, 3, 1, 1, 349.99, 5.00, 332.49, 150.00, 182.49),
+(20260102, 1, 2, 1, 10, 29.99, 15.00, 254.92, 100.00, 154.92),
+(20260103, 2, 1, 2, 1, 999.99, 0.00, 999.99, 600.00, 399.99);
+```
+
+**Step 4 — Query the Star Schema**
+
+```sql
+-- Revenue by product category and quarter
+SELECT
+    p.category,
+    d.quarter,
+    d.year,
+    SUM(f.total_amount) AS total_revenue,
+    SUM(f.profit) AS total_profit,
+    COUNT(*) AS num_transactions,
+    ROUND(AVG(f.total_amount), 2) AS avg_transaction
+FROM fact_sales f
+JOIN dim_product p ON f.product_key = p.product_key
+JOIN dim_date d ON f.date_key = d.date_key
+GROUP BY p.category, d.quarter, d.year
+ORDER BY total_revenue DESC;
+
+-- Top customers by revenue
+SELECT
+    CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
+    c.segment,
+    c.city,
+    COUNT(*) AS total_orders,
+    SUM(f.total_amount) AS total_spent,
+    ROUND(AVG(f.total_amount), 2) AS avg_order_value
+FROM fact_sales f
+JOIN dim_customer c ON f.customer_key = c.customer_key
+GROUP BY customer_name, c.segment, c.city
+ORDER BY total_spent DESC;
+
+-- Store performance with date analysis
+SELECT
+    s.store_name,
+    s.region,
+    d.month_name,
+    SUM(f.total_amount) AS revenue,
+    SUM(f.profit) AS profit,
+    ROUND(SUM(f.profit) / SUM(f.total_amount) * 100, 1) AS profit_margin_pct
+FROM fact_sales f
+JOIN dim_store s ON f.store_key = s.store_key
+JOIN dim_date d ON f.date_key = d.date_key
+GROUP BY s.store_name, s.region, d.month_name
+ORDER BY revenue DESC;
+```
+
+:::tip[HitaVir Tech says]
+"The star schema is the single most important pattern in data warehousing. Learn it deeply. Every Snowflake, BigQuery, Redshift, and Databricks warehouse uses some variation of star schema."
+:::
+
+<KeyTakeaways>
+
+- A star schema is one central fact table joined to surrounding dimension tables via surrogate keys
+- Facts store measures (revenue, quantity, profit); dimensions store descriptive context (who, what, where, when)
+- **Grain** — what one fact row represents — is the first and most important design decision
+- Analytical queries join the fact to a few dimensions and GROUP BY dimension attributes
+- Every major cloud warehouse (Snowflake, BigQuery, Redshift, Databricks) runs some variation of this pattern
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In the retail star schema, where does the measure total_amount live?',
+      options: [
+        'In dim_customer',
+        'In fact_sales',
+        'In dim_date',
+        'Duplicated in every dimension',
+      ],
+      answer: 1,
+      explanation:
+        'Measures — the numeric values you aggregate — live in the fact table. Dimensions hold descriptive attributes.',
+    },
+    {
+      question: 'What does the "grain" of fact_sales describe?',
+      options: [
+        'The number of indexes on the table',
+        'How the table is partitioned',
+        'What exactly one row represents (e.g., one product per order)',
+        'The compression codec used for storage',
+      ],
+      answer: 2,
+      explanation:
+        'Grain is the level of detail per fact row. Declaring it first determines which business questions the model can answer.',
+    },
+    {
+      question: 'How does fact_sales connect to dim_product?',
+      options: [
+        'Through a foreign key (product_key) referencing the dimension surrogate key',
+        'By storing the full product row inside the fact table',
+        'Through a shared partition scheme',
+        'Via the product_name column in both tables',
+      ],
+      answer: 0,
+      explanation:
+        'The fact table carries integer surrogate foreign keys that reference each dimension primary key — the star pattern.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,9 @@
+{
+  "label": "Module 6 \u00b7 Production and Ecosystem",
+  "position": 8,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "description": "Debugging, best practices, Delta Lake, Airflow, next steps, and the graded final quiz."
+  }
+}

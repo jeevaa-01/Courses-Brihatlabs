@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="s" x="-4%" y="-4%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  <rect width="800" height="260" rx="12" fill="#f8f9fa"/>
+  <text x="400" y="28" text-anchor="middle" font-size="14" font-weight="600" fill="#5f6368">OLTP vs OLAP — Banking Example</text>
+
+  <!-- OLTP Box -->
+  <rect x="40" y="50" width="280" height="160" rx="10" fill="#1a73e8" filter="url(#s)"/>
+  <text x="180" y="78" text-anchor="middle" font-size="15" font-weight="700" fill="white">OLTP</text>
+  <text x="180" y="96" text-anchor="middle" font-size="11" fill="#c2d9f7">Core Banking System</text>
+  <line x1="60" y1="104" x2="300" y2="104" stroke="#4d9ef5" stroke-width="1"/>
+  <text x="70" y="124" font-size="11" fill="white">accounts</text>
+  <text x="70" y="142" font-size="11" fill="white">transactions</text>
+  <text x="70" y="160" font-size="11" fill="white">customers</text>
+  <text x="70" y="178" font-size="11" fill="white">branches</text>
+  <text x="180" y="200" text-anchor="middle" font-size="10" fill="#c2d9f7">Normalized (3NF) | Fast writes</text>
+
+  <!-- Arrow ETL -->
+  <rect x="340" y="105" width="120" height="40" rx="20" fill="#ea8600" filter="url(#s)"/>
+  <text x="400" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="white">ETL</text>
+  <line x1="320" y1="125" x2="340" y2="125" stroke="#9aa0a6" stroke-width="2"/>
+  <polygon points="336,120 346,125 336,130" fill="#9aa0a6"/>
+  <line x1="460" y1="125" x2="480" y2="125" stroke="#9aa0a6" stroke-width="2"/>
+  <polygon points="476,120 486,125 476,130" fill="#9aa0a6"/>
+
+  <!-- OLAP Box -->
+  <rect x="480" y="50" width="280" height="160" rx="10" fill="#34a853" filter="url(#s)"/>
+  <text x="620" y="78" text-anchor="middle" font-size="15" font-weight="700" fill="white">OLAP</text>
+  <text x="620" y="96" text-anchor="middle" font-size="11" fill="#b8e6c4">Analytics Warehouse</text>
+  <line x1="500" y1="104" x2="740" y2="104" stroke="#5ec97a" stroke-width="1"/>
+  <text x="510" y="124" font-size="11" fill="white">fact_transactions</text>
+  <text x="510" y="142" font-size="11" fill="white">dim_customer</text>
+  <text x="510" y="160" font-size="11" fill="white">dim_branch</text>
+  <text x="510" y="178" font-size="11" fill="white">dim_product, dim_date</text>
+  <text x="620" y="200" text-anchor="middle" font-size="10" fill="#b8e6c4">Denormalized (Star) | Fast reads</text>
+
+  <text x="400" y="240" text-anchor="middle" font-size="11" fill="#5f6368">Data Engineers build the bridge between OLTP and OLAP</text>
+  <text x="400" y="255" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

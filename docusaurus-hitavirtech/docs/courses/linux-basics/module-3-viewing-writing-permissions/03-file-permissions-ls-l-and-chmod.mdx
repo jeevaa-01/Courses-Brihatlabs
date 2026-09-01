@@ -1,0 +1,188 @@
+---
+title: 'File Permissions — ls -l and chmod'
+sidebar_position: 3
+description: 'Decode the rwx permission string from ls -l and change permissions with chmod, both symbolic (+x) and numeric (755).'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Read the owner/group/others permission triplets in `ls -l` output
+- Make scripts executable with `chmod +x` and run them with `./`
+- Translate numeric permission modes like 755, 644, and 600
+
+</LearningObjectives>
+
+Every file in Linux has permissions that control who can read, write, and execute it.
+
+### Understanding ls -l Output
+
+```bash
+cd ~/hitavir-workspace
+ls -l scripts/setup.sh
+```
+
+**Expected output:**
+
+```
+-rw-r--r-- 1 user group 156 Apr  5 10:00 scripts/setup.sh
+```
+
+Let us break this down:
+
+```
+-rw-r--r--  1  user  group  156  Apr 5 10:00  scripts/setup.sh
+│├──┤├──┤├──┤     │     │     │       │            │
+│ │   │   │       │     │     │       │            └── File name
+│ │   │   │       │     │     │       └── Date modified
+│ │   │   │       │     │     └── Size in bytes
+│ │   │   │       │     └── Group owner
+│ │   │   │       └── File owner
+│ │   │   └── Others permissions (r--)
+│ │   └── Group permissions (r--)
+│ └── Owner permissions (rw-)
+└── File type (- = file, d = directory)
+```
+
+### Permission Characters
+
+| Character | Meaning | Number |
+|-----------|---------|--------|
+| `r` | Read (view content) | 4 |
+| `w` | Write (modify content) | 2 |
+| `x` | Execute (run as program) | 1 |
+| `-` | No permission | 0 |
+
+### Permission Groups
+
+| Position | Who |
+|----------|-----|
+| First 3 chars (rw-) | **Owner** — the user who created the file |
+| Middle 3 chars (r--) | **Group** — users in the same group |
+| Last 3 chars (r--) | **Others** — everyone else |
+
+### chmod — Change Permissions
+
+Make a file executable:
+
+```bash
+chmod +x scripts/setup.sh
+ls -l scripts/setup.sh
+```
+
+**Expected output:**
+
+```
+-rwxr-xr-x 1 user group 156 Apr  5 10:00 scripts/setup.sh
+```
+
+Notice the `x` appeared in all three groups.
+
+### Run the Script
+
+```bash
+./scripts/setup.sh
+```
+
+**Expected output:**
+
+```
+Setting up HitaVir Workspace...
+Creating directories...
+Setup complete!
+Welcome to HitaVir Tech workspace!
+```
+
+### chmod with Numbers
+
+Each permission has a number value. Add them up for each group:
+
+| Permission | Calculation | Total |
+|-----------|-------------|-------|
+| rwx | 4+2+1 | 7 |
+| rw- | 4+2+0 | 6 |
+| r-x | 4+0+1 | 5 |
+| r-- | 4+0+0 | 4 |
+
+```bash
+chmod 755 scripts/setup.sh
+ls -l scripts/setup.sh
+```
+
+**Expected output:**
+
+```
+-rwxr-xr-x 1 user group 156 Apr  5 10:00 scripts/setup.sh
+```
+
+`755` means: owner=rwx(7), group=r-x(5), others=r-x(5).
+
+### Common Permission Patterns
+
+| Number | Permissions | Common Use |
+|--------|-----------|------------|
+| `644` | rw-r--r-- | Regular files |
+| `755` | rwxr-xr-x | Executable scripts |
+| `600` | rw------- | Private files (passwords, keys) |
+| `700` | rwx------ | Private executable scripts |
+| `777` | rwxrwxrwx | Everyone can do everything (avoid this!) |
+
+**Real-world analogy:** Permissions are like access cards in an office building. The owner has the master key, the group has department access, and others can only enter the lobby.
+
+:::warning[HitaVir Tech says]
+"Never use `chmod 777` in production. It is like leaving your front door wide open with a sign that says 'Come in and take whatever you want.' Use the minimum permissions needed."
+:::
+
+### Viewing and Editing Files Recap
+
+Great work! Here is what you learned:
+
+- View files with `cat`, `head`, `tail`, and `less`
+- Count lines with `wc -l`
+- Write to files with `>` (overwrite) and `>>` (append)
+- Understand file permissions (rwx, owner/group/others)
+- Change permissions with `chmod`
+- Make scripts executable and run them
+
+<KeyTakeaways>
+
+- Permissions come in three triplets — owner, group, others — each with rwx slots
+- r=4, w=2, x=1; add them per group (755 = rwxr-xr-x)
+- `chmod +x script.sh` then `./script.sh` makes and runs an executable script
+- 644 for regular files, 755 for scripts, 600 for secrets — never 777 in production
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What does chmod 755 give the file owner?',
+      options: [
+        'Read only',
+        'Read and write',
+        'Read, write, and execute',
+        'No permissions',
+      ],
+      answer: 2,
+      explanation:
+        'The first digit applies to the owner: 7 = 4+2+1 = read + write + execute.',
+    },
+    {
+      question: 'A file shows -rw-r--r--. What can "others" do with it?',
+      options: ['Read and write', 'Execute it', 'Nothing', 'Read only'],
+      answer: 3,
+      explanation:
+        'The last triplet (r--) belongs to others: read permission only, no write or execute.',
+    },
+    {
+      question: 'Which permission mode is recommended for private key or password files?',
+      options: ['777', '755', '600', '644'],
+      answer: 2,
+      explanation:
+        '600 (rw-------) lets only the owner read and write — group and others get nothing.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,208 @@
+---
+title: 'What a data engineer does'
+sidebar_position: 2
+description: 'Learn the six key functions of a data engineer and the pipeline lifecycle, then land the three raw CSVs in your new S3 data lake.'
+---
+
+<DurationBadge minutes={30} />
+
+<LearningObjectives>
+
+- Name the six key functions of a data engineer and place a task in the right one
+- Explain the pipeline lifecycle and when to choose batch over streaming
+- Map each function to the AWS service that implements it
+- Create the `hvt-retail-datalake` bucket and land the three raw CSVs
+
+</LearningObjectives>
+
+You have a safe workbench. Now learn what the job is actually about, then do the very
+first piece of it: land the raw data in your lake.
+
+A **data engineer** builds and runs the systems that move data from where it is created
+to where it can be used. Analysts, dashboards, and machine-learning models all sit
+downstream of you. When the data is late, wrong, or missing, they are stuck. The output
+you are responsible for is **trustworthy data, delivered on time**.
+
+### The concept visual
+
+The key-functions visual — `assets/01-key-functions.html` in the course materials
+repo — lays out the six functions as a pipeline: four flow left to right (build
+infrastructure, ingest, prepare, catalog), while automate rides above and govern rides
+below, wrapping every stage.
+
+### The six key functions
+
+These six functions show up in every data platform, on any cloud. The whole track is
+organized around them.
+
+1. **Build and manage data infrastructure** — set up the storage and compute the
+   platform runs on. On AWS this is your S3 data lake, the IAM roles that grant access,
+   and the engines that process data.
+2. **Ingest from various sources** — bring data in from databases, flat files, APIs,
+   and event streams. Today the source is three CSV files.
+3. **Prepare data for analytics** — clean, validate, and reshape messy raw data into
+   something usable. This is the **raw to bronze to silver to gold** journey.
+4. **Catalog and document datasets** — record what each table and column means, so
+   others can find and trust it. On AWS the Glue Data Catalog does this.
+5. **Automate workflows** — turn the steps into pipelines that run on a schedule or in
+   response to an event, with no human clicking buttons.
+6. **Ensure quality, security, and compliance** — validate the data, control access,
+   encrypt it, and keep an audit trail. This wraps every other function.
+
+:::warning[Security and quality are not a later chore]
+A common beginner mistake is treating security and quality as a later chore. By then
+the bad data has already reached a dashboard and the wrong people have already had
+access. Build both in from the first object you store.
+:::
+
+### The pipeline lifecycle, and batch versus streaming
+
+A **pipeline** is the path a piece of data travels from its source to a place where it
+creates value. The lifecycle is the ordered set of stages: **ingest**, **store**,
+**transform**, **catalog**, **serve**. Two cross-cutting concerns run alongside every
+stage: **orchestration** decides order and timing, and **governance** keeps it secure,
+correct, and compliant.
+
+Data moves through that pipeline in one of two cadences. **Batch** processing handles
+data in chunks on a schedule; it is simpler, cheaper, and the right default for
+reporting. HitaVir Retail's daily order export is a batch source, and this whole track
+is a batch pipeline. **Streaming** processing handles each event the moment it arrives,
+for near real-time results; reach for it only when freshness genuinely matters.
+
+:::tip[Default to batch]
+Start with batch unless a real requirement forces streaming. "It would be nice if it
+were live" is not a requirement. Latency you actually need is.
+:::
+
+### Where AWS fits
+
+| Function | AWS service | Role |
+|---|---|---|
+| Build infrastructure | Amazon S3, IAM | Durable lake storage; identity and access. |
+| Ingest | AWS Glue, AWS DMS, Amazon Kinesis | Batch loads, database replication, streaming. |
+| Prepare | AWS Glue ETL | Clean and reshape data at scale with PySpark. |
+| Catalog | AWS Glue Data Catalog | Central record of tables, schemas, locations. |
+| Automate | Glue Workflows, Step Functions, EventBridge | Schedule and chain the steps. |
+| Govern | IAM, Lake Formation, KMS, CloudTrail | Least privilege, encryption, audit. |
+
+**S3 is the foundation** every other service reads from and writes to. That is why your
+first real action is to create the S3 lake and land the raw data.
+
+### Quick win: create the lake and land the raw data
+
+Capture your account id first; the bucket name needs it.
+
+```bash
+aws sts get-caller-identity --query Account --output text
+```
+
+To save typing, store it in a shell variable for this session. On macOS or Linux:
+
+```bash
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+BUCKET=hvt-retail-datalake-$ACCOUNT_ID
+echo "Using bucket: $BUCKET"
+```
+
+You will create the bucket `hvt-retail-datalake-<your-account-id>` and upload the three
+CSVs to the `raw/` prefix. A **prefix** is S3's version of a folder. The `raw/` zone
+holds data exactly as it arrived, untouched, so you always have an original to reprocess.
+
+**Console path**
+
+1. Open the **S3** console and choose **Create bucket**.
+2. Set **Bucket name** to `hvt-retail-datalake-<your-account-id>` and **Region** to
+   **US East (N. Virginia) us-east-1**. Leave **Block all public access** on. Create it.
+3. Open the bucket, go to **Properties**, find **Tags**, and add `project=hvt-retail`
+   and `env=dev`.
+4. Choose **Create folder**, name it `raw`, then **Upload** `orders.csv`,
+   `customers.csv`, and `products.csv` into it.
+
+**AWS CLI**
+
+```bash
+aws s3 mb s3://$BUCKET --region us-east-1
+
+aws s3api put-bucket-tagging \
+  --bucket $BUCKET \
+  --tagging 'TagSet=[{Key=project,Value=hvt-retail},{Key=env,Value=dev}]'
+
+aws s3 cp dataset/orders.csv    s3://$BUCKET/raw/orders.csv
+aws s3 cp dataset/customers.csv s3://$BUCKET/raw/customers.csv
+aws s3 cp dataset/products.csv  s3://$BUCKET/raw/products.csv
+```
+
+:::warning[The us-east-1 bucket-creation quirk]
+`us-east-1` is the one region where `aws s3 mb` does not take a location constraint.
+Pass only `--region us-east-1`. In any other region you would also need
+`--create-bucket-configuration LocationConstraint=<region>`, a common first-bucket error.
+:::
+
+### Checkpoint: see the raw zone
+
+```bash
+aws s3 ls s3://$BUCKET/raw/
+```
+
+You should see exactly three objects:
+
+```text
+2026-06-16 10:00:00      20902 customers.csv
+2026-06-16 10:00:00     192475 orders.csv
+2026-06-16 10:00:00       2151 products.csv
+```
+
+If the three CSVs are listed, the raw zone of your data lake is live and the next steps
+have data to work with.
+
+<KeyTakeaways>
+
+- A data engineer's deliverable is **trustworthy data, delivered on time** — everything downstream depends on it
+- The six functions: build infrastructure, ingest, prepare, catalog, automate, govern — govern wraps all the others
+- Batch is the default cadence; streaming is for real latency requirements, not "nice to have"
+- The `raw/` prefix holds data exactly as it arrived, untouched, so every later layer can be rebuilt from it
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'A stakeholder says "it would be nice if the dashboard were live." What is the right call?',
+      options: [
+        'Build a Kinesis streaming pipeline immediately',
+        'Stay with batch — "nice to have" is not a latency requirement',
+        'Switch the whole lake to a real-time database',
+        'Refuse to build the dashboard',
+      ],
+      answer: 1,
+      explanation:
+        'Batch is simpler and cheaper and the right default for reporting. Reach for streaming only when a real requirement needs freshness batch cannot meet.',
+    },
+    {
+      question: 'Which of these is NOT one of the six key functions of a data engineer?',
+      options: [
+        'Catalog and document datasets',
+        'Automate workflows',
+        'Ensure quality, security, and compliance',
+        'Train the production ML model',
+      ],
+      answer: 3,
+      explanation:
+        'Model training belongs to the data scientist, downstream of you. The data engineer delivers the trustworthy data the model trains on.',
+    },
+    {
+      question: 'Why does the raw/ zone stay untouched forever?',
+      options: [
+        'S3 does not allow overwriting objects',
+        'Raw CSVs are already optimized for analytics',
+        'It is the immutable original, so every other layer can always be rebuilt from it',
+        'Glue crawlers can only read unmodified files',
+      ],
+      answer: 2,
+      explanation:
+        'Immutable raw data is your safety net: if a transform has a bug, you rerun it from raw. That replayability is the reliability pillar.',
+    },
+  ]}
+/>
+
+<LessonComplete />

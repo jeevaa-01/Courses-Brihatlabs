@@ -1,0 +1,136 @@
+---
+title: 'Writing to Files — echo and Redirection'
+sidebar_position: 2
+description: 'Master output redirection — overwrite with >, append with >>, capture command output, and redirect errors with 2>.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Overwrite files with `>` and append with `>>`
+- Save any command's output (like `ls -la` or `date`) to a file
+- Redirect error output with `2>` and everything with `&>`
+
+</LearningObjectives>
+
+You have already used `echo` and `>`. Let us understand redirection deeply.
+
+### Output Redirection — Write to File
+
+The `>` operator sends command output to a file:
+
+```bash
+cd ~/hitavir-workspace
+echo "This is line one" > docs/output.txt
+cat docs/output.txt
+```
+
+**Expected output:**
+
+```
+This is line one
+```
+
+### Overwrite Warning
+
+Using `>` again **replaces** the file content:
+
+```bash
+echo "This is NEW content" > docs/output.txt
+cat docs/output.txt
+```
+
+**Expected output:**
+
+```
+This is NEW content
+```
+
+The old "This is line one" is gone.
+
+### Append — Add to File
+
+Use `>>` to add without deleting:
+
+```bash
+echo "Line one" > docs/output.txt
+echo "Line two" >> docs/output.txt
+echo "Line three" >> docs/output.txt
+cat docs/output.txt
+```
+
+**Expected output:**
+
+```
+Line one
+Line two
+Line three
+```
+
+### Redirect Any Command Output
+
+Save `ls` output to a file:
+
+```bash
+ls -la > docs/file-listing.txt
+cat docs/file-listing.txt
+```
+
+Save date and system info:
+
+```bash
+echo "Report generated on: $(date)" > docs/report.txt
+echo "Current directory: $(pwd)" >> docs/report.txt
+echo "Files in workspace:" >> docs/report.txt
+ls >> docs/report.txt
+cat docs/report.txt
+```
+
+### Redirection Summary
+
+| Operator | What It Does | Example |
+|----------|-------------|---------|
+| `>` | Write to file (overwrite) | `echo "hi" > file.txt` |
+| `>>` | Append to file | `echo "hi" >> file.txt` |
+| `2>` | Redirect errors to file | `ls /fake 2> errors.txt` |
+| `&>` | Redirect all output to file | `ls /fake &> all.txt` |
+
+:::tip[HitaVir Tech says]
+"Think of `>` as a bulldozer — it flattens everything and starts fresh. Think of `>>` as a bricklayer — it adds on top of what is already there."
+:::
+
+<KeyTakeaways>
+
+- `>` is the bulldozer (overwrite); `>>` is the bricklayer (append)
+- Any command's output can be redirected — not just echo
+- `$(command)` embeds a command's output inside a string
+- `2>` captures error messages; `&>` captures both normal output and errors
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'You run echo "new" > notes.txt on a file that had 100 lines. What does the file contain now?',
+      options: [
+        '101 lines',
+        '100 lines, unchanged',
+        'Just the single line "new"',
+        'Nothing — the file is empty',
+      ],
+      answer: 2,
+      explanation:
+        'The > operator overwrites: all 100 old lines are replaced by the one new line. Use >> to keep them.',
+    },
+    {
+      question: 'Which operator redirects only error messages to a file?',
+      options: ['>', '>>', '&>', '2>'],
+      answer: 3,
+      explanation:
+        '2> redirects the error stream (stderr). &> would redirect both normal output and errors together.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,154 @@
+---
+title: 'Common Mistakes and Fixes'
+sidebar_position: 3
+description: 'Undo anything safely — reset, restore, revert, and amend, plus the golden rule of shared branches.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Undo commits with `git reset --soft` and `--hard`, knowing exactly what each discards
+- Restore files and unstage changes with `git restore`
+- Safely undo pushed commits with `git revert`
+
+</LearningObjectives>
+
+Everyone makes mistakes with Git. Here is how to fix them.
+
+### Mistake 1: Committed Too Early (Undo Last Commit)
+
+Keep the changes, just undo the commit:
+
+```bash
+git reset --soft HEAD~1
+```
+
+Your files remain staged. You can modify them and recommit.
+
+### Mistake 2: Need to Completely Undo Last Commit
+
+Discard the commit AND the changes:
+
+```bash
+git reset --hard HEAD~1
+```
+
+:::warning[Destructive]
+`git reset --hard` permanently deletes the changes.
+:::
+
+### Mistake 3: Made Changes to Wrong File
+
+Restore a file to its last committed state:
+
+```bash
+git restore filename.txt
+```
+
+### Mistake 4: Accidentally Staged a File
+
+Unstage a file (but keep the changes):
+
+```bash
+git restore --staged filename.txt
+```
+
+### Mistake 5: Typo in Commit Message
+
+Fix the last commit message:
+
+```bash
+git commit --amend -m "Correct commit message"
+```
+
+### Mistake 6: Forgot to Add a File to Last Commit
+
+```bash
+git add forgotten-file.txt
+git commit --amend --no-edit
+```
+
+### Mistake 7: Pushed Something Wrong to GitHub
+
+Create a new commit that undoes the previous one:
+
+```bash
+git revert HEAD
+git push
+```
+
+This is safe for shared branches — it does not rewrite history.
+
+### Safety Decision Tree
+
+```
+Need to undo?
+├── Local only (not pushed)?
+│   ├── Keep changes? → git reset --soft HEAD~1
+│   └── Discard changes? → git reset --hard HEAD~1
+│
+└── Already pushed?
+    └── git revert HEAD  (safe, creates undo commit)
+```
+
+### The Golden Rule
+
+:::danger[Never rewrite shared history]
+Never use `git reset --hard` or `git push --force` on shared branches. These rewrite history and break your teammates' repositories.
+:::
+
+> **HitaVir Tech says:** "The ability to undo mistakes is Git's greatest gift. But prevention is better than cure — use `git status` before every commit, and `git diff` before every add."
+
+<KeyTakeaways>
+
+- `git reset --soft HEAD~1` undoes the commit but keeps your changes staged
+- `git reset --hard HEAD~1` discards the commit AND the changes — destructive
+- `git restore <file>` discards edits; `git restore --staged <file>` unstages
+- For commits already pushed, `git revert HEAD` creates a safe undo commit
+- Never rewrite history (`reset --hard`, `push --force`) on shared branches
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'You committed too early but want to keep your changes. Which command?',
+      options: [
+        'git revert HEAD',
+        'git restore .',
+        'git reset --soft HEAD~1',
+        'git reset --hard HEAD~1',
+      ],
+      answer: 2,
+      explanation:
+        '--soft undoes the commit while keeping the files staged, so you can adjust and recommit.',
+    },
+    {
+      question: 'You pushed a bad commit to a shared branch. What is the SAFE fix?',
+      options: [
+        'git revert HEAD, then git push',
+        'git reset --hard HEAD~1, then git push --force',
+        'Delete the repository on GitHub',
+        'git commit --amend, then git push --force',
+      ],
+      answer: 0,
+      explanation:
+        'revert creates a new commit that undoes the bad one — no history rewriting, so teammates are unaffected.',
+    },
+    {
+      question: 'You accidentally staged notes.txt. How do you unstage it but keep your edits?',
+      options: [
+        'git reset --hard HEAD~1',
+        'git restore --staged notes.txt',
+        'git rm notes.txt',
+        'git revert notes.txt',
+      ],
+      answer: 1,
+      explanation:
+        'git restore --staged moves the file out of the staging area while leaving your working-directory changes intact.',
+    },
+  ]}
+/>
+
+<LessonComplete />

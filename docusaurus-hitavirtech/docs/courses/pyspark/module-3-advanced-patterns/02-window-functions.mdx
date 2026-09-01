@@ -1,0 +1,226 @@
+---
+title: "Window Functions"
+description: "Window Functions — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Window Functions
+
+*⏱ Estimated time: 95 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Build window specifications for ranking, running totals, and previous-value comparisons.
+- Implement the latest-record-per-key deduplication pattern.
+- Judge when a window function is worth its partitioning and sorting cost.
+
+:::
+
+### What are window functions?
+
+Window functions calculate values across related rows without collapsing them into one row.
+
+Use cases:
+
+- Ranking.
+- Running totals.
+- Deduplication.
+- Previous and next values.
+- Top products per region.
+- Latest record per key.
+
+### Rank products by region
+
+```python
+from pyspark.sql.window import Window
+
+rank_window = (
+    Window
+    .partitionBy("region")
+    .orderBy(F.col("revenue").desc())
+)
+
+ranked_df = valid_df.withColumn(
+    "revenue_rank",
+    F.dense_rank().over(rank_window)
+)
+
+ranked_df.show()
+```
+
+### Row number
+
+```python
+ranked_df = valid_df.withColumn(
+    "row_number",
+    F.row_number().over(rank_window)
+)
+```
+
+### Running total
+
+```python
+running_window = (
+    Window
+    .partitionBy("region")
+    .orderBy("transaction_date")
+    .rowsBetween(
+        Window.unboundedPreceding,
+        Window.currentRow
+    )
+)
+
+running_df = valid_df.withColumn(
+    "running_revenue",
+    F.sum("revenue").over(running_window)
+)
+```
+
+### Previous value
+
+```python
+lag_window = (
+    Window
+    .partitionBy("region")
+    .orderBy("transaction_date")
+)
+
+comparison_df = (
+    valid_df
+    .withColumn(
+        "previous_revenue",
+        F.lag("revenue").over(lag_window)
+    )
+    .withColumn(
+        "revenue_change",
+        F.col("revenue") - F.col("previous_revenue")
+    )
+)
+```
+
+### Latest record per key
+
+```python
+latest_window = (
+    Window
+    .partitionBy("transaction_id")
+    .orderBy(F.col("updated_at").desc())
+)
+
+latest_df = (
+    source_df
+    .withColumn(
+        "row_number",
+        F.row_number().over(latest_window)
+    )
+    .filter(F.col("row_number") == 1)
+    .drop("row_number")
+)
+```
+
+### Top two products per region
+
+```python
+product_region_df = (
+    valid_df
+    .groupBy("region", "product")
+    .agg(
+        F.sum("revenue").alias("total_revenue")
+    )
+)
+
+top_window = (
+    Window
+    .partitionBy("region")
+    .orderBy(F.col("total_revenue").desc())
+)
+
+top_products_df = (
+    product_region_df
+    .withColumn(
+        "rank",
+        F.dense_rank().over(top_window)
+    )
+    .filter(F.col("rank") <= 2)
+)
+```
+
+### ✅ Checkpoint
+
+Create a ranking of products by revenue within each region.
+
+### 🛠️ Exercise
+
+Add a column containing each product's percentage contribution to regional revenue.
+
+<details>
+<summary>Show solution</summary>
+
+```python
+region_window = Window.partitionBy("region")
+
+result_df = (
+    product_region_df
+    .withColumn(
+        "regional_revenue",
+        F.sum("total_revenue").over(region_window)
+    )
+    .withColumn(
+        "contribution_percent",
+        F.round(
+            F.col("total_revenue")
+            / F.col("regional_revenue")
+            * 100,
+            2
+        )
+    )
+)
+```
+
+</details>
+
+<Quiz
+  questions={[
+  {
+    "question": "The latest-record-per-key pattern uses:",
+    "options": [
+      "`groupBy().max()` alone",
+      "`row_number()` over a key window ordered descending, then filter rank 1",
+      "`distinct()`"
+    ],
+    "answer": 1,
+    "explanation": "`row_number` guarantees exactly one row per key."
+  },
+  {
+    "question": "Window functions differ from `groupBy` because they:",
+    "options": [
+      "Collapse rows into one per group",
+      "Compute across related rows without collapsing them",
+      "Run on the driver"
+    ],
+    "answer": 1,
+    "explanation": "Every input row is preserved with the window result attached."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- `partitionBy` + `orderBy` define the window; frames define running-total scope.
+- `row_number` over a descending key window is the standard latest-record pattern.
+- Windows require partitioning and sorting — use them deliberately.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Use window functions for deduplication and ranking rather than collecting data to Python.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Window operations can be expensive because they require partitioning and sorting. Use them only when needed.
+
+:::

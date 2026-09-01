@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 290" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="780" height="290" rx="12" fill="#f8f9fa"/>
+  <text x="390" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Medallion Layer Comparison</text>
+
+  <rect x="15" y="40" width="140" height="30" rx="6" fill="#5f6368"/>
+  <text x="85" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Feature</text>
+  <rect x="160" y="40" width="195" height="30" rx="6" fill="#78909c"/>
+  <text x="257" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Bronze</text>
+  <rect x="360" y="40" width="195" height="30" rx="6" fill="#607d8b"/>
+  <text x="457" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Silver</text>
+  <rect x="560" y="40" width="205" height="30" rx="6" fill="#f9a825"/>
+  <text x="662" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="#3e2723">Gold</text>
+
+  <rect x="15" y="76" width="140" height="28" rx="4" fill="#e8eaed"/>
+  <text x="25" y="95" font-size="11" font-weight="600" fill="#202124">Data quality</text>
+  <rect x="160" y="76" width="195" height="28" rx="4" fill="#eceff1"/>
+  <text x="257" y="95" text-anchor="middle" font-size="10" fill="#546e7a">Raw, as-is</text>
+  <rect x="360" y="76" width="195" height="28" rx="4" fill="#eceff1"/>
+  <text x="457" y="95" text-anchor="middle" font-size="10" fill="#37474f">Cleaned, validated</text>
+  <rect x="560" y="76" width="205" height="28" rx="4" fill="#fff8e1"/>
+  <text x="662" y="95" text-anchor="middle" font-size="10" font-weight="600" fill="#f57f17">Business-ready</text>
+
+  <rect x="15" y="108" width="140" height="28" rx="4" fill="white"/>
+  <text x="25" y="127" font-size="11" font-weight="600" fill="#202124">Schema</text>
+  <rect x="160" y="108" width="195" height="28" rx="4" fill="white"/>
+  <text x="257" y="127" text-anchor="middle" font-size="10" fill="#3c4043">Schema-on-read</text>
+  <rect x="360" y="108" width="195" height="28" rx="4" fill="white"/>
+  <text x="457" y="127" text-anchor="middle" font-size="10" fill="#3c4043">Enforced schema</text>
+  <rect x="560" y="108" width="205" height="28" rx="4" fill="white"/>
+  <text x="662" y="127" text-anchor="middle" font-size="10" fill="#3c4043">Star schema</text>
+
+  <rect x="15" y="140" width="140" height="28" rx="4" fill="#e8eaed"/>
+  <text x="25" y="159" font-size="11" font-weight="600" fill="#202124">Users</text>
+  <rect x="160" y="140" width="195" height="28" rx="4" fill="#eceff1"/>
+  <text x="257" y="159" text-anchor="middle" font-size="10" fill="#546e7a">Data engineers</text>
+  <rect x="360" y="140" width="195" height="28" rx="4" fill="#eceff1"/>
+  <text x="457" y="159" text-anchor="middle" font-size="10" fill="#37474f">Engineers, analysts</text>
+  <rect x="560" y="140" width="205" height="28" rx="4" fill="#fff8e1"/>
+  <text x="662" y="159" text-anchor="middle" font-size="10" fill="#f57f17">Business, dashboards</text>
+
+  <rect x="15" y="172" width="140" height="28" rx="4" fill="white"/>
+  <text x="25" y="191" font-size="11" font-weight="600" fill="#202124">Updates</text>
+  <rect x="160" y="172" width="195" height="28" rx="4" fill="white"/>
+  <text x="257" y="191" text-anchor="middle" font-size="10" fill="#3c4043">Append-only</text>
+  <rect x="360" y="172" width="195" height="28" rx="4" fill="white"/>
+  <text x="457" y="191" text-anchor="middle" font-size="10" fill="#3c4043">Overwrite / merge</text>
+  <rect x="560" y="172" width="205" height="28" rx="4" fill="white"/>
+  <text x="662" y="191" text-anchor="middle" font-size="10" fill="#3c4043">Overwrite / merge</text>
+
+  <rect x="15" y="204" width="140" height="28" rx="4" fill="#e8eaed"/>
+  <text x="25" y="223" font-size="11" font-weight="600" fill="#202124">Storage format</text>
+  <rect x="160" y="204" width="195" height="28" rx="4" fill="#eceff1"/>
+  <text x="257" y="223" text-anchor="middle" font-size="10" fill="#546e7a">Delta / Parquet</text>
+  <rect x="360" y="204" width="195" height="28" rx="4" fill="#eceff1"/>
+  <text x="457" y="223" text-anchor="middle" font-size="10" fill="#37474f">Delta</text>
+  <rect x="560" y="204" width="205" height="28" rx="4" fill="#fff8e1"/>
+  <text x="662" y="223" text-anchor="middle" font-size="10" fill="#f57f17">Delta</text>
+
+  <rect x="15" y="236" width="140" height="28" rx="4" fill="white"/>
+  <text x="25" y="255" font-size="11" font-weight="600" fill="#202124">Partitioning</text>
+  <rect x="160" y="236" width="195" height="28" rx="4" fill="white"/>
+  <text x="257" y="255" text-anchor="middle" font-size="10" fill="#3c4043">By ingestion date</text>
+  <rect x="360" y="236" width="195" height="28" rx="4" fill="white"/>
+  <text x="457" y="255" text-anchor="middle" font-size="10" fill="#3c4043">By business date</text>
+  <rect x="560" y="236" width="205" height="28" rx="4" fill="white"/>
+  <text x="662" y="255" text-anchor="middle" font-size="10" fill="#3c4043">By business dimensions</text>
+
+  <text x="390" y="282" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

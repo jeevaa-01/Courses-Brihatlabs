@@ -1,0 +1,161 @@
+---
+title: 'Understanding the Staging Area'
+sidebar_position: 3
+description: 'Use selective staging to build clean, focused commits — stage one file at a time, unstage mistakes, and inspect changes with git diff.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Stage files selectively to create focused commits
+- Unstage a file with `git restore --staged`
+- Compare unstaged vs staged changes with `git diff` and `git diff --staged`
+
+</LearningObjectives>
+
+The staging area is one of Git's most powerful features. Let us understand it deeply.
+
+### Why Does the Staging Area Exist?
+
+Imagine you changed 10 files, but only 3 changes are related to one bug fix. The staging area lets you commit just those 3 files with a clear message, then commit the other 7 separately.
+
+### Hands-On: Selective Staging
+
+**Step 1 — Modify two files**
+
+```bash
+echo "Email: hitavir@example.com" >> about.txt
+echo "Status: In Progress" >> project.txt
+```
+
+**Step 2 — Check what changed**
+
+```bash
+git status
+```
+
+**Expected output:**
+
+```
+On branch main
+Changes not staged for commit:
+        modified:   about.txt
+        modified:   project.txt
+```
+
+**Step 3 — Stage only one file**
+
+```bash
+git add about.txt
+```
+
+**Step 4 — Check status**
+
+```bash
+git status
+```
+
+**Expected output:**
+
+```
+On branch main
+Changes to be committed:
+        modified:   about.txt
+
+Changes not staged for commit:
+        modified:   project.txt
+```
+
+Notice: `about.txt` is staged, but `project.txt` is not.
+
+**Step 5 — Commit only the staged file**
+
+```bash
+git commit -m "Add email to about file"
+```
+
+**Step 6 — Now stage and commit the other file**
+
+```bash
+git add project.txt
+git commit -m "Add status to project file"
+```
+
+### Unstaging a File
+
+If you accidentally stage a file:
+
+```bash
+git restore --staged <filename>
+```
+
+### Viewing Differences
+
+See what changed before staging:
+
+```bash
+git diff
+```
+
+See what is staged (ready to commit):
+
+```bash
+git diff --staged
+```
+
+:::tip[HitaVir Tech says]
+"The staging area is your chance to organize your work before saving it. Clean, focused commits make your project history easy to read and debug."
+:::
+
+<KeyTakeaways>
+
+- The staging area lets you commit some changed files now and others later
+- `git restore --staged <file>` unstages a file without losing your edits
+- `git diff` shows unstaged changes; `git diff --staged` shows what the next commit will contain
+- Focused, single-purpose commits make history easier to read, review, and debug
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'You changed 10 files but only want to commit 3 of them together. What makes this possible?',
+      options: [
+        'Git always commits all changed files',
+        'You must delete the other 7 files first',
+        'The staging area — git add only the 3 files, then commit',
+        'You need 10 separate repositories',
+      ],
+      answer: 2,
+      explanation:
+        'Only staged changes are included in a commit. Staging the 3 related files lets you create one focused commit.',
+    },
+    {
+      question: 'Which command shows the changes that are staged and ready to commit?',
+      options: [
+        'git diff',
+        'git diff --staged',
+        'git log --staged',
+        'git show --cached HEAD',
+      ],
+      answer: 1,
+      explanation:
+        'git diff --staged compares the staging area to the last commit. Plain git diff shows only unstaged changes.',
+    },
+    {
+      question: 'You accidentally staged temp.txt. How do you unstage it without deleting your edits?',
+      options: [
+        'git restore --staged temp.txt',
+        'git reset --hard',
+        'rm temp.txt',
+        'git commit --undo',
+      ],
+      answer: 0,
+      explanation:
+        'git restore --staged removes the file from the staging area but leaves the working-directory copy untouched.',
+    },
+  ]}
+/>
+
+<LessonComplete />

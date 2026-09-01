@@ -1,0 +1,177 @@
+---
+title: 'Git Hooks'
+sidebar_position: 5
+description: 'Automate quality gates with Git hooks — build a pre-commit hook that blocks TODO comments and learn the most useful hook types.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Locate hooks in `.git/hooks/` and activate them
+- Write a pre-commit hook that blocks bad commits
+- Match common hooks (pre-commit, commit-msg, pre-push) to their use cases
+
+</LearningObjectives>
+
+Git hooks are scripts that run automatically at certain points in the Git workflow. They let you automate checks and enforce standards.
+
+### Where Do Hooks Live?
+
+```bash
+ls .git/hooks/
+```
+
+**Expected output:**
+
+```
+applypatch-msg.sample     pre-merge-commit.sample
+commit-msg.sample         pre-push.sample
+fsmonitor-watchman.sample pre-rebase.sample
+post-update.sample        pre-receive.sample
+pre-applypatch.sample     prepare-commit-msg.sample
+pre-commit.sample         push-to-checkout.sample
+```
+
+These are sample hooks. Remove `.sample` to activate them.
+
+### Hands-On: Create a Pre-Commit Hook
+
+This hook will prevent commits that contain the word "TODO":
+
+**Step 1 — Create the hook**
+
+```bash
+cat > .git/hooks/pre-commit << 'HOOK'
+#!/bin/bash
+echo "Running pre-commit hook..."
+
+# Check for TODO in staged files
+if git diff --cached --name-only | xargs grep -l "TODO" 2>/dev/null; then
+    echo ""
+    echo "ERROR: Found TODO comments in staged files!"
+    echo "Please resolve TODOs before committing."
+    echo ""
+    exit 1
+fi
+
+echo "Pre-commit check passed!"
+exit 0
+HOOK
+```
+
+**Step 2 — Make it executable**
+
+```bash
+chmod +x .git/hooks/pre-commit
+```
+
+**Step 3 — Test it**
+
+```bash
+echo "TODO: fix this later" > temp-todo.txt
+git add temp-todo.txt
+git commit -m "Test TODO check"
+```
+
+**Expected output:**
+
+```
+Running pre-commit hook...
+temp-todo.txt
+ERROR: Found TODO comments in staged files!
+Please resolve TODOs before committing.
+```
+
+The commit is blocked!
+
+**Step 4 — Fix and retry**
+
+```bash
+echo "Navigation: complete" > temp-todo.txt
+git add temp-todo.txt
+git commit -m "Add navigation status"
+```
+
+**Expected output:**
+
+```
+Running pre-commit hook...
+Pre-commit check passed!
+[main ...] Add navigation status
+```
+
+### Common Hook Use Cases
+
+| Hook | When It Runs | Common Use |
+|------|-------------|------------|
+| `pre-commit` | Before commit is created | Lint code, run tests |
+| `commit-msg` | After message is written | Enforce message format |
+| `pre-push` | Before push to remote | Run full test suite |
+| `post-merge` | After a merge completes | Install dependencies |
+| `pre-rebase` | Before rebase starts | Warn about shared branches |
+
+### Clean Up
+
+```bash
+rm temp-todo.txt
+git add -A
+git commit -m "Clean up temp files"
+```
+
+:::tip[HitaVir Tech says]
+"Git hooks are like quality gates in a factory. They catch problems before they reach production. Start with a simple pre-commit hook and build from there."
+:::
+
+<KeyTakeaways>
+
+- Hooks are scripts in `.git/hooks/` that run automatically at workflow points
+- The `.sample` files are inactive templates — remove the suffix (and `chmod +x`) to activate
+- A pre-commit hook that exits non-zero **blocks the commit**
+- pre-commit lints, commit-msg enforces message format, pre-push runs the full test suite
+- Hooks live in `.git/`, so they are NOT committed or shared automatically
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'How does a pre-commit hook BLOCK a commit?',
+      options: [
+        'By deleting the staged files',
+        'By exiting with a non-zero status code',
+        'By printing the word ERROR',
+        'By locking the .git folder',
+      ],
+      answer: 1,
+      explanation:
+        'Git checks the hook script exit code: exit 1 aborts the commit, exit 0 lets it proceed. Printed text is just information.',
+    },
+    {
+      question: 'The sample hooks in .git/hooks/ do nothing. Why?',
+      options: [
+        'They only run on GitHub',
+        'They require GitHub Actions',
+        'They end in .sample — renaming (and making executable) activates them',
+        'Hooks are disabled by default in Git 2.x',
+      ],
+      answer: 2,
+      explanation:
+        'Git ships inactive templates. Removing the .sample suffix and marking the file executable turns the hook on.',
+    },
+    {
+      question: 'Which hook is best for running a full test suite before sharing commits with the team?',
+      options: [
+        'pre-push',
+        'post-update',
+        'prepare-commit-msg',
+        'post-merge',
+      ],
+      answer: 0,
+      explanation:
+        'pre-push runs before commits leave your machine — slow checks like full test suites belong there rather than on every commit.',
+    },
+  ]}
+/>
+
+<LessonComplete />

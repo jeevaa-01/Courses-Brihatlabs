@@ -1,0 +1,113 @@
+---
+title: 'Step 7 — Create Your Interview Questions Bank'
+sidebar_position: 7
+description: 'Create a growing interview-questions bank seeded with 8 questions from this codelab, each with an answer summary and confidence rating.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Create `interview-prep/questions-bank.md` seeded with 8 questions from this codelab
+- Practice answering questions out loud in under 2 minutes each
+- Build interview prep incrementally, one codelab at a time
+
+</LearningObjectives>
+
+### Step Objective
+
+Create a structured bank for collecting interview questions from every codelab.
+
+### Commands
+
+```bash
+cat > ~/hitavir-learning-system/interview-prep/questions-bank.md << 'INTERVIEW'
+# Interview Questions Bank
+
+### How to Use
+After each codelab, add relevant interview questions below.
+Practice answering out loud (2 minutes max per question).
+Rate your confidence honestly.
+
+### From: HitaVir Tech Code (Learning Guidelines)
+| # | Question | My Answer Summary | Confidence |
+|---|----------|-------------------|------------|
+| 1 | How do you approach learning a new technology? | Execute-Understand-Explain cycle | Low / Med / High |
+| 2 | Walk me through your debugging process | 7-step protocol | Low / Med / High |
+| 3 | How do you ensure data quality in pipelines? | Checkpoint validation at every step | Low / Med / High |
+| 4 | How do you stay productive on complex tasks? | Deep work blocks + 20-min rule | Low / Med / High |
+| 5 | Tell me about a time you were stuck. How did you resolve it? | Debug log example | Low / Med / High |
+| 6 | How do you handle working across multiple cloud platforms? | Cloud-agnostic methodology | Low / Med / High |
+| 7 | How do you prepare for unfamiliar technical challenges? | Layered learning system | Low / Med / High |
+| 8 | How would you design a system to handle 10x data growth? | 4 questions: reliability, scalability, cost, security | Low / Med / High |
+
+### From: [Next Codelab Name]
+(Copy this section header and table for each new codelab)
+INTERVIEW
+
+# Verify
+cat ~/hitavir-learning-system/interview-prep/questions-bank.md
+```
+
+### Why This Step Matters
+
+**"Yoga is skill in action."** *(Bhagavad Gita 2.50)* — Interview preparation is not something you cram the night before. It is something you build incrementally, one codelab at a time. By the end of this program, you will have 50+ practiced questions with confident answers.
+
+### Expected Output
+
+The complete interview bank should display with the table of 8 questions.
+
+### Common Errors and Fixes
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Table formatting broken | Missing pipe characters | Ensure every row has the same number of `|` delimiters |
+| File not created | Path typo | Verify directory exists with `ls ~/hitavir-learning-system/interview-prep/` |
+
+### Checkpoint
+
+```
+Verify before moving on:
+  [x] questions-bank.md exists in interview-prep/
+  [x] 8 questions from this codelab are listed
+  [x] You can answer at least 3 of them out loud right now
+```
+
+<KeyTakeaways>
+
+- Interview prep is built incrementally per codelab, never crammed the night before
+- Practice out loud, two minutes maximum per question, and rate your confidence honestly
+- By the end of the program you will have 50+ practiced questions with confident answers
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'How should you practice the questions in your interview bank?',
+      options: [
+        'Silently re-read them once a month',
+        'Memorize the answer summaries word for word',
+        'Answer out loud, two minutes maximum per question, and rate your confidence',
+        'Only review them the night before an interview',
+      ],
+      answer: 2,
+      explanation:
+        'Speaking answers aloud under a time limit simulates the real interview; honest confidence ratings tell you what to drill.',
+    },
+    {
+      question: 'The bank answers "How do you approach learning a new technology?" with which methodology?',
+      options: [
+        'Watch tutorials until it makes sense',
+        'The Execute-Understand-Explain cycle',
+        'Read the official documentation cover to cover',
+        'Ask a senior engineer to explain it',
+      ],
+      answer: 1,
+      explanation:
+        'Run it, understand why it works, then explain it — the core learning cycle of this course.',
+    },
+  ]}
+/>
+
+<LessonComplete />

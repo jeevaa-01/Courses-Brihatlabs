@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1787581081231,
+      "tag": "0000_smiling_guardsmen",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1787684431997,
+      "tag": "0001_parched_celestials",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1787684441005,
+      "tag": "0002_seed_career_catalog",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1787684450000,
+      "tag": "0003_certification_foundation",
+      "breakpoints": true
+    }
+  ]
+}

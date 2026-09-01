@@ -1,0 +1,107 @@
+---
+title: 'Interview Questions — Git and GitHub'
+sidebar_position: 6
+description: 'Ten real-world Git and GitHub interview questions with model answers, plus tips for talking about version control with confidence.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Rehearse model answers to the ten most common Git interview questions
+- Learn how to frame answers around WHEN to use each command, not just what it does
+
+</LearningObjectives>
+
+Here are 10 real-world interview questions with answers to help you ace your next interview.
+
+### Q1: What is the difference between `git merge` and `git rebase`?
+
+**Answer:** Both combine changes from one branch into another. `git merge` creates a merge commit and preserves the full branch history. `git rebase` moves commits to create a linear history. Use merge for shared branches and rebase for local feature branches.
+
+### Q2: What is the staging area in Git?
+
+**Answer:** The staging area (or index) is an intermediate zone between the working directory and the repository. When you `git add` a file, it moves to the staging area. When you `git commit`, only staged changes are saved. This lets you create focused, logical commits.
+
+### Q3: How do you resolve a merge conflict?
+
+**Answer:** Open the conflicted file, look for the conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`), decide which changes to keep, remove the markers, then `git add` the file and `git commit`.
+
+### Q4: What is the difference between `git pull` and `git fetch`?
+
+**Answer:** `git fetch` downloads remote changes but does not merge them. `git pull` does both — it fetches and then merges. Use `fetch` when you want to inspect changes before merging.
+
+### Q5: What is a detached HEAD state?
+
+**Answer:** Detached HEAD occurs when HEAD points directly to a commit instead of a branch. This happens when you checkout a specific commit hash. Any new commits you make will not belong to any branch and can be lost. Use `git switch main` to return to normal.
+
+### Q6: How do you undo the last commit without losing changes?
+
+**Answer:** Use `git reset --soft HEAD~1`. This moves HEAD back one commit but keeps all changes staged. You can then modify the changes and recommit.
+
+### Q7: What is a Pull Request?
+
+**Answer:** A Pull Request is a GitHub feature that proposes merging changes from one branch to another. It enables code review, discussion, and approval before changes are merged. It is the primary collaboration mechanism on GitHub.
+
+### Q8: Explain the GitFlow workflow.
+
+**Answer:** GitFlow uses multiple long-lived branches: `main` (production), `develop` (integration), `feature/*` (new work), `release/*` (release prep), and `hotfix/*` (emergency fixes). Features branch off `develop`, releases branch off `develop` and merge to both `main` and `develop`.
+
+### Q9: What is `git stash` and when would you use it?
+
+**Answer:** `git stash` temporarily saves uncommitted changes and gives you a clean working directory. Use it when you need to switch branches urgently but are not ready to commit your current work. Restore with `git stash pop`.
+
+### Q10: How do you squash commits?
+
+**Answer:** Use interactive rebase: `git rebase -i HEAD~N` where N is the number of commits. In the editor, change `pick` to `squash` (or `s`) for commits you want to combine. This creates one clean commit from multiple messy ones.
+
+### Bonus Tips for Interviews
+
+- Always mention **when** to use each command, not just what it does
+- Emphasize safety — explain when a command is dangerous
+- Share real examples from your projects
+- Know the difference between local and remote operations
+
+:::tip[HitaVir Tech says]
+"In interviews, confidence comes from practice. If you have followed this entire codelab hands-on, you already know more than most candidates. Go get that job!"
+:::
+
+<KeyTakeaways>
+
+- Interviewers love merge-vs-rebase, pull-vs-fetch, and reset-vs-revert comparisons
+- Always mention WHEN to use a command and when it is dangerous
+- Detached HEAD, the staging area, and GitFlow are classic conceptual questions
+- Real examples from your own projects are the strongest possible answers
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'An interviewer asks: "How do you undo the last commit WITHOUT losing the changes?" Best answer?',
+      options: [
+        'git revert HEAD',
+        'git reset --hard HEAD~1',
+        'git stash',
+        'git reset --soft HEAD~1 — HEAD moves back but changes stay staged',
+      ],
+      answer: 3,
+      explanation:
+        'reset --soft is the precise tool: the commit is undone, the work is preserved and still staged for recommit.',
+    },
+    {
+      question: 'What framing makes an interview answer about Git commands strongest?',
+      options: [
+        'Explaining WHEN to use the command and when it is dangerous, with a real example',
+        'Reciting every flag from the man page',
+        'Saying you would Google it',
+        'Naming the release year of each command',
+      ],
+      answer: 0,
+      explanation:
+        'The bonus tips emphasize context: use cases, safety trade-offs, and real project stories beat rote definitions.',
+    },
+  ]}
+/>
+
+<LessonComplete />

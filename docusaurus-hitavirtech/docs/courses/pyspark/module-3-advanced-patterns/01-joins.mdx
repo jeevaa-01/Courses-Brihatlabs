@@ -1,0 +1,224 @@
+---
+title: "Joins"
+description: "Joins — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Joins
+
+*⏱ Estimated time: 90 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Apply inner, left, anti, and semi joins for enrichment and data-quality checks.
+- Use aliases to avoid ambiguous columns and broadcast small dimension tables.
+- Validate row counts before and after joins to catch row multiplication.
+
+:::
+
+### Create product master data
+
+Create `products.csv` in `{BASE_PATH}/raw` (on Databricks, use `dbutils.fs.put` as shown in [Create a CSV file](/courses/pyspark/module-2-core-data-handling/reading-csv-json-and-parquet#create-a-csv-file)):
+
+```csv
+product,category,supplier
+Laptop,Computers,TechSource
+Monitor,Accessories,DisplayHub
+Keyboard,Accessories,InputWorks
+Mouse,Accessories,InputWorks
+Webcam,Accessories,VisionTech
+```
+
+Read it with an explicit schema, following the practice from [Explicit Schemas](/courses/pyspark/module-1-foundations/explicit-schemas):
+
+```python
+from pyspark.sql.types import (
+    StringType,
+    StructField,
+    StructType,
+)
+
+product_schema = StructType(
+    [
+        StructField("product", StringType(), False),
+        StructField("category", StringType(), True),
+        StructField("supplier", StringType(), True),
+    ]
+)
+
+product_df = (
+    spark.read
+    .option("header", True)
+    .schema(product_schema)
+    .csv(f"{BASE_PATH}/raw/products.csv")
+)
+```
+
+### Inner join
+
+```python
+enriched_df = valid_df.join(
+    product_df,
+    on="product",
+    how="inner"
+)
+```
+
+### Left join
+
+```python
+enriched_df = valid_df.join(
+    product_df,
+    on="product",
+    how="left"
+)
+```
+
+### Join with aliases
+
+```python
+sales_alias = valid_df.alias("s")
+product_alias = product_df.alias("p")
+
+enriched_df = (
+    sales_alias
+    .join(
+        product_alias,
+        F.col("s.product") == F.col("p.product"),
+        "left"
+    )
+    .select(
+        F.col("s.transaction_id"),
+        F.col("s.product"),
+        F.col("s.region"),
+        F.col("s.revenue"),
+        F.col("p.category"),
+        F.col("p.supplier")
+    )
+)
+```
+
+### Join types
+
+- `inner`
+- `left`
+- `right`
+- `full`
+- `left_semi`
+- `left_anti`
+- `cross`
+
+### Left anti join
+
+Find sales products missing from master data:
+
+```python
+unmatched_df = valid_df.join(
+    product_df,
+    on="product",
+    how="left_anti"
+)
+```
+
+### Left semi join
+
+Keep only sales with matching product records:
+
+```python
+matched_df = valid_df.join(
+    product_df,
+    on="product",
+    how="left_semi"
+)
+```
+
+### Broadcast join
+
+For a small dimension table:
+
+```python
+from pyspark.sql.functions import broadcast
+
+enriched_df = valid_df.join(
+    broadcast(product_df),
+    on="product",
+    how="left"
+)
+```
+
+### Avoid duplicate columns
+
+Select only required columns after joins.
+
+### ✅ Checkpoint
+
+Join sales with product data and show:
+
+```text
+transaction_id, product, category, supplier, revenue
+```
+
+### 🛠️ Exercise
+
+Find all product master rows with no sales using a left anti join.
+
+<details>
+<summary>Show solution</summary>
+
+```python
+products_without_sales_df = product_df.join(
+    valid_df.select("product").distinct(),
+    on="product",
+    how="left_anti"
+)
+
+products_without_sales_df.show()
+```
+
+</details>
+
+<Quiz
+  questions={[
+  {
+    "question": "To find sales rows with no matching product record, use:",
+    "options": [
+      "`left_semi`",
+      "`left_anti`",
+      "`cross`"
+    ],
+    "answer": 1,
+    "explanation": "Anti join returns left rows without a match on the right."
+  },
+  {
+    "question": "Broadcasting a small dimension table avoids:",
+    "options": [
+      "Reading the dimension table",
+      "Shuffling the large fact table",
+      "Schema validation"
+    ],
+    "answer": 1,
+    "explanation": "The small table is shipped to executors so the big table stays in place."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- Anti and semi joins are filters, not enrichments — perfect for data-quality checks.
+- Broadcast small dimension tables to avoid shuffling large fact tables.
+- Unexpected row multiplication after a join is a top production defect: validate counts.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Validate row counts before and after joins. Unexpected row multiplication is a common production defect.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Broadcast small dimension tables to avoid large shuffle joins, but do not broadcast tables that are too large for executor memory.
+
+:::

@@ -1,0 +1,244 @@
+---
+title: 'Introduction to Modern Data Architecture'
+sidebar_position: 3
+description: 'The Lake House pattern — five pillars that unify the data lake and warehouse into one governed platform on AWS.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Explain the pain of running a separate lake and warehouse side by side
+- Name the five pillars of Modern Data Architecture (the Lake House)
+- Match AWS services to each pillar — storage, engines, movement, governance, ML
+- Read the full Lake House diagram and place every Part 1 service in it
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |       ARCHITECTURE  3   -   MODERN  DATA  ARCHITECTURE       |
+  |          (aka the "Lake House" pattern)                      |
+  +==============================================================+
+```
+
+![S3](/img/courses/aws-icons/s3.png) ![Lake Formation](/img/courses/aws-icons/lake-formation.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![Athena](/img/courses/aws-icons/athena.png) ![Glue](/img/courses/aws-icons/glue.png) ![QuickSight](/img/courses/aws-icons/quicksight.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png)
+
+### The Problem Modern Data Architecture Solves
+
+By 2018, most companies had **both** a lake and a warehouse — and suffered:
+
+| Pain | Icon | Symptom |
+|------|:---:|---------|
+| Two copies of the truth | 👯 | Lake says one number, warehouse says another |
+| Pipeline sprawl | 🕸️ | 200 jobs shuffling data between them |
+| Permission chaos | 🔐 | IAM for S3, Redshift grants, separate audits |
+| Skill silos | 🧑‍💻 | Data engineers in Spark, analysts in SQL, no common tool |
+| ML engineers stuck | 🤖 | Data scientists denied warehouse access, scraping lakes by hand |
+
+### The Modern Data Architecture Idea
+
+```
+  +==============================================================+
+  |                                                              |
+  |    ONE GOVERNED PLATFORM                                     |
+  |                                                              |
+  |    - Unified storage  (S3 data lake = source of truth)       |
+  |    - Purpose-built engines  (pick the right tool per job)    |
+  |    - Shared catalog + governance  (Lake Formation)           |
+  |    - Seamless movement  (Spectrum, Athena, zero-ETL)         |
+  |    - Common security model  (IAM + Lake Formation + KMS)     |
+  |                                                              |
+  +==============================================================+
+```
+
+Instead of lake **or** warehouse, you get lake **and** warehouse — unified by one catalog, one permission model, one lineage.
+
+### The Five Pillars of Modern Data Architecture
+
+```
+     +--------+     +--------+     +--------+     +--------+     +--------+
+     |   1    |     |   2    |     |   3    |     |   4    |     |   5    |
+     | SCALABLE|    |PURPOSE-|    |SEAMLESS|    |UNIFIED |    |FUTURE- |
+     |   DATA  |    |  BUILT |    |  DATA  |    |GOVERN- |    |  PROOF |
+     |   LAKE  |    | ENGINES|    |MOVEMENT|    |  ANCE  |    |   ML   |
+     +---------+    +--------+    +--------+    +--------+    +--------+
+         |              |              |              |              |
+         v              v              v              v              v
+       S3 +         Athena,        Spectrum,      Lake Form.    SageMaker,
+       Lake         Redshift,      Zero-ETL,      + IAM +       Bedrock,
+       Form.        EMR, OS,       Federated      KMS + Q       Glue ML
+                    DynamoDB        query
+```
+
+### Pillar 1 — A Scalable Data Lake at the Core
+
+![S3](/img/courses/aws-icons/s3.png)
+
+Every modern architecture **starts from S3**. Why S3?
+
+| Reason | Icon | Impact |
+|--------|:---:|--------|
+| Infinite scale | ♾️ | Never outgrow it |
+| 11 nines durability | 🛡️ | Your data is safer than on any disk |
+| Pennies per GB | 💰 | Keep history forever |
+| Native reader for Athena, Redshift, EMR, Glue, SageMaker | 🌐 | One source, many consumers |
+
+### Pillar 2 — Purpose-Built Engines
+
+One-size-fits-all is dead. Pick the right engine per workload:
+
+| Workload | Icon | Engine | Why |
+|----------|:---:|--------|-----|
+| Ad-hoc SQL on lake files | 🔍 | **Athena** | Pay per query, zero setup |
+| Dashboards on curated tables | 🏛️ | **Redshift** | Sub-second BI |
+| Petabyte Spark jobs | 🐘 | **EMR** | Custom transforms at scale |
+| Sub-ms lookups | ⚡ | **DynamoDB** | Key-value queries |
+| Full-text + log search | 🔎 | **OpenSearch** | Observability and logs |
+| Real-time aggregation | 🎯 | **Kinesis Data Analytics** | Streaming SQL / Flink |
+
+### Pillar 3 — Seamless Data Movement
+
+Instead of 200 brittle ETL jobs, modern architectures rely on:
+
+- 🚀 **Zero-ETL integrations** — e.g. Aurora → Redshift with no pipeline code
+- 🌐 **Federated queries** — Redshift and Athena querying live RDS, DynamoDB, and S3
+- 🔭 **Redshift Spectrum** — warehouse SQL reaches into lake files
+- 📡 **Kinesis to Redshift / OpenSearch streaming ingestion**
+- 🔗 **Redshift Data Sharing** — share live tables across accounts, no copies
+
+### Pillar 4 — Unified Governance
+
+![Lake Formation](/img/courses/aws-icons/lake-formation.png) ![IAM](/img/courses/aws-icons/iam.png) ![KMS](/img/courses/aws-icons/kms.png) ![Macie](/img/courses/aws-icons/macie.png) ![CloudTrail](/img/courses/aws-icons/cloudtrail.png)
+
+| Layer | Icon | Service | Purpose |
+|-------|:---:|---------|---------|
+| Identity | 🔑 | IAM | Who you are |
+| Fine-grained access | 🔐 | Lake Formation | What columns / rows you see |
+| Encryption | 🔒 | KMS | At-rest and in-transit |
+| PII scanning | 🕵️ | Macie | Find sensitive data in S3 |
+| Audit | 📜 | CloudTrail | Every API call, every query |
+| Data discovery | 🧭 | DataZone | Business-friendly data catalog |
+
+### Pillar 5 — Built-in AI / ML
+
+![SageMaker](/img/courses/aws-icons/sagemaker.png) ![Bedrock](/img/courses/aws-icons/bedrock.png)
+
+ML is no longer a bolt-on — it lives **inside** the platform:
+
+| Capability | Icon | Service |
+|------------|:---:|---------|
+| Full ML lifecycle | 🤖 | SageMaker |
+| Foundation models (Claude, Llama, Titan) | 🧠 | Bedrock |
+| SQL-native ML in the warehouse | 🔮 | Redshift ML |
+| No-code ML in the lake | 📈 | SageMaker Canvas |
+| Natural-language BI | 💬 | Amazon Q in QuickSight |
+
+### The Modern Data Architecture — One Picture
+
+```
+  +==================================================================+
+  |                                                                  |
+  |   +---------+   +---------+   +---------+   +---------+          |
+  |   | Batch   |   | Stream  |   | OpTx DB |   | SaaS    |          |
+  |   | files   |   | events  |   | (CDC)   |   | apps    |          |
+  |   +----+----+   +----+----+   +----+----+   +----+----+          |
+  |        |             |             |             |               |
+  |        +-------------+-------------+-------------+               |
+  |                             |                                    |
+  |                             v                                    |
+  |     +-----------------------------------------------------+      |
+  |     |    AMAZON S3  --- Centralized Data Lake             |      |
+  |     |    Raw  ->  Curated  ->  Analytics  (Parquet)       |      |
+  |     +---------------------------+-------------------------+      |
+  |                                 |                                |
+  |                  governed by    |                                |
+  |                                 v                                |
+  |     +-----------------------------------------------------+      |
+  |     |  LAKE FORMATION + GLUE CATALOG + IAM + KMS + MACIE  |      |
+  |     +-----------------------------------------------------+      |
+  |                                 |                                |
+  |       +------------+------------+------------+-------------+     |
+  |       |            |            |            |             |    |
+  |       v            v            v            v             v    |
+  |   +-------+   +---------+   +-----+   +-----------+   +------+  |
+  |   | Athena|   |Redshift |   | EMR |   | OpenSearch|   |Sage- |  |
+  |   |  SQL  |   |  MPP    |   |Spark|   |   Search  |   |Maker |  |
+  |   +---+---+   +----+----+   +--+--+   +-----+-----+   +--+---+  |
+  |       |            |           |             |           |      |
+  |       +------------+-----------+-------------+-----------+      |
+  |                                 |                                |
+  |                                 v                                |
+  |            +----------------------------------------+            |
+  |            |   VALUE  =  QuickSight + Amazon Q + apps|           |
+  |            +----------------------------------------+            |
+  |                                                                  |
+  +==================================================================+
+```
+
+Look carefully: **every service from Part 1 has a home.** That is modern data architecture.
+
+:::tip[Modern data architecture in one sentence]
+Centralize storage in a governed S3 lake. Use the best engine for each workload. Let data move frictionlessly between them. Secure it all uniformly. Build ML natively on top.
+:::
+
+:::tip[HitaVir Tech says]
+"Don't build one monolith. Don't build 20 silos. Build one lake, with many engines, one catalog, one security model. That's how AWS's biggest analytics customers run."
+:::
+
+:::tip[Lake House in one line]
+One lake for storage, many engines for compute, one catalog for trust.
+:::
+
+<KeyTakeaways>
+
+- Running a separate lake and warehouse creates two truths, pipeline sprawl, and permission chaos
+- The Lake House unifies them: one S3 lake, purpose-built engines, one catalog, one security model
+- The five pillars: scalable lake, purpose-built engines, seamless movement, unified governance, built-in ML
+- Zero-ETL, Spectrum, and federated queries replace hundreds of brittle replication jobs
+- Every Part 1 service has a home in the Lake House diagram
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is the "source of truth" storage layer in an AWS Modern Data Architecture?',
+      options: [
+        'Amazon Redshift',
+        'Amazon S3',
+        'Amazon DynamoDB',
+        'Amazon RDS',
+      ],
+      answer: 1,
+      explanation:
+        'The S3 data lake sits at the core; every purpose-built engine (Athena, Redshift, EMR, SageMaker) reads from it.',
+    },
+    {
+      question: 'Which of these is NOT one of the five pillars of Modern Data Architecture?',
+      options: [
+        'Purpose-built engines',
+        'Seamless data movement',
+        'A single engine for every workload',
+        'Unified governance',
+      ],
+      answer: 2,
+      explanation:
+        'The Lake House explicitly rejects one-size-fits-all — it picks the right engine per workload on top of one shared lake.',
+    },
+    {
+      question: 'A team wants Aurora data available in Redshift without writing replication pipelines. Which capability fits?',
+      options: [
+        'Zero-ETL integration',
+        'Glue DataBrew',
+        'S3 lifecycle policies',
+        'Amazon Macie',
+      ],
+      answer: 0,
+      explanation:
+        'Zero-ETL integrations replicate curated data between services automatically — no pipeline code to write or maintain.',
+    },
+  ]}
+/>
+
+<LessonComplete />

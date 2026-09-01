@@ -1,0 +1,190 @@
+---
+title: 'Create a GitHub Account'
+sidebar_position: 2
+description: 'Create a professional GitHub account, add your SSH key, and push your first repository.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Create a GitHub account with a professional, employer-friendly username
+- Add the SSH key from the Git lesson and test the connection
+- Create and clone your first private repository
+
+</LearningObjectives>
+GitHub is the world's largest platform for hosting code, collaborating on projects, and managing your data engineering portfolio. You'll use GitHub to store codelabs, Databricks notebooks, and project code throughout this course.
+
+### Step 1 - Go to GitHub
+
+Open your browser and go to [https://github.com](https://github.com)
+
+Click the **Sign up** button in the top-right corner.
+
+### Step 2 - Enter Your Details
+
+Fill in the registration form:
+
+| Field | Guidance |
+|-------|----------|
+| **Email** | Use a professional email you check regularly |
+| **Password** | Minimum 15 characters, or 8+ with a number and lowercase letter |
+| **Username** | Choose a professional handle (e.g., `firstname-lastname`). This is public! |
+| **Email preferences** | Optional — tick if you want product updates |
+
+:::tip[Choose a professional username]
+Your GitHub username will appear in all your commit history and public repos. Choose something professional like `john-doe` or `jdoe-de` — not `coolgamer123`.
+:::
+
+Click **Continue**.
+
+### Step 3 - Solve the CAPTCHA Puzzle
+
+GitHub shows a visual CAPTCHA. Follow the on-screen instructions to verify you are human, then click **Create account**.
+
+### Step 4 - Verify Your Email
+
+GitHub sends a **launch code** (8-digit number) to your email.
+
+1. Open your email inbox
+2. Find the email from **GitHub** with subject **"Your GitHub launch code"**
+3. Copy the 8-digit code
+4. Paste it into the GitHub verification page
+
+### Step 5 - Personalise Your Account (Optional)
+
+GitHub may ask a few onboarding questions:
+- **How many people are on your team?** → Select **Just me**
+- **Are you a student or teacher?** → Select as appropriate
+- **What features are you interested in?** → Tick **Collaborative coding** and **CI/CD and automation**
+
+Click **Continue** or **Skip personalisation**.
+
+### Step 6 - Choose a Plan
+
+Select **GitHub Free** — this is sufficient for all HitaVirTech coursework.
+
+| Plan | Cost | What You Get |
+|------|------|-------------|
+| **Free** | $0/month | Unlimited public & private repos, 2000 CI/CD mins/month |
+| Pro | $4/month | More CI/CD minutes, advanced insights |
+
+:::info
+You do **NOT** need a paid plan for this course.
+:::
+
+### Step 7 - Add Your SSH Key to GitHub
+
+You generated an SSH key in the Git step. Now add it to GitHub so you can push/pull without a password.
+
+1. Go to **GitHub > Profile icon (top-right) > Settings**
+2. In the left sidebar click **SSH and GPG keys**
+3. Click **New SSH key**
+4. Fill in:
+   - **Title**: `HitaVirTech-Laptop` (or any label)
+   - **Key type**: `Authentication Key`
+   - **Key**: Paste the output of `cat ~/.ssh/id_ed25519.pub` from Git Bash
+5. Click **Add SSH key**
+6. Confirm with your GitHub password if prompted
+
+### Step 8 - Test SSH Connection
+
+```bash
+ssh -T git@github.com
+# Hi your-username! You have successfully authenticated
+```
+
+### Step 9 - Create Your First Repository
+
+1. Click the **+** icon (top-right) > **New repository**
+2. Fill in:
+   - **Repository name**: `hitavir-batch5`
+   - **Description**: `HitaVirTech Batch 5 - Data Engineering Projects`
+   - **Visibility**: Private
+   - Tick **Add a README file**
+3. Click **Create repository**
+
+Then clone it locally:
+
+```bash
+cd /c/hitavirtect_codelabs
+git clone git@github.com:your-username/hitavir-batch5.git
+cd hitavir-batch5
+ls
+# README.md
+```
+
+### Step 10 - Configure Git with Your GitHub Identity
+
+Make sure your local Git matches your GitHub account:
+
+```bash
+git config --global user.name "Your GitHub Display Name"
+git config --global user.email "your-github-email@example.com"
+
+# Verify
+git config --list | grep user
+# user.name=Your GitHub Display Name
+# user.email=your-github-email@example.com
+```
+
+### GitHub Profile Best Practices
+
+| Action | Why It Matters |
+|--------|---------------|
+| Add a profile photo | Makes you recognisable to collaborators |
+| Write a bio | Shows your skills to potential employers |
+| Pin your best repos | Highlights your data engineering work |
+| Use README.md in repos | Documents your projects professionally |
+
+<KeyTakeaways>
+
+- Your username is public and permanent in commit history — pick a professional one
+- SSH keys beat passwords: `ssh -T git@github.com` should greet you by name
+- GitHub Free covers everything this program needs (unlimited private repos)
+- Local `git config` identity should match your GitHub account email
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'How do you verify your SSH connection to GitHub works?',
+      options: [
+        'ssh -T git@github.com',
+        'git ssh test',
+        'ssh github.com --verify',
+        'curl github.com/ssh',
+      ],
+      answer: 0,
+      explanation:
+        'A successful setup replies "Hi <username>! You have successfully authenticated."',
+    },
+    {
+      question: 'Why should your local git user.email match your GitHub email?',
+      options: [
+        'So GitHub attributes your commits to your account/profile',
+        'Git refuses to commit otherwise',
+        'SSH authentication requires it',
+        'It encrypts your commits',
+      ],
+      answer: 0,
+      explanation:
+        'Commit attribution is by email; a mismatch means commits will not show on your GitHub profile.',
+    },
+    {
+      question: 'Which plan do you need for private repositories?',
+      options: [
+        'GitHub Free — private repos are included',
+        'GitHub Pro',
+        'GitHub Team',
+        'GitHub Enterprise',
+      ],
+      answer: 0,
+      explanation:
+        'Free includes unlimited public and private repositories plus 2000 CI minutes per month.',
+    },
+  ]}
+/>
+
+<LessonComplete />

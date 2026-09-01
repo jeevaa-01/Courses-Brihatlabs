@@ -1,0 +1,140 @@
+---
+title: 'Import a Database File'
+sidebar_position: 3
+description: 'Create a farmers_market schema and restore a .sql dump into it with Server → Data Import in Workbench.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Create a new schema (`farmers_market`) as the import target
+- Restore a self-contained `.sql` dump via **Server → Data Import**
+- Verify the import by listing and querying the new tables
+
+</LearningObjectives>
+
+In real projects, you often need to import existing databases from `.sql` files. Let us learn how.
+
+### Step 1 — Create a Schema for Import
+
+In MySQL Workbench, click the **"Create a new schema"** icon (cylinder icon in the toolbar).
+
+1. Enter the schema name: `farmers_market`
+2. Click **Apply**
+3. In the popup, click **Apply** again
+4. Click **Finish**
+
+You should see `farmers_market` appear in the left panel under SCHEMAS.
+
+### Step 2 — Open Data Import
+
+Go to the menu bar:
+
+```
+Server → Data Import
+```
+
+A new tab called **"Administration - Data Import / Restore"** opens.
+
+### Step 3 — Configure Import Settings
+
+In the **Import from Disk** tab:
+
+| Setting | Value |
+|---------|-------|
+| Import from | **Self-Contained File** (select this radio button) |
+| File path | Browse to your downloaded `.sql` file |
+| Default Target Schema | Select `farmers_market` from the dropdown |
+
+At the bottom right, select: **Dump Structure and Data**
+
+### Step 4 — Start the Import
+
+1. Click the **Import Progress** tab
+2. Click **Start Import**
+3. Wait for the import to complete
+
+**Expected output:**
+
+```
+Import Completed
+Status: 1 of 1 imported
+```
+
+### Step 5 — Refresh and Verify
+
+1. In the left panel, right-click on `farmers_market`
+2. Select **Refresh All**
+3. Expand `farmers_market` → `Tables`
+
+You should see the imported tables listed.
+
+### Step 6 — Query the Imported Data
+
+```sql
+USE farmers_market;
+SHOW TABLES;
+```
+
+Try querying a table:
+
+```sql
+SELECT * FROM customer_purchases LIMIT 10;
+```
+
+:::tip[HitaVir Tech says]
+"Importing .sql files is how teams share databases. When you join a company, the first thing you will do is import the team's database into your local Workbench for development and testing."
+:::
+
+<KeyTakeaways>
+
+- Create the target schema first, then import into it
+- **Server → Data Import** with **Self-Contained File** restores a single `.sql` dump
+- Choose **Dump Structure and Data** to bring in both tables and rows
+- After importing, **Refresh All** on the schema to see the new tables
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which Workbench menu path opens the import tool?',
+      options: [
+        'File → Open SQL Script',
+        'Database → Connect',
+        'Server → Data Import',
+        'Edit → Preferences → Import',
+      ],
+      answer: 2,
+      explanation:
+        'Server → Data Import opens the "Data Import / Restore" administration tab.',
+    },
+    {
+      question: 'Your .sql dump is a single file. Which "Import from" option do you pick?',
+      options: [
+        'Self-Contained File',
+        'Dump Project Folder',
+        'CSV Import Wizard',
+        'Live Server Migration',
+      ],
+      answer: 0,
+      explanation:
+        'A single .sql file is a self-contained dump; the folder option is for multi-file dumps.',
+    },
+    {
+      question: 'The import finished but no tables appear under farmers_market. First thing to try?',
+      options: [
+        'Reinstall MySQL Workbench',
+        'Right-click the schema and select Refresh All',
+        'Run the import three more times',
+        'Restart Windows',
+      ],
+      answer: 1,
+      explanation:
+        'The Navigator caches the schema tree; Refresh All reloads it and reveals the imported tables.',
+    },
+  ]}
+/>
+
+<LessonComplete />

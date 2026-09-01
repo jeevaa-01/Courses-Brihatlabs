@@ -1,0 +1,117 @@
+---
+title: 'Final Quiz'
+sidebar_position: 3
+description: 'The graded final quiz for Data Engineering on AWS — aim for at least 6 of 8.'
+---
+
+<DurationBadge minutes={10} />
+
+# Final Quiz
+
+This quiz covers the whole course. **Aim for at least 6 of 8.** If you miss a
+question, revisit the lesson it came from before running the teardown in the
+next lesson.
+
+<Quiz
+  title="Graded final quiz"
+  questions={[
+    {
+      question: 'Which sequence correctly orders the Medallion layers from source to business-ready?',
+      options: [
+        'bronze, raw, gold, silver',
+        'raw, silver, bronze, gold',
+        'raw, bronze, silver, gold',
+        'gold, silver, bronze, raw',
+      ],
+      answer: 2,
+      explanation:
+        'Raw is the untouched original, bronze adds types inside the lake, silver is cleaned and partitioned, gold is business-ready aggregates.',
+    },
+    {
+      question: 'What does a Glue crawler write, and where?',
+      options: [
+        'Cleaned Parquet files into silver/',
+        'Table definitions (schema, location, partitions) into the Glue Data Catalog',
+        'Query results into athena-results/',
+        'A copy of the data into Redshift',
+      ],
+      answer: 1,
+      explanation:
+        'Crawlers produce metadata only. The data never moves; every engine then reads the table definitions from the catalog.',
+    },
+    {
+      question: 'Why do silver and gold use Parquet while raw stays CSV?',
+      options: [
+        'Parquet is columnar and compressed, cutting Athena scan cost, while raw stays untouched and human-readable',
+        'Athena cannot query CSV at all',
+        'CSV files cannot be stored in S3 Standard-IA',
+        'Parquet is required by Lake Formation',
+      ],
+      answer: 0,
+      explanation:
+        'Athena bills by bytes scanned, so columnar compressed Parquet is far cheaper to query. Raw keeps the source format as the immutable safety net.',
+    },
+    {
+      question: 'The Glue ETL job needs to read and write your bucket. How is that granted?',
+      options: [
+        'Your hvt-admin access keys are set as job parameters',
+        'The bucket is made public during the run',
+        'Glue jobs inherit the console user permissions',
+        'The job assumes an IAM role trusted for glue.amazonaws.com with a policy scoped to that one bucket',
+      ],
+      answer: 3,
+      explanation:
+        'Service roles replace embedded credentials: trust policy for the Glue service plus a least-privilege inline S3 policy.',
+    },
+    {
+      question: 'Which resource in this track bills meaningfully even while idle, making the teardown critical?',
+      options: [
+        'The Athena workgroup',
+        'The Redshift Serverless workgroup',
+        'The Glue Data Catalog database',
+        'The Step Functions state machine',
+      ],
+      answer: 1,
+      explanation:
+        'Redshift Serverless charges by RPU-hour for as long as the workgroup exists. Athena bills per query, Glue per run, Step Functions per transition.',
+    },
+    {
+      question: 'In the nightly pipeline, what starts the run and what sequences the steps?',
+      options: [
+        'Step Functions starts it; EventBridge sequences the steps',
+        'A Lambda function does both',
+        'EventBridge Scheduler starts it on a cron; the Step Functions state machine sequences crawler, ETL, and CTAS with retries',
+        'The Glue crawler triggers everything downstream automatically',
+      ],
+      answer: 2,
+      explanation:
+        'EventBridge is the trigger (when); Step Functions is the workflow (what, in what order, with what error handling).',
+    },
+    {
+      question: 'An analyst must query customers but never see the email column. Which service enforces that?',
+      options: [
+        'AWS Lake Formation, via a column-level SELECT grant that excludes email',
+        'IAM, via an S3 bucket policy',
+        'KMS, by encrypting the email column',
+        'CloudTrail, by auditing reads of the column',
+      ],
+      answer: 0,
+      explanation:
+        'Column-level permissions are Lake Formation territory — IAM stops at the resource level, KMS encrypts bytes, CloudTrail only records access.',
+    },
+    {
+      question: 'The capstone gold query is the final validation. What proves the pipeline is correct end to end?',
+      options: [
+        'The Step Functions execution shows SUCCEEDED',
+        'The gold prefix contains Parquet files',
+        'Athena and Redshift both return rows',
+        'The per-region totals match the known result and the grand total reconciles to 1,308,944.99',
+      ],
+      answer: 3,
+      explanation:
+        'A green run only proves the steps executed. Reconciling the output to a known correct number proves the data itself is right.',
+    },
+  ]}
+/>
+
+<LessonComplete />

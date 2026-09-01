@@ -1,0 +1,102 @@
+---
+title: 'Install VS Code'
+sidebar_position: 1
+description: 'Install VS Code with the essential data engineering extensions and workspace settings.'
+---
+
+<DurationBadge minutes={4} />
+
+<LearningObjectives>
+
+- Install VS Code with Explorer context-menu and PATH integration
+- Install the eight essential data engineering extensions from the command line
+- Apply the recommended user settings (Black formatter, Git Bash terminal)
+
+</LearningObjectives>
+### Step 1 - Download and Install
+
+```powershell
+winget install Microsoft.VisualStudioCode
+```
+
+Or download from [https://code.visualstudio.com/](https://code.visualstudio.com/)
+
+During install, tick:
+- Add **Open with Code** to Windows Explorer context menu
+- Add to **PATH**
+
+### Step 2 - Install Essential Extensions
+
+```bash
+code --install-extension ms-python.python
+code --install-extension ms-python.black-formatter
+code --install-extension databricks.databricks
+code --install-extension amazonwebservices.aws-toolkit-vscode
+code --install-extension ms-azuretools.vscode-docker
+code --install-extension ms-toolsai.jupyter
+code --install-extension eamodio.gitlens
+code --install-extension redhat.vscode-yaml
+```
+
+### Step 3 - Configure Settings (JSON)
+
+Press `Ctrl+Shift+P` > **Open User Settings (JSON)**:
+
+```json
+{
+  "python.defaultInterpreterPath": "C:/hitavirtect_codelabs/.venv/Scripts/python.exe",
+  "editor.formatOnSave": true,
+  "editor.tabSize": 4,
+  "files.eol": "\n",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "git.autofetch": true
+}
+```
+
+### Verify
+```bash
+code --version
+# 1.88.x
+```
+
+<KeyTakeaways>
+
+- `code --install-extension <id>` scripts your whole IDE setup — reproducible on any machine
+- Point `python.defaultInterpreterPath` at your project venv
+- Git Bash as the integrated terminal keeps one consistent shell everywhere
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'How do you install a VS Code extension from the terminal?',
+      options: [
+        'code --install-extension ms-python.python',
+        'vscode add ms-python.python',
+        'npm install ms-python.python',
+        'winget install ms-python.python',
+      ],
+      answer: 0,
+      explanation:
+        'The code CLI (added to PATH during install) manages extensions non-interactively — ideal for setup scripts.',
+    },
+    {
+      question: 'Which setting makes Black format your Python code automatically?',
+      options: [
+        '"editor.formatOnSave": true with Black as the default formatter',
+        '"python.linting.enabled": true',
+        '"editor.autoFormat": "black"',
+        '"black.enable": true',
+      ],
+      answer: 0,
+      explanation:
+        'formatOnSave triggers the configured default formatter (ms-python.black-formatter) on every save.',
+    },
+  ]}
+/>
+
+<LessonComplete />

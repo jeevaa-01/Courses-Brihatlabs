@@ -1,0 +1,153 @@
+---
+title: 'Pull Requests'
+sidebar_position: 2
+description: 'Propose changes the professional way — the seven-step PR workflow, creating a pull request on GitHub or with the gh CLI, and PR best practices.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Walk through the complete PR workflow from branch to merge
+- Open a pull request on GitHub or with the `gh` CLI
+- Apply PR best practices: small scope, clear descriptions, linked issues
+
+</LearningObjectives>
+
+Pull Requests (PRs) are the heart of team collaboration on GitHub. A PR proposes changes and asks for review before merging.
+
+### The PR Workflow
+
+```
+1. Create a branch
+2. Make changes and commit
+3. Push the branch to GitHub
+4. Open a Pull Request
+5. Team reviews the code
+6. Merge the PR
+7. Delete the branch
+```
+
+### Hands-On: Create a Pull Request
+
+**Step 1 — Create a feature branch**
+
+```bash
+git switch -c feature-bio
+```
+
+**Step 2 — Add content**
+
+```bash
+cat > bio.md << 'EOF'
+# About HitaVir Tech
+
+## Background
+Passionate about teaching technology and building real-world projects.
+
+## Expertise
+- Git & GitHub
+- Python & Data Engineering
+- Cloud Services (AWS, Azure)
+
+## Mission
+Making technology education accessible to everyone.
+EOF
+```
+
+**Step 3 — Commit and push**
+
+```bash
+git add bio.md
+git commit -m "Add bio page"
+git push -u origin feature-bio
+```
+
+**Expected output (last few lines):**
+
+```
+To https://github.com/YOUR_USERNAME/hitavir-portfolio.git
+ * [new branch]      feature-bio -> feature-bio
+```
+
+**Step 4 — Create the Pull Request on GitHub**
+
+1. Go to your repository on GitHub
+2. You will see a yellow banner: "feature-bio had recent pushes"
+3. Click **Compare & pull request**
+4. Add a title: "Add bio page"
+5. Add a description explaining your changes
+6. Click **Create pull request**
+
+**Or use the GitHub CLI:**
+
+```bash
+gh pr create --title "Add bio page" --body "Added a bio page with background, expertise, and mission sections."
+```
+
+### PR Best Practices
+
+| Practice | Why |
+|----------|-----|
+| Keep PRs small | Easier to review and less risky |
+| Write clear descriptions | Reviewers need context |
+| Link related issues | Connects the dots |
+| Add screenshots for UI changes | Visual proof of changes |
+| Respond to feedback promptly | Keeps the project moving |
+
+:::tip[HitaVir Tech says]
+"A pull request is a conversation, not just a code dump. Write good descriptions, respond to reviews, and keep your PRs focused on one thing."
+:::
+
+<KeyTakeaways>
+
+- The PR cycle: branch → commit → push → open PR → review → merge → delete branch
+- A PR proposes changes and invites review BEFORE they land on `main`
+- Push a new branch with `git push -u origin <branch>`, then GitHub offers "Compare & pull request"
+- `gh pr create` opens a PR straight from the terminal
+- Small, focused PRs with clear descriptions get reviewed faster
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is the FIRST step of the PR workflow?',
+      options: [
+        'Create a branch for your change',
+        'Click Merge pull request',
+        'Push directly to main',
+        'Delete the old branch',
+      ],
+      answer: 0,
+      explanation:
+        'PRs propose merging one branch into another, so the work always starts on its own branch — never directly on main.',
+    },
+    {
+      question: 'Why should pull requests be kept SMALL?',
+      options: [
+        'GitHub limits PRs to 10 files',
+        'Small PRs run faster in CI',
+        'They are easier to review and less risky to merge',
+        'Large PRs cost more',
+      ],
+      answer: 2,
+      explanation:
+        'Reviewers can genuinely understand a small diff; huge PRs get rubber-stamped or stall. Smaller changes also mean smaller blast radius.',
+    },
+    {
+      question: 'Which command creates a pull request from the terminal?',
+      options: [
+        'git pr create',
+        'gh pr create --title "..." --body "..."',
+        'git push --pr',
+        'git request-pull origin',
+      ],
+      answer: 1,
+      explanation:
+        'The GitHub CLI (gh) handles GitHub-specific features like PRs; plain git has no concept of pull requests.',
+    },
+  ]}
+/>
+
+<LessonComplete />

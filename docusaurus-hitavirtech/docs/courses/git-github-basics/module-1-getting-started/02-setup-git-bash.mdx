@@ -1,0 +1,183 @@
+---
+title: 'Setup Git Bash'
+sidebar_position: 2
+description: 'Install Git on Windows, open Git Bash, and configure your identity, default branch, and editor.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Install Git on Windows via the installer or winget
+- Configure your commit identity with `user.name` and `user.email`
+- Set `main` as the default branch and VS Code as your Git editor
+
+</LearningObjectives>
+
+Let us install Git and configure it for first use.
+
+### Step 1 — Install Git on Windows
+
+**Option 1 — Download from website**
+
+Go to [https://git-scm.com/download/win](https://git-scm.com/download/win) and download the **64-bit Windows installer**.
+
+Run the installer with these settings:
+
+1. Click **Next** through initial screens
+2. **Adjusting your PATH**: Select **"Git from the command line and also from 3rd-party software"**
+3. **Default editor**: Select **VS Code** (or your preferred editor)
+4. **Default branch name**: Select **"Override — main"**
+5. Accept defaults for remaining screens
+6. Click **Install**
+
+**Option 2 — Using winget**
+
+Open PowerShell as Administrator and run:
+
+```console
+winget install Git.Git
+```
+
+### Step 2 — Open Git Bash
+
+Press `Win + S`, type **Git Bash**, and open it.
+
+You should see a prompt like:
+
+```
+user@COMPUTER MINGW64 ~
+$
+```
+
+The `$` means Git Bash is ready for your commands.
+
+### Step 3 — Verify Installation
+
+```bash
+git --version
+```
+
+**Expected output:**
+
+```
+git version 2.44.0.windows.1
+```
+
+Any version 2.30+ is fine.
+
+### Step 4 — Configure Your Identity
+
+Git needs to know who you are. This information is attached to every commit you make.
+
+**Set your name:**
+
+```bash
+git config --global user.name "Your Name"
+```
+
+Example:
+
+```bash
+git config --global user.name "HitaVir Tech"
+```
+
+**Set your email (use the same email as your GitHub account):**
+
+```bash
+git config --global user.email "your.email@example.com"
+```
+
+### Step 5 — Set Default Branch Name
+
+```bash
+git config --global init.defaultBranch main
+```
+
+This ensures new repositories use `main` as the default branch (not the older `master`).
+
+### Step 6 — Set Default Editor
+
+```bash
+git config --global core.editor "code --wait"
+```
+
+This sets VS Code as your Git editor. Use `nano` or `vim` if you prefer those.
+
+### Step 7 — Verify Configuration
+
+```bash
+git config --list
+```
+
+**Expected output (partial):**
+
+```
+user.name=HitaVir Tech
+user.email=your.email@example.com
+init.defaultbranch=main
+core.editor=code --wait
+```
+
+### What Each Setting Does
+
+| Setting | Purpose |
+|---------|---------|
+| `user.name` | Your name in commit history |
+| `user.email` | Your email in commit history |
+| `init.defaultBranch` | Default branch name for new repos |
+| `core.editor` | Editor for commit messages |
+
+> **HitaVir Tech says:** "This is a one-time setup. Once configured, Git remembers your identity on every project. Think of it as writing your name on your notebook — you only do it once."
+
+<KeyTakeaways>
+
+- `git --version` confirms the install — any version 2.30+ is fine
+- `git config --global user.name` / `user.email` attach your identity to every commit
+- `init.defaultBranch main` makes new repos start on `main` instead of the older `master`
+- `git config --list` shows everything you configured in one place
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which command sets the email attached to your commits?',
+      options: [
+        'git email --set "your.email@example.com"',
+        'git config --global user.email "your.email@example.com"',
+        'git commit --email "your.email@example.com"',
+        'git set email "your.email@example.com"',
+      ],
+      answer: 1,
+      explanation:
+        'Identity settings live in git config. Use the same email as your GitHub account so commits link to your profile.',
+    },
+    {
+      question: 'What does setting init.defaultBranch to main do?',
+      options: [
+        'Renames every existing branch to main',
+        'Pushes your main branch to GitHub automatically',
+        'Makes new repositories start on a branch called main',
+        'Protects the main branch from deletion',
+      ],
+      answer: 2,
+      explanation:
+        'It only affects NEW repositories created with git init — they start on main instead of the older master.',
+    },
+    {
+      question: 'You open Git Bash and see a $ symbol. What does it mean?',
+      options: [
+        'Git Bash is ready to accept your commands',
+        'You owe money for a Git license',
+        'A command is still running',
+        'You are logged in as administrator',
+      ],
+      answer: 0,
+      explanation:
+        'The $ is the shell prompt — Git Bash is waiting for your next command.',
+    },
+  ]}
+/>
+
+<LessonComplete />

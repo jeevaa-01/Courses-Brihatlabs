@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="s" x="-4%" y="-4%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  <rect width="800" height="320" rx="12" fill="#f8f9fa"/>
+  <text x="400" y="26" text-anchor="middle" font-size="14" font-weight="600" fill="#5f6368">THREE TYPES OF FACT TABLES</text>
+
+  <!-- Type 1: Transaction -->
+  <rect x="25" y="48" width="240" height="240" rx="10" fill="#1a73e8" filter="url(#s)"/>
+  <text x="145" y="74" text-anchor="middle" font-size="14" font-weight="700" fill="white">Transaction</text>
+  <text x="145" y="92" text-anchor="middle" font-size="10" fill="#c2d9f7">One row per event</text>
+  <line x1="42" y1="100" x2="248" y2="100" stroke="#4d9ef5" stroke-width="1"/>
+  <text x="42" y="120" font-size="10" fill="white">Grain: One sale, one click,</text>
+  <text x="42" y="136" font-size="10" fill="white">one transaction</text>
+  <text x="42" y="160" font-size="10" fill="#c2d9f7">Updated: Never</text>
+  <text x="42" y="178" font-size="10" fill="#c2d9f7">Growth: Continuous</text>
+  <line x1="42" y1="190" x2="248" y2="190" stroke="#4d9ef5" stroke-width="1" stroke-dasharray="3"/>
+  <text x="42" y="210" font-size="10" font-weight="600" fill="white">Examples:</text>
+  <text x="42" y="228" font-size="10" fill="#c2d9f7">- Retail sales</text>
+  <text x="42" y="244" font-size="10" fill="#c2d9f7">- Bank transactions</text>
+  <text x="42" y="260" font-size="10" fill="#c2d9f7">- Web page clicks</text>
+  <text x="42" y="276" font-size="10" fill="#c2d9f7">- Insurance claims</text>
+
+  <!-- Type 2: Periodic Snapshot -->
+  <rect x="280" y="48" width="240" height="240" rx="10" fill="#ea8600" filter="url(#s)"/>
+  <text x="400" y="74" text-anchor="middle" font-size="14" font-weight="700" fill="white">Periodic Snapshot</text>
+  <text x="400" y="92" text-anchor="middle" font-size="10" fill="#fce4b8">One row per entity per period</text>
+  <line x1="298" y1="100" x2="502" y2="100" stroke="#f5b84d" stroke-width="1"/>
+  <text x="298" y="120" font-size="10" fill="white">Grain: One account per</text>
+  <text x="298" y="136" font-size="10" fill="white">month, one product per day</text>
+  <text x="298" y="160" font-size="10" fill="#fce4b8">Updated: Replaced each period</text>
+  <text x="298" y="178" font-size="10" fill="#fce4b8">Growth: Predictable</text>
+  <line x1="298" y1="190" x2="502" y2="190" stroke="#f5b84d" stroke-width="1" stroke-dasharray="3"/>
+  <text x="298" y="210" font-size="10" font-weight="600" fill="white">Examples:</text>
+  <text x="298" y="228" font-size="10" fill="#fce4b8">- Monthly balances</text>
+  <text x="298" y="244" font-size="10" fill="#fce4b8">- Daily inventory levels</text>
+  <text x="298" y="260" font-size="10" fill="#fce4b8">- Weekly pipeline status</text>
+  <text x="298" y="276" font-size="10" fill="#fce4b8">- Quarterly financials</text>
+
+  <!-- Type 3: Accumulating Snapshot -->
+  <rect x="535" y="48" width="240" height="240" rx="10" fill="#34a853" filter="url(#s)"/>
+  <text x="655" y="74" text-anchor="middle" font-size="14" font-weight="700" fill="white">Accumulating Snapshot</text>
+  <text x="655" y="92" text-anchor="middle" font-size="10" fill="#b8e6c4">One row per lifecycle</text>
+  <line x1="552" y1="100" x2="758" y2="100" stroke="#5ec97a" stroke-width="1"/>
+  <text x="552" y="120" font-size="10" fill="white">Grain: One claim, one order,</text>
+  <text x="552" y="136" font-size="10" fill="white">one loan application</text>
+  <text x="552" y="160" font-size="10" fill="#b8e6c4">Updated: At each milestone</text>
+  <text x="552" y="178" font-size="10" fill="#b8e6c4">Growth: Fixed count</text>
+  <line x1="552" y1="190" x2="758" y2="190" stroke="#5ec97a" stroke-width="1" stroke-dasharray="3"/>
+  <text x="552" y="210" font-size="10" font-weight="600" fill="white">Examples:</text>
+  <text x="552" y="228" font-size="10" fill="#b8e6c4">- Insurance claims</text>
+  <text x="552" y="244" font-size="10" fill="#b8e6c4">- Order fulfillment</text>
+  <text x="552" y="260" font-size="10" fill="#b8e6c4">- Loan processing</text>
+  <text x="552" y="276" font-size="10" fill="#b8e6c4">- Hiring pipeline</text>
+
+  <text x="400" y="310" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech — Choose the right fact table type for your business process</text>
+</svg>

@@ -1,0 +1,103 @@
+---
+title: 'Final Quiz'
+sidebar_position: 3
+description: 'The graded final quiz for the MySQL Workbench setup course — aim for at least 6 of 8.'
+---
+
+<DurationBadge minutes={5} />
+
+# Final Quiz
+
+This quiz covers the whole course. **Aim for at least 6 of 8.** If you miss a
+question, revisit the lesson it came from before moving on to the next course.
+
+<Quiz
+  title="Graded final quiz"
+  questions={[
+    {
+      question: 'Which installer should you download from dev.mysql.com for this course?',
+      options: [
+        'The full ~450 MB installer that works offline',
+        'The ~2 MB web installer',
+        'A .zip archive from any mirror site',
+        'The Linux .deb package',
+      ],
+      answer: 0,
+      explanation: 'The full installer bundles Server, Workbench, and Shell so installation needs no internet.',
+    },
+    {
+      question: 'Which setup type installs MySQL Server + Workbench + Shell together?',
+      options: [
+        'Server only',
+        'Developer Default',
+        'Client only',
+        'Minimal',
+      ],
+      answer: 1,
+      explanation: 'Developer Default is the recommended one-click option for learners.',
+    },
+    {
+      question: 'What is the default MySQL Server port?',
+      options: ['3306', '33060', '8080', '5432'],
+      answer: 0,
+      explanation: 'MySQL listens on 3306 by default; 33060 is the X Protocol port.',
+    },
+    {
+      question: 'Which account do you use to connect in Workbench, and what must you never lose?',
+      options: [
+        'admin — its username',
+        'guest — its connection tile',
+        'root — its password',
+        'mysql80 — its service name',
+      ],
+      answer: 2,
+      explanation: 'The root account has full access, and its password is required for every connection.',
+    },
+    {
+      question: 'Which query confirms a working connection right after setup?',
+      options: [
+        'SELECT VERSION();',
+        'SHOW STATUS ALL;',
+        'PING 3306;',
+        'CONNECT root@localhost;',
+      ],
+      answer: 0,
+      explanation: 'SELECT VERSION() returning 8.0.xx proves the server runs and the connection works.',
+    },
+    {
+      question: 'What must you run before CREATE TABLE so the table lands in hitavir_db?',
+      options: [
+        'SHOW DATABASES;',
+        'OPEN hitavir_db;',
+        'FLUSH PRIVILEGES;',
+        'USE hitavir_db;',
+      ],
+      answer: 3,
+      explanation: 'USE selects the active database for all subsequent statements.',
+    },
+    {
+      question: 'How do you restore a .sql dump into a new schema in Workbench?',
+      options: [
+        'Server → Data Import → Self-Contained File → target schema',
+        'File → Print → Import',
+        'Drag the .sql file onto the Navigator panel',
+        'Edit → Paste the file contents into the output panel',
+      ],
+      answer: 0,
+      explanation: 'The Data Import / Restore tab imports a self-contained dump into the chosen default target schema.',
+    },
+    {
+      question: 'Workbench cannot connect. Per the troubleshooting lesson, which trio do you check first?',
+      options: [
+        'RAM, disk space, GPU drivers',
+        'Service running, correct password, correct port',
+        'Windows updates, antivirus, browser cache',
+        'Table names, column types, semicolons',
+      ],
+      answer: 1,
+      explanation: '90% of MySQL issues are a stopped service, a wrong password, or a wrong port.',
+    },
+  ]}
+/>
+
+<LessonComplete />

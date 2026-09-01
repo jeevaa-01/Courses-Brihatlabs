@@ -1,0 +1,216 @@
+---
+title: 'Common Use Cases'
+sidebar_position: 2
+description: 'The six repeatable analytics patterns — Batch BI, Real-Time, Log Observability, Customer 360, ML/Predictive, and Data Mesh — and how to pick one.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Recognize the six repeatable analytics patterns that cover most real-world work on Azure
+- Identify the dominant V (from Part 1) and core services for each pattern
+- Match a business prompt to the right pattern before picking any service
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |         SECTION  2   -   COMMON  USE  CASES                  |
+  |           (where the patterns show up in real life)          |
+  +==============================================================+
+```
+
+Most real-world analytics work on Azure falls into **six repeatable patterns**. Recognize them and you'll know which reference architecture to reach for.
+
+### The Service Cast Across All Six Patterns
+
+![Synapse](/img/courses/azure-icons/synapse.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg) ![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Data Explorer](/img/courses/azure-icons/data-explorer.svg) ![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![ML](/img/courses/azure-icons/ml.svg) ![Databricks](/img/courses/azure-icons/databricks.svg)
+
+### The Six Patterns
+
+```
+  +-----------------------------------------------------------+
+  |  1.  BATCH  BI           - nightly dashboards             |
+  |  2.  REAL-TIME  ANALYTICS- live metrics, fraud, IoT       |
+  |  3.  LOG  /  APP  OBS.   - search + troubleshoot logs     |
+  |  4.  CUSTOMER  360       - unify profiles across sources  |
+  |  5.  ML  /  PREDICTIVE   - forecast, recommend, score     |
+  |  6.  DATA  MESH          - domain-owned, shared data      |
+  +-----------------------------------------------------------+
+```
+
+### Use Case 1 — Batch Business Intelligence
+
+![Synapse](/img/courses/azure-icons/synapse.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg)
+
+**Who needs it:** Every company with a CFO.
+
+**Shape:** Operational databases + flat files → data lake → warehouse → Power BI.
+
+| Trait | Value |
+|-------|-------|
+| Freshness | Daily or hourly |
+| Volume | GB to TB |
+| Velocity V | 🐢 Batch |
+| Core service | 🏛️ Synapse Dedicated / Fabric Warehouse |
+
+**Example prompt:** "Revenue by region compared to last quarter, refreshed every morning at 8 am."
+
+### Use Case 2 — Real-Time Analytics
+
+![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Functions](/img/courses/azure-icons/functions.svg)
+
+**Who needs it:** Rideshare, fintech, ad-tech, IoT, online gaming.
+
+**Shape:** Events → Event Hubs → stream processor → live dashboard **and** ADLS for history.
+
+| Trait | Value |
+|-------|-------|
+| Freshness | Sub-second to seconds |
+| Volume | Millions of events / sec |
+| Velocity V | ⚡ Streaming |
+| Core service | 🌊 Event Hubs + 🎯 Stream Analytics |
+
+**Example prompt:** "Alert the risk team the moment any card transaction looks fraudulent."
+
+### Use Case 3 — Log & Application Observability
+
+![Data Explorer](/img/courses/azure-icons/data-explorer.svg) ![Log Analytics](/img/courses/azure-icons/log-analytics.svg) ![Monitor](/img/courses/azure-icons/monitor.svg)
+
+**Who needs it:** Every engineering team at scale.
+
+**Shape:** Application logs → Log Analytics / ADX → ADLS archive.
+
+| Trait | Value |
+|-------|-------|
+| Freshness | Seconds |
+| Volume | TB/day in logs |
+| Velocity V | ⚡ Streaming |
+| Core service | 🔬 Azure Data Explorer (KQL) |
+
+**Example prompt:** "Search the last 30 days of production logs for any mention of this request ID."
+
+### Use Case 4 — Customer 360
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![ML](/img/courses/azure-icons/ml.svg)
+
+**Who needs it:** Retail, banking, telecom, SaaS.
+
+**Shape:** Unify profiles from CRM, web, mobile, support into one view, served to marketing + ML.
+
+| Trait | Value |
+|-------|-------|
+| Freshness | Hourly |
+| Volume | TB |
+| Dominant V | 🧩 Variety |
+| Core service | 🪣 ADLS + 🕸️ ADF + 🏛️ Synapse |
+
+**Example prompt:** "Show one customer's full lifetime journey — ads seen, orders placed, tickets filed."
+
+### Use Case 5 — ML / Predictive Analytics
+
+![ML](/img/courses/azure-icons/ml.svg) ![Databricks](/img/courses/azure-icons/databricks.svg) ![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg)
+
+**Who needs it:** Forecasting, recommendations, fraud, churn, dynamic pricing.
+
+**Shape:** Lake → feature store → model training → model endpoint → prediction served in app or BI.
+
+| Trait | Value |
+|-------|-------|
+| Freshness | Training weekly, inference real-time |
+| Volume | GB to PB of history |
+| Dominant V | 💎 Value |
+| Core service | 🤖 Azure ML + 🪣 ADLS |
+
+**Example prompt:** "Predict which customers will churn next month so we can retain them."
+
+### Use Case 6 — Data Mesh
+
+![Data Shares](/img/courses/azure-icons/data-shares.svg) ![Policy](/img/courses/azure-icons/policy.svg) ![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg)
+
+**Who needs it:** Enterprises with many product teams owning their own data.
+
+**Shape:** Each domain team curates its own data products on ADLS / OneLake; a central catalog (Purview + Fabric) makes them discoverable and access-controlled.
+
+| Trait | Value |
+|-------|-------|
+| Freshness | Per-domain |
+| Ownership | Distributed to domain teams |
+| Dominant V | 🛡️ Veracity + 💎 Value |
+| Core service | 🏗️ Purview + 🏡 Fabric domains |
+
+**Example prompt:** "The Finance team owns 'invoices', Marketing owns 'campaigns', but anyone at the company can discover and request access."
+
+### Picking the Right Pattern — Decision Cheat
+
+```
+                What is the dominant question?
+                            |
+       +-------+---+-----+----+-----+----+-------+
+       |       |         |         |    |       |
+    Weekly   Instant  Find a    One     Predict  Federated
+    KPIs     alerts   log line  360 view future   ownership
+       |       |         |         |    |       |
+       v       v         v         v    v       v
+     BATCH   REAL-    LOG      CUSTOMER  ML /   DATA
+      BI     TIME     OBS.      360      PRED.   MESH
+```
+
+:::tip[HitaVir Tech says]
+"New engineers try to force every problem into the pattern they already know.
+Seniors look at the dominant V and pick the shape — then fill in services.
+Diagnose first. Build second."
+:::
+
+<KeyTakeaways>
+
+- Six patterns cover most real-world analytics: Batch BI, Real-Time, Log Observability, Customer 360, ML/Predictive, and Data Mesh
+- Diagnose the dominant question (and its V from Part 1) first, then pick the shape — services come last
+- Customer 360 is a Variety problem; real-time and log observability are Velocity problems
+- Data mesh distributes ownership to domain teams while Purview + Fabric provide central discovery and governance
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: '"Alert the risk team the moment any card transaction looks fraudulent." Which pattern fits?',
+      options: [
+        'Real-Time Analytics',
+        'Batch Business Intelligence',
+        'Data Mesh',
+        'Customer 360',
+      ],
+      answer: 0,
+      explanation:
+        'Sub-second alerting on streaming events is the real-time pattern: Event Hubs + Stream Analytics + Functions.',
+    },
+    {
+      question: 'Which pattern unifies profiles from CRM, web, mobile, and support into one view?',
+      options: [
+        'Log Observability',
+        'Data Mesh',
+        'Batch BI',
+        'Customer 360',
+      ],
+      answer: 3,
+      explanation:
+        'Customer 360 is dominated by the Variety V — many sources merged into a single per-customer view for marketing and ML.',
+    },
+    {
+      question: 'What is the core service for the log and application observability pattern?',
+      options: [
+        'Synapse Dedicated SQL Pool',
+        'Azure Data Explorer (KQL)',
+        'Cosmos DB',
+        'Power BI',
+      ],
+      answer: 1,
+      explanation:
+        'ADX (with Log Analytics) is built for fast keyword and time-series queries over TBs of logs per day.',
+    },
+  ]}
+/>
+
+<LessonComplete />

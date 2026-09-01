@@ -1,0 +1,140 @@
+---
+title: 'Veracity'
+sidebar_position: 5
+description: 'The 4th V — Veracity. The nine enemies of data quality, GIGO, the six quality dimensions, and famous real-world veracity failures.'
+---
+
+<DurationBadge minutes={6} />
+
+<LearningObjectives>
+
+- Define Veracity and name the common enemies of data quality
+- List the six dimensions of data quality (completeness, accuracy, consistency, timeliness, validity, uniqueness)
+- Learn from real veracity failures — Mars Climate Orbiter, Knight Capital, Google Flu Trends
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |              THE  4th  V   -   VERACITY                      |
+  |              "Can we trust the data?"                        |
+  +==============================================================+
+```
+
+### What is Veracity?
+
+🛡️ **Veracity** is the accuracy, consistency, and trustworthiness of your data.
+
+Big volumes and fast pipelines are useless if the data is **wrong**.
+
+### The Veracity Enemies
+
+| Enemy | Icon | Symptom |
+|-------|:---:|---------|
+| Missing | 🦠 | NULL in required fields |
+| Duplicates | 🗑️ | Same row repeated |
+| Inconsistent | 🎭 | 2024-01-05 vs 01/05/24 |
+| Outliers | 📉 | Age = 347 |
+| Units | 🪙 | USD mixed with INR |
+| Bias | 🪞 | Only US users sampled |
+| Stale | 🪤 | Last updated 2019 |
+| Broken joins | 📎 | Order with no user |
+| Noise | 🎲 | Flaky sensor readings |
+
+### GIGO — Garbage In, Garbage Out
+
+:::warning[Garbage in, garbage out]
+A beautiful dashboard built on bad data is worse than no dashboard — it creates **false confidence**. The most dangerous insight is a wrong insight someone believes.
+:::
+
+### Six Dimensions of Data Quality
+
+| Dimension | Icon | Question |
+|-----------|:---:|----------|
+| **Completeness** | 🧩 | Required fields populated? |
+| **Accuracy** | 🎯 | Data reflects reality? |
+| **Consistency** | 🧭 | Related systems agree? |
+| **Timeliness** | ⏰ | Is it current enough? |
+| **Validity** | ✅ | Matches formats / rules? |
+| **Uniqueness** | 🔢 | Any unintended duplicates? |
+
+### Real-World Veracity Failures
+
+| Incident | Consequence |
+|----------|-------------|
+| 🛰️ NASA Mars Climate Orbiter (1999) | Lost $125M — metric vs imperial unit mismatch |
+| 🏦 Knight Capital (2012) | $440M loss in 45 minutes — bad trading data |
+| 🤧 Google Flu Trends | Overestimated flu peaks 100%+ due to search bias |
+
+### Questions Veracity Forces You to Ask
+
+- 🛡️ Do we have **quality rules** running on every pipeline?
+- 👁️ Are we **monitoring** upstream schema changes?
+- 🪞 Does our data **match source systems**?
+- 🧑 Who **owns** the quality of each dataset?
+
+:::tip[HitaVir Tech says]
+"Senior engineers obsess over data quality. Juniors obsess over cool tools. Guess which group builds systems that actually work in production."
+:::
+
+:::info[Veracity in one line]
+Quality rules are a pipeline concern, not a hope.
+:::
+
+### Preview — AWS Services That Solve Veracity
+
+![Glue DataBrew](/img/courses/aws-icons/glue-databrew.png) ![Glue Data Quality](/img/courses/aws-icons/glue-dq.png) ![Lake Formation](/img/courses/aws-icons/lake-formation.png) ![Macie](/img/courses/aws-icons/macie.png) ![CloudTrail](/img/courses/aws-icons/cloudtrail.png) ![KMS](/img/courses/aws-icons/kms.png)
+
+*Coming up in "AWS Services for Veracity".*
+
+<KeyTakeaways>
+
+- Veracity = accuracy, consistency, trustworthiness — volume and speed are useless if the data is wrong
+- Quality has six dimensions: completeness, accuracy, consistency, timeliness, validity, uniqueness
+- A wrong insight people believe is more dangerous than no insight — GIGO
+- Quality rules belong in the pipeline from day one, with a named owner per dataset
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why is a beautiful dashboard built on bad data worse than no dashboard?',
+      options: [
+        'It costs more to render',
+        'It creates false confidence — people act on wrong insights',
+        'It slows down Athena queries',
+        'It violates AWS terms of service',
+      ],
+      answer: 1,
+      explanation:
+        'GIGO: the most dangerous insight is a wrong insight someone believes and acts on.',
+    },
+    {
+      question: 'The NASA Mars Climate Orbiter was lost because of which veracity enemy?',
+      options: [
+        'Duplicate rows',
+        'Stale data',
+        'Missing values',
+        'Unit inconsistency — metric vs imperial',
+      ],
+      answer: 3,
+      explanation:
+        'A $125M spacecraft was lost because two teams used different units — a classic consistency/units failure.',
+    },
+    {
+      question: 'Which data-quality dimension asks "Any unintended duplicates?"',
+      options: [
+        'Uniqueness',
+        'Completeness',
+        'Timeliness',
+        'Validity',
+      ],
+      answer: 0,
+      explanation:
+        'Uniqueness guards against the same record appearing more than once; completeness is about required fields being populated.',
+    },
+  ]}
+/>
+
+<LessonComplete />

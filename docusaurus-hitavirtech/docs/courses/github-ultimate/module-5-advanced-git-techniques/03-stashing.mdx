@@ -1,0 +1,156 @@
+---
+title: 'Stashing'
+sidebar_position: 3
+description: 'Park uncommitted work with git stash, get a clean working directory instantly, and restore your changes later with stash pop or apply.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Stash uncommitted changes to get a clean working directory
+- Restore work with `git stash pop` vs `git stash apply`
+- Manage multiple stashes with list, drop, and clear
+
+</LearningObjectives>
+
+Stashing lets you **temporarily save** uncommitted changes and restore a clean working directory. It is like putting your work in a drawer to deal with something urgent.
+
+### When to Use Stash
+
+- You need to switch branches but have uncommitted work
+- An urgent bug came in and you need a clean slate
+- You want to test something without committing half-done work
+
+### Hands-On: Stash Your Work
+
+**Step 1 — Make some uncommitted changes**
+
+```bash
+echo "Work in progress..." > wip.txt
+echo "More changes" >> README.md
+git status
+```
+
+**Step 2 — Stash the changes**
+
+```bash
+git stash
+```
+
+**Expected output:**
+
+```
+Saved working directory and index state WIP on main: f6g7h8i Critical bug fix
+```
+
+**Step 3 — Verify clean directory**
+
+```bash
+git status
+```
+
+**Expected output:**
+
+```
+On branch main
+nothing to commit, working tree clean
+```
+
+Your changes are safely stored. You can now switch branches, fix bugs, etc.
+
+**Step 4 — Restore stashed changes**
+
+```bash
+git stash pop
+```
+
+**Expected output:**
+
+```
+On branch main
+Changes not staged for commit:
+        modified:   README.md
+
+Untracked files:
+        wip.txt
+
+Dropped refs/stash@{0} (a1b2c3d...)
+```
+
+Your changes are back!
+
+### Stash Commands
+
+| Command | What It Does |
+|---------|-------------|
+| `git stash` | Stash current changes |
+| `git stash pop` | Restore and remove from stash |
+| `git stash apply` | Restore but keep in stash |
+| `git stash list` | Show all stashes |
+| `git stash drop` | Delete a stash |
+| `git stash clear` | Delete all stashes |
+| `git stash -m "message"` | Stash with a description |
+
+### Clean Up
+
+```bash
+rm wip.txt
+git restore README.md
+```
+
+:::tip[HitaVir Tech says]
+"Stash is your emergency save button. When life interrupts your coding, stash your work and come back to it later."
+:::
+
+<KeyTakeaways>
+
+- `git stash` shelves uncommitted changes and leaves a clean working tree
+- `git stash pop` restores AND removes the stash; `apply` restores but keeps it
+- Use `git stash -m "message"` so `git stash list` stays readable
+- Stash is ideal when an urgent task interrupts half-done work you are not ready to commit
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is the difference between git stash pop and git stash apply?',
+      options: [
+        'pop restores the newest stash, apply restores the oldest',
+        'apply works only on committed files',
+        'pop restores and deletes the stash; apply restores but keeps it in the stash list',
+        'They are identical',
+      ],
+      answer: 2,
+      explanation:
+        'pop = apply + drop. Use apply when you might need to restore the same stash again elsewhere.',
+    },
+    {
+      question: 'When is stashing the right move?',
+      options: [
+        'When you want to permanently delete your changes',
+        'When you must switch tasks but your current work is not ready to commit',
+        'When you want to publish changes to GitHub',
+        'When you need to rename a branch',
+      ],
+      answer: 1,
+      explanation:
+        'Stash temporarily shelves work-in-progress so you can get a clean slate, then restore it later.',
+    },
+    {
+      question: 'After git stash, what does git status show?',
+      options: [
+        'On branch main, nothing to commit, working tree clean',
+        'The stashed files as "modified"',
+        'A merge conflict',
+        'An error — stash blocks status',
+      ],
+      answer: 0,
+      explanation:
+        'Stashing moves your uncommitted changes into the stash, leaving the working directory clean.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,130 @@
+---
+title: "Caching and Persistence"
+description: "Caching and Persistence — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Caching and Persistence
+
+*⏱ Estimated time: 55 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Cache and persist DataFrames correctly and release them with `unpersist()`.
+- Choose an appropriate storage level.
+- Decide when caching helps and when it hurts.
+
+:::
+
+### Cache a DataFrame
+
+```python
+valid_df.cache()
+```
+
+Trigger materialization:
+
+```python
+valid_df.count()
+```
+
+Reuse:
+
+```python
+valid_df.groupBy("region").count().show()
+valid_df.groupBy("product").count().show()
+```
+
+### Unpersist
+
+```python
+valid_df.unpersist()
+```
+
+### Persistence levels
+
+```python
+from pyspark import StorageLevel
+
+valid_df.persist(
+    StorageLevel.MEMORY_AND_DISK
+)
+```
+
+### When to cache
+
+Cache when:
+
+- The same expensive DataFrame is reused.
+- Interactive analysis repeats actions.
+- Iterative algorithms reuse data.
+
+Do not cache when:
+
+- DataFrame is used once.
+- Dataset is too large.
+- Recalculation is cheap.
+- Memory pressure is high.
+
+### ✅ Checkpoint
+
+Cache a DataFrame, run two aggregations, and unpersist it.
+
+### 🛠️ Exercise
+
+Explain why calling `cache()` without an action does not immediately load data.
+
+<details>
+<summary>Show solution</summary>
+
+```text
+Spark is lazy. cache() marks the DataFrame for persistence, but an action is required to execute and materialize it.
+```
+
+</details>
+
+<Quiz
+  questions={[
+  {
+    "question": "Calling `cache()` loads the data:",
+    "options": [
+      "Immediately",
+      "At the next action",
+      "Never"
+    ],
+    "answer": 1,
+    "explanation": "Caching is lazy; an action materializes it."
+  },
+  {
+    "question": "Caching is appropriate when:",
+    "options": [
+      "A DataFrame is used exactly once",
+      "An expensive DataFrame is reused multiple times",
+      "Memory pressure is already high"
+    ],
+    "answer": 1,
+    "explanation": "Otherwise it adds memory pressure for no benefit."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- Caching is lazy — an action materializes it.
+- Cache only expensive, reused DataFrames, and always `unpersist()` afterward.
+- Wrong caching hurts performance through memory pressure.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Always unpersist DataFrames when they are no longer needed.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Caching the wrong DataFrame can reduce performance by increasing memory pressure and garbage collection.
+
+:::

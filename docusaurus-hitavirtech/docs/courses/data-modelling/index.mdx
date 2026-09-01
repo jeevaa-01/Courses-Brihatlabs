@@ -1,0 +1,77 @@
+---
+title: About this course
+sidebar_position: 0
+slug: /courses/data-modelling
+description: Master data modelling for data engineering — normalization, star schemas, SCD Type 2, Kimball vs Inmon, medallion architecture, Data Vault, and cloud performance tuning.
+---
+
+# Data Modelling for Data Engineering — Beginner to Advanced
+
+**Instructor:** HitaVir Tech · **Level:** Beginner to Advanced · **Estimated total:** ~3 hours · **5 modules · 16 lessons**
+
+Welcome to **Data Modelling for Data Engineering** by **HitaVirTech**! This is
+the most comprehensive data modelling course in the program — built for
+aspiring and working Data Engineers. We go from absolute basics to enterprise
+architect-level concepts with real SQL, PySpark, and cloud platform examples.
+
+**Data modelling** is the process of designing how data is organized, stored,
+and related in a database system. It is the **blueprint** of your data
+platform — just like an architect draws building plans before construction
+begins. You would never start laying bricks without a plan; data modelling is
+that plan for your data — it defines the rooms (tables), doors
+(relationships), and layout (schema) before any data flows in.
+
+<LearningObjectives>
+
+- Design conceptual, logical, and physical data models and know when each applies
+- Build and query star schemas with fact tables, dimensions, and SCD Type 2 history
+- Compare Kimball, Inmon, Data Vault, and medallion (lakehouse) architectures
+- Tune cloud warehouse models with partitioning, clustering, and Z-ORDER
+- Answer the data modelling questions asked in real Data Engineering interviews
+
+</LearningObjectives>
+
+## Why data modelling matters
+
+![Good vs Bad Modelling](/img/courses/diagrams/good-vs-bad-modelling.svg)
+
+Good modelling delivers **performance** (queries run 10-100x faster),
+**consistency** (everyone gets the same numbers), **scalability**,
+**maintainability**, **cost optimization**, and built-in **compliance**. Poor
+modelling produces reports that disagree, 15-table JOINs for simple questions,
+8-hour ETL jobs, and cloud bills that double every quarter.
+
+## Where data modelling fits
+
+![Data Model Flow](/img/courses/diagrams/data-model-flow.svg)
+
+:::tip[HitaVir Tech says]
+"I have seen companies spend millions on Snowflake and Databricks licenses,
+only to get terrible performance because nobody designed the data model
+properly. Tools are only as good as the model underneath them."
+:::
+
+## Prerequisites
+
+- Basic SQL (SELECT, JOIN, GROUP BY) — the [MySQL Workbench setup course](/courses/mysql-workbench-setup) gets you a practice environment
+- Helpful but optional: PySpark basics from the [PySpark course](/courses/pyspark/intro)
+- No prior data warehousing experience required
+
+## Syllabus
+
+| Module | Lessons | Time |
+|--------|---------|------|
+| **1 · Modelling Foundations** | Types of data models · OLTP vs OLAP · Normalization · Denormalization | ~33 min |
+| **2 · Dimensional Modelling** | Star schema · Snowflake schema · Fact tables · Dimensions & SCD types · Surrogate keys | ~48 min |
+| **3 · Warehouse Architectures** | Kimball vs Inmon · Lakehouse & medallion · Data Vault · Cloud performance | ~36 min |
+| **4 · Real-World Practice** | Enterprise case study · Common mistakes · Trade-offs | ~25 min |
+| **5 · Interview Prep & Wrap-Up** | Interview questions · Summary · Final quiz · Congratulations | ~29 min |
+
+:::tip[How to take this course]
+Work through the lessons **in order** — the dimensional modelling module
+builds directly on normalization, and the architecture module assumes you know
+star schemas and SCDs. Each lesson ends with a short knowledge check and a
+**Mark lesson as complete** button so you can track where you left off.
+:::
+
+Ready? Start with [Types of Data Models](/courses/data-modelling/module-1-modelling-foundations/types-of-data-models).

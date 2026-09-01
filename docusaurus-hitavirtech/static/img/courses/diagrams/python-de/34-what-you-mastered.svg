@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490 418" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="490" height="418" rx="12" fill="#f8f9fa"/>
+  <text x="245" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">What You Mastered</text>
+  <rect x="15" y="40" width="124" height="30" rx="6" fill="#1a73e8"/>
+  <text x="77" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Module</text>
+  <rect x="144" y="40" width="330" height="30" rx="6" fill="#1a73e8"/>
+  <text x="310" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Skills</text>
+  <rect x="15" y="76" width="124" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">Basics</text>
+  <rect x="144" y="76" width="330" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="154" y="94" font-size="12" fill="#1a73e8">Variables, types, operators, f-strings</text>
+  <rect x="15" y="108" width="124" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" fill="#3c4043">Control Flow</text>
+  <rect x="144" y="108" width="330" height="28" rx="4" fill="white"/>
+  <text x="154" y="126" font-size="12" fill="#3c4043">if/else, for/while loops, break/continue</text>
+  <rect x="15" y="140" width="124" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">Functions</text>
+  <rect x="144" y="140" width="330" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="154" y="158" font-size="12" fill="#1a73e8">All 11 function types, decorators, generators</text>
+  <rect x="15" y="172" width="124" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" fill="#3c4043">Data Structures</text>
+  <rect x="144" y="172" width="330" height="28" rx="4" fill="white"/>
+  <text x="154" y="190" font-size="12" fill="#3c4043">Lists, dicts, sets, tuples, list of dicts</text>
+  <rect x="15" y="204" width="124" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" fill="#1a73e8">File I/O</text>
+  <rect x="144" y="204" width="330" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="154" y="222" font-size="12" fill="#1a73e8">CSV read/write, JSON handling, log parsing</text>
+  <rect x="15" y="236" width="124" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" fill="#3c4043">Error Handling</text>
+  <rect x="144" y="236" width="330" height="28" rx="4" fill="white"/>
+  <text x="154" y="254" font-size="12" fill="#3c4043">try/except, logging, graceful failures</text>
+  <rect x="15" y="268" width="124" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" fill="#1a73e8">pandas</text>
+  <rect x="144" y="268" width="330" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="154" y="286" font-size="12" fill="#1a73e8">DataFrames, cleaning, transformation, aggregation</text>
+  <rect x="15" y="300" width="124" height="28" rx="4" fill="white"/>
+  <text x="25" y="318" font-size="12" font-weight="700" fill="#3c4043">ETL Pipeline</text>
+  <rect x="144" y="300" width="330" height="28" rx="4" fill="white"/>
+  <text x="154" y="318" font-size="12" fill="#3c4043">Complete extract-transform-load with reporting</text>
+  <rect x="15" y="332" width="124" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="350" font-size="12" font-weight="700" fill="#1a73e8">Intermediate</text>
+  <rect x="144" y="332" width="330" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="154" y="350" font-size="12" fill="#1a73e8">Comprehensions, lambdas, OOP, APIs</text>
+  <rect x="15" y="364" width="124" height="28" rx="4" fill="white"/>
+  <text x="25" y="382" font-size="12" font-weight="700" fill="#3c4043">Best Practices</text>
+  <rect x="144" y="364" width="330" height="28" rx="4" fill="white"/>
+  <text x="154" y="382" font-size="12" fill="#3c4043">Naming, structure, docstrings, secrets</text>
+  <text x="245" y="412" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

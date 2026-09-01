@@ -1,0 +1,223 @@
+---
+title: "Debugging and Troubleshooting"
+description: "Debugging and Troubleshooting — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Debugging and Troubleshooting
+
+*⏱ Estimated time: 75 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Diagnose environment, path, `AnalysisException`, ANSI-mode, memory, and performance issues.
+- Apply a systematic first-relevant-stack-line reading habit.
+- Use schema, sample-row, and null-count inspection to localize defects.
+
+:::
+
+:::note
+
+The first two subsections below — Java gateway errors and Python worker errors — apply to local installations. On Databricks, Java and Python are managed for you.
+
+:::
+
+### Java gateway errors
+
+Symptoms:
+
+```text
+Java gateway process exited before sending its port number
+```
+
+Check:
+
+```powershell
+java -version
+echo $env:JAVA_HOME
+python --version
+```
+
+Verify Java and Python compatibility.
+
+### Python worker errors
+
+Set:
+
+```powershell
+$env:PYSPARK_PYTHON = "$PWD\.venv\Scripts\python.exe"
+$env:PYSPARK_DRIVER_PYTHON = "$PWD\.venv\Scripts\python.exe"
+```
+
+### File not found
+
+Print resolved path:
+
+```python
+from pathlib import Path
+
+path = Path("data/raw/sales.csv")
+print(path.resolve())
+print(path.exists())
+```
+
+### AnalysisException
+
+Usually caused by:
+
+- Missing column.
+- Ambiguous column after join.
+- Incorrect SQL.
+- Type mismatch.
+
+Inspect:
+
+```python
+print(df.columns)
+df.printSchema()
+```
+
+### Ambiguous columns after join
+
+Use aliases:
+
+```python
+left = sales_df.alias("s")
+right = products_df.alias("p")
+```
+
+Select qualified columns:
+
+```python
+F.col("s.product")
+```
+
+### Out-of-memory errors
+
+Avoid:
+
+- Large `collect()`.
+- Large broadcast joins.
+- Excessive caching.
+- One-partition writes.
+- Very large local test data.
+
+### Slow jobs
+
+Check:
+
+- Number of partitions.
+- Shuffle size.
+- Data skew.
+- Join strategy.
+- Repeated actions.
+- Python UDFs.
+- File counts.
+- Execution plan.
+
+### ANSI mode errors
+
+Symptoms:
+
+```text
+[CANNOT_PARSE_TIMESTAMP] Text '...' could not be parsed
+[CAST_INVALID_INPUT] The value '...' cannot be cast
+```
+
+Spark 4 and current Databricks runtimes enable ANSI SQL mode by default, so parsing and casting failures raise errors instead of returning null.
+
+Fixes:
+
+- Use `F.try_to_date()`, `F.try_to_timestamp()`, and `F.try_cast()` when invalid values should become null.
+- Keep strict `to_date()` and `cast()` when a failure should stop the pipeline.
+
+### Spark log noise
+
+Reduce:
+
+```python
+spark.sparkContext.setLogLevel("WARN")
+```
+
+### Debug sample rows
+
+```python
+df.show(20, truncate=False)
+```
+
+### Debug schema
+
+```python
+df.printSchema()
+```
+
+### Debug nulls
+
+```python
+df.select(
+    [
+        F.sum(
+            F.col(column).isNull().cast("int")
+        ).alias(column)
+        for column in df.columns
+    ]
+).show()
+```
+
+### ✅ Checkpoint
+
+You should know how to diagnose:
+
+- Java configuration.
+- Python interpreter mismatch.
+- Missing files.
+- Missing columns.
+- Ambiguous joins.
+- Memory issues.
+- Slow shuffles.
+
+<Quiz
+  questions={[
+  {
+    "question": "`[CANNOT_PARSE_TIMESTAMP]` on Spark 4 usually means:",
+    "options": [
+      "A corrupted cluster",
+      "ANSI mode plus malformed input — switch to `try_to_date()` where nulls are acceptable",
+      "A missing CSV header"
+    ],
+    "answer": 1,
+    "explanation": "ANSI mode turns silent nulls into explicit errors."
+  },
+  {
+    "question": "An `AnalysisException` most often indicates:",
+    "options": [
+      "Out-of-memory",
+      "A missing or ambiguous column, or invalid SQL",
+      "A network failure"
+    ],
+    "answer": 1,
+    "explanation": "Inspect `df.columns` and `printSchema()` first."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- Read the full exception and find the first line from your own code.
+- ANSI mode turns silent bad-data nulls into explicit errors — decide per column whether to use `try_*`.
+- The Spark UI reveals stages, shuffle sizes, skew, and memory behavior.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Read the full exception and identify the first relevant line from your application.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Use the Spark UI to inspect jobs, stages, tasks, shuffle size, skew, and executor memory.
+
+:::

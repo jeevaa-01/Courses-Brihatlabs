@@ -1,0 +1,333 @@
+---
+title: 'Error Handling and Logging'
+sidebar_position: 2
+description: 'try/except/finally, specific exception classes, and the logging module — how production pipelines fail gracefully at 3 AM.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Catch specific exceptions with `try`/`except` and clean up with `finally`
+- Configure `logging` with levels to write to file and console simultaneously
+- Build pipeline stages that skip bad records with logged reasons instead of crashing
+
+</LearningObjectives>
+
+**What is an "error" or "exception"?**
+
+When Python tries to do something impossible — divide by zero, open a missing file, convert "abc" to a number — it raises an **exception** and the program crashes. Error handling is how you **catch** those exceptions and respond gracefully instead of crashing.
+
+**What is logging?**
+
+Logging is writing timestamped messages about what your pipeline did, to a file or the console. When something fails at 3 AM in production, the log is the only way to find out what happened.
+
+**Why this matters in DE**
+
+Production pipelines must NEVER silently crash. They must **fail gracefully**, log every problem, and let on-call engineers debug the next morning.
+
+### `try-except` — Catching Errors
+
+**The pattern:**
+
+- `try:` — "try to do this risky thing"
+- `except SomeError:` — "if THIS specific error happens, do this instead"
+- `finally:` — "do this no matter what (cleanup)"
+
+#### Visual Flow — How `try / except / finally` runs
+
+```
+               +--------------+
+               |   try:       |
+               |   risky_code |
+               +--------------+
+                      |
+              did it raise an error?
+               /                  \
+             NO                   YES
+              |                    |
+              v                    v
+     +----------------+   +-------------------+
+     | skip except    |   | matching except:  |
+     | block          |   | run handler code  |
+     +----------------+   +-------------------+
+              \                    /
+               \                  /
+                v                v
+               +------------------+
+               |    finally:      |   <-- ALWAYS runs
+               |    cleanup       |       (close file,
+               +------------------+        release lock)
+                        |
+                        v
+                  continue program
+```
+
+**`error_handling.py`**
+
+```python
+"""
+HitaVir Tech - Error Handling & Logging
+"""
+import logging
+from datetime import datetime
+
+# --- Setup logging ---
+# Level INFO means: log INFO, WARNING, ERROR, CRITICAL (skip DEBUG)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.FileHandler("etl_pipeline.log"),  # write to file
+        logging.StreamHandler()                    # also print to console
+    ]
+)
+
+logger = logging.getLogger("HitaVirETL")
+
+# --- try-except basics ---
+print("=" * 60)
+print("ERROR HANDLING BASICS")
+print("=" * 60)
+
+# Division by zero
+try:
+    result = 100 / 0
+except ZeroDivisionError:
+    logger.error("Cannot divide by zero!")
+
+# File not found
+try:
+    with open("nonexistent_file.csv", "r") as f:
+        data = f.read()
+except FileNotFoundError:
+    logger.warning("File not found — using default data")
+
+# Type conversion error
+try:
+    value = int("not_a_number")
+except ValueError as e:
+    logger.error(f"Type conversion failed: {e}")
+
+# --- Real pipeline with error handling ---
+print(f"\n{'=' * 60}")
+print("PRODUCTION-GRADE PIPELINE")
+print("=" * 60)
+
+def safe_extract(filepath):
+    """Extract data with error handling."""
+    logger.info(f"Starting extraction from {filepath}")
+    try:
+        with open(filepath, "r") as f:
+            import csv
+            reader = csv.DictReader(f)
+            records = list(reader)
+        logger.info(f"Extracted {len(records)} records")
+        return records
+    except FileNotFoundError:
+        logger.error(f"Source file not found: {filepath}")
+        return []
+    except Exception as e:
+        logger.critical(f"Unexpected error during extraction: {e}")
+        return []
+
+def safe_transform(records):
+    """Transform data with per-record error handling."""
+    logger.info(f"Starting transformation of {len(records)} records")
+    cleaned = []
+    errors = 0
+
+    for i, record in enumerate(records):
+        try:
+            record["price"] = float(record.get("price", 0))
+            record["quantity"] = int(record.get("quantity", 0))
+
+            if record["price"] <= 0 or record["quantity"] <= 0:
+                raise ValueError("Invalid price or quantity")
+
+            record["total"] = round(record["price"] * record["quantity"], 2)
+            cleaned.append(record)
+        except (ValueError, TypeError) as e:
+            errors += 1
+            logger.warning(f"Record {i+1} skipped: {e}")
+
+    logger.info(f"Transformation complete: {len(cleaned)} valid, {errors} errors")
+    return cleaned
+
+def safe_load(records, output_path):
+    """Load data with error handling."""
+    logger.info(f"Loading {len(records)} records to {output_path}")
+    try:
+        import csv
+        fieldnames = ["order_id", "customer", "product", "quantity", "price", "total", "date", "region"]
+        with open(output_path, "w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+            writer.writeheader()
+            writer.writerows(records)
+        logger.info(f"Successfully saved to {output_path}")
+        return True
+    except Exception as e:
+        logger.critical(f"Failed to save output: {e}")
+        return False
+
+# --- Run the pipeline ---
+logger.info("=" * 40)
+logger.info("HitaVir Tech ETL Pipeline Starting")
+logger.info("=" * 40)
+
+start_time = datetime.now()
+
+data = safe_extract("sales_raw.csv")
+if data:
+    cleaned = safe_transform(data)
+    if cleaned:
+        success = safe_load(cleaned, "sales_output.csv")
+
+end_time = datetime.now()
+duration = (end_time - start_time).total_seconds()
+
+logger.info(f"Pipeline finished in {duration:.2f}s")
+logger.info("=" * 40)
+
+print(f"\nLog file saved to: etl_pipeline.log")
+```
+
+Run it:
+
+```bash
+python error_handling.py
+```
+
+#### Common Python Exceptions in Data Engineering
+
+![Common Python Exceptions in Data Engineering](/img/courses/diagrams/python-de/28-common-python-exceptions-in-data-engineering.svg)
+
+#### Logging Levels — When to Use Each
+
+![Logging Levels — When to Use Each](/img/courses/diagrams/python-de/29-logging-levels-when-to-use-each.svg)
+
+:::tip[HitaVir Tech says]
+"In production, errors WILL happen. The question is not if, but when. Good error handling means your pipeline fails gracefully, logs the problem, and makes debugging easy."
+:::
+
+### Assignment 6 — Bullet-Proof CSV Reader
+
+**Goal:** Build one reusable function that can read any CSV without ever crashing the parent program.
+
+**The scenario:** Your team's pipelines keep dying because of bad input files. Build a single `safe_read_csv()` they can all import.
+
+**Tasks:**
+
+1. Create `assignment_06_errors.py`.
+2. Set up `logging` to write to **both** `errors.log` AND the console, level `INFO`, with a timestamp format.
+3. Write `safe_read_csv(filepath)` that:
+   - Returns `[]` if the file does not exist (log a `WARNING`)
+   - Returns `[]` if the file is unreadable for any other reason (log `CRITICAL`)
+   - Otherwise reads with `csv.DictReader`, skips rows that fail `int(row["quantity"])` or `float(row["price"])`, and logs each skip as a `WARNING` with the row number and reason
+   - Returns the list of valid rows
+4. Test by calling `safe_read_csv()` three times:
+   - With `"missing_file.csv"` -> should log a warning, return `[]`
+   - With `"sales_raw.csv"` -> should log skipped rows, return cleaned list
+   - With a temp file you create yourself containing 1 good row and 1 row with `price="abc"` -> should keep 1, skip 1
+
+**Sample log output:**
+
+```text
+2026-04-30 09:00:01 [WARNING] File not found: missing_file.csv
+2026-04-30 09:00:02 [INFO]    Loading sales_raw.csv
+2026-04-30 09:00:02 [WARNING] Row 7 skipped: invalid quantity '0'
+2026-04-30 09:00:02 [WARNING] Row 10 skipped: invalid price '-999.99'
+2026-04-30 09:00:02 [INFO]    Loaded 8 valid rows from sales_raw.csv
+```
+
+**Success criteria:**
+
+- [ ] Uses `try` / `except` with **specific** exception types (no bare `except:`)
+- [ ] Uses `logging`, never `print` for status
+- [ ] Function never raises an unhandled exception under any input
+- [ ] Both file and console show the same log lines
+- [ ] `errors.log` exists and is human-readable
+
+**Stretch goal:** Add the `@retry(max_attempts=3)` decorator from the codelab and apply it to `safe_read_csv` so flaky network-mounted files get retried automatically.
+
+### What You Have Learnt on This Page
+
+By the end of this page you should be able to confidently:
+
+- Catch errors with **`try` / `except`** using **specific** exception classes
+- Distinguish `ValueError`, `KeyError`, `FileNotFoundError`, `TypeError`, etc.
+- Use **`else`** and **`finally`** clauses correctly
+- Configure the **`logging`** module with levels (DEBUG / INFO / WARNING / ERROR / CRITICAL)
+- Write logs to **both file and console** simultaneously
+- Replace every `print()` in production code with `logger.info()` / `logger.error()`
+
+### PEP 8 — Style Rules to Apply Strictly to Errors and Logging
+
+Silent failures destroy data pipelines. Apply these rules every single time you handle an exception:
+
+- **Never** write a bare `except:` — it swallows `KeyboardInterrupt` and hides bugs
+- Catch the **most specific** exception you can: `except ValueError:` not `except Exception:`
+- Re-raise with `raise` (no argument) to preserve the traceback
+- Use **`logging`**, not `print`, for anything resembling status
+- Configure `logger = logging.getLogger(__name__)` at the **top of every module**
+- Log **WHY** not just WHAT: `logger.warning("Skipped row %d: invalid price %s", i, val)`
+- Add docstrings that mention **`Raises:`** for any exception your function intentionally throws
+
+:::note[Inspiration for the road ahead]
+*"Errors should never pass silently. Unless explicitly silenced."*
+— Tim Peters, *The Zen of Python*
+:::
+
+<KeyTakeaways>
+
+- Catch the most **specific** exception you can; a bare `except:` hides bugs
+- `finally` always runs — perfect for closing files and connections
+- Severity rises DEBUG → INFO → WARNING → ERROR → CRITICAL
+- In production, `logger.info()` replaces every `print()`
+- Skipped records get logged with a reason — never silently dropped
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why is a bare "except:" forbidden in production code?',
+      options: [
+        'It is a syntax error',
+        'It swallows every exception — even KeyboardInterrupt — and hides real bugs',
+        'It is slower',
+        'It only works in Python 2',
+      ],
+      answer: 1,
+      explanation:
+        'A bare except catches everything indiscriminately, making failures invisible. Always name the exception class.',
+    },
+    {
+      question: 'A record fails float(row["price"]) mid-batch. What should a production transform step do?',
+      options: [
+        'Crash immediately',
+        'Silently drop it',
+        'Retry forever',
+        'Log a WARNING with the reason and continue with the next record',
+      ],
+      answer: 3,
+      explanation:
+        'Per-record try/except keeps the batch flowing while the log preserves exactly what was skipped and why.',
+    },
+    {
+      question: 'Which logging level marks unexpected-but-handled situations?',
+      options: [
+        'WARNING',
+        'DEBUG',
+        'CRITICAL',
+        'INFO',
+      ],
+      answer: 0,
+      explanation:
+        'WARNING says something odd happened but the pipeline recovered — like a missing file replaced by defaults.',
+    },
+  ]}
+/>
+
+<LessonComplete />

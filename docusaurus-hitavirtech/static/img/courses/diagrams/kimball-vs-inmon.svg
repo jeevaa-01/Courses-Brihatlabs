@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="s" x="-4%" y="-4%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+    <marker id="ar" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#5f6368"/>
+    </marker>
+  </defs>
+  <rect width="800" height="400" rx="12" fill="#f8f9fa"/>
+
+  <!-- Divider -->
+  <line x1="400" y1="30" x2="400" y2="380" stroke="#dadce0" stroke-width="1" stroke-dasharray="5"/>
+
+  <!-- Left: Kimball -->
+  <text x="200" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#1a73e8">KIMBALL (Bottom-Up)</text>
+
+  <rect x="120" y="44" width="160" height="36" rx="6" fill="#e8eaed" filter="url(#s)"/>
+  <text x="200" y="67" text-anchor="middle" font-size="11" font-weight="500" fill="#3c4043">Source Systems</text>
+
+  <line x1="200" y1="80" x2="200" y2="100" stroke="#5f6368" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <rect x="120" y="105" width="160" height="36" rx="6" fill="#e8f0fe" stroke="#1a73e8" filter="url(#s)"/>
+  <text x="200" y="128" text-anchor="middle" font-size="11" font-weight="600" fill="#1a73e8">ETL Process</text>
+
+  <line x1="140" y1="141" x2="80" y2="170" stroke="#5f6368" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="200" y1="141" x2="200" y2="170" stroke="#5f6368" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="260" y1="141" x2="320" y2="170" stroke="#5f6368" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <rect x="20" y="175" width="120" height="44" rx="6" fill="#1a73e8" filter="url(#s)"/>
+  <text x="80" y="195" text-anchor="middle" font-size="10" font-weight="600" fill="white">Sales Mart</text>
+  <text x="80" y="210" text-anchor="middle" font-size="8" fill="#c2d9f7">Star Schema</text>
+
+  <rect x="150" y="175" width="120" height="44" rx="6" fill="#1a73e8" filter="url(#s)"/>
+  <text x="210" y="195" text-anchor="middle" font-size="10" font-weight="600" fill="white">Finance Mart</text>
+  <text x="210" y="210" text-anchor="middle" font-size="8" fill="#c2d9f7">Star Schema</text>
+
+  <rect x="280" y="175" width="100" height="44" rx="6" fill="#1a73e8" filter="url(#s)"/>
+  <text x="330" y="195" text-anchor="middle" font-size="10" font-weight="600" fill="white">HR Mart</text>
+  <text x="330" y="210" text-anchor="middle" font-size="8" fill="#c2d9f7">Star Schema</text>
+
+  <line x1="80" y1="219" x2="200" y2="252" stroke="#5f6368" stroke-width="1" stroke-dasharray="3"/>
+  <line x1="210" y1="219" x2="200" y2="252" stroke="#5f6368" stroke-width="1" stroke-dasharray="3"/>
+  <line x1="330" y1="219" x2="200" y2="252" stroke="#5f6368" stroke-width="1" stroke-dasharray="3"/>
+
+  <rect x="100" y="255" width="200" height="40" rx="6" fill="#e6f4ea" stroke="#34a853" filter="url(#s)"/>
+  <text x="200" y="278" text-anchor="middle" font-size="10" font-weight="600" fill="#34a853">Enterprise DW (emerges)</text>
+
+  <text x="200" y="315" text-anchor="middle" font-size="10" fill="#5f6368">Fast delivery</text>
+  <text x="200" y="330" text-anchor="middle" font-size="10" fill="#5f6368">Denormalized (star)</text>
+  <text x="200" y="345" text-anchor="middle" font-size="10" fill="#5f6368">Agile teams</text>
+
+  <!-- Right: Inmon -->
+  <text x="600" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#34a853">INMON (Top-Down)</text>
+
+  <rect x="520" y="44" width="160" height="36" rx="6" fill="#e8eaed" filter="url(#s)"/>
+  <text x="600" y="67" text-anchor="middle" font-size="11" font-weight="500" fill="#3c4043">Source Systems</text>
+
+  <line x1="600" y1="80" x2="600" y2="100" stroke="#5f6368" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <rect x="520" y="105" width="160" height="36" rx="6" fill="#e6f4ea" stroke="#34a853" filter="url(#s)"/>
+  <text x="600" y="128" text-anchor="middle" font-size="11" font-weight="600" fill="#34a853">ETL Process</text>
+
+  <line x1="600" y1="141" x2="600" y2="160" stroke="#5f6368" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <rect x="480" y="165" width="240" height="52" rx="8" fill="#34a853" filter="url(#s)"/>
+  <text x="600" y="190" text-anchor="middle" font-size="12" font-weight="700" fill="white">Enterprise Data Warehouse</text>
+  <text x="600" y="208" text-anchor="middle" font-size="9" fill="#b8e6c4">Normalized (3NF) — Single Source of Truth</text>
+
+  <line x1="530" y1="217" x2="480" y2="248" stroke="#5f6368" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="600" y1="217" x2="600" y2="248" stroke="#5f6368" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="670" y1="217" x2="720" y2="248" stroke="#5f6368" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <rect x="425" y="252" width="110" height="40" rx="6" fill="#e8f0fe" stroke="#1a73e8" filter="url(#s)"/>
+  <text x="480" y="277" text-anchor="middle" font-size="10" font-weight="500" fill="#1a73e8">Sales Mart</text>
+
+  <rect x="545" y="252" width="110" height="40" rx="6" fill="#e8f0fe" stroke="#1a73e8" filter="url(#s)"/>
+  <text x="600" y="277" text-anchor="middle" font-size="10" font-weight="500" fill="#1a73e8">Finance Mart</text>
+
+  <rect x="665" y="252" width="110" height="40" rx="6" fill="#e8f0fe" stroke="#1a73e8" filter="url(#s)"/>
+  <text x="720" y="277" text-anchor="middle" font-size="10" font-weight="500" fill="#1a73e8">HR Mart</text>
+
+  <text x="600" y="315" text-anchor="middle" font-size="10" fill="#5f6368">Longer to build</text>
+  <text x="600" y="330" text-anchor="middle" font-size="10" fill="#5f6368">Normalized (3NF)</text>
+  <text x="600" y="345" text-anchor="middle" font-size="10" fill="#5f6368">Large enterprises</text>
+
+  <text x="400" y="385" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech — Most modern companies use a hybrid approach</text>
+</svg>

@@ -1,0 +1,213 @@
+---
+title: 'The Git Workflow — Add, Commit, Status'
+sidebar_position: 2
+description: 'Master the three-stage Git workflow — working directory, staging area, repository — with git add, git commit, and git log.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Name the three stages: working directory, staging area, repository
+- Stage and commit files with `git add` and `git commit -m`
+- Inspect history with `git log` and `git log --oneline`
+
+</LearningObjectives>
+
+This is the most important section for beginners. The Git workflow has three stages:
+
+```
+Working Directory  →  Staging Area  →  Repository
+   (your files)      (ready to save)   (saved forever)
+```
+
+### Stage 1 — Working Directory
+
+This is where you create and edit files. Git knows about these files but does not track changes automatically.
+
+### Stage 2 — Staging Area (Index)
+
+When you run `git add`, files move to the staging area. Think of it as a **loading dock** — items are packed and ready to ship.
+
+### Stage 3 — Repository (Commit History)
+
+When you run `git commit`, staged files are saved permanently in Git's history.
+
+### Hands-On: Complete the Workflow
+
+**Step 1 — Add the file to staging**
+
+```bash
+git add README.md
+```
+
+**Step 2 — Check status**
+
+```bash
+git status
+```
+
+**Expected output:**
+
+```
+On branch main
+No commits yet
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+        new file:   README.md
+```
+
+The file is now **staged** (green in most terminals).
+
+**Step 3 — Commit the file**
+
+```bash
+git commit -m "Initial commit: add README"
+```
+
+**Expected output:**
+
+```
+[main (root-commit) a1b2c3d] Initial commit: add README
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
+```
+
+**Step 4 — Check status again**
+
+```bash
+git status
+```
+
+**Expected output:**
+
+```
+On branch main
+nothing to commit, working tree clean
+```
+
+Your working directory is **clean** — all changes are saved.
+
+### Adding Multiple Files
+
+Let us add more files to our portfolio project:
+
+```bash
+echo "Name: HitaVir Tech" > about.txt
+echo "Project: Portfolio Website" > project.txt
+```
+
+Add all files at once:
+
+```bash
+git add .
+```
+
+The `.` means "add everything in the current directory."
+
+```bash
+git commit -m "Add about and project files"
+```
+
+### View Commit History
+
+```bash
+git log
+```
+
+**Expected output:**
+
+```
+commit b2c3d4e (HEAD -> main)
+Author: HitaVir Tech <your.email@example.com>
+Date:   Mon Apr 5 10:30:00 2026 +0530
+
+    Add about and project files
+
+commit a1b2c3d
+Author: HitaVir Tech <your.email@example.com>
+Date:   Mon Apr 5 10:25:00 2026 +0530
+
+    Initial commit: add README
+```
+
+For a compact view:
+
+```bash
+git log --oneline
+```
+
+**Expected output:**
+
+```
+b2c3d4e (HEAD -> main) Add about and project files
+a1b2c3d Initial commit: add README
+```
+
+### Quick Reference
+
+| Command | What It Does |
+|---------|-------------|
+| `git add <file>` | Stage a specific file |
+| `git add .` | Stage all changed files |
+| `git status` | Show current state |
+| `git commit -m "msg"` | Save staged changes |
+| `git log` | View commit history |
+| `git log --oneline` | Compact history |
+
+:::tip[HitaVir Tech says]
+"Think of `git add` as putting items in your shopping cart, and `git commit` as clicking the checkout button. You can add and remove items from the cart, but once you check out, the order is placed."
+:::
+
+<KeyTakeaways>
+
+- Changes flow through three stages: working directory → staging area → repository
+- `git add` stages changes; `git commit -m "message"` saves them permanently
+- `git add .` stages everything in the current directory at once
+- "Working tree clean" in `git status` means everything is committed
+- `git log --oneline` gives a compact, readable history
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is the correct order of the three Git stages?',
+      options: [
+        'Repository → Staging Area → Working Directory',
+        'Staging Area → Working Directory → Repository',
+        'Working Directory → Repository → Staging Area',
+        'Working Directory → Staging Area → Repository',
+      ],
+      answer: 3,
+      explanation:
+        'You edit files in the working directory, stage them with git add, and save them to the repository with git commit.',
+    },
+    {
+      question: 'What does the dot mean in git add . ?',
+      options: [
+        'Stage only hidden files',
+        'Stage everything in the current directory',
+        'Stage only the most recent file',
+        'Undo the last add',
+      ],
+      answer: 1,
+      explanation:
+        'The dot means "the current directory", so git add . stages all new and modified files under it.',
+    },
+    {
+      question: 'You want a compact one-line-per-commit view of history. Which command?',
+      options: [
+        'git log --oneline',
+        'git status',
+        'git history --short',
+        'git commits',
+      ],
+      answer: 0,
+      explanation:
+        'git log --oneline shows the short hash and message of each commit on a single line.',
+    },
+  ]}
+/>
+
+<LessonComplete />

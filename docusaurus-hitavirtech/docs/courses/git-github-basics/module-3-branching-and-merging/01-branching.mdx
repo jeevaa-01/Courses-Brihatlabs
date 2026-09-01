@@ -1,0 +1,198 @@
+---
+title: 'Branching'
+sidebar_position: 1
+description: 'Create, list, and switch between branches to work on features safely without touching main.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Create branches with `git branch` and switch with `git checkout` / `git switch`
+- Commit changes on a branch without affecting `main`
+- Apply professional branch naming conventions like `feature/` and `hotfix/`
+
+</LearningObjectives>
+
+Branches are one of Git's most powerful features. They let you work on different things **without affecting the main code**.
+
+### What is a Branch?
+
+Think of a branch as a **parallel universe** for your code:
+
+```
+main:       A ── B ── C
+                       \
+feature-1:              D ── E
+```
+
+You can experiment freely on `feature-1`. If things go wrong, your `main` branch is untouched.
+
+### Why Use Branches?
+
+| Without Branches | With Branches |
+|-----------------|---------------|
+| Everyone edits the same code | Each person works independently |
+| One bug breaks everything | Bugs are isolated to branches |
+| Risky to experiment | Safe to try new ideas |
+| No parallel work | Multiple features simultaneously |
+
+### Create a Branch
+
+```bash
+git branch feature-1
+```
+
+This creates a new branch but does **not** switch to it.
+
+### List All Branches
+
+```bash
+git branch
+```
+
+**Expected output:**
+
+```
+  feature-1
+* main
+```
+
+The `*` shows your current branch.
+
+### Switch to a Branch
+
+```bash
+git checkout feature-1
+```
+
+**Expected output:**
+
+```
+Switched to branch 'feature-1'
+```
+
+### Shortcut: Create and Switch in One Command
+
+```bash
+git checkout -b feature-1
+```
+
+Or using the newer `switch` command:
+
+```bash
+git switch -c feature-1
+```
+
+### Make Changes on the Branch
+
+```bash
+echo "Feature 1: Data Pipeline Module" > pipeline.py
+echo "def extract(): pass" >> pipeline.py
+echo "def transform(): pass" >> pipeline.py
+echo "def load(): pass" >> pipeline.py
+git add pipeline.py
+git commit -m "Add data pipeline module with ETL functions"
+```
+
+### Verify the Branch Has Your Changes
+
+```bash
+git log --oneline
+```
+
+You will see your new commit on `feature-1`.
+
+### Switch Back to Main
+
+```bash
+git checkout main
+```
+
+Now check — `pipeline.py` does **not** exist on main:
+
+```bash
+ls
+```
+
+The file only exists on `feature-1`! Branches are truly independent.
+
+### Branch Naming Conventions
+
+| Pattern | Example | Use Case |
+|---------|---------|----------|
+| `feature/name` | `feature/data-pipeline` | New features |
+| `bugfix/name` | `bugfix/etl-timeout` | Bug fixes |
+| `hotfix/name` | `hotfix/security-patch` | Urgent production fixes |
+| `release/version` | `release/v2.0` | Release preparation |
+
+### Visualize Your Branches
+
+```bash
+git log --oneline --graph --all
+```
+
+**Expected output:**
+
+```
+* d4e5f6g (feature-1) Add data pipeline module with ETL functions
+* b2c3d4e (HEAD -> main) Add meeting notes
+* a1b2c3d Add application config
+* 9f8e7d6 Add three content files
+* 1a2b3c4 Initial commit: add README
+```
+
+> **HitaVir Tech says:** "Branches are free in Git — they cost almost nothing. Use them generously. In a real team, NEVER work directly on `main`. Always create a branch for your work."
+
+<KeyTakeaways>
+
+- A branch is a parallel line of work — experiments never touch `main`
+- `git checkout -b name` (or `git switch -c name`) creates and switches in one step
+- The `*` in `git branch` output marks your current branch
+- Files committed on a branch do not exist on `main` until you merge
+- Name branches by purpose: `feature/`, `bugfix/`, `hotfix/`, `release/`
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which command creates a new branch AND switches to it in one step?',
+      options: [
+        'git branch feature-1',
+        'git merge feature-1',
+        'git checkout -b feature-1',
+        'git switch feature-1',
+      ],
+      answer: 2,
+      explanation:
+        'git checkout -b (or the newer git switch -c) creates the branch and moves you onto it. git branch alone only creates it.',
+    },
+    {
+      question: 'In the output of git branch, what does the * mean?',
+      options: [
+        'The branch you are currently on',
+        'A branch with unmerged changes',
+        'A protected branch',
+        'The default branch on GitHub',
+      ],
+      answer: 0,
+      explanation:
+        'The asterisk marks your current branch — the one HEAD points to.',
+    },
+    {
+      question: 'Following the naming conventions, which branch name fits an urgent production fix?',
+      options: [
+        'feature/quick-change',
+        'hotfix/security-patch',
+        'release/v2.0',
+        'main-fix',
+      ],
+      answer: 1,
+      explanation:
+        'hotfix/ branches are for urgent production fixes; feature/ is for new features and release/ for release prep.',
+    },
+  ]}
+/>
+
+<LessonComplete />

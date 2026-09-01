@@ -1,0 +1,135 @@
+---
+title: 'Moving and Renaming — mv'
+sidebar_position: 4
+description: 'Move files between folders and rename files or directories with a single command — mv.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Move files and directories with `mv` (no `-r` needed)
+- Rename files and folders using the same command
+- Explain the difference between `mv` and `cp`
+
+</LearningObjectives>
+
+The `mv` command moves files to a new location OR renames them.
+
+### Move a File
+
+```bash
+cd ~/hitavir-workspace
+mv temp/nothing.txt docs/ 2>/dev/null
+touch temp/notes.txt
+echo "Temporary notes from HitaVir Tech session" > temp/notes.txt
+mv temp/notes.txt docs/
+```
+
+Check both locations:
+
+```bash
+ls temp/
+ls docs/
+```
+
+The file is gone from `temp/` and now in `docs/`.
+
+### Rename a File
+
+```bash
+mv docs/notes.txt docs/session-notes.txt
+```
+
+This renames `notes.txt` to `session-notes.txt`. Same command, different use.
+
+### Move a Directory
+
+```bash
+mv projects/web-app-backup backups/web-app-backup
+```
+
+Directories move without needing `-r` (unlike `cp`).
+
+### Rename a Directory
+
+```bash
+mkdir temp/old-logs
+mv temp/old-logs temp/archived
+ls temp/
+```
+
+**Expected output:**
+
+```
+archived
+```
+
+### Move Multiple Files
+
+```bash
+touch temp/file1.txt temp/file2.txt temp/file3.txt
+mv temp/file1.txt temp/file2.txt temp/file3.txt docs/
+ls docs/
+```
+
+### Move vs Copy Comparison
+
+| Feature | `mv` | `cp` |
+|---------|-------|------|
+| Original file | Removed | Stays |
+| Analogy | Relocating furniture | Photocopying a document |
+| Directories | No `-r` needed | Needs `-r` |
+| Can rename | Yes | Yes (but makes a copy) |
+
+**Real-world analogy:** `mv` is like picking up a book from one shelf and putting it on another. `cp` is like making a photocopy — the original stays.
+
+:::tip[HitaVir Tech says]
+"Remember: `mv` is a Swiss army knife. It both moves AND renames. If the destination is a new name in the same folder, it renames. If the destination is a different folder, it moves."
+:::
+
+### Clean Up
+
+```bash
+rm -f temp/archived 2>/dev/null
+rmdir temp/archived 2>/dev/null
+```
+
+<KeyTakeaways>
+
+- `mv` to a different folder = move; `mv` to a new name in the same place = rename
+- Unlike `cp`, directories move without any `-r` flag
+- After `mv`, the original disappears from its old location
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'How do you rename notes.txt to session-notes.txt?',
+      options: [
+        'rename notes.txt session-notes.txt',
+        'cp notes.txt session-notes.txt',
+        'mv notes.txt session-notes.txt',
+        'touch session-notes.txt',
+      ],
+      answer: 2,
+      explanation:
+        'mv with a new name in the same folder performs a rename — no separate rename command is needed.',
+    },
+    {
+      question: 'Which statement about mv vs cp is true?',
+      options: [
+        'Both keep the original file',
+        'mv keeps the original, cp removes it',
+        'mv cannot rename files',
+        'cp needs -r for directories, mv does not',
+      ],
+      answer: 3,
+      explanation:
+        'mv relocates directories directly, while cp requires the -r flag to copy a directory tree.',
+    },
+  ]}
+/>
+
+<LessonComplete />

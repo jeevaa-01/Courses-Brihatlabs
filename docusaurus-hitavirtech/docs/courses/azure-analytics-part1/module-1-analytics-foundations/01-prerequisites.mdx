@@ -1,0 +1,104 @@
+---
+title: 'Prerequisites'
+sidebar_position: 1
+description: 'What you need before starting — a browser, a free-tier Azure account, basic SQL, and a cost-awareness plan that keeps the whole course at ~$0.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Check you have everything required: a browser, a free-tier Azure account, and basic SQL
+- Understand why this course needs zero local installs
+- Know the expected cost of the hands-on lab (~$0) and why cleanup matters
+
+</LearningObjectives>
+
+### What You Need
+
+**Required**
+- 💻 Laptop — Windows, Mac, or Linux
+- 🌐 A modern web browser (Edge, Chrome, Firefox)
+- ☁️ Azure account — free tier is enough (`azure.microsoft.com/free`)
+- 💳 Credit card for Azure sign-up (no charges expected)
+- 🧮 Basic SQL (SELECT, FROM, WHERE)
+
+**Helpful**
+- 📝 Spreadsheet or Python exposure
+- 🟨 Any other cloud experience (AWS, GCP)
+
+### No Local Installs Required
+
+Everything in this course runs in the **Azure Portal** in your browser. Zero software installation on your machine.
+
+### Cost Awareness
+
+Every step stays inside the **Azure free tier / low-cost services**:
+
+| Free / Low-Cost Budget | Usage in This Course |
+|------------------------|------------------------|
+| 💾 ADLS Gen2 storage — 5 GB free | \< 1 MB |
+| 🔍 Synapse Serverless SQL — $5 / TB scanned | \< 1¢ total |
+| 📚 Synapse workspace — free to create | 1 workspace |
+| 💰 Estimated total cost | **~$0.00** |
+
+:::warning[Always clean up]
+Step 10 of the hands-on lab is a cleanup ritual. Skip it and Azure will happily
+bill you for forgotten resources.
+:::
+
+### Services the Hands-on Lab Will Use
+
+![Storage Accounts](/img/courses/azure-icons/storage-accounts.svg) ![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg)
+
+<KeyTakeaways>
+
+- Everything runs in the Azure Portal — no local software installs
+- The Azure free tier covers this entire course; expected total cost is ~$0.00
+- Synapse Serverless SQL bills per TB scanned (~$5/TB) — tiny CSVs cost fractions of a cent
+- Cleanup at the end of the lab is mandatory, not optional
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What software must you install locally before starting this course?',
+      options: [
+        'Azure CLI and Azure Storage Explorer',
+        'Nothing — everything runs in the Azure Portal in your browser',
+        'SQL Server Management Studio',
+        'Docker Desktop',
+      ],
+      answer: 1,
+      explanation:
+        'The whole course runs in the Azure Portal and Synapse Studio in a web browser — zero local installs.',
+    },
+    {
+      question: 'How does Synapse Serverless SQL charge you?',
+      options: [
+        'A fixed monthly subscription',
+        'Per query, regardless of size',
+        'Per TB of data scanned (~$5/TB)',
+        'Per hour the workspace exists',
+      ],
+      answer: 2,
+      explanation:
+        'Serverless SQL bills on data scanned. Our sample CSV is under 1 MB, so the lab costs a fraction of a cent.',
+    },
+    {
+      question: 'Why is the cleanup step at the end of the lab so important?',
+      options: [
+        'Forgotten resources keep billing your Azure account',
+        'Azure deletes idle accounts automatically',
+        'Synapse workspaces stop working after a day',
+        'The free tier requires a daily reset',
+      ],
+      answer: 0,
+      explanation:
+        'Azure bills for resources that exist, not just resources you use. Deleting the resource group ends all charges.',
+    },
+  ]}
+/>
+
+<LessonComplete />

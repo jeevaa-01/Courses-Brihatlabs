@@ -1,0 +1,194 @@
+---
+title: 'GitHub Actions — Basic CI/CD'
+sidebar_position: 1
+description: 'Automate testing with GitHub Actions — write a CI workflow YAML, trigger it on push and pull_request, and add a status badge to your README.'
+---
+
+<DurationBadge minutes={12} />
+
+<LearningObjectives>
+
+- Define CI and CD and tell them apart
+- Create a workflow file under `.github/workflows/`
+- Read workflow runs in the Actions tab and add a status badge
+
+</LearningObjectives>
+
+GitHub Actions lets you automate tasks like testing, building, and deploying your code. It runs workflows whenever something happens in your repository (like a push or pull request).
+
+### What is CI/CD?
+
+| Term | Meaning | Example |
+|------|---------|---------|
+| CI (Continuous Integration) | Automatically test code changes | Run tests on every push |
+| CD (Continuous Deployment) | Automatically deploy to production | Deploy on merge to main |
+
+### Hands-On: Create Your First Workflow
+
+**Step 1 — Create the workflow directory**
+
+```bash
+mkdir -p .github/workflows
+```
+
+**Step 2 — Create a workflow file**
+
+```bash
+cat > .github/workflows/ci.yml << 'EOF'
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: List project files
+        run: |
+          echo "=== HitaVir Portfolio CI ==="
+          echo "Files in repository:"
+          ls -la
+          echo ""
+          echo "README contents:"
+          cat README.md
+
+      - name: Check for required files
+        run: |
+          echo "Checking required files..."
+          for file in README.md index.html about.txt; do
+            if [ -f "$file" ]; then
+              echo "  PASS: $file exists"
+            else
+              echo "  FAIL: $file is missing"
+              exit 1
+            fi
+          done
+          echo "All required files present!"
+
+      - name: Validate HTML
+        run: |
+          echo "Checking HTML files..."
+          for file in $(find . -name "*.html" -not -path "./.git/*"); do
+            if grep -q "<" "$file"; then
+              echo "  PASS: $file contains HTML"
+            else
+              echo "  WARN: $file may not be valid HTML"
+            fi
+          done
+          echo "HTML validation complete!"
+EOF
+```
+
+**Step 3 — Commit and push**
+
+```bash
+git add .github/workflows/ci.yml
+git commit -m "Add CI pipeline with GitHub Actions"
+git push
+```
+
+**Step 4 — Watch it run on GitHub**
+
+1. Go to your repository on GitHub
+2. Click the **Actions** tab
+3. You will see "CI Pipeline" running
+4. Click on it to see the live output
+
+### Understanding the Workflow File
+
+| Key | What It Does |
+|-----|-------------|
+| `name` | Display name for the workflow |
+| `on` | Events that trigger the workflow |
+| `jobs` | Groups of steps to run |
+| `runs-on` | The operating system to use |
+| `steps` | Individual commands to execute |
+| `uses` | Pre-built actions from the marketplace |
+| `run` | Shell commands to execute |
+
+### Add a Status Badge to Your README
+
+Add this to the top of your `README.md`:
+
+```bash
+cat > README.md << 'EOF'
+# HitaVir Portfolio
+
+![CI](https://github.com/YOUR_USERNAME/hitavir-portfolio/actions/workflows/ci.yml/badge.svg)
+
+Last updated: 2026
+EOF
+```
+
+Replace `YOUR_USERNAME` with your GitHub username.
+
+```bash
+git add README.md
+git commit -m "Add CI status badge to README"
+git push
+```
+
+:::tip[HitaVir Tech says]
+"GitHub Actions is like having a robot assistant that checks your code every time you push. Start simple, then build up your automation as your project grows."
+:::
+
+<KeyTakeaways>
+
+- CI automatically tests every change; CD automatically deploys what passes
+- Workflows are YAML files in `.github/workflows/` that run on events like `push` and `pull_request`
+- `uses:` pulls pre-built marketplace actions (like `actions/checkout@v4`); `run:` executes shell commands
+- A failing step (non-zero exit code) fails the whole job — that is how checks block bad code
+- The badge in your README shows the latest workflow status at a glance
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Where must workflow files live for GitHub Actions to find them?',
+      options: [
+        'In .github/workflows/',
+        'In the repository root',
+        'In .git/hooks/',
+        'Anywhere, as long as they end in .yml',
+      ],
+      answer: 0,
+      explanation:
+        'GitHub only scans the .github/workflows/ directory for workflow YAML files.',
+    },
+    {
+      question: 'In a workflow file, what does the "on:" key control?',
+      options: [
+        'Which operating system runs the job',
+        'Which events (push, pull_request, ...) trigger the workflow',
+        'Whether the workflow is enabled',
+        'The name shown in the Actions tab',
+      ],
+      answer: 1,
+      explanation:
+        'The on: block lists trigger events. runs-on picks the OS, and name sets the display name.',
+    },
+    {
+      question: 'What happens if the "Check for required files" step exits with code 1?',
+      options: [
+        'The workflow skips to the next step',
+        'GitHub retries the step three times',
+        'The job fails and the run is marked with a red X',
+        'The repository is locked',
+      ],
+      answer: 2,
+      explanation:
+        'A non-zero exit code fails the step and the job — exactly how CI blocks broken changes.',
+    },
+  ]}
+/>
+
+<LessonComplete />

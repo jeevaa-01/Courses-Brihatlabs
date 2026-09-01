@@ -1,0 +1,169 @@
+---
+title: 'Undo Changes — Reset, Revert, Checkout'
+sidebar_position: 4
+description: 'Undo anything safely — discard edits with restore, unstage files, rewind commits with reset, and undo shared history with revert.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Discard working-directory changes with `git restore`
+- Undo commits with `git reset --soft` and `--hard`
+- Choose `git revert` for history that has been shared with others
+
+</LearningObjectives>
+
+Everyone makes mistakes. Git gives you multiple ways to undo changes.
+
+### Scenario 1: Undo Changes in Working Directory
+
+You edited a file but want to discard the changes:
+
+```bash
+echo "MISTAKE" >> about.txt
+cat about.txt
+```
+
+Undo the change:
+
+```bash
+git restore about.txt
+cat about.txt
+```
+
+The file is back to the last committed version.
+
+### Scenario 2: Unstage a File
+
+You staged a file by accident:
+
+```bash
+echo "temp data" > temp.txt
+git add temp.txt
+git status
+```
+
+Unstage it:
+
+```bash
+git restore --staged temp.txt
+git status
+```
+
+The file is unstaged but still exists in your working directory.
+
+```bash
+rm temp.txt
+```
+
+### Scenario 3: Undo the Last Commit (Keep Changes)
+
+```bash
+git reset --soft HEAD~1
+```
+
+This undoes the commit but keeps your changes staged. Use this when you committed too early.
+
+### Scenario 4: Undo the Last Commit (Discard Changes)
+
+```bash
+git reset --hard HEAD~1
+```
+
+:::warning[Destructive]
+This permanently deletes the changes. Use with caution.
+:::
+
+### Scenario 5: Revert a Commit (Safe for Shared Repos)
+
+Unlike reset, `revert` creates a **new commit** that undoes a previous one. This is safe for branches shared with others.
+
+```bash
+echo "Bad feature" > bad.txt
+git add bad.txt
+git commit -m "Add bad feature"
+```
+
+Now revert it:
+
+```bash
+git revert HEAD
+```
+
+Git opens your editor for the revert message. Save and close.
+
+**Expected output:**
+
+```
+[main h8i9j0k] Revert "Add bad feature"
+ 1 file changed, 0 insertions(+), 1 deletion(-)
+ delete mode 100644 bad.txt
+```
+
+### Comparison Table
+
+| Command | What It Does | Safe for Teams? |
+|---------|-------------|-----------------|
+| `git restore <file>` | Discard working directory changes | Yes |
+| `git restore --staged <file>` | Unstage a file | Yes |
+| `git reset --soft HEAD~1` | Undo commit, keep changes staged | No (rewrites history) |
+| `git reset --hard HEAD~1` | Undo commit, discard changes | No (destructive) |
+| `git revert HEAD` | Create new commit that undoes last | Yes |
+
+:::tip[HitaVir Tech says]
+"Use `revert` when working with a team. Use `reset` only on your local branches that nobody else has seen. The golden rule: never rewrite history that has been pushed."
+:::
+
+<KeyTakeaways>
+
+- `git restore <file>` discards working-directory edits; `--staged` unstages
+- `git reset --soft HEAD~1` undoes the commit but keeps changes staged
+- `git reset --hard HEAD~1` is destructive — the changes are gone
+- `git revert` creates a NEW commit that undoes an old one — the only team-safe undo
+- Golden rule: never rewrite history that has been pushed
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'You committed too early and want to undo the commit but KEEP your changes staged. Which command?',
+      options: [
+        'git reset --soft HEAD~1',
+        'git reset --hard HEAD~1',
+        'git restore .',
+        'git revert HEAD',
+      ],
+      answer: 0,
+      explanation:
+        '--soft moves HEAD back one commit but leaves the staging area and working directory untouched.',
+    },
+    {
+      question: 'A bad commit was already pushed and teammates have pulled it. What is the SAFE way to undo it?',
+      options: [
+        'git reset --hard and force push',
+        'Delete the repository and re-clone',
+        'git revert — it creates a new commit that undoes the bad one',
+        'Edit the old commit with rebase',
+      ],
+      answer: 2,
+      explanation:
+        'revert adds new history instead of rewriting shared history, so teammates’ clones stay consistent.',
+    },
+    {
+      question: 'Which command is DESTRUCTIVE — permanently discarding the last commit and its changes?',
+      options: [
+        'git restore --staged file.txt',
+        'git revert HEAD',
+        'git reset --soft HEAD~1',
+        'git reset --hard HEAD~1',
+      ],
+      answer: 3,
+      explanation:
+        '--hard resets HEAD, the staging area, AND the working directory — the undone changes are not kept anywhere.',
+    },
+  ]}
+/>
+
+<LessonComplete />

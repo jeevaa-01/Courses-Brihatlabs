@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 230" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="s" x="-2%" y="-2%" width="104%" height="108%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect width="780" height="230" rx="12" fill="#f8f9fa"/>
+  <text x="390" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Normalization Summary</text>
+
+  <!-- Header row -->
+  <rect x="20" y="40" width="160" height="32" rx="6" fill="#5f6368"/>
+  <text x="100" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Form</text>
+  <rect x="185" y="40" width="290" height="32" rx="6" fill="#5f6368"/>
+  <text x="330" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Rule</text>
+  <rect x="480" y="40" width="280" height="32" rx="6" fill="#5f6368"/>
+  <text x="620" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Eliminates</text>
+
+  <!-- Row 1: 1NF -->
+  <rect x="20" y="78" width="160" height="30" rx="4" fill="#e8eaed"/>
+  <rect x="32" y="83" width="44" height="20" rx="10" fill="#e8710a"/>
+  <text x="54" y="97" text-anchor="middle" font-size="11" font-weight="700" fill="white">1NF</text>
+  <rect x="185" y="78" width="290" height="30" rx="4" fill="#fef7e0"/>
+  <text x="197" y="98" font-size="12" fill="#3c4043">Atomic values, no repeating groups</text>
+  <rect x="480" y="78" width="280" height="30" rx="4" fill="#fef7e0"/>
+  <text x="492" y="98" font-size="12" fill="#3c4043">Multi-valued columns</text>
+
+  <!-- Row 2: 2NF -->
+  <rect x="20" y="112" width="160" height="30" rx="4" fill="white"/>
+  <rect x="32" y="117" width="44" height="20" rx="10" fill="#34a853"/>
+  <text x="54" y="131" text-anchor="middle" font-size="11" font-weight="700" fill="white">2NF</text>
+  <rect x="185" y="112" width="290" height="30" rx="4" fill="white"/>
+  <text x="197" y="132" font-size="12" fill="#3c4043">No partial dependencies</text>
+  <rect x="480" y="112" width="280" height="30" rx="4" fill="white"/>
+  <text x="492" y="132" font-size="12" fill="#3c4043">Redundancy from composite keys</text>
+
+  <!-- Row 3: 3NF -->
+  <rect x="20" y="146" width="160" height="30" rx="4" fill="#e8eaed"/>
+  <rect x="32" y="151" width="44" height="20" rx="10" fill="#1a73e8"/>
+  <text x="54" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="white">3NF</text>
+  <rect x="185" y="146" width="290" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="197" y="166" font-size="12" fill="#3c4043">No transitive dependencies</text>
+  <rect x="480" y="146" width="280" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="492" y="166" font-size="12" fill="#3c4043">Redundancy between non-key columns</text>
+
+  <!-- Row 4: BCNF -->
+  <rect x="20" y="180" width="160" height="30" rx="4" fill="white"/>
+  <rect x="32" y="185" width="52" height="20" rx="10" fill="#8430ce"/>
+  <text x="58" y="199" text-anchor="middle" font-size="11" font-weight="700" fill="white">BCNF</text>
+  <rect x="185" y="180" width="290" height="30" rx="4" fill="white"/>
+  <text x="197" y="200" font-size="12" fill="#3c4043">Every determinant is a candidate key</text>
+  <rect x="480" y="180" width="280" height="30" rx="4" fill="white"/>
+  <text x="492" y="200" font-size="12" fill="#3c4043">Remaining anomalies</text>
+</svg>

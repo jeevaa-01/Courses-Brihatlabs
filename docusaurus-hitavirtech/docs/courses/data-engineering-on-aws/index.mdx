@@ -1,0 +1,97 @@
+---
+title: About this course
+sidebar_position: 0
+slug: /courses/data-engineering-on-aws
+description: Become the first data engineer at HitaVir Retail — build an end-to-end AWS pipeline with a Medallion lake on S3, Glue ETL, Athena, Redshift Serverless, Step Functions, and full governance.
+---
+
+# Data Engineering on AWS
+
+**Instructor:** HitaVir Tech · **Level:** Intermediate · **Estimated total:** ~8 hours · **4 modules · 11 lessons**
+
+Welcome to **Data Engineering on AWS**. This is one continuous, hands-on build.
+You become the first data engineer at **HitaVir Retail**, a fictional online
+store, and construct a real end-to-end data pipeline on AWS. You work one dataset
+the whole way through, moving it across a Medallion data lake on Amazon S3 — from
+**raw to bronze to silver to gold** — and end with a capstone that validates the
+whole thing against a known result.
+
+Unlike a tour, every lesson here is something you **do**. You build the lake,
+catalog it, transform it with Spark, serve it from two engines, automate it, lock
+it down, and finally tear it all down so your account returns to zero cost.
+
+<LearningObjectives>
+
+- Explain what a data engineer does, the six key functions, and the pipeline lifecycle
+- Design a Medallion data lake on S3 with partitioning, storage classes, and lifecycle rules
+- Transform data at scale with serverless Glue ETL (PySpark) and serve it via Athena CTAS and Redshift Serverless
+- Orchestrate a scheduled, retryable pipeline with Step Functions and EventBridge
+- Secure and monitor a lake with least-privilege IAM, Lake Formation, KMS, CloudWatch, and CloudTrail
+
+</LearningObjectives>
+
+## What you build, end to end
+
+- A safe AWS workbench: a non-root admin user, billing guardrails, and the AWS CLI.
+- A Medallion data lake on S3: `raw`, `bronze`, `silver`, and `gold` layers.
+- A Glue Data Catalog database `hvt_retail_db`, populated by a crawler.
+- A Glue ETL job in PySpark that turns raw CSV into clean, partitioned Parquet.
+- A curated gold table `daily_region_sales`, served from both Athena and Redshift.
+- A scheduled, retryable Step Functions pipeline driven by EventBridge.
+- Least-privilege IAM, Lake Formation column security, KMS encryption, CloudWatch
+  alarms, and a CloudTrail audit trail.
+
+## Services used
+
+Amazon S3 and S3 Lifecycle, AWS IAM, AWS Glue (crawler, Data Catalog, and ETL),
+Amazon Athena, Amazon Redshift Serverless, AWS Step Functions, Amazon EventBridge
+Scheduler, AWS Lake Formation, AWS KMS, Amazon CloudWatch, AWS CloudTrail, AWS
+Budgets, and the AWS CLI.
+
+## Prerequisites
+
+- An AWS account you can create resources in (the first lesson walks you through setup).
+- The AWS CLI installed and configured (also covered in the first lesson).
+- Basic comfort with Python, SQL, and a terminal — the
+  [Windows 11 environment setup course](/courses/windows-setup) gets your machine ready.
+- A code editor. VS Code is fine.
+
+## Cost and time
+
+- **Time:** about 7 to 8 hours total, done in one cumulative build.
+- **Cost:** this track favors free-tier and serverless services and keeps the
+  dataset tiny, so most steps cost cents or nothing. **Redshift Serverless is the
+  only notable biller** — it charges by the hour for as long as the workgroup exists,
+  even idle. You set it to the minimum capacity and the final teardown removes it,
+  along with the small KMS key charge. Run the teardown and your bill returns to zero.
+
+## Conventions for the whole track
+
+These hold everywhere so resources are easy to find and delete:
+
+- **Region:** `us-east-1` (N. Virginia) — broadest service and free-tier coverage.
+  If you use another region, change it everywhere consistently.
+- **Naming:** everything starts with `hvt-retail-`.
+- **Data lake bucket:** `hvt-retail-datalake-<your-account-id>`. S3 bucket names are
+  global, so adding your account id keeps yours unique.
+- **Tags:** tag everything with `project=hvt-retail` and `env=dev` for cost tracking
+  and cleanup.
+
+## Syllabus
+
+| Module | Lessons | Time |
+|--------|---------|------|
+| **1 · AWS Workbench & the Data Engineer Role** | Set up your AWS workbench · What a data engineer does | ~1 hr |
+| **2 · Data Discovery & the Data Lake** | Data discovery on AWS · Storage and the data lake | ~1 hr 40 min |
+| **3 · Transform, Serve & Automate** | Glue ETL with PySpark · Athena CTAS + Redshift Serverless · Orchestration with Step Functions | ~3 hr |
+| **4 · Secure, Assess & Wrap Up** | Security and monitoring · Assessment and capstone · Final quiz · Conclusion and teardown | ~2 hr 40 min |
+
+:::tip[How to take this course]
+Work through the lessons **in order** — the build is cumulative, and every stage
+reads what the previous one wrote (the crawler needs the raw upload, the ETL needs
+the catalog, the gold table needs silver, and the teardown needs everything).
+Each lesson ends with a validation checkpoint, a short knowledge check, and a
+**Mark lesson as complete** button so you can track where you left off.
+:::
+
+Ready? Start with [Set up your AWS workbench](/courses/data-engineering-on-aws/module-1-workbench-and-the-role/set-up-your-aws-workbench).

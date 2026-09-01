@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 270" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="820" height="270" rx="12" fill="#f8f9fa"/>
+  <text x="410" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Cloud Data Platform Comparison</text>
+
+  <rect x="10" y="40" width="110" height="32" rx="6" fill="#5f6368"/>
+  <text x="65" y="61" text-anchor="middle" font-size="11" font-weight="700" fill="white">Feature</text>
+  <rect x="125" y="40" width="170" height="32" rx="6" fill="#29b5e8"/>
+  <text x="210" y="61" text-anchor="middle" font-size="11" font-weight="700" fill="white">Snowflake</text>
+  <rect x="300" y="40" width="170" height="32" rx="6" fill="#ff3621"/>
+  <text x="385" y="61" text-anchor="middle" font-size="11" font-weight="700" fill="white">Databricks</text>
+  <rect x="475" y="40" width="170" height="32" rx="6" fill="#d93025"/>
+  <text x="560" y="61" text-anchor="middle" font-size="11" font-weight="700" fill="white">Redshift</text>
+  <rect x="650" y="40" width="160" height="32" rx="6" fill="#4285f4"/>
+  <text x="730" y="61" text-anchor="middle" font-size="11" font-weight="700" fill="white">BigQuery</text>
+
+  <!-- Row 1 -->
+  <rect x="10" y="78" width="110" height="28" rx="4" fill="#e8eaed"/>
+  <text x="20" y="97" font-size="10" font-weight="600" fill="#202124">Storage</text>
+  <rect x="125" y="78" width="170" height="28" rx="4" fill="#e0f7fa"/>
+  <text x="210" y="97" text-anchor="middle" font-size="9.5" fill="#006064">Columnar, compressed</text>
+  <rect x="300" y="78" width="170" height="28" rx="4" fill="#fbe9e7"/>
+  <text x="385" y="97" text-anchor="middle" font-size="9.5" fill="#bf360c">Delta Lake (Parquet)</text>
+  <rect x="475" y="78" width="170" height="28" rx="4" fill="#fce8e6"/>
+  <text x="560" y="97" text-anchor="middle" font-size="9.5" fill="#b71c1c">Columnar, compressed</text>
+  <rect x="650" y="78" width="160" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="730" y="97" text-anchor="middle" font-size="9.5" fill="#1565c0">Columnar, compressed</text>
+
+  <!-- Row 2 -->
+  <rect x="10" y="110" width="110" height="28" rx="4" fill="white"/>
+  <text x="20" y="129" font-size="10" font-weight="600" fill="#202124">Partitioning</text>
+  <rect x="125" y="110" width="170" height="28" rx="4" fill="white"/>
+  <text x="210" y="129" text-anchor="middle" font-size="9.5" fill="#3c4043">Auto (micro-partitions)</text>
+  <rect x="300" y="110" width="170" height="28" rx="4" fill="white"/>
+  <text x="385" y="129" text-anchor="middle" font-size="9.5" fill="#3c4043">Manual (Delta)</text>
+  <rect x="475" y="110" width="170" height="28" rx="4" fill="white"/>
+  <text x="560" y="129" text-anchor="middle" font-size="9.5" fill="#3c4043">Distribution keys</text>
+  <rect x="650" y="110" width="160" height="28" rx="4" fill="white"/>
+  <text x="730" y="129" text-anchor="middle" font-size="9.5" fill="#3c4043">Auto + manual</text>
+
+  <!-- Row 3 -->
+  <rect x="10" y="142" width="110" height="28" rx="4" fill="#e8eaed"/>
+  <text x="20" y="161" font-size="10" font-weight="600" fill="#202124">Clustering</text>
+  <rect x="125" y="142" width="170" height="28" rx="4" fill="#e0f7fa"/>
+  <text x="210" y="161" text-anchor="middle" font-size="9.5" fill="#006064">Cluster keys</text>
+  <rect x="300" y="142" width="170" height="28" rx="4" fill="#fbe9e7"/>
+  <text x="385" y="161" text-anchor="middle" font-size="9.5" fill="#bf360c">Z-ORDER</text>
+  <rect x="475" y="142" width="170" height="28" rx="4" fill="#fce8e6"/>
+  <text x="560" y="161" text-anchor="middle" font-size="9.5" fill="#b71c1c">Sort keys</text>
+  <rect x="650" y="142" width="160" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="730" y="161" text-anchor="middle" font-size="9.5" fill="#1565c0">Clustering columns</text>
+
+  <!-- Row 4 -->
+  <rect x="10" y="174" width="110" height="28" rx="4" fill="white"/>
+  <text x="20" y="193" font-size="10" font-weight="600" fill="#202124">Format</text>
+  <rect x="125" y="174" width="170" height="28" rx="4" fill="white"/>
+  <text x="210" y="193" text-anchor="middle" font-size="9.5" fill="#3c4043">Internal</text>
+  <rect x="300" y="174" width="170" height="28" rx="4" fill="white"/>
+  <text x="385" y="193" text-anchor="middle" font-size="9.5" fill="#3c4043">Delta/Parquet/ORC</text>
+  <rect x="475" y="174" width="170" height="28" rx="4" fill="white"/>
+  <text x="560" y="193" text-anchor="middle" font-size="9.5" fill="#3c4043">Internal</text>
+  <rect x="650" y="174" width="160" height="28" rx="4" fill="white"/>
+  <text x="730" y="193" text-anchor="middle" font-size="9.5" fill="#3c4043">Internal</text>
+
+  <!-- Row 5 -->
+  <rect x="10" y="206" width="110" height="28" rx="4" fill="#e8eaed"/>
+  <text x="20" y="225" font-size="10" font-weight="600" fill="#202124">Best for</text>
+  <rect x="125" y="206" width="170" height="28" rx="4" fill="#e0f7fa"/>
+  <text x="210" y="225" text-anchor="middle" font-size="9.5" font-weight="600" fill="#006064">Multi-workload</text>
+  <rect x="300" y="206" width="170" height="28" rx="4" fill="#fbe9e7"/>
+  <text x="385" y="225" text-anchor="middle" font-size="9.5" font-weight="600" fill="#bf360c">ML + Engineering</text>
+  <rect x="475" y="206" width="170" height="28" rx="4" fill="#fce8e6"/>
+  <text x="560" y="225" text-anchor="middle" font-size="9.5" font-weight="600" fill="#b71c1c">AWS-native analytics</text>
+  <rect x="650" y="206" width="160" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="730" y="225" text-anchor="middle" font-size="9.5" font-weight="600" fill="#1565c0">Google ecosystem</text>
+
+  <text x="410" y="258" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

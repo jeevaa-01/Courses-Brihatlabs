@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 678 258" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="678" height="258" rx="12" fill="#f8f9fa"/>
+  <text x="339" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">The Five Core Data Types You Use Every Day in Data Engineering</text>
+  <rect x="15" y="40" width="73" height="30" rx="6" fill="#1a73e8"/>
+  <text x="51" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Type</text>
+  <rect x="93" y="40" width="101" height="30" rx="6" fill="#1a73e8"/>
+  <text x="144" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Python name</text>
+  <rect x="199" y="40" width="115" height="30" rx="6" fill="#1a73e8"/>
+  <text x="257" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Example</text>
+  <rect x="320" y="40" width="343" height="30" rx="6" fill="#1a73e8"/>
+  <text x="491" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">What it represents in DE</text>
+  <rect x="15" y="76" width="73" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" fill="#1a73e8">String</text>
+  <rect x="93" y="76" width="101" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="103" y="94" font-size="12" font-family="monospace" fill="#1a73e8">str</text>
+  <rect x="199" y="76" width="115" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="209" y="94" font-size="12" font-family="monospace" fill="#1a73e8">"sales_etl"</text>
+  <rect x="320" y="76" width="343" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="330" y="94" font-size="12" fill="#1a73e8">Text — names, file paths, log messages, column names</text>
+  <rect x="15" y="108" width="73" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" fill="#3c4043">Integer</text>
+  <rect x="93" y="108" width="101" height="28" rx="4" fill="white"/>
+  <text x="103" y="126" font-size="12" font-family="monospace" fill="#3c4043">int</text>
+  <rect x="199" y="108" width="115" height="28" rx="4" fill="white"/>
+  <text x="209" y="126" font-size="12" font-family="monospace" fill="#3c4043">15000</text>
+  <rect x="320" y="108" width="343" height="28" rx="4" fill="white"/>
+  <text x="330" y="126" font-size="12" fill="#3c4043">Whole numbers — row counts, IDs, ports, batch sizes</text>
+  <rect x="15" y="140" width="73" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">Float</text>
+  <rect x="93" y="140" width="101" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="103" y="158" font-size="12" font-family="monospace" fill="#1a73e8">float</text>
+  <rect x="199" y="140" width="115" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="209" y="158" font-size="12" font-family="monospace" fill="#1a73e8">99.7</text>
+  <rect x="320" y="140" width="343" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="330" y="158" font-size="12" fill="#1a73e8">Decimal numbers — prices, percentages, rates</text>
+  <rect x="15" y="172" width="73" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" fill="#3c4043">Boolean</text>
+  <rect x="93" y="172" width="101" height="28" rx="4" fill="white"/>
+  <text x="103" y="190" font-size="12" font-family="monospace" fill="#3c4043">bool</text>
+  <rect x="199" y="172" width="115" height="28" rx="4" fill="white"/>
+  <text x="209" y="190" font-size="12" font-family="monospace" fill="#3c4043">True / False</text>
+  <rect x="320" y="172" width="343" height="28" rx="4" fill="white"/>
+  <text x="330" y="190" font-size="12" fill="#3c4043">Yes/no flags — is_valid, has_errors</text>
+  <rect x="15" y="204" width="73" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" fill="#1a73e8">None</text>
+  <rect x="93" y="204" width="101" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="103" y="222" font-size="12" font-family="monospace" fill="#1a73e8">NoneType</text>
+  <rect x="199" y="204" width="115" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="209" y="222" font-size="12" font-family="monospace" fill="#1a73e8">None</text>
+  <rect x="320" y="204" width="343" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="330" y="222" font-size="12" fill="#1a73e8">"No value yet" — equivalent to NULL in databases</text>
+  <text x="339" y="252" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

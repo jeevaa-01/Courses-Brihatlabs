@@ -1,0 +1,95 @@
+---
+title: 'Snowflake Schema'
+sidebar_position: 2
+description: 'How the snowflake schema normalizes dimensions into sub-tables, and why star schema still wins in 95% of modern warehouses.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Describe how a snowflake schema normalizes dimensions into sub-tables
+- Weigh the storage savings against the extra JOIN cost
+- Choose between star and snowflake for a given warehouse
+
+</LearningObjectives>
+
+The **Snowflake Schema** extends the star schema by **normalizing dimension tables** into sub-tables. The diagram looks like a snowflake because dimensions branch out.
+
+### Structure
+
+![Snowflake Schema](/img/courses/diagrams/snowflake-schema.svg)
+
+In a snowflake schema, dimensions are **normalized into sub-tables**:
+
+| Level 1 (Fact) | Level 2 (Dimension) | Level 3 (Sub-dimension) |
+|---------------|-------------------|----------------------|
+| **fact_sales** | dim_product | category, department |
+| **fact_sales** | dim_store | city, state, country |
+| **fact_sales** | dim_customer | segment, region |
+
+Dimensions like `dim_product` are split into: **product --> category --> department**. This saves storage but adds more JOINs.
+
+### Star vs Snowflake Comparison
+
+![Star vs Snowflake](/img/courses/diagrams/star-vs-snowflake.svg)
+
+### When to Use Which Schema
+
+![When to Use](/img/courses/diagrams/snowflake-when.svg)
+
+:::tip[HitaVir Tech says]
+"In 95% of modern data warehouses, star schema wins. Cloud storage is cheap. Query performance is expensive. Star schema trades a bit of storage for dramatically faster queries. Always start with star unless you have a specific reason for snowflake."
+:::
+
+<KeyTakeaways>
+
+- Snowflake schema = star schema with dimensions normalized into sub-tables (product → category → department)
+- It saves storage but every extra level adds another JOIN to analytical queries
+- Cloud storage is cheap and query performance is expensive — so star wins in ~95% of cases
+- Default to star; reach for snowflake only with a concrete, measurable storage problem
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What structurally distinguishes a snowflake schema from a star schema?',
+      options: [
+        'It has no fact table',
+        'It stores facts in JSON instead of rows',
+        'Its dimensions are normalized into sub-tables',
+        'It requires exactly six dimensions',
+      ],
+      answer: 2,
+      explanation:
+        'Snowflaking normalizes each dimension into a hierarchy of sub-tables, which is what makes the diagram branch out.',
+    },
+    {
+      question: 'What is the main cost of snowflaking dim_product into product → category → department?',
+      options: [
+        'More JOINs in every analytical query',
+        'Higher storage usage',
+        'Loss of foreign key constraints',
+        'Slower INSERTs into the fact table',
+      ],
+      answer: 0,
+      explanation:
+        'Normalizing dimensions saves storage but forces queries to traverse extra JOINs to reach the attributes.',
+    },
+    {
+      question: 'Why does modern practice default to star over snowflake?',
+      options: [
+        'Snowflake schemas are not supported in the cloud',
+        'Cloud storage is cheap, while query performance is what costs money',
+        'Star schemas use less storage',
+        'Snowflake Inc. patented the snowflake schema',
+      ],
+      answer: 1,
+      explanation:
+        'The storage savings of snowflaking no longer matter much, but the extra JOINs still slow queries — so star wins.',
+    },
+  ]}
+/>
+
+<LessonComplete />

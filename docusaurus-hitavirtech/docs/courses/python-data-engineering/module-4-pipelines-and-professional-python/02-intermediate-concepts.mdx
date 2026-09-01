@@ -1,0 +1,460 @@
+---
+title: 'Intermediate Concepts'
+sidebar_position: 2
+description: 'Comprehensions, lambdas, classes, and calling APIs with requests — the intermediate trifecta that turns beginners into productive engineers.'
+---
+
+<DurationBadge minutes={12} />
+
+<LearningObjectives>
+
+- Replace loop-and-append patterns with list, dict, and set comprehensions
+- Hand lambdas to `sorted`, `map`, and `filter` for inline transformations
+- Bundle data and behaviour into classes with `__init__`, methods, and `__str__`
+- Call a JSON API safely with `requests` and a timeout
+
+</LearningObjectives>
+
+**Why these matter in DE**
+
+Comprehensions, lambdas, and classes are the patterns that turn a Python beginner into a productive Data Engineer. They make code shorter, clearer, and reusable.
+
+We will meet the "intermediate trifecta" — **comprehensions, lambdas, and classes** — one at a time, in its own small file. Each one is just a shorter, clearer way to do something you already know how to do with a loop or a `def`.
+
+### The Six Intermediate Skills
+
+```
+   Part 1            Part 2              Part 3      Part 4              Part 5     Part 6
+   LIST          ->  DICT / SET      ->  LAMBDA  ->  sorted/map/    ->   CLASSES ->  APIs
+   comprehension     comprehension       one-line    filter             (OOP)       requests
+   [x for x in ..]   {k: v for ..}       function     + lambda           blueprint   .get()
+```
+
+### Part 1 — List Comprehensions
+
+**The one-line idea:** a list comprehension builds a new list from an existing one **in a single line**. It replaces the three-line "create empty list, loop, append" pattern.
+
+**The shape:** `[expression for item in iterable if condition]`
+
+**Mental model — read it right-to-left, like a sentence:**
+
+```
+   [ p          for p in prices      if p > 100 ]
+     |              |                     |
+   keep this    for each price       but only when
+   value        in the list          it is over 100
+```
+
+**`int_01_list_comprehension.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Part 1: List Comprehensions
+# ============================================
+
+prices = [999.99, 29.99, 79.99, 449.99, 149.99]
+
+# --- 1A. The old way: empty list, loop, append (3 lines) ---
+high_value = []
+for price in prices:
+    if price > 100:
+        high_value.append(price)
+print(f"Loop result:          {high_value}")
+
+# --- 1B. The comprehension way: same result, one line ---
+high_value_lc = [price for price in prices if price > 100]
+print(f"Comprehension result: {high_value_lc}")
+
+# --- 1C. Transform AND filter together ---
+# Give a 10% discount, but only on items over 100.
+discounted = [round(price * 0.9, 2) for price in prices if price > 100]
+print(f"Discounted premiums:  {discounted}")
+
+# --- 1D. A plain transform (no filter) ---
+with_tax = [round(price * 1.18, 2) for price in prices]
+print(f"All prices + 18% tax: {with_tax}")
+```
+
+Run it:
+
+```bash
+python int_01_list_comprehension.py
+```
+
+:::tip[Try it yourself]
+write a comprehension that builds a list of the **lengths** of these words: `["data", "engineering", "python"]`. (Hint: `[len(w) for w in words]`.)
+:::
+
+### Part 2 — Dictionary and Set Comprehensions
+
+The same idea works for dictionaries and sets — you just change the brackets.
+
+- **Dict comprehension** uses `{key: value for ...}` — note the colon
+- **Set comprehension** uses `{value for ...}` — no colon, and duplicates vanish
+
+**`int_02_dict_set_comprehension.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Part 2: Dict & Set Comprehensions
+# ============================================
+
+products = ["Laptop", "Mouse", "Keyboard", "Monitor"]
+prices = [999.99, 29.99, 79.99, 449.99]
+
+# --- 2A. Dict comprehension: pair each product with its price ---
+# zip() walks both lists together, one pair at a time.
+catalog = {product: price for product, price in zip(products, prices)}
+print(f"Catalog: {catalog}")
+
+# --- 2B. Dict comprehension with a transform on the value ---
+# Build a price list that already includes 18% tax.
+with_tax = {product: round(price * 1.18, 2)
+            for product, price in zip(products, prices)}
+print(f"With tax: {with_tax}")
+
+# --- 2C. Set comprehension: collect UNIQUE values ---
+regions = ["North", "South", "North", "East", "South", "North"]
+unique_regions = {region for region in regions}
+print(f"Unique regions: {unique_regions}")
+```
+
+Run it:
+
+```bash
+python int_02_dict_set_comprehension.py
+```
+
+:::info[Why this matters in DE]
+dict comprehensions are how you reshape data fast — turning two parallel columns into a lookup table, or re-scaling every value in one line.
+:::
+
+### Part 3 — Lambda Functions
+
+**The one-line idea:** a `lambda` is a tiny **unnamed** function you write inline, in one line. It is a shortcut for a `def` that is too small to deserve a name.
+
+**Mental model — the same function, two ways:**
+
+```
+   def add_tax(amount):              add_tax = lambda amount: amount * 1.18
+       return amount * 1.18
+   |---------- a named def ------|   |--------- the lambda twin ---------|
+```
+
+**`int_03_lambda.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Part 3: Lambda Functions
+# ============================================
+
+# --- 3A. A normal named function ---
+def calculate_tax(amount):
+    """Add 18% tax to an amount."""
+    return round(amount * 1.18, 2)
+
+
+# --- 3B. The lambda equivalent (inline, no name needed) ---
+# Read it as: "given amount, give back amount rounded with 18% tax".
+add_tax = lambda amount: round(amount * 1.18, 2)
+
+print(f"Named function: {calculate_tax(100)}")
+print(f"Lambda:         {add_tax(100)}")
+```
+
+Run it:
+
+```bash
+python int_03_lambda.py
+```
+
+:::tip[HitaVir Tech says]
+"Use a `lambda` only for a one-line throwaway. The moment it needs a second line or an `if/else`, give it a real `def` and a clear name — your teammates will thank you. (This is also a PEP 8 rule.)"
+:::
+
+:::info[Note]
+assigning a lambda to a name like `add_tax` above is shown only to compare it with the `def`. In real code, the right place for a lambda is **inside another function call** — which is exactly what Part 4 shows.
+:::
+
+### Part 4 — `sorted`, `map`, and `filter` with Lambda
+
+This is where lambdas earn their keep. Functions like `sorted`, `map`, and `filter` take **another function** as an argument, and a lambda is the perfect tiny function to hand them.
+
+- `sorted(data, key=lambda x: ...)` — sort by whatever the lambda returns
+- `filter(lambda x: ..., data)` — keep only items where the lambda is `True`
+- `map(lambda x: ..., data)` — transform every item
+
+**`int_04_sort_map_filter.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Part 4: sorted / map / filter
+# ============================================
+
+sales = [
+    {"product": "Laptop", "revenue": 4999.95},
+    {"product": "Mouse", "revenue": 149.95},
+    {"product": "Monitor", "revenue": 449.99},
+]
+
+# --- 4A. sorted() with a lambda key: sort by revenue, biggest first ---
+ranked = sorted(sales, key=lambda sale: sale["revenue"], reverse=True)
+print("Sales ranked by revenue:")
+for sale in ranked:
+    print(f"  {sale['product']}: ${sale['revenue']:,.2f}")
+
+# --- 4B. filter() then map(), step by step (clear for beginners) ---
+amounts = [100, 250, 50, 800, 30, 1200]
+
+# Step 1: keep only amounts above 200.
+big = filter(lambda x: x > 200, amounts)
+
+# Step 2: add 18% tax to each survivor.
+big_with_tax = map(lambda x: round(x * 1.18, 2), big)
+
+# filter() and map() are lazy — list() makes them produce values.
+print(f"\nBig amounts + 18% tax: {list(big_with_tax)}")
+```
+
+Run it:
+
+```bash
+python int_04_sort_map_filter.py
+```
+
+:::tip[Try it yourself]
+sort `sales` by **product name** instead of revenue. (Hint: `key=lambda sale: sale["product"]`, and drop `reverse=True`.)
+:::
+
+### Part 5 — Classes (Object-Oriented Programming Basics)
+
+**The one-line idea:** a **class** is a blueprint that bundles **data** (attributes) and **behaviour** (methods) together. An **object** is one real thing built from that blueprint.
+
+Real-life analogy: `"Car"` is the class (the design). *Your* specific car in the driveway is an object built from it.
+
+Three words to learn:
+
+- `__init__` — the **constructor**; it runs automatically when you create an object and sets up its starting data
+- `self` — means "**this particular object**"; every method takes it as the first parameter
+- **method** — a function that lives inside a class
+
+**`int_05_classes.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Part 5: Classes (Basic OOP)
+# ============================================
+
+
+class DataPipeline:
+    """A small, reusable data pipeline."""
+
+    def __init__(self, name, source, destination):
+        # __init__ runs when you create the object. self = this object.
+        self.name = name
+        self.source = source
+        self.destination = destination
+        self.records = []
+        self.status = "initialized"
+
+    def extract(self):
+        """Pretend to pull records from the source."""
+        self.status = "extracting"
+        self.records = [{"id": 1, "value": 100}, {"id": 2, "value": 200}]
+        print(f"  [{self.name}] Extracted {len(self.records)} records")
+        return self  # returning self lets us chain .extract().transform()...
+
+    def transform(self, multiplier=1.0):
+        """Multiply every record's value."""
+        self.status = "transforming"
+        for record in self.records:
+            record["value"] = record["value"] * multiplier
+        print(f"  [{self.name}] Transformed records (x{multiplier})")
+        return self
+
+    def load(self):
+        """Pretend to write records to the destination."""
+        self.status = "completed"
+        print(f"  [{self.name}] Loaded {len(self.records)} records")
+        return self
+
+    def __str__(self):
+        # __str__ decides what print(object) shows.
+        return f"Pipeline('{self.name}', status={self.status})"
+
+
+# Build ONE object from the blueprint.
+pipeline = DataPipeline("Sales ETL", "postgres", "s3")
+
+# Call its methods. Because each returns self, we can chain them.
+pipeline.extract().transform(multiplier=1.18).load()
+
+print(f"Result: {pipeline}")
+```
+
+Run it:
+
+```bash
+python int_05_classes.py
+```
+
+:::info[Why classes matter in DE]
+a class keeps a pipeline's data (`records`, `status`) and its steps (`extract`, `transform`, `load`) in one tidy package you can reuse and test. You met this exact shape in the ETL mini-project.
+:::
+
+### Part 6 — Working with APIs
+
+**The one-line idea:** an **API** is a URL that returns **data** (usually JSON) instead of a web page. The `requests` library calls it in one line, and you get back a Python dictionary.
+
+**`int_06_api.py`**
+
+```python
+# ============================================
+# HitaVir Tech - Part 6: Calling an API
+# ============================================
+import requests
+
+# Ask GitHub's API about the official Python repository.
+url = "https://api.github.com/repos/python/cpython"
+
+try:
+    response = requests.get(url, timeout=10)
+
+    # status_code 200 means "OK, here is your data".
+    if response.status_code == 200:
+        data = response.json()  # turn the JSON reply into a dict
+        print(f"Repo:        {data['full_name']}")
+        print(f"Stars:       {data['stargazers_count']:,}")
+        print(f"Language:    {data['language']}")
+        print(f"Open issues: {data['open_issues_count']:,}")
+    else:
+        print(f"API returned status {response.status_code}")
+
+except requests.exceptions.RequestException as error:
+    # Catches no-internet, timeout, bad-URL, etc.
+    print(f"API call failed: {error}")
+```
+
+Run it (install the library first if needed):
+
+```bash
+pip install requests
+python int_06_api.py
+```
+
+:::tip[Try it yourself]
+change the URL to your own favourite repo, e.g. `https://api.github.com/repos/pandas-dev/pandas`, and see its star count.
+:::
+
+:::tip[HitaVir Tech says]
+"List comprehensions, lambdas, and classes are the intermediate trifecta. Comprehensions make your code concise. Lambdas make sorting and filtering elegant. Classes make your pipelines reusable and testable. APIs connect your pipelines to the wider world."
+:::
+
+### Assignment 9 — Refactor Assignment 4 with Pythonic Tools
+
+**Goal:** Take the sales aggregator from Assignment 4 and rewrite it using comprehensions, lambdas, and a class — the trifecta of intermediate Python.
+
+**The scenario:** Code review feedback says your aggregator works but is "too imperative." Refactor it.
+
+**Tasks:**
+
+1. Copy `assignment_04_data_structures.py` to `assignment_09_intermediate.py`.
+2. Replace the manual region-grouping loop with a `defaultdict(float)` and a single `for sale in sales: by_region[sale["region"]] += sale["amount"]`. Then convert `by_region` into a regular dict using a **dict comprehension** that also rounds to 2 decimals.
+3. Replace the top-customer loop with `max(...)` plus a **lambda** key.
+4. Wrap everything in a class `SalesAggregator` with:
+   - `__init__(self)` -> initializes empty internal dicts
+   - `add_sale(self, customer, region, amount)` -> records one sale
+   - `revenue_by_region(self)` -> returns the dict
+   - `top_customer(self)` -> returns `(name, amount)`
+   - `__str__(self)` -> returns a one-line summary
+5. In `if __name__ == "__main__":`, build the aggregator from the same input list, call each method, and print the results.
+
+**Success criteria:**
+
+- [ ] At least one **list or dict comprehension** is used
+- [ ] At least one **lambda** is used (with `sorted`, `max`, `filter`, or `map`)
+- [ ] Class has `__init__`, three methods, and `__str__`
+- [ ] Same numeric output as Assignment 4 (Alice = $3,800 top customer)
+- [ ] Code passes `black` formatter and `flake8` with zero warnings
+
+**Stretch goal:** Make the class iterable by adding `__iter__` so you can write `for sale in aggregator:` to walk through every recorded sale.
+
+### What You Have Learnt on This Page
+
+By the end of this page you should be able to confidently:
+
+- Replace verbose loops with **list / dict / set comprehensions**
+- Use **`lambda`** with `sorted`, `max`, `filter`, `map` for one-liners
+- Define **classes** with `__init__`, methods, and `__str__`
+- Group state and behaviour together (Object-Oriented Programming basics)
+- Iterate custom objects by adding **`__iter__`**
+
+### PEP 8 — Style Rules to Apply Strictly to Comprehensions, Lambdas, and Classes
+
+Pythonic code is judged at this level. Apply these rules every single time:
+
+- **Class names** → `PascalCase` (e.g., `SalesAggregator`, `ETLPipeline`)
+- **Method names** → `snake_case` (e.g., `add_sale`, `revenue_by_region`)
+- **One blank line** between methods, **two blank lines** between top-level classes
+- **Lambdas only for trivial one-liners** — anything bigger gets a `def`
+- Comprehensions only when they fit **on one readable line** — otherwise use a regular `for` loop
+- **Magic methods** (`__init__`, `__str__`, `__iter__`) follow the dunder naming convention
+- Private attributes use **a single leading underscore**: `self._cache`
+
+:::note[Inspiration for the road ahead]
+*"Beautiful is better than ugly. Readability counts."*
+— Tim Peters, *The Zen of Python*
+:::
+
+<KeyTakeaways>
+
+- `[x for x in data if cond]` replaces three lines of loop-and-append
+- Dict comprehensions (`{k: v for ...}`) build lookup tables in one line
+- A class is the blueprint; each object is one built thing; `self` means this object
+- Returning `self` from methods enables chaining: `.extract().transform().load()`
+- `requests.get(url, timeout=10).json()` turns an API reply into a dict — wrap it in try/except
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which comprehension keeps only prices over 100?',
+      options: [
+        '[p for p in prices]',
+        '{p: p for p in prices}',
+        '[p for p in prices if p > 100]',
+        'filter(prices > 100)',
+      ],
+      answer: 2,
+      explanation:
+        'The trailing if clause filters; the leading expression decides what to keep. Read it right to left.',
+    },
+    {
+      question: 'What is self inside a class method?',
+      options: [
+        'A reserved global variable',
+        'The parent class',
+        'A copy of the object',
+        'The particular object the method was called on',
+      ],
+      answer: 3,
+      explanation:
+        'self is how a method reaches THIS object\'s own attributes — every method takes it as the first parameter.',
+    },
+    {
+      question: 'Which HTTP status code means an API call succeeded?',
+      options: [
+        '404',
+        '200',
+        '500',
+        '302',
+      ],
+      answer: 1,
+      explanation:
+        '200 means OK — here is your data. 404 is not-found, 500 is a server error.',
+    },
+  ]}
+/>
+
+<LessonComplete />

@@ -1,0 +1,207 @@
+---
+title: 'Step 7: Aggregations — COUNT, SUM, AVG, GROUP BY, HAVING'
+sidebar_position: 1
+description: 'Turn raw rows into business numbers — the five aggregate functions, GROUP BY rules, and HAVING for group-level filters.'
+---
+
+<DurationBadge minutes={20} />
+
+<LearningObjectives>
+
+- Use `COUNT`, `SUM`, `AVG`, `MIN`, and `MAX` over whole tables and groups
+- Group by one or more columns under `ONLY_FULL_GROUP_BY` rules
+- Filter groups with `HAVING` and know when `WHERE` is the right tool instead
+
+</LearningObjectives>
+
+> *"Without data, you're just another person with an opinion."*
+> — W. Edwards Deming
+
+:::info[HitaVir Tech connection]
+Aggregations are how you turn millions of raw rows into the three numbers a CEO actually wants. Get them wrong and the report lies.
+:::
+
+:::tip[Why this matters now]
+Every aggregation you write today must answer a *specific* business question — say it before you write the SQL.
+:::
+
+### 7.1 — The five aggregate functions you will use daily
+
+| Function   | What it returns                              | Notes                          |
+|------------|----------------------------------------------|--------------------------------|
+| `COUNT(*)` | Number of rows in the group                  | Includes rows with NULLs       |
+| `COUNT(c)` | Number of non-NULL values in column `c`      | Counts only non-NULL           |
+| `SUM(c)`   | Sum of `c` (NULLs ignored)                   |                                |
+| `AVG(c)`   | Average of `c` (NULLs ignored)               |                                |
+| `MIN(c)` / `MAX(c)` | Smallest / largest non-NULL value   | Works on numbers, dates, text  |
+
+### 7.2 — Single aggregate over the whole table
+
+```sql
+-- Total number of orders, ever
+SELECT COUNT(*) AS total_orders FROM orders;
+```
+
+**Expected output:**
+
+```
++--------------+
+| total_orders |
++--------------+
+|          100 |
++--------------+
+```
+
+### 7.3 — GROUP BY: one aggregate per group
+
+```sql
+-- Number of orders per status
+SELECT
+    status,
+    COUNT(*) AS order_count
+FROM orders
+GROUP BY status
+ORDER BY order_count DESC;
+```
+
+**Expected output:**
+
+```
++-----------+-------------+
+| status    | order_count |
++-----------+-------------+
+| DELIVERED |          86 |
+| SHIPPED   |           6 |
+| RETURNED  |           3 |
+| CANCELLED |           3 |
+| PLACED    |           2 |
++-----------+-------------+
+```
+
+:::info[Pro Insight]
+Every column in the `SELECT` of an aggregation must either be inside an aggregate function or appear in `GROUP BY`. MySQL 8.0 enforces this by default with `ONLY_FULL_GROUP_BY`. Older MySQL was sloppy and silently returned arbitrary rows — that "feature" caused millions of dollars in bad reports.
+:::
+
+### 7.4 — Multi-column GROUP BY
+
+```sql
+-- Revenue per product (only for delivered orders)
+SELECT
+    p.product_name,
+    SUM(oi.line_amount) AS revenue
+FROM order_items AS oi
+JOIN orders   AS o ON o.order_id = oi.order_id
+JOIN products AS p ON p.product_id = oi.product_id
+WHERE o.status = 'DELIVERED'
+GROUP BY p.product_name
+ORDER BY revenue DESC
+LIMIT 5;
+```
+
+**Expected output (top 5 revenue products):**
+
+```
++---------------------+------------+
+| product_name        | revenue    |
++---------------------+------------+
+| Laptop Pro 14       | 1259986.00 |
+| Office Chair        |  116991.00 |
+| Mechanical Keyboard |   59988.00 |
+| Running Shoes       |   55984.00 |
+| USB-C Hub           |   47481.00 |
++---------------------+------------+
+```
+
+(Joins are formally introduced in Step 8 — for now treat the JOINs as "stitch the tables together on matching IDs.")
+
+### 7.5 — HAVING: filtering on aggregates
+
+```sql
+-- Customers with more than 4 orders
+SELECT
+    customer_id,
+    COUNT(*) AS order_count
+FROM orders
+GROUP BY customer_id
+HAVING COUNT(*) > 4
+ORDER BY order_count DESC;
+```
+
+**Expected output:**
+
+```
++-------------+-------------+
+| customer_id | order_count |
++-------------+-------------+
+|           1 |           7 |
+|           5 |           5 |
+|           3 |           5 |
++-------------+-------------+
+```
+
+:::tip[HitaVir Tech Tip]
+`WHERE` filters rows *before* aggregation, `HAVING` filters groups *after*. If your filter does not depend on an aggregate, put it in `WHERE` — it is faster and clearer.
+:::
+
+### ✅ Checkpoint
+
+You can now:
+
+- ✅ Run a single aggregate (`COUNT`, `SUM`, `AVG`, `MIN`, `MAX`)
+- ✅ Group by one or more columns
+- ✅ Filter groups with `HAVING`
+- ✅ Explain why every non-aggregate column must be in `GROUP BY`
+
+---
+
+<KeyTakeaways>
+
+- `COUNT(*)` counts rows; `COUNT(col)` counts non-NULL values — the difference matters after outer joins
+- `SUM`, `AVG`, `MIN`, `MAX` silently ignore NULLs
+- Every non-aggregated `SELECT` column must appear in `GROUP BY` (`ONLY_FULL_GROUP_BY`)
+- Non-aggregate filters belong in `WHERE`; aggregate filters belong in `HAVING`
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is the difference between COUNT(*) and COUNT(email)?',
+      options: [
+        'They are always identical',
+        'COUNT(*) counts rows; COUNT(email) counts only rows where email is not NULL',
+        'COUNT(email) is faster because it reads one column',
+        'COUNT(*) ignores deleted rows',
+      ],
+      answer: 1,
+      explanation:
+        'COUNT(column) skips NULLs. With two customers missing emails, COUNT(*) returns 30 but COUNT(email) returns 28.',
+    },
+    {
+      question: 'Which query correctly finds customers with more than 4 orders?',
+      options: [
+        'GROUP BY customer_id WHERE COUNT(*) > 4',
+        'WHERE COUNT(*) > 4 GROUP BY customer_id',
+        'GROUP BY customer_id HAVING COUNT(*) > 4',
+        'HAVING customer_id > 4 GROUP BY COUNT(*)',
+      ],
+      answer: 2,
+      explanation:
+        'Aggregate conditions can only be evaluated after grouping, which is exactly what HAVING is for.',
+    },
+    {
+      question: 'Under ONLY_FULL_GROUP_BY, what happens if a SELECT column is neither aggregated nor grouped?',
+      options: [
+        'MySQL raises an error',
+        'MySQL picks an arbitrary row value silently',
+        'The column returns NULL',
+        'The query runs but sorts incorrectly',
+      ],
+      answer: 0,
+      explanation:
+        'MySQL 8.0 rejects the query. Pre-8.0 behavior silently returned arbitrary values — a notorious source of wrong reports.',
+    },
+  ]}
+/>
+
+<LessonComplete />

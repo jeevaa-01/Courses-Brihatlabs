@@ -1,0 +1,216 @@
+---
+title: "Explicit Schemas"
+description: "Explicit Schemas — HitaVir Tech PySpark for Data Engineering."
+---
+
+# Explicit Schemas
+
+*⏱ Estimated time: 55 minutes*
+
+:::note[🎯 Learning objectives]
+
+By the end of this section, you will be able to:
+
+- Define explicit schemas with `StructType` and `StructField`.
+- Use date and timestamp types and validate required columns programmatically.
+- Explain why schema inference is risky for production pipelines.
+
+:::
+
+### Why explicit schemas matter
+
+Schema inference can:
+
+- Read numeric values as strings.
+- Interpret malformed values incorrectly.
+- Scan additional data.
+- Produce inconsistent behavior.
+- Hide data quality issues.
+
+### Define a schema
+
+```python
+from pyspark.sql.types import (
+    DoubleType,
+    IntegerType,
+    StringType,
+    StructField,
+    StructType,
+)
+
+sales_schema = StructType(
+    [
+        StructField(
+            "transaction_id",
+            StringType(),
+            nullable=False
+        ),
+        StructField(
+            "product",
+            StringType(),
+            nullable=True
+        ),
+        StructField(
+            "quantity",
+            IntegerType(),
+            nullable=True
+        ),
+        StructField(
+            "unit_price",
+            DoubleType(),
+            nullable=True
+        ),
+    ]
+)
+```
+
+### Create a DataFrame with schema
+
+```python
+sales_data = [
+    ("T001", "Laptop", 2, 65000.0),
+    ("T002", "Monitor", 3, 15000.0),
+]
+
+sales_df = spark.createDataFrame(
+    sales_data,
+    schema=sales_schema
+)
+
+sales_df.printSchema()
+```
+
+### Date and timestamp types
+
+```python
+from pyspark.sql.types import DateType, TimestampType
+```
+
+Example schema:
+
+```python
+event_schema = StructType(
+    [
+        StructField("event_id", StringType(), False),
+        StructField("event_date", DateType(), True),
+        StructField("created_at", TimestampType(), True),
+    ]
+)
+```
+
+### Validate required columns
+
+```python
+required_columns = {
+    "transaction_id",
+    "product",
+    "quantity",
+    "unit_price",
+}
+
+missing_columns = required_columns - set(sales_df.columns)
+
+if missing_columns:
+    raise ValueError(
+        f"Missing required columns: {sorted(missing_columns)}"
+    )
+```
+
+### Schema comparison
+
+```python
+print(sales_df.schema.simpleString())
+```
+
+Expected output resembles:
+
+```text
+struct<transaction_id:string,product:string,quantity:int,unit_price:double>
+```
+
+### ✅ Checkpoint
+
+You should be able to explain:
+
+- `StructType` represents a complete schema.
+- `StructField` represents one column.
+- Explicit schemas reduce ambiguity.
+- Nullable controls schema metadata but does not replace validation.
+
+### 🛠️ Exercise
+
+Create a schema for:
+
+```text
+customer_id: string
+customer_name: string
+age: integer
+credit_limit: double
+```
+
+<details>
+<summary>Show solution</summary>
+
+```python
+customer_schema = StructType(
+    [
+        StructField("customer_id", StringType(), False),
+        StructField("customer_name", StringType(), True),
+        StructField("age", IntegerType(), True),
+        StructField("credit_limit", DoubleType(), True),
+    ]
+)
+```
+
+</details>
+
+<Quiz
+  questions={[
+  {
+    "question": "Setting `nullable=False` in a `StructField`:",
+    "options": [
+      "Guarantees no nulls can ever appear downstream",
+      "Sets schema metadata but does not replace validation",
+      "Rejects any file containing nulls"
+    ],
+    "answer": 1,
+    "explanation": "Nullability is metadata; you still need explicit validation rules."
+  },
+  {
+    "question": "Explicit schemas mainly improve:",
+    "options": [
+      "Notebook formatting",
+      "Correctness, predictability, and performance",
+      "Cluster sizing"
+    ],
+    "answer": 1,
+    "explanation": "They avoid inference scans and inconsistent type guesses."
+  }
+]}
+/>
+
+:::info[📌 Key takeaways]
+
+- A schema is a data contract: types, required columns, and null rules defined before transformation.
+- Inference hides data-quality issues and adds scan cost.
+- Validate required columns programmatically before transforming.
+
+:::
+
+:::note[💬 Discussion prompt — Module 1]
+
+In your current or target role, which dataset would benefit most from an explicit schema treated as a contract? Post the schema you would enforce — column names, types, and null rules — in your cohort channel and compare with a peer.
+
+:::
+
+:::tip[💡 HitaVir Tech Tip]
+
+Schema is a data contract. Define types, required columns, null rules, and business constraints before transformation.
+
+:::
+
+:::info[🚀 Pro Tip]
+
+Use a schema registry or governed table definition for large organizations.
+
+:::

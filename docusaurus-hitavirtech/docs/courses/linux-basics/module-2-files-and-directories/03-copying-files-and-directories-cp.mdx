@@ -1,0 +1,134 @@
+---
+title: 'Copying Files and Directories — cp'
+sidebar_position: 3
+description: 'Copy files and whole directories with cp and cp -r, including multi-file copies into a backup folder.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Copy single and multiple files with `cp`
+- Copy whole directories with `cp -r`
+- Use copies as backups before making risky changes
+
+</LearningObjectives>
+
+The `cp` command copies files and folders.
+
+### Copy a File
+
+```bash
+cd ~/hitavir-workspace
+cp README.md backups/README.md.bak
+```
+
+This creates a copy of `README.md` in the `backups` folder with a `.bak` extension.
+
+### Verify the Copy
+
+```bash
+cat backups/README.md.bak
+```
+
+**Expected output:**
+
+```
+# HitaVir Workspace
+Created by HitaVir Tech
+Linux Basics Codelab Project
+```
+
+The content is identical to the original.
+
+### Copy to Same Directory (Different Name)
+
+```bash
+cp config/settings.conf config/settings.conf.backup
+```
+
+### Copy a Directory (with -r)
+
+```bash
+cp -r projects/web-app projects/web-app-backup
+```
+
+The `-r` flag means "recursive" — copy the folder and everything inside it.
+
+### Copy Multiple Files
+
+```bash
+cp config/settings.conf config/database.conf backups/
+```
+
+This copies both files into the `backups` folder.
+
+### Verify
+
+```bash
+ls backups/
+```
+
+**Expected output:**
+
+```
+README.md.bak  database.conf  settings.conf
+```
+
+### Quick Reference
+
+| Command | What It Does |
+|---------|-------------|
+| `cp file1 file2` | Copy file1 to file2 |
+| `cp file1 folder/` | Copy file1 into folder |
+| `cp -r dir1 dir2` | Copy directory recursively |
+| `cp file1 file2 folder/` | Copy multiple files into folder |
+
+**Real-world analogy:** `cp` is like photocopying a document. The original stays where it is, and you get a new copy.
+
+:::tip[HitaVir Tech says]
+"Always keep backups! The `cp` command is your safety net. Before making risky changes, copy the original file first."
+:::
+
+### Common Mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| Forgetting `-r` for directories | `cp -r folder1 folder2` |
+| Overwriting without warning | Use `cp -i` for interactive mode (asks before overwriting) |
+| Wrong destination path | Always check with `ls` first |
+
+<KeyTakeaways>
+
+- `cp source dest` copies a file — the original stays exactly where it was
+- Directories need the `-r` (recursive) flag
+- `cp -i` asks before overwriting an existing destination
+- Copy first, edit second — backups are your safety net
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which command copies a directory and everything inside it?',
+      options: ['cp dir1 dir2', 'cp -r dir1 dir2', 'copy dir1 dir2', 'mv dir1 dir2'],
+      answer: 1,
+      explanation:
+        'cp needs the -r (recursive) flag for directories; without it, cp refuses to copy a folder.',
+    },
+    {
+      question: 'After cp README.md backups/README.md.bak, what happened to the original README.md?',
+      options: [
+        'It was deleted',
+        'It moved into backups/',
+        'It is unchanged in its original location',
+        'It was renamed to README.md.bak',
+      ],
+      answer: 2,
+      explanation:
+        'cp is a photocopier: the original stays put and an identical copy is created at the destination.',
+    },
+  ]}
+/>
+
+<LessonComplete />

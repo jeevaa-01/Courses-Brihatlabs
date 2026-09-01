@@ -1,0 +1,168 @@
+---
+title: 'Working with Remote Repositories'
+sidebar_position: 1
+description: 'Connect your local repository to GitHub — add a remote, push with upstream tracking, and keep in sync with pull, fetch, and clone.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Create a GitHub repository and connect it as `origin`
+- Push with `git push -u origin main` and understand upstream tracking
+- Distinguish `push`, `pull`, `fetch`, and `clone`
+
+</LearningObjectives>
+
+So far, everything has been local. Now let us connect to GitHub.
+
+### Step 1 — Create a GitHub Repository
+
+1. Go to [https://github.com/new](https://github.com/new)
+2. Repository name: `hitavir-portfolio`
+3. Description: "My portfolio project — built during HitaVir Tech codelab"
+4. Select **Public**
+5. Do **NOT** initialize with README (we already have one)
+6. Click **Create repository**
+
+### Step 2 — Connect Local Repo to GitHub
+
+```bash
+git remote add origin https://github.com/YOUR_USERNAME/hitavir-portfolio.git
+```
+
+Replace `YOUR_USERNAME` with your GitHub username.
+
+### Step 3 — Verify the Remote
+
+```bash
+git remote -v
+```
+
+**Expected output:**
+
+```
+origin  https://github.com/YOUR_USERNAME/hitavir-portfolio.git (fetch)
+origin  https://github.com/YOUR_USERNAME/hitavir-portfolio.git (push)
+```
+
+### Step 4 — Push to GitHub
+
+```bash
+git push -u origin main
+```
+
+The `-u` flag sets `origin main` as the default upstream, so future pushes only need `git push`.
+
+**Expected output:**
+
+```
+Enumerating objects: 15, done.
+Counting objects: 100% (15/15), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (10/10), done.
+Writing objects: 100% (15/15), 1.20 KiB | 1.20 MiB/s, done.
+Total 15 (delta 2), reused 0 (delta 0)
+To https://github.com/YOUR_USERNAME/hitavir-portfolio.git
+ * [new branch]      main -> main
+Branch 'main' set up to track remote branch 'main' from 'origin'.
+```
+
+### Step 5 — Verify on GitHub
+
+Open your browser and go to `https://github.com/YOUR_USERNAME/hitavir-portfolio`. You should see all your files!
+
+### Key Remote Commands
+
+| Command | What It Does |
+|---------|-------------|
+| `git remote add origin <url>` | Connect to remote |
+| `git push` | Upload commits to remote |
+| `git pull` | Download and merge remote changes |
+| `git fetch` | Download remote changes (no merge) |
+| `git clone <url>` | Copy a remote repo to your computer |
+
+### Clone an Existing Repository
+
+To download someone else's repository:
+
+```bash
+git clone https://github.com/username/repo-name.git
+```
+
+This creates a new folder with the full repository and history.
+
+### Pull Latest Changes
+
+When teammates push changes, get them with:
+
+```bash
+git pull origin main
+```
+
+:::tip[HitaVir Tech says]
+"Think of `push` as uploading your work to the cloud, and `pull` as downloading your team's latest work. Do a `pull` before you start working each day to stay up to date."
+:::
+
+### Intermediate Level Recap
+
+Excellent work! You have completed the Intermediate Level. Here is what you learned:
+
+- Create, switch, and delete branches
+- Merge branches (fast-forward and three-way)
+- Resolve merge conflicts like a professional
+- Undo changes with restore, reset, and revert
+- Connect to GitHub and push/pull code
+
+<KeyTakeaways>
+
+- `git remote add origin <url>` links your local repo to GitHub; `origin` is just the default nickname
+- `git push -u origin main` sets the upstream so future pushes are just `git push`
+- `git fetch` downloads without merging; `git pull` fetches AND merges
+- `git clone <url>` copies an entire remote repository, history included
+- Pull before you start working each day to stay in sync with the team
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What does the -u flag do in git push -u origin main?',
+      options: [
+        'Uploads faster using compression',
+        'Sets origin/main as the upstream so future pushes need only git push',
+        'Forces the push even with conflicts',
+        'Pushes as an unauthenticated user',
+      ],
+      answer: 1,
+      explanation:
+        'The -u (--set-upstream) flag records the tracking relationship once; afterwards plain git push and git pull know where to go.',
+    },
+    {
+      question: 'What is the difference between git fetch and git pull?',
+      options: [
+        'fetch works only with forks',
+        'pull downloads tags, fetch does not',
+        'fetch downloads changes without merging; pull downloads AND merges',
+        'They are identical',
+      ],
+      answer: 2,
+      explanation:
+        'pull is essentially fetch followed by merge. Use fetch when you want to inspect incoming changes first.',
+    },
+    {
+      question: 'Why did the lesson say NOT to initialize the GitHub repo with a README?',
+      options: [
+        'READMEs are bad practice',
+        'GitHub charges for extra files',
+        'The README would be private',
+        'Your local repo already has one — a remote README would create divergent history',
+      ],
+      answer: 3,
+      explanation:
+        'Creating a README on GitHub makes a commit that your local repo does not have, complicating your first push.',
+    },
+  ]}
+/>
+
+<LessonComplete />

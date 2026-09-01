@@ -1,0 +1,187 @@
+---
+title: 'Searching in Files — grep'
+sidebar_position: 1
+description: 'Search inside files with grep — case-insensitive matches, line numbers, counts, inverted matches, recursion, and context.'
+---
+
+<DurationBadge minutes={8} />
+
+<LearningObjectives>
+
+- Search a file for a pattern and control matching with `-i`, `-n`, `-c`, and `-v`
+- Search many files and whole directory trees with globs and `-r`
+- Show context around matches with `-B` and `-A`
+
+</LearningObjectives>
+
+`grep` is one of the most powerful Linux commands. It searches for text patterns inside files.
+
+### Basic grep
+
+Search for the word "ERROR" in our log file:
+
+```bash
+cd ~/hitavir-workspace
+grep "ERROR" logs/app.log
+```
+
+**Expected output:**
+
+```
+[2026-04-05 10:02:30] ERROR: Failed to connect to cache server
+[2026-04-05 10:05:22] ERROR: Timeout on /api/users endpoint
+[2026-04-05 10:08:00] ERROR: Permission denied on /var/data
+```
+
+Only lines containing "ERROR" are shown.
+
+### Case-Insensitive Search
+
+```bash
+grep -i "error" logs/app.log
+```
+
+The `-i` flag ignores case — matches ERROR, error, Error, etc.
+
+### Show Line Numbers
+
+```bash
+grep -n "ERROR" logs/app.log
+```
+
+**Expected output:**
+
+```
+4:[2026-04-05 10:02:30] ERROR: Failed to connect to cache server
+6:[2026-04-05 10:05:22] ERROR: Timeout on /api/users endpoint
+9:[2026-04-05 10:08:00] ERROR: Permission denied on /var/data
+```
+
+### Count Matches
+
+```bash
+grep -c "ERROR" logs/app.log
+```
+
+**Expected output:**
+
+```
+3
+```
+
+Three lines contain "ERROR".
+
+### Invert Match (Lines WITHOUT Pattern)
+
+```bash
+grep -v "INFO" logs/app.log
+```
+
+**Expected output:**
+
+```
+[2026-04-05 10:01:15] WARNING: High memory usage detected
+[2026-04-05 10:02:30] ERROR: Failed to connect to cache server
+[2026-04-05 10:05:22] ERROR: Timeout on /api/users endpoint
+[2026-04-05 10:07:45] WARNING: Disk space below 10%
+[2026-04-05 10:08:00] ERROR: Permission denied on /var/data
+```
+
+All lines except INFO lines.
+
+### Search Multiple Files
+
+```bash
+grep "localhost" config/*.conf
+```
+
+**Expected output:**
+
+```
+config/database.conf:DB_HOST=localhost
+```
+
+### Search Recursively (All Files in All Folders)
+
+```bash
+grep -r "HitaVir" .
+```
+
+This searches every file in every subdirectory for "HitaVir".
+
+### grep with Context
+
+Show lines around the match:
+
+```bash
+grep -B 1 -A 1 "ERROR" logs/app.log
+```
+
+- `-B 1` shows 1 line **B**efore the match
+- `-A 1` shows 1 line **A**fter the match
+
+### grep Options Quick Reference
+
+| Option | What It Does | Example |
+|--------|-------------|---------|
+| `-i` | Case insensitive | `grep -i "error" file` |
+| `-n` | Show line numbers | `grep -n "error" file` |
+| `-c` | Count matches | `grep -c "error" file` |
+| `-v` | Invert (lines NOT matching) | `grep -v "info" file` |
+| `-r` | Recursive (search subdirectories) | `grep -r "text" .` |
+| `-l` | Show only filenames | `grep -rl "text" .` |
+| `-B N` | Show N lines before match | `grep -B 2 "error" file` |
+| `-A N` | Show N lines after match | `grep -A 2 "error" file` |
+
+**Real-world analogy:** `grep` is like Ctrl+F in your browser, but supercharged. It can search across thousands of files in seconds.
+
+:::tip[HitaVir Tech says]
+"grep is the command you will use most in real-world DevOps. Server crashes at 3 AM? You grep the logs. Customer reports a bug? You grep for their user ID. Master grep and you will solve problems 10x faster."
+:::
+
+<KeyTakeaways>
+
+- `grep "ERROR" file` prints only the matching lines
+- `-i` ignores case, `-n` adds line numbers, `-c` counts, `-v` inverts the match
+- `grep -r "text" .` sweeps every file under the current directory
+- In real DevOps work, grep-ing logs is often the fastest path to a root cause
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which command counts how many lines contain ERROR?',
+      options: [
+        'grep -n "ERROR" file',
+        'grep -c "ERROR" file',
+        'grep -v "ERROR" file',
+        'wc "ERROR" file',
+      ],
+      answer: 1,
+      explanation:
+        'The -c flag makes grep print the number of matching lines instead of the lines themselves.',
+    },
+    {
+      question: 'What does grep -v "INFO" logs/app.log show?',
+      options: [
+        'Only INFO lines',
+        'INFO lines with line numbers',
+        'All lines except INFO lines',
+        'The count of INFO lines',
+      ],
+      answer: 2,
+      explanation:
+        'The -v flag inverts the match — grep prints the lines that do NOT contain the pattern.',
+    },
+    {
+      question: 'Which flags show one line before and one line after each match?',
+      options: ['-i -n', '-B 1 -A 1', '-r -l', '-c -v'],
+      answer: 1,
+      explanation:
+        '-B N shows N lines Before and -A N shows N lines After — useful for reading log context around an error.',
+    },
+  ]}
+/>
+
+<LessonComplete />

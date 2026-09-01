@@ -1,0 +1,170 @@
+---
+title: 'Azure Services for Modern Data Architecture'
+sidebar_position: 1
+description: 'The complete Azure service map — which service answers each architecture question, Databricks and ADF spotlights, and the zero-copy revolution.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Map each layer of the modern architecture to the Azure service that answers its question
+- Explain how zero-copy features (Mirroring, OneLake Shortcuts, Direct Lake) replace classic ETL
+- Know where Azure Databricks and Azure Data Factory fit in the stack
+
+</LearningObjectives>
+
+```
+  +==============================================================+
+  |         THE  COMPLETE  AZURE  SERVICE  MAP                   |
+  |            for Modern Data Architecture                      |
+  +==============================================================+
+```
+
+### The Headline Cast for Part 2
+
+![ADLS Gen2](/img/courses/azure-icons/adls-gen2.svg) ![Synapse](/img/courses/azure-icons/synapse.svg) ![Databricks](/img/courses/azure-icons/databricks.svg) ![Data Factory](/img/courses/azure-icons/data-factory.svg) ![Event Hubs](/img/courses/azure-icons/event-hubs.svg) ![Stream Analytics](/img/courses/azure-icons/stream-analytics.svg) ![Data Explorer](/img/courses/azure-icons/data-explorer.svg) ![Power BI](/img/courses/azure-icons/power-bi.svg) ![ML](/img/courses/azure-icons/ml.svg) ![OpenAI](/img/courses/azure-icons/openai.svg) ![AI Search](/img/courses/azure-icons/ai-search.svg) ![Policy](/img/courses/azure-icons/policy.svg)
+
+Each service answers a specific question in the modern architecture:
+
+| Layer | Question | Service | Icon |
+|-------|----------|---------|:---:|
+| Storage | Where does my data live? | ADLS Gen2 / OneLake | 🪣 |
+| Governance | Who can see what? | Microsoft Purview | 🏗️ |
+| Catalog | What data do we have? | Purview + Synapse Catalog | 📚 |
+| ETL / ELT | How do I shape it? | Azure Data Factory, Databricks, Synapse Spark | 🕸️ |
+| SQL on lake | How do I explore? | Synapse Serverless SQL | 🔍 |
+| SQL on warehouse | How do I serve BI? | Synapse Dedicated / Fabric Warehouse | 🏛️ |
+| Stream ingest | How do I handle real time? | Event Hubs + Stream Analytics | 🌊 |
+| Time-series / logs | How do I query logs? | Azure Data Explorer (KQL) | 🔎 |
+| BI | How do people see it? | Power BI | 📊 |
+| ML | How do we predict? | Azure Machine Learning | 🤖 |
+| LLMs | How do we add GenAI? | Azure OpenAI + AI Search | 🧠 |
+| Real-time search | How do we find a needle? | Azure AI Search | 🔎 |
+
+### Service Spotlight — Azure Databricks
+
+![Databricks](/img/courses/azure-icons/databricks.svg)
+
+```
+  +--------------------------------------------------------------+
+  |  AZURE  DATABRICKS  -  The Lakehouse Pioneer                 |
+  +--------------------------------------------------------------+
+  |  Audience  :  Data engineers + data scientists + analysts    |
+  |  Engine    :  Apache Spark (Photon) + Delta Lake             |
+  |  Notebooks :  Python, SQL, R, Scala                          |
+  |  ML        :  MLflow tracking, feature store, model serving  |
+  |  Governance:  Unity Catalog (like Purview, for Databricks)   |
+  |                                                              |
+  |  The "full lakehouse in one product" option.                 |
+  +--------------------------------------------------------------+
+```
+
+### Zero-Copy — The Quiet Revolution on Azure
+
+Classic ETL means writing code to extract-transform-load between systems. Azure's zero-copy features make data **appear** in another system without moving it:
+
+```
+  +-----------------+          +------------------------+
+  | Azure SQL DB    |==Mirror=>| Microsoft Fabric       |
+  |  (app DB)       |  managed | (Lakehouse, OneLake)   |
+  +-----------------+          +------------------------+
+
+  Zero-copy on Azure today:
+  - Azure SQL        -> Fabric (Mirroring)
+  - Cosmos DB        -> Fabric (Mirroring)
+  - Snowflake        -> Fabric (Mirroring)
+  - OneLake Shortcut -> ADLS Gen2 / S3 / GCS (no copy at all)
+```
+
+Fewer pipelines to maintain. Fresher analytics. Less on-call pain.
+
+### Azure Data Factory — The Connective Tissue
+
+![Data Factory](/img/courses/azure-icons/data-factory.svg)
+
+In a modern architecture, ADF is **everywhere**:
+
+| Capability | Icon | Role |
+|------------|:---:|------|
+| Copy Activity | 📋 | Move data between 100+ sources and sinks |
+| Mapping Data Flows | 🕸️ | Visual Spark-based transforms |
+| Triggers | ⏱️ | Schedule, event, tumbling window |
+| Integration Runtimes | 🌐 | Cloud or self-hosted, on-prem → Azure |
+| Git integration | 🔀 | Pipelines as code (Azure DevOps / GitHub) |
+| Monitoring | 📈 | Built-in dashboards + Azure Monitor |
+
+### A Mental Shortcut — The Service Lookup Table
+
+When someone describes a problem, scan this table first:
+
+| Problem Sounds Like... | Reach For |
+|------------------------|-----------|
+| "We have terabytes piling up and need cheap storage" | 🪣 ADLS Gen2 + 🧊 Archive tier |
+| "Analysts want SQL on 1B rows, must return in seconds" | 🏛️ Synapse Dedicated / Fabric Warehouse |
+| "We dump random files hourly, want ad-hoc SQL" | 🔍 Synapse Serverless + 🕸️ ADF |
+| "Events come at 1M / sec and drive a live dashboard" | 🌊 Event Hubs + 🎯 Stream Analytics |
+| "Logs need to be searchable with keyword filters" | 🔬 Azure Data Explorer (KQL) |
+| "We keep 2 copies of the same data in lake and warehouse" | 🔭 Serverless / Mirroring / Fabric Direct Lake |
+| "We need to share a slice with another Azure tenant" | 🔗 Azure Data Share / Purview data policies |
+| "Non-engineers can't find any data" | 🧭 Microsoft Purview / Fabric catalog |
+| "We want the CEO to ask questions in English" | 💬 Power BI Copilot |
+| "Our support team wants to chat with our docs" | 🔎 AI Search + 🧠 Azure OpenAI (RAG) |
+
+:::tip[HitaVir Tech says]
+"When a junior asks 'which Azure service should we use?', the senior reply is
+another question — 'what is the actual pattern?' Service choice without pattern =
+tech for tech's sake."
+:::
+
+<KeyTakeaways>
+
+- Every architecture layer has one service that answers its question: ADLS stores, Purview governs, ADF moves, Synapse queries, Power BI serves
+- Azure Databricks is the "full lakehouse in one product" option — Spark + Delta Lake + MLflow + Unity Catalog
+- Zero-copy features (Mirroring, OneLake Shortcuts, Direct Lake) remove whole classes of replication pipelines
+- Diagnose the pattern first, then pick services — never the other way around
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'A team maintains duplicate copies of the same data in the lake and the warehouse. What is the modern fix?',
+      options: [
+        'Add more ADF copy jobs to keep them in sync',
+        'Use zero-copy features — Mirroring, Serverless SQL, or Fabric Direct Lake',
+        'Delete the lake and keep only the warehouse',
+        'Buy a larger Dedicated pool',
+      ],
+      answer: 1,
+      explanation:
+        'Zero-copy makes data appear in the other system without moving it — fewer pipelines, fresher analytics, one copy of the truth.',
+    },
+    {
+      question: 'Which service is the "connective tissue" that moves data between 100+ sources and sinks?',
+      options: [
+        'Power BI',
+        'Event Hubs',
+        'Azure Data Factory',
+        'Key Vault',
+      ],
+      answer: 2,
+      explanation:
+        'ADF provides Copy Activity, Mapping Data Flows, triggers, and integration runtimes — the plumbing of most Azure data platforms.',
+    },
+    {
+      question: 'What is the governance layer inside Azure Databricks called?',
+      options: [
+        'Unity Catalog',
+        'Microsoft Purview',
+        'Entra ID',
+        'Defender for Cloud',
+      ],
+      answer: 0,
+      explanation:
+        'Unity Catalog plays the Purview role within Databricks — catalog, lineage, and fine-grained permissions for the lakehouse.',
+    },
+  ]}
+/>
+
+<LessonComplete />

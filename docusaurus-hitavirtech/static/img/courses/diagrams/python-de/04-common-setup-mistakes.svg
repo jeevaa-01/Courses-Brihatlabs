@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 510 226" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="510" height="226" rx="12" fill="#f8f9fa"/>
+  <text x="255" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Common Setup Mistakes</text>
+  <rect x="15" y="40" width="182" height="30" rx="6" fill="#1a73e8"/>
+  <text x="106" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Problem</text>
+  <rect x="202" y="40" width="293" height="30" rx="6" fill="#1a73e8"/>
+  <text x="348" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Fix</text>
+  <rect x="15" y="76" width="182" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">python not found</text>
+  <rect x="202" y="76" width="293" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="212" y="94" font-size="12" fill="#1a73e8">Reinstall Python with "Add to PATH" checked</text>
+  <rect x="15" y="108" width="182" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">pip not found</text>
+  <rect x="202" y="108" width="293" height="28" rx="4" fill="white"/>
+  <text x="212" y="126" font-size="12" fill="#3c4043">Run python -m pip install --upgrade pip</text>
+  <rect x="15" y="140" width="182" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" fill="#1a73e8">Wrong Python version</text>
+  <rect x="202" y="140" width="293" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="212" y="158" font-size="12" fill="#1a73e8">Use python3 instead of python</text>
+  <rect x="15" y="172" width="182" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">venv activation fails</text>
+  <rect x="202" y="172" width="293" height="28" rx="4" fill="white"/>
+  <text x="212" y="190" font-size="12" fill="#3c4043">Use the correct command for your terminal</text>
+  <text x="255" y="220" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

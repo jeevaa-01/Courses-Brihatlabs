@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 628 450" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="628" height="450" rx="12" fill="#f8f9fa"/>
+  <text x="314" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Dict Methods — Complete Reference</text>
+  <rect x="15" y="40" width="204" height="30" rx="6" fill="#1a73e8"/>
+  <text x="117" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Method</text>
+  <rect x="224" y="40" width="268" height="30" rx="6" fill="#1a73e8"/>
+  <text x="358" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">What it does</text>
+  <rect x="498" y="40" width="115" height="30" rx="6" fill="#1a73e8"/>
+  <text x="555" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Returns</text>
+  <rect x="15" y="76" width="204" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">get(key, default)</text>
+  <rect x="224" y="76" width="268" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="234" y="94" font-size="12" fill="#1a73e8">Value for key, or default if missing</text>
+  <rect x="498" y="76" width="115" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="508" y="94" font-size="12" fill="#1a73e8">value</text>
+  <rect x="15" y="108" width="204" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">keys()</text>
+  <rect x="224" y="108" width="268" height="28" rx="4" fill="white"/>
+  <text x="234" y="126" font-size="12" fill="#3c4043">View of all keys</text>
+  <rect x="498" y="108" width="115" height="28" rx="4" fill="white"/>
+  <text x="508" y="126" font-size="12" fill="#3c4043">view</text>
+  <rect x="15" y="140" width="204" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">values()</text>
+  <rect x="224" y="140" width="268" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="234" y="158" font-size="12" fill="#1a73e8">View of all values</text>
+  <rect x="498" y="140" width="115" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="508" y="158" font-size="12" fill="#1a73e8">view</text>
+  <rect x="15" y="172" width="204" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">items()</text>
+  <rect x="224" y="172" width="268" height="28" rx="4" fill="white"/>
+  <text x="234" y="190" font-size="12" fill="#3c4043">View of all (key, value) pairs</text>
+  <rect x="498" y="172" width="115" height="28" rx="4" fill="white"/>
+  <text x="508" y="190" font-size="12" fill="#3c4043">view</text>
+  <rect x="15" y="204" width="204" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">update(other)</text>
+  <rect x="224" y="204" width="268" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="234" y="222" font-size="12" fill="#1a73e8">Merge another dict / pairs</text>
+  <rect x="498" y="204" width="115" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="508" y="222" font-size="12" font-family="monospace" fill="#1a73e8">None</text>
+  <rect x="15" y="236" width="204" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">setdefault(key, default)</text>
+  <rect x="224" y="236" width="268" height="28" rx="4" fill="white"/>
+  <text x="234" y="254" font-size="12" fill="#3c4043">Get value, or insert default if missing</text>
+  <rect x="498" y="236" width="115" height="28" rx="4" fill="white"/>
+  <text x="508" y="254" font-size="12" fill="#3c4043">value</text>
+  <rect x="15" y="268" width="204" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">pop(key, default)</text>
+  <rect x="224" y="268" width="268" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="234" y="286" font-size="12" fill="#1a73e8">Remove key and return its value</text>
+  <rect x="498" y="268" width="115" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="508" y="286" font-size="12" fill="#1a73e8">value</text>
+  <rect x="15" y="300" width="204" height="28" rx="4" fill="white"/>
+  <text x="25" y="318" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">popitem()</text>
+  <rect x="224" y="300" width="268" height="28" rx="4" fill="white"/>
+  <text x="234" y="318" font-size="12" fill="#3c4043">Remove and return the last inserted pair</text>
+  <rect x="498" y="300" width="115" height="28" rx="4" fill="white"/>
+  <text x="508" y="318" font-size="12" font-family="monospace" fill="#3c4043">(key, value)</text>
+  <rect x="15" y="332" width="204" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="350" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">clear()</text>
+  <rect x="224" y="332" width="268" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="234" y="350" font-size="12" fill="#1a73e8">Remove all items</text>
+  <rect x="498" y="332" width="115" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="508" y="350" font-size="12" font-family="monospace" fill="#1a73e8">None</text>
+  <rect x="15" y="364" width="204" height="28" rx="4" fill="white"/>
+  <text x="25" y="382" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">copy()</text>
+  <rect x="224" y="364" width="268" height="28" rx="4" fill="white"/>
+  <text x="234" y="382" font-size="12" fill="#3c4043">Return a shallow copy</text>
+  <rect x="498" y="364" width="115" height="28" rx="4" fill="white"/>
+  <text x="508" y="382" font-size="12" fill="#3c4043">new dict</text>
+  <rect x="15" y="396" width="204" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="414" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">fromkeys(keys, value)</text>
+  <rect x="224" y="396" width="268" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="234" y="414" font-size="12" fill="#1a73e8">Build a dict from a list of keys</text>
+  <rect x="498" y="396" width="115" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="508" y="414" font-size="12" fill="#1a73e8">new dict</text>
+  <text x="314" y="444" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

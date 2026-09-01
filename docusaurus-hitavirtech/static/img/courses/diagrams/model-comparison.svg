@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 300" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="s" x="-2%" y="-2%" width="104%" height="108%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect width="780" height="300" rx="12" fill="#f8f9fa"/>
+  <text x="390" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Conceptual vs Logical vs Physical</text>
+
+  <!-- Header row -->
+  <rect x="20" y="40" width="160" height="32" rx="6" fill="#5f6368"/>
+  <text x="100" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Aspect</text>
+  <rect x="185" y="40" width="190" height="32" rx="6" fill="#1a73e8"/>
+  <text x="280" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Conceptual</text>
+  <rect x="380" y="40" width="190" height="32" rx="6" fill="#e8710a"/>
+  <text x="475" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Logical</text>
+  <rect x="575" y="40" width="185" height="32" rx="6" fill="#34a853"/>
+  <text x="667" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Physical</text>
+
+  <!-- Row 1: Detail level -->
+  <rect x="20" y="78" width="160" height="30" rx="4" fill="#e8eaed"/>
+  <text x="32" y="98" font-size="12" font-weight="600" fill="#202124">Detail level</text>
+  <rect x="185" y="78" width="190" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="280" y="98" text-anchor="middle" font-size="12" fill="#1a73e8">High-level</text>
+  <rect x="380" y="78" width="190" height="30" rx="4" fill="#fef7e0"/>
+  <text x="475" y="98" text-anchor="middle" font-size="12" fill="#e8710a">Medium</text>
+  <rect x="575" y="78" width="185" height="30" rx="4" fill="#e6f4ea"/>
+  <text x="667" y="98" text-anchor="middle" font-size="12" fill="#34a853">Very detailed</text>
+
+  <!-- Row 2: Audience -->
+  <rect x="20" y="112" width="160" height="30" rx="4" fill="white"/>
+  <text x="32" y="132" font-size="12" font-weight="600" fill="#202124">Audience</text>
+  <rect x="185" y="112" width="190" height="30" rx="4" fill="white"/>
+  <text x="280" y="132" text-anchor="middle" font-size="12" fill="#3c4043">Business users</text>
+  <rect x="380" y="112" width="190" height="30" rx="4" fill="white"/>
+  <text x="475" y="132" text-anchor="middle" font-size="12" fill="#3c4043">Architects</text>
+  <rect x="575" y="112" width="185" height="30" rx="4" fill="white"/>
+  <text x="667" y="132" text-anchor="middle" font-size="12" fill="#3c4043">Engineers/DBAs</text>
+
+  <!-- Row 3: Contains columns? -->
+  <rect x="20" y="146" width="160" height="30" rx="4" fill="#e8eaed"/>
+  <text x="32" y="166" font-size="12" font-weight="600" fill="#202124">Contains columns?</text>
+  <rect x="185" y="146" width="190" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="280" y="166" text-anchor="middle" font-size="12" fill="#1a73e8">No</text>
+  <rect x="380" y="146" width="190" height="30" rx="4" fill="#fef7e0"/>
+  <text x="475" y="166" text-anchor="middle" font-size="12" fill="#e8710a">Yes</text>
+  <rect x="575" y="146" width="185" height="30" rx="4" fill="#e6f4ea"/>
+  <text x="667" y="166" text-anchor="middle" font-size="12" fill="#34a853">Yes + data types</text>
+
+  <!-- Row 4: Contains indexes? -->
+  <rect x="20" y="180" width="160" height="30" rx="4" fill="white"/>
+  <text x="32" y="200" font-size="12" font-weight="600" fill="#202124">Contains indexes?</text>
+  <rect x="185" y="180" width="190" height="30" rx="4" fill="white"/>
+  <text x="280" y="200" text-anchor="middle" font-size="12" fill="#3c4043">No</text>
+  <rect x="380" y="180" width="190" height="30" rx="4" fill="white"/>
+  <text x="475" y="200" text-anchor="middle" font-size="12" fill="#3c4043">No</text>
+  <rect x="575" y="180" width="185" height="30" rx="4" fill="white"/>
+  <text x="667" y="200" text-anchor="middle" font-size="12" fill="#3c4043">Yes</text>
+
+  <!-- Row 5: Platform specific? -->
+  <rect x="20" y="214" width="160" height="30" rx="4" fill="#e8eaed"/>
+  <text x="32" y="234" font-size="12" font-weight="600" fill="#202124">Platform specific?</text>
+  <rect x="185" y="214" width="190" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="280" y="234" text-anchor="middle" font-size="12" fill="#1a73e8">No</text>
+  <rect x="380" y="214" width="190" height="30" rx="4" fill="#fef7e0"/>
+  <text x="475" y="234" text-anchor="middle" font-size="12" fill="#e8710a">No</text>
+  <rect x="575" y="214" width="185" height="30" rx="4" fill="#e6f4ea"/>
+  <text x="667" y="234" text-anchor="middle" font-size="12" fill="#34a853">Yes</text>
+
+  <!-- Row 6: Created by -->
+  <rect x="20" y="248" width="160" height="30" rx="4" fill="white"/>
+  <text x="32" y="268" font-size="12" font-weight="600" fill="#202124">Created by</text>
+  <rect x="185" y="248" width="190" height="30" rx="4" fill="white"/>
+  <text x="280" y="268" text-anchor="middle" font-size="12" fill="#3c4043">Business analysts</text>
+  <rect x="380" y="248" width="190" height="30" rx="4" fill="white"/>
+  <text x="475" y="268" text-anchor="middle" font-size="12" fill="#3c4043">Data architects</text>
+  <rect x="575" y="248" width="185" height="30" rx="4" fill="white"/>
+  <text x="667" y="268" text-anchor="middle" font-size="12" fill="#3c4043">Data engineers</text>
+</svg>

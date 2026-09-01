@@ -1,0 +1,113 @@
+---
+title: 'Step 6 — Create Your Rebuild Challenge Tracker'
+sidebar_position: 6
+description: 'Create a tracker that logs guided, notes-only, and blind rebuild attempts so you can objectively measure skill ownership.'
+---
+
+<DurationBadge minutes={5} />
+
+<LearningObjectives>
+
+- Create `challenges/rebuild-tracker.md` with the attempt log, personal records, and streak sections
+- Log every codelab three times: guided, notes-only, and blind
+- Use completion percentage and time as objective measures of skill ownership
+
+</LearningObjectives>
+
+### Step Objective
+
+Create a tracker to log your rebuild attempts and measure skill ownership over time.
+
+### Commands
+
+```bash
+cat > ~/hitavir-learning-system/challenges/rebuild-tracker.md << 'TRACKER'
+# Rebuild Challenge Tracker
+
+### How This Works
+After completing each codelab, attempt to rebuild it without the guide.
+Track your attempts here. Aim for Attempt 3 (blind rebuild) on every lab.
+
+### Rebuild Log
+| Codelab | Attempt | Time | Completion | What I Forgot |
+|---------|---------|------|------------|---------------|
+| HitaVir Tech Code | 1 (Guided) | -- min | --% | -- |
+| HitaVir Tech Code | 2 (Notes) | -- min | --% | -- |
+| HitaVir Tech Code | 3 (Blind) | -- min | --% | -- |
+
+### Personal Records
+- Fastest full rebuild: --
+- Most improved codelab: --
+- Skills I can rebuild blind: --
+
+### Streak
+- Current rebuild streak: 0 codelabs
+- Best streak: 0 codelabs
+TRACKER
+
+# Verify
+cat ~/hitavir-learning-system/challenges/rebuild-tracker.md
+```
+
+### Why This Step Matters
+
+**"The restless mind is subdued through steady practice and detachment."** *(Bhagavad Gita 6.35)* — The rebuild tracker is your objective measure of skill ownership. Anyone can follow a guide. The tracker proves you can build without one. When you can rebuild three codelabs blind, you are genuinely job-ready — not just tutorial-complete.
+
+### Expected Output
+
+The complete rebuild tracker should display with the log table, personal records, and streak sections.
+
+### Common Errors and Fixes
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Heredoc content missing sections | Copy error | Re-run the full command block |
+| File permissions issue | Restrictive umask | Check with `ls -la` and `chmod 644` if needed |
+
+### Checkpoint
+
+```
+Verify before moving on:
+  [x] rebuild-tracker.md exists in challenges/
+  [x] Table has columns for Codelab, Attempt, Time, Completion
+  [x] You understand the 3-attempt system
+```
+
+<KeyTakeaways>
+
+- Anyone can follow a guide — the tracker proves you can build WITHOUT one
+- Log every codelab three times: Attempt 1 (guided), Attempt 2 (notes), Attempt 3 (blind)
+- Three blind rebuilds means you are genuinely job-ready, not just tutorial-complete
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'What is the goal state for every codelab in the rebuild tracker?',
+      options: [
+        'Attempt 1 completed with the guide open',
+        'Attempt 3 — a blind rebuild with everything closed',
+        'Reading the codelab twice',
+        'Copying the commands into your notes',
+      ],
+      answer: 1,
+      explanation:
+        'Aim for Attempt 3 on every lab. Guided and notes-based rebuilds are stepping stones to blind ownership.',
+    },
+    {
+      question: 'Which columns does the rebuild log track for each attempt?',
+      options: [
+        'Codelab, Attempt, Time, Completion, What I Forgot',
+        'Date, Mood, Difficulty, Rating',
+        'Repository, Branch, Commit, Tag',
+        'Instructor, Score, Certificate, Badge',
+      ],
+      answer: 0,
+      explanation:
+        'Time and completion percentage make progress measurable; "What I Forgot" tells you exactly what to review.',
+    },
+  ]}
+/>
+
+<LessonComplete />

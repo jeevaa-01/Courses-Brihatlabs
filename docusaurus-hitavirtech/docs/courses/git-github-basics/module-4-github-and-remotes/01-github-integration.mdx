@@ -1,0 +1,151 @@
+---
+title: 'GitHub Integration'
+sidebar_position: 1
+description: 'Create a GitHub repository, connect it as a remote called origin, and push your local commits online.'
+---
+
+<DurationBadge minutes={10} />
+
+<LearningObjectives>
+
+- Create a repository on GitHub without initializing a README
+- Connect local to remote with `git remote add origin`
+- Push your first commits with `git push -u origin main` and verify online
+
+</LearningObjectives>
+
+Time to connect your local repository to GitHub and share your code with the world.
+
+### Step 1 — Create a Repository on GitHub
+
+1. Go to [https://github.com/new](https://github.com/new)
+2. Repository name: `git-learning`
+3. Description: "Learning Git and GitHub with HitaVir Tech"
+4. Select **Public**
+5. Do **NOT** initialize with README (we already have one)
+6. Click **Create repository**
+
+### Step 2 — Connect Local to Remote
+
+```bash
+git remote add origin https://github.com/YOUR_USERNAME/git-learning.git
+```
+
+Replace `YOUR_USERNAME` with your actual GitHub username.
+
+### Step 3 — Verify the Remote
+
+```bash
+git remote -v
+```
+
+**Expected output:**
+
+```
+origin  https://github.com/YOUR_USERNAME/git-learning.git (fetch)
+origin  https://github.com/YOUR_USERNAME/git-learning.git (push)
+```
+
+### Step 4 — Set Main Branch
+
+```bash
+git branch -M main
+```
+
+### Step 5 — Push to GitHub
+
+```bash
+git push -u origin main
+```
+
+The `-u` flag sets `origin main` as the default upstream. Future pushes only need `git push`.
+
+**Expected output:**
+
+```
+Enumerating objects: 12, done.
+Counting objects: 100% (12/12), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (8/8), done.
+Writing objects: 100% (12/12), 1.10 KiB | 1.10 MiB/s, done.
+Total 12 (delta 2), reused 0 (delta 0)
+To https://github.com/YOUR_USERNAME/git-learning.git
+ * [new branch]      main -> main
+Branch 'main' set up to track remote branch 'main' from 'origin'.
+```
+
+### Step 6 — Verify on GitHub
+
+Open `https://github.com/YOUR_USERNAME/git-learning` in your browser. You should see all your files!
+
+### Understanding Remote
+
+```
+┌──────────────┐                    ┌──────────────┐
+│   Your PC    │     git push       │   GitHub     │
+│  (Local)     │ ──────────────────▶│  (Remote)    │
+│              │                    │              │
+│              │     git pull       │              │
+│              │ ◀──────────────────│              │
+└──────────────┘                    └──────────────┘
+```
+
+| Term | Meaning |
+|------|---------|
+| `origin` | Nickname for the remote repository URL |
+| `upstream` | The original repo (if you forked) |
+| `remote` | Any repository that is not on your computer |
+
+> **HitaVir Tech says:** "Think of `git push` as uploading your work to Google Drive, and `git pull` as downloading your team's latest work. Push often, pull before you start working."
+
+<KeyTakeaways>
+
+- `origin` is just a nickname for your remote repository's URL
+- Do NOT initialize the GitHub repo with a README when you already have one locally
+- `git push -u origin main` sets the upstream — future pushes only need `git push`
+- `git remote -v` verifies which remote your repo is connected to
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'In Git, what exactly is "origin"?',
+      options: [
+        'The first commit of the repository',
+        'A nickname for the remote repository URL',
+        'The main branch on GitHub',
+        'Your GitHub username',
+      ],
+      answer: 1,
+      explanation:
+        'origin is simply the default name Git gives the remote URL you added — you could name it anything.',
+    },
+    {
+      question: 'What does the -u flag do in git push -u origin main?',
+      options: [
+        'Uploads uncommitted changes too',
+        'Forces the push even if rejected',
+        'Sets origin main as the default upstream so future pushes only need git push',
+        'Updates Git to the latest version first',
+      ],
+      answer: 2,
+      explanation:
+        'The -u (--set-upstream) flag links your local branch to the remote branch, so plain git push works afterwards.',
+    },
+    {
+      question: 'Why did we NOT tick "Initialize with README" when creating the GitHub repo?',
+      options: [
+        'We already have a README locally — initializing would create conflicting histories',
+        'READMEs cost extra on GitHub',
+        'READMEs can only be added from the command line',
+        'Public repositories cannot have READMEs',
+      ],
+      answer: 0,
+      explanation:
+        'Our local repo already has commits including a README. An initialized remote would have its own commit, causing a history mismatch on the first push.',
+    },
+  ]}
+/>
+
+<LessonComplete />

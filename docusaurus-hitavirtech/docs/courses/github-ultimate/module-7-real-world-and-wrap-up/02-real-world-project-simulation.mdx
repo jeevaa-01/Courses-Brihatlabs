@@ -1,0 +1,325 @@
+---
+title: 'Real-World Project Simulation'
+sidebar_position: 2
+description: 'Play three team members at once — build the portfolio site with feature branches, create and resolve a real conflict, tag the release, and clean up.'
+---
+
+<DurationBadge minutes={15} />
+
+<LearningObjectives>
+
+- Run a multi-developer workflow solo: parallel feature branches for Alice and Bob
+- Trigger and resolve a realistic CSS merge conflict
+- Ship the result: tag the release and clean up merged branches
+
+</LearningObjectives>
+
+Let us put everything together with a realistic team simulation. You will play multiple roles.
+
+### The Scenario
+
+You are building a team portfolio website. Simulate three team members:
+
+- **HitaVir** (you on `main`) — Project lead
+- **Dev-Alice** (branch) — Frontend developer
+- **Dev-Bob** (branch) — Content writer
+
+### Step 1 — Project Setup (HitaVir)
+
+Make sure you are in your project directory:
+
+```bash
+cd ~/hitavir-portfolio
+git switch main
+```
+
+Create the project structure:
+
+```bash
+mkdir -p css js
+cat > index.html << 'EOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HitaVir Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav>Home | About | Skills | Contact</nav>
+    </header>
+    <main>
+        <h1>Welcome to HitaVir Portfolio</h1>
+        <p>Built during the HitaVir Tech Git and GitHub codelab.</p>
+    </main>
+    <script src="js/main.js"></script>
+</body>
+</html>
+EOF
+
+cat > css/style.css << 'EOF'
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+}
+nav {
+    font-size: 16px;
+}
+main {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+}
+EOF
+
+cat > js/main.js << 'EOF'
+console.log("HitaVir Portfolio loaded!");
+document.addEventListener("DOMContentLoaded", function() {
+    console.log("Page ready.");
+});
+EOF
+
+git add .
+git commit -m "Set up project structure with HTML, CSS, and JS"
+git push
+```
+
+### Step 2 — Alice Adds the Skills Section
+
+```bash
+git switch -c feature/alice-skills
+cat >> index.html << 'EOF'
+<!-- Skills Section - Added by Alice -->
+EOF
+```
+
+Now edit `index.html` to add a skills section before `</main>`:
+
+```bash
+cat > skills.html << 'EOF'
+<section id="skills">
+    <h2>Skills</h2>
+    <ul>
+        <li>Git & GitHub</li>
+        <li>Python</li>
+        <li>JavaScript</li>
+        <li>SQL</li>
+        <li>Cloud Services</li>
+    </ul>
+</section>
+EOF
+git add .
+git commit -m "Add skills section (Alice)"
+git push -u origin feature/alice-skills
+```
+
+### Step 3 — Bob Adds the Contact Section
+
+```bash
+git switch main
+git switch -c feature/bob-contact
+cat > contact.html << 'EOF'
+<section id="contact">
+    <h2>Contact</h2>
+    <p>Email: hitavir@example.com</p>
+    <p>GitHub: github.com/hitavir25</p>
+    <p>LinkedIn: linkedin.com/in/hitavir</p>
+</section>
+EOF
+git add .
+git commit -m "Add contact section (Bob)"
+git push -u origin feature/bob-contact
+```
+
+### Step 4 — Create a Conflict
+
+Both Alice and Bob modify the same file:
+
+```bash
+git switch feature/alice-skills
+echo "/* Alice's styles */" >> css/style.css
+echo "section { padding: 20px; border: 1px solid #ddd; }" >> css/style.css
+git add css/style.css
+git commit -m "Alice: add section styles"
+git push
+```
+
+```bash
+git switch feature/bob-contact
+echo "/* Bob's styles */" >> css/style.css
+echo "section { margin: 10px 0; background: #fafafa; }" >> css/style.css
+git add css/style.css
+git commit -m "Bob: add section styles"
+git push
+```
+
+### Step 5 — Merge Alice's Work First
+
+```bash
+git switch main
+git merge feature/alice-skills
+git push
+```
+
+### Step 6 — Merge Bob's Work (Conflict!)
+
+```bash
+git merge feature/bob-contact
+```
+
+You will get a merge conflict in `css/style.css`. Resolve it by combining both styles:
+
+```bash
+cat > css/style.css << 'EOF'
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+}
+nav {
+    font-size: 16px;
+}
+main {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+}
+/* Combined team styles */
+section {
+    padding: 20px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    background: #fafafa;
+}
+EOF
+
+git add css/style.css
+git commit -m "Merge Bob's contact section, resolve style conflict"
+git push
+```
+
+### Step 7 — Tag the Release
+
+```bash
+git tag -a v1.0.0 -m "First release: portfolio with skills and contact"
+git push origin v1.0.0
+```
+
+### Step 8 — Clean Up Branches
+
+```bash
+git branch -d feature/alice-skills
+git branch -d feature/bob-contact
+git push origin --delete feature/alice-skills
+git push origin --delete feature/bob-contact
+```
+
+### Final Project Structure
+
+```
+hitavir-portfolio/
+├── .git/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── .gitignore
+├── README.md
+├── index.html
+├── bio.md
+├── about.txt
+├── project.txt
+├── skills.txt
+├── skills.html
+├── contact.html
+├── css/
+│   └── style.css
+├── js/
+│   └── main.js
+└── nav.html
+```
+
+:::tip[HitaVir Tech says]
+"This simulation mirrors real-world teamwork. In actual projects, you will do this daily — branches, PRs, conflicts, merges. The more you practice, the more natural it becomes."
+:::
+
+### Expert Level Recap
+
+You have completed the Expert Level! Here is what you learned:
+
+- Git internals (HEAD, refs, objects)
+- Interactive rebase and squashing
+- Git hooks for automation
+- Collaboration workflows (GitFlow, trunk-based, forking)
+- Full real-world project simulation with multiple developers
+
+<KeyTakeaways>
+
+- Real team development is exactly this loop: branch → commit → push → merge → resolve → release
+- Merging the FIRST branch is clean; the second one conflicts when both touched the same file
+- Combining both sides of a conflict (Alice's border + Bob's background) is a common resolution
+- Tag the milestone (`v1.0.0`) after the merge so the release point is findable forever
+- Delete merged branches locally AND on the remote to keep the repository tidy
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why did merging Bob’s branch conflict while merging Alice’s did not?',
+      options: [
+        'Bob forgot to commit',
+        'Alice merged first; Bob’s branch changed the same css lines that main (via Alice) now had',
+        'Contact sections always conflict',
+        'Bob used git switch instead of git checkout',
+      ],
+      answer: 1,
+      explanation:
+        'The first merge is conflict-free because main had not changed. After Alice landed, Bob’s competing edits to style.css collided.',
+    },
+    {
+      question: 'Which command deletes the feature branch on the REMOTE after it is merged?',
+      options: [
+        'git branch -d feature/alice-skills',
+        'git remote remove feature/alice-skills',
+        'git push origin --delete feature/alice-skills',
+        'git branch -D origin feature/alice-skills',
+      ],
+      answer: 2,
+      explanation:
+        'git branch -d removes only the local branch; pushing a --delete removes it from origin.',
+    },
+    {
+      question: 'What was the final step that marked the shipped version of the project?',
+      options: [
+        'Creating an annotated tag v1.0.0 and pushing it',
+        'Running git reset --hard',
+        'Deleting the repository',
+        'Renaming main to release',
+      ],
+      answer: 0,
+      explanation:
+        'An annotated tag bookmarks the exact release commit so anyone can return to or build the shipped version.',
+    },
+  ]}
+/>
+
+<LessonComplete />

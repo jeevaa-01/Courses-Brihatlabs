@@ -1,0 +1,701 @@
+---
+title: "PEP 8 — Python's Style Guide for Professional Code"
+sidebar_position: 3
+description: 'Master the seven pillars of PEP 8 — indentation, line length, imports, naming, whitespace, comments, and Pythonic recommendations — and automate them with black and flake8.'
+---
+
+<DurationBadge minutes={15} />
+
+<LearningObjectives>
+
+- Apply the 7 pillars of PEP 8 to every Python file you write
+- Choose the correct naming style: `snake_case`, `PascalCase`, `UPPER_SNAKE_CASE`, and `_private`
+- Auto-format with `black` and lint with `flake8` or `ruff` until zero warnings remain
+- Refactor messy code into flake8-clean, professional Python
+
+</LearningObjectives>
+
+**What is PEP 8?**
+
+PEP 8 is the official **Style Guide for Python Code** — a set of rules that tells you HOW to format your code so every Python developer in the world can read it. PEP stands for "Python Enhancement Proposal." PEP 8 was written in 2001 by Guido van Rossum (Python's creator) and is the universal standard.
+
+Read the full document any time at: [https://peps.python.org/pep-0008/](https://peps.python.org/pep-0008/)
+
+**Why does this matter for Data Engineers?**
+
+Code is read 10 times more than it is written. Every team you join — banks, startups, FAANG, consultancies — expects PEP 8-compliant code. Tools like `black`, `flake8`, `ruff`, and `pylint` check it automatically in CI/CD. If your pull request fails the style check, it does not merge.
+
+### The Big Picture — The 7 Pillars of PEP 8
+
+```
++-----------------------------------------------------------------+
+|                  THE 7 PILLARS OF PEP 8                         |
++-----------------------------------------------------------------+
+|   1. Indentation        4 spaces, never tabs                    |
+|   2. Line Length        79 chars (88 with Black formatter)      |
+|   3. Imports            Top of file, grouped, alphabetized      |
+|   4. Naming             snake_case, PascalCase, UPPER_SNAKE     |
+|   5. Whitespace         Around operators, after commas          |
+|   6. Comments           Block, inline, docstrings               |
+|   7. Recommendations    `is None`, `isinstance`, `enumerate`    |
++-----------------------------------------------------------------+
+```
+
+Let us walk through each pillar with Data Engineering examples.
+
+### Pillar 1 — Indentation
+
+:::info[The rule]
+**4 spaces** per indentation level. Never tabs. Never mix.
+:::
+
+Python uses indentation to know what code is "inside" a function, loop, or `if`. Consistent indentation is not a suggestion — it is a syntax requirement.
+
+**CORRECT — 4 spaces per level**
+
+```python
+def transform(records):
+    for record in records:          # level 1  ->  4 spaces
+        if record["valid"]:         # level 2  ->  8 spaces  (4 + 4)
+            record["seen"] = True   # level 3  ->  12 spaces (4 + 4 + 4)
+    return records                  # back to level 1  ->  4 spaces
+```
+
+**Count the spaces on the left edge of each line** — every new level adds **exactly 4 more spaces** (4 → 8 → 12 → 16 …):
+
+```text
+def transform(records):           <- 0 spaces  (top level)
+....for record in records:        <- 4 spaces  (level 1)
+........if record["valid"]:       <- 8 spaces  (level 2)
+............record["seen"] = True <- 12 spaces (level 3)
+....return records                <- 4 spaces  (back to level 1)
+
+(each dot "." above marks one space)
+```
+
+**WRONG — 2 spaces (the ONLY change is the indent width)**
+
+```python
+def transform(records):
+  for record in records:        # 2 spaces, not 4
+    if record["valid"]:         # 4 spaces, not 8
+      record["seen"] = True     # 6 spaces, not 12
+  return records
+```
+
+**FATAL — mixing tabs and spaces (Python crashes with `TabError`)**
+
+```python
+def transform(records):
+    for record in records:    # ← spaces
+        if record["valid"]:   # ← tab here = invisible bug
+            ...
+```
+
+:::tip[VS Code fix]
+Open Settings, search for `render whitespace`, set it to `all`. Tabs and spaces become visible so you can spot the mix instantly.
+:::
+
+### Pillar 2 — Line Length
+
+**The rule:**
+
+- **PEP 8 default**: 79 characters (a 1980s legacy from VT100 terminals)
+- **Black formatter**: 88 characters (the modern compromise)
+- **Many teams**: 120 characters (matches a wide monitor)
+
+Pick one limit per project and stick to it. Long lines are painful to review side-by-side in a pull request diff.
+
+**WRONG — 130+ characters, hard to scan**
+
+```python
+result = pd.merge(sales_df, customer_df, left_on="customer_id", right_on="id", how="left", validate="many_to_one")
+```
+
+**CORRECT — wrapped at 88 chars, every argument on its own line**
+
+```python
+result = pd.merge(
+    sales_df,                    # each wrapped line -> indent 4 spaces
+    customer_df,                 # 1 space after every comma, 0 before
+    left_on="customer_id",       # 0 spaces around = (keyword argument)
+    right_on="id",
+    how="left",
+    validate="many_to_one",
+)                                # closing ) lines up with the start
+```
+
+**Spacing rules at work here:** the opening `(` ends the first line, each argument sits on its own line indented **4 spaces**, keyword `=` gets **0 spaces** around it, and the closing `)` drops back to **0 spaces** (column 0) to mark the end.
+
+### Pillar 3 — Imports
+
+**The rule:** Imports go at the **top of the file**, on **separate lines**, grouped in this order, with **one blank line** between groups:
+
+1. **Standard library** — `os`, `csv`, `json`, `logging`
+2. **Third-party libraries** — `pandas`, `numpy`, `requests`
+3. **Local modules** — `from src.transform import clean`
+
+**CORRECT — three groups, separated by blank lines**
+
+```python
+import csv                              # Group 1: standard library
+import json
+import logging
+from datetime import datetime
+
+import numpy as np                      # Group 2: third-party
+import pandas as pd
+
+from src.extract import extract_csv     # Group 3: your local modules
+from src.transform import clean_records
+```
+
+**Vertical spacing here is exact:** **1 blank line** between each of the three groups (you can see the two gaps above), and **0 blank lines** between imports inside the same group.
+
+**WRONG — common beginner mistakes**
+
+```python
+from pandas import *           # wildcard pollutes the namespace
+import os, sys, json           # multiple imports on one line
+import pandas, csv, datetime   # mixes stdlib and third-party
+```
+
+### Pillar 4 — Naming Conventions
+
+**The naming cheat sheet that fits in your head:**
+
+![Pillar 4 — Naming Conventions](/img/courses/diagrams/python-de/05-pillar-4-naming-conventions.svg)
+
+**CORRECT**
+
+```python
+MAX_BATCH_SIZE = 1000   # constant — UPPER_SNAKE_CASE
+
+
+def calculate_total(price, quantity):   # function — snake_case
+    return price * quantity
+
+
+class SalesPipeline:                    # class — PascalCase
+    def __init__(self, source_path):
+        self.source_path = source_path
+        self._records_cache = []        # internal — leading underscore
+```
+
+(Note the **2 blank lines** before the `def` and the `class` — that is the same top-level spacing rule from Pillar 5, applied here.)
+
+**WRONG**
+
+```python
+maxBatchSize = 1000           # camelCase is JavaScript, not Python
+def CalculateTotal(p, q):     # PascalCase belongs to classes
+    return p * q
+class sales_pipeline:         # snake_case belongs to functions/vars
+    pass
+```
+
+:::warning[PITFALL]
+Single-letter variables (`x`, `i`, `tmp`, `c`) are acceptable inside short loops or list comprehensions only. In a real pipeline, `customer_id` always beats `c`. Future-you will thank present-you.
+:::
+
+### Pillar 5 — Whitespace
+
+This is the pillar people get wrong most often, so here are the **exact space counts**. Memorise these eight and you will never guess again:
+
+```text
++------------------------------------------------+-------------------------+
+|  WHERE                                         |  HOW MANY SPACES        |
++------------------------------------------------+-------------------------+
+|  Indentation, per level                        |  4   (never tabs)       |
+|  Each side of a binary operator  = + - * /     |  1 before, 1 after      |
+|     %  < >  == != and or ...                   |                         |
+|  After a comma  ,                              |  1 after, 0 before      |
+|  After a colon  :  in a dict                   |  1 after, 0 before      |
+|  Around  =  in a keyword arg / default         |  0   (port=5432)        |
+|  Around  =  in an annotated default            |  1   (port: int = 5432) |
+|  Just inside  ( )  [ ]  { }                    |  0                      |
+|  Before an inline  #  comment                  |  2   (then 1 after #)   |
++------------------------------------------------+-------------------------+
+```
+
+**The caret picture — one space on each side of every operator:**
+
+```text
+price * quantity
+     ^ ^
+     | +--- 1 space AFTER the operator
+     +----- 1 space BEFORE the operator
+```
+
+**CORRECT — count the spaces in each line:**
+
+```python
+# 1 space on EACH side of every binary operator ( * and + here)
+total = price * quantity + tax
+
+# 1 space AFTER each comma, 0 spaces before it
+process(records, batch_size, retries)
+
+# 1 space on each side of = in a normal assignment
+threshold = 0.05
+
+
+# 0 spaces around = for a default value (no type annotation)
+def connect(host, port=5432):
+    pass
+
+
+# 0 spaces around = when passing keyword arguments
+connect(host="localhost", port=5432)
+
+# 0 spaces just inside ( ) [ ] { }; 1 space after the dict colon
+records[0]
+{"key": "value"}
+
+# 1 space around = BECAUSE the parameter is annotated (the nuance!)
+def connect_v2(host: str, port: int = 5432):
+    pass
+```
+
+```python
+# WRONG — every line breaks a space-count rule
+total=price*quantity+tax            # 0 spaces around operators (need 1)
+process(records,batch_size,retries) # 0 spaces after commas (need 1)
+threshold=0.05                      # 0 spaces around = (need 1)
+def connect(host, port = 5432):     # 2 spaces around default = (need 0)
+    pass
+records[ 0 ]                        # 1 space inside [ ] (need 0)
+{ "key" : "value" }                 # spaces inside { } and before : (need 0)
+```
+
+### Pillar 6 — Comments and Docstrings
+
+**Three kinds of comments — know when to use which:**
+
+![Pillar 6 — Comments and Docstrings](/img/courses/diagrams/python-de/06-pillar-6-comments-and-docstrings.svg)
+
+**The spacing rules for comments themselves (with exact counts):**
+
+- **Block comment:** `#` then **1 space**, then the text — `# like this`.
+- **Inline comment:** **2 spaces** before the `#`, then **1 space** after it — `code()  # like this`.
+- Never `#no space` (that is `E265`) and never `code() # one space` before the `#` (that is `E261`).
+
+```python
+# CORRECT — block comment: 1 space after the #, explains WHY
+# Group every order by region and sum the revenue.
+# Used by the daily executive dashboard.
+revenue_by_region = df.groupby("region")["total"].sum()
+
+
+def validate_record(record, rules):
+    """
+    Validate a single record against business rules.
+
+    Args:
+        record (dict): The record to check.
+        rules (dict): Validation rules from config.
+
+    Returns:
+        tuple: (is_valid: bool, errors: list[str])
+    """
+    ...
+```
+
+```python
+# CORRECT — inline comment: 2 spaces before #, 1 space after #
+total = price * quantity  # tax added later by enrichment step
+#                       ^^ exactly 2 spaces here, then "# "
+
+# WRONG — only 1 space before the # (flake8 E261)
+total = price * quantity # tax added later
+
+# WRONG — useless restatement of the code (correct spacing, bad content)
+total = price * quantity  # multiply price by quantity
+```
+
+### Pillar 7 — Programming Recommendations
+
+**The "Pythonic" rules every Data Engineer should know:**
+
+![Pillar 7 — Programming Recommendations](/img/courses/diagrams/python-de/07-pillar-7-programming-recommendations.svg)
+
+### The PEP 8 Toolchain — Tools That Check (and Fix) Your Code
+
+You do not memorize PEP 8 by heart — you install tools that check (and even fix) it for you.
+
+![The PEP 8 Toolchain — Tools That Check (and Fix) Your Code](/img/courses/diagrams/python-de/08-the-pep-8-toolchain-tools-that-check-and-fix-you.svg)
+
+**The 60-second setup for any DE project:**
+
+```bash
+# Install everything
+pip install black isort flake8 ruff
+
+# Auto-format your code (run before every commit)
+black .
+isort .
+
+# Or use the modern, single-tool approach
+ruff format .
+ruff check . --fix
+```
+
+Add these to a `requirements-dev.txt` so every teammate uses the same versions.
+
+### Putting It All Together — A Real Refactor
+
+The same logic, before and after PEP 8 is applied. Read both — feel the difference.
+
+**BEFORE — works, but painful**
+
+```python
+import pandas as pd,numpy as np,csv,json,logging
+def TransformData( records,Threshold=100 ):
+  Cleaned=[]
+  for i in range(len(records)):
+    r=records[i]
+    if r["price"]==None:continue
+    if r["price"]>Threshold:
+      r["total"]=r["price"]*r["qty"];r["category"]="premium"
+      Cleaned.append( r )
+  return Cleaned
+```
+
+**AFTER — PEP 8 compliant** (every space is deliberate)
+
+```python
+import csv                  # one import per line, stdlib group
+import json
+import logging
+
+import numpy as np          # 1 blank line above: stdlib -> third-party
+import pandas as pd
+
+
+def transform_data(records, threshold=100):   # 0 spaces around default =
+    """Filter premium records and compute totals."""
+    cleaned = []                              # 4-space indent (level 1)
+    for record in records:
+        if record["price"] is None:           # is None, not == None
+            continue                          # 8-space indent (level 2)
+        if record["price"] > threshold:       # 1 space around > and =
+            record["total"] = record["price"] * record["qty"]
+            record["category"] = "premium"    # 12-space indent (level 3)
+            cleaned.append(record)
+    return cleaned
+```
+
+**Notice the vertical spacing too:** **1 blank line** splits the standard-library imports from the third-party ones, and **2 blank lines** sit between the imports and the `def` (the PEP 8 rule for every top-level function or class).
+
+#### What changed?
+
+![What changed?](/img/courses/diagrams/python-de/09-what-changed.svg)
+
+### Try It — Format the Bad Code Yourself
+
+Save this deliberately messy code as **`bad_style.py`**:
+
+```python
+import pandas as pd,numpy as np,csv,json,logging
+def TransformData( records,Threshold=100 ):
+  Cleaned=[]
+  for i in range(len(records)):
+    r=records[i]
+    if r["price"]==None:continue
+    if r["price"]>Threshold:
+      r["total"]=r["price"]*r["qty"];r["category"]="premium"
+      Cleaned.append( r )
+  return Cleaned
+```
+
+Now let the tools fix it for you. Install Black and auto-format the file:
+
+```bash
+pip install black
+black bad_style.py
+```
+
+Reopen the file — Black has fixed the indentation, spacing, and line breaks automatically. Naming and the `== None` check are style issues Black does **not** touch, so run Flake8 to flag those:
+
+```bash
+pip install flake8
+flake8 bad_style.py
+```
+
+You will see flake8 print the remaining issues — naming and `== None`. Fix those by hand and run flake8 again until it prints nothing. **That silence is the goal.**
+
+### PEP 8 Cheat Card — Tape This Above Your Monitor
+
+```
++----------------------------------------------------------+
+|  PEP 8 QUICK REFERENCE  -  for Data Engineers            |
++----------------------------------------------------------+
+|  Indent       | 4 spaces, no tabs                        |
+|  Line length  | 79  (or 88 if using Black)               |
+|  Blank lines  | 2 between top-level defs, 1 between meth |
+|  Imports      | stdlib  ->  third-party  ->  local       |
+|  Strings      | "double quotes" preferred for text       |
+|  Variables    | snake_case                               |
+|  Functions    | snake_case()                             |
+|  Classes      | PascalCase                               |
+|  Constants    | UPPER_SNAKE                              |
+|  Privates     | _leading_underscore                      |
+|  None check   | `if x is None:`  not  `== None`          |
+|  Type check   | `isinstance(x, int)`  not  `type(x)==int`|
+|  Empty check  | `if not records:`  not  `len() == 0`     |
+|  Format       | run `black .` before every commit        |
+|  Lint         | run `flake8 .` or `ruff check .`         |
++----------------------------------------------------------+
+```
+
+### The Complete PEP 8 Standard — One Annotated File
+
+Here is **every rule from this whole page, working together in a single, runnable, `flake8`-clean file.** Read it top to bottom: each comment names the rule and the **exact number of spaces** involved. Save it as `pep8_reference.py`, run it, and keep it as your personal cheat file.
+
+**`pep8_reference.py`**
+
+```python
+"""Complete PEP 8 reference - one fully annotated file.
+
+A tiny HitaVir Tech pricing pipeline that demonstrates EVERY core PEP 8
+rule in one place. Each inline comment names the rule and the exact
+number of spaces involved. The whole file is flake8-clean.
+"""
+
+# IMPORTS: 3 groups, 1 blank line between groups, one name per line.
+import json                          # Group 1 - standard library
+from datetime import datetime
+
+# import pandas as pd                # Group 2 - third-party libraries
+# from etl.transform import clean    # Group 3 - your own local modules
+
+
+# CONSTANTS: UPPER_SNAKE_CASE, 1 space on each side of  = .
+DEFAULT_TAX_RATE = 0.18
+MAX_BATCH_SIZE = 1000
+
+
+# 2 blank lines (above) separate every top-level def / class.
+def calculate_total(
+    price: float,
+    quantity: int,
+    tax_rate: float = DEFAULT_TAX_RATE,   # annotated default -> spaces OK
+) -> float:
+    """Return the taxed total for one line item.
+
+    Args:
+        price (float): Unit price.          (1 space after the colon)
+        quantity (int): Number of units.
+        tax_rate (float): Tax fraction; defaults to 0.18.
+
+    Returns:
+        float: price * quantity * (1 + tax_rate), rounded to 2dp.
+    """
+    subtotal = price * quantity          # 1 space around  =  and  *
+    return round(subtotal * (1 + tax_rate), 2)   # 1 space after ,
+
+
+def is_valid(record: dict) -> bool:
+    """Return True only when the record has a positive price."""
+    if record.get("price") is None:      # `is None`, never  == None
+        return False
+    if not isinstance(record["price"], (int, float)):  # not type() ==
+        return False
+    return record["price"] > 0           # 1 space around  >
+
+
+class SalesPipeline:
+    """Turn raw rows into priced, validated records."""
+
+    def __init__(self, source_name: str) -> None:
+        self.source_name = source_name   # 1 space around = (assignment)
+        self._rows: list[dict] = []      # _underscore = internal use
+
+    def add(self, record: dict) -> None:
+        """Store one raw record (1 blank line above each method)."""
+        self._rows.append(record)
+
+    def run(self) -> list[dict]:
+        """Price every valid row, then return the clean list."""
+        cleaned = []
+        for record in self._rows:        # for-each, not range(len(...))
+            if not is_valid(record):     # `if not x`, not  len(x) == 0
+                continue
+            record["total"] = calculate_total(
+                record["price"],         # wrapped args -> indent 4 spaces
+                record["quantity"],
+            )
+            cleaned.append(record)
+        return cleaned
+
+
+# The guard: 1 space on each side of  ==  (never ==None or =="x").
+if __name__ == "__main__":
+    pipeline = SalesPipeline(source_name="orders.csv")  # 0 spaces around =
+    pipeline.add({"price": 100, "quantity": 3})   # 1 space after : and ,
+    pipeline.add({"price": None, "quantity": 1})  # this row gets filtered
+    priced = pipeline.run()
+
+    stamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+    print(f"[{stamp}] priced {len(priced)} record(s)")
+    print(json.dumps(priced, indent=2))   # 2 spaces before this # comment
+```
+
+Run it, then prove it is clean:
+
+```bash
+python pep8_reference.py
+flake8 pep8_reference.py     # prints nothing = perfect PEP 8
+```
+
+**This one file demonstrates all of it:** a module docstring, three import groups (1 blank line apart), `UPPER_SNAKE_CASE` constants, 2 blank lines between top-level definitions, 1 blank line between methods, `snake_case` functions, `PascalCase` class, a `_leading_underscore` internal attribute, type hints, 4-space indentation, 1 space around operators, 0 spaces around keyword `=`, 1 space after every comma, `is None`, `isinstance`, `if not x`, for-each iteration (never `range(len(...))`), and correctly spaced comments. **If you can read and reproduce this file, you have mastered PEP 8.**
+
+### Best-Practice Standards Beyond PEP 8
+
+PEP 8 is style. These are the **engineering practices** every Data Engineer follows on top of it.
+
+![Best-Practice Standards Beyond PEP 8](/img/courses/diagrams/python-de/10-best-practice-standards-beyond-pep-8.svg)
+
+### PEP 8 Checkpoint — You Should Now Be Able To...
+
+```
++----------------------------------------------------------------+
+|  [ ]  Explain what PEP 8 is and why it exists                  |
+|  [ ]  Apply 4-space indentation correctly                      |
+|  [ ]  Group imports in stdlib / third-party / local order      |
+|  [ ]  Pick the right naming style for vars, funcs, classes     |
+|  [ ]  Place spaces around operators but not in default params  |
+|  [ ]  Write a function with a proper docstring                 |
+|  [ ]  Run `black` and `flake8` to auto-check your code         |
++----------------------------------------------------------------+
+```
+
+:::tip[HitaVir Tech says]
+"PEP 8 is to Python what tabs and bullet points are to a resume — non-negotiable polish. Once your editor formats your code with `black` on every save, you stop thinking about style and focus on logic. That is the goal."
+:::
+
+### Assignment 0 — Style-Refactor Drill
+
+**Goal:** Take the bad-style code from this section and clean it up by hand. Then verify with the tools.
+
+**Tasks:**
+
+1. Create a new file `assignment_00_pep8.py` and paste in this messy code:
+
+```python
+import pandas as pd,numpy as np,csv,json,logging
+def TransformData( records,Threshold=100 ):
+  Cleaned=[]
+  for i in range(len(records)):
+    r=records[i]
+    if r["price"]==None:continue
+    if r["price"]>Threshold:
+      r["total"]=r["price"]*r["qty"];r["category"]="premium"
+      Cleaned.append( r )
+  return Cleaned
+```
+
+2. **Without running tools yet**, rewrite it by hand to fix:
+   - Indentation (4 spaces)
+   - Imports (one per line, grouped: stdlib, third-party, local)
+   - Function name (`snake_case`)
+   - Parameter name (`threshold`, lowercase, no spaces around `=`)
+   - Variable names (`record` instead of `r`, `cleaned` instead of `Cleaned`)
+   - Loop pattern (use `for record in records:`, not `range(len(...))`)
+   - `== None` -> `is None`
+   - Two statements per line -> one per line
+   - Add a docstring
+3. Now install and run the tools:
+
+```bash
+pip install black flake8
+black assignment_00_pep8.py
+flake8 assignment_00_pep8.py
+```
+
+4. Fix any remaining `flake8` warnings until it prints **nothing**.
+
+**Success criteria:**
+
+- [ ] All 9 issues from the "what changed" table fixed by hand
+- [ ] `black` makes no further changes (file is already formatted)
+- [ ] `flake8` reports zero warnings
+- [ ] Function still produces the same output for the same input
+
+**Stretch goal:** Add type hints (`list[dict]`, `int`, etc.) and run `mypy` to confirm they are correct.
+
+### What You Have Learnt on This Page
+
+By the end of this page you should be able to confidently:
+
+- Explain what **PEP 8** is, who wrote it (Guido van Rossum, 2001), and why it is universal
+- Apply all **7 Pillars** of PEP 8 (indentation, line length, imports, naming, whitespace, comments, recommendations)
+- Pick the right naming style: `snake_case`, `PascalCase`, `UPPER_SNAKE`, `_private`
+- Run `black` to auto-format and `flake8` to lint until **flake8 prints nothing**
+- Recognise the **engineering practices beyond PEP 8** — type hints, docstrings, single responsibility, no magic numbers
+
+### Your Lifetime PEP 8 Commitment
+
+From this page on, every single Python file you write in this codelab — and beyond — will be:
+
+- Auto-formatted with **`black`** before commit
+- Lint-clean under **`flake8`** (zero warnings)
+- Reviewed against the **PEP 8 Cheat Card** above
+
+:::note[Inspiration for the road ahead]
+*"Any fool can write code that a computer can understand. Good programmers write code that humans can understand."*
+— Martin Fowler
+:::
+
+<KeyTakeaways>
+
+- Indent 4 spaces (never tabs) and keep lines at 79–88 characters
+- Imports go at the top, grouped stdlib → third-party → local, one blank line between groups
+- `snake_case` for functions and variables, `PascalCase` for classes, `UPPER_SNAKE_CASE` for constants
+- Write `is None`, `isinstance()`, and `if not records:` — the Pythonic checks
+- You do not memorize style — `black` formats and `flake8`/`ruff` verify on every commit
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which naming combination is PEP 8-correct?',
+      options: [
+        'CalculateTotal() function and sales_pipeline class',
+        'calculateTotal() function and SALESPIPELINE class',
+        'calculate_total() function and salesPipeline class',
+        'calculate_total() function and SalesPipeline class',
+      ],
+      answer: 3,
+      explanation:
+        'Functions and variables use snake_case; classes use PascalCase; constants use UPPER_SNAKE_CASE.',
+    },
+    {
+      question: 'black reformatted your file but flake8 still complains. Why can both be true?',
+      options: [
+        'black fixes layout, but naming and == None style issues are left for the linter to flag',
+        'flake8 must always run before black',
+        'black only works on Python 2',
+        'flake8 always reports at least one warning',
+      ],
+      answer: 0,
+      explanation:
+        'black handles indentation, spacing, and line breaks. Bad names and == None are semantic style issues that flake8 flags for you to fix by hand.',
+    },
+    {
+      question: 'How many spaces go around = in a keyword argument like connect(port=5432)?',
+      options: [
+        '1 on each side',
+        '1 before only',
+        '0 — no spaces around a keyword =',
+        '2 on each side',
+      ],
+      answer: 2,
+      explanation:
+        'Keyword/default = takes no spaces — unless the parameter is type-annotated, in which case 1 space each side.',
+    },
+  ]}
+/>
+
+<LessonComplete />

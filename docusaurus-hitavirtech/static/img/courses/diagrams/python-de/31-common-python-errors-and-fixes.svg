@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 702 354" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <rect width="702" height="354" rx="12" fill="#f8f9fa"/>
+  <text x="351" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">Common Python Errors and Fixes</text>
+  <rect x="15" y="40" width="167" height="30" rx="6" fill="#1a73e8"/>
+  <text x="98" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Error</text>
+  <rect x="187" y="40" width="222" height="30" rx="6" fill="#1a73e8"/>
+  <text x="298" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Cause</text>
+  <rect x="414" y="40" width="272" height="30" rx="6" fill="#1a73e8"/>
+  <text x="551" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="white">Fix</text>
+  <rect x="15" y="76" width="167" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="94" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">ModuleNotFoundError</text>
+  <rect x="187" y="76" width="222" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="197" y="94" font-size="12" fill="#1a73e8">Package not installed</text>
+  <rect x="414" y="76" width="272" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="424" y="94" font-size="12" font-family="monospace" fill="#1a73e8">pip install package_name</text>
+  <rect x="15" y="108" width="167" height="28" rx="4" fill="white"/>
+  <text x="25" y="126" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">FileNotFoundError</text>
+  <rect x="187" y="108" width="222" height="28" rx="4" fill="white"/>
+  <text x="197" y="126" font-size="12" fill="#3c4043">Wrong file path</text>
+  <rect x="414" y="108" width="272" height="28" rx="4" fill="white"/>
+  <text x="424" y="126" font-size="12" fill="#3c4043">Use os.path.exists() to check first</text>
+  <rect x="15" y="140" width="167" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="158" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">IndentationError</text>
+  <rect x="187" y="140" width="222" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="197" y="158" font-size="12" fill="#1a73e8">Mixed tabs and spaces</text>
+  <rect x="414" y="140" width="272" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="424" y="158" font-size="12" fill="#1a73e8">Use VS Code's "Convert Indentation"</text>
+  <rect x="15" y="172" width="167" height="28" rx="4" fill="white"/>
+  <text x="25" y="190" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">TypeError</text>
+  <rect x="187" y="172" width="222" height="28" rx="4" fill="white"/>
+  <text x="197" y="190" font-size="12" fill="#3c4043">Wrong data type</text>
+  <rect x="414" y="172" width="272" height="28" rx="4" fill="white"/>
+  <text x="424" y="190" font-size="12" fill="#3c4043">Use type() to debug, convert types</text>
+  <rect x="15" y="204" width="167" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="222" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">KeyError</text>
+  <rect x="187" y="204" width="222" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="197" y="222" font-size="12" fill="#1a73e8">Dict key missing</text>
+  <rect x="414" y="204" width="272" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="424" y="222" font-size="12" fill="#1a73e8">Use .get(key, default) instead of [key]</text>
+  <rect x="15" y="236" width="167" height="28" rx="4" fill="white"/>
+  <text x="25" y="254" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">UnicodeDecodeError</text>
+  <rect x="187" y="236" width="222" height="28" rx="4" fill="white"/>
+  <text x="197" y="254" font-size="12" fill="#3c4043">File encoding issue</text>
+  <rect x="414" y="236" width="272" height="28" rx="4" fill="white"/>
+  <text x="424" y="254" font-size="12" fill="#3c4043">Add encoding="utf-8" to open()</text>
+  <rect x="15" y="268" width="167" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="25" y="286" font-size="12" font-weight="700" font-family="monospace" fill="#1a73e8">IndexError</text>
+  <rect x="187" y="268" width="222" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="197" y="286" font-size="12" fill="#1a73e8">List index out of range</text>
+  <rect x="414" y="268" width="272" height="28" rx="4" fill="#e8f0fe"/>
+  <text x="424" y="286" font-size="12" fill="#1a73e8">Check len(list) before accessing</text>
+  <rect x="15" y="300" width="167" height="28" rx="4" fill="white"/>
+  <text x="25" y="318" font-size="12" font-weight="700" font-family="monospace" fill="#3c4043">AttributeError</text>
+  <rect x="187" y="300" width="222" height="28" rx="4" fill="white"/>
+  <text x="197" y="318" font-size="12" fill="#3c4043">Calling method that doesn't exist</text>
+  <rect x="414" y="300" width="272" height="28" rx="4" fill="white"/>
+  <text x="424" y="318" font-size="12" fill="#3c4043">Check dir(object) to see available methods</text>
+  <text x="351" y="348" text-anchor="middle" font-size="10" fill="#9aa0a6">HitaVir Tech</text>
+</svg>

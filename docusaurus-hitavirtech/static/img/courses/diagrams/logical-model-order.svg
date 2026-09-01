@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 340" font-family="Google Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="s" x="-2%" y="-2%" width="104%" height="108%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect width="620" height="340" rx="12" fill="#f8f9fa"/>
+  <text x="310" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">ORDER — Logical Data Model</text>
+
+  <!-- Header row -->
+  <rect x="20" y="40" width="80" height="32" rx="6" fill="#5f6368"/>
+  <text x="60" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Key</text>
+  <rect x="105" y="40" width="200" height="32" rx="6" fill="#5f6368"/>
+  <text x="205" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Column</text>
+  <rect x="310" y="40" width="290" height="32" rx="6" fill="#5f6368"/>
+  <text x="455" y="61" text-anchor="middle" font-size="12" font-weight="700" fill="white">Description</text>
+
+  <!-- Row 1: PK order_id -->
+  <rect x="20" y="78" width="80" height="30" rx="4" fill="#e8f0fe"/>
+  <rect x="30" y="83" width="36" height="20" rx="10" fill="#1a73e8"/>
+  <text x="48" y="97" text-anchor="middle" font-size="11" font-weight="700" fill="white">PK</text>
+  <rect x="105" y="78" width="200" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="117" y="98" font-size="12" font-weight="600" fill="#1a73e8" font-family="Roboto Mono, Consolas, monospace">order_id</text>
+  <rect x="310" y="78" width="290" height="30" rx="4" fill="#e8f0fe"/>
+  <text x="322" y="98" font-size="12" fill="#202124">Unique order identifier</text>
+
+  <!-- Row 2: FK customer_id -->
+  <rect x="20" y="112" width="80" height="30" rx="4" fill="#fef7e0"/>
+  <rect x="30" y="117" width="36" height="20" rx="10" fill="#e8710a"/>
+  <text x="48" y="131" text-anchor="middle" font-size="11" font-weight="700" fill="white">FK</text>
+  <rect x="105" y="112" width="200" height="30" rx="4" fill="#fef7e0"/>
+  <text x="117" y="132" font-size="12" font-weight="600" fill="#e8710a" font-family="Roboto Mono, Consolas, monospace">customer_id</text>
+  <rect x="310" y="112" width="290" height="30" rx="4" fill="#fef7e0"/>
+  <text x="322" y="132" font-size="12" fill="#202124">Links to customer table</text>
+
+  <!-- Row 3: FK product_id -->
+  <rect x="20" y="146" width="80" height="30" rx="4" fill="#fef7e0"/>
+  <rect x="30" y="151" width="36" height="20" rx="10" fill="#e8710a"/>
+  <text x="48" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="white">FK</text>
+  <rect x="105" y="146" width="200" height="30" rx="4" fill="#fef7e0"/>
+  <text x="117" y="166" font-size="12" font-weight="600" fill="#e8710a" font-family="Roboto Mono, Consolas, monospace">product_id</text>
+  <rect x="310" y="146" width="290" height="30" rx="4" fill="#fef7e0"/>
+  <text x="322" y="166" font-size="12" fill="#202124">Links to product table</text>
+
+  <!-- Row 4: order_date -->
+  <rect x="20" y="180" width="80" height="30" rx="4" fill="white"/>
+  <rect x="105" y="180" width="200" height="30" rx="4" fill="white"/>
+  <text x="117" y="200" font-size="12" fill="#3c4043" font-family="Roboto Mono, Consolas, monospace">order_date</text>
+  <rect x="310" y="180" width="290" height="30" rx="4" fill="white"/>
+  <text x="322" y="200" font-size="12" fill="#3c4043">When the order was placed</text>
+
+  <!-- Row 5: quantity -->
+  <rect x="20" y="214" width="80" height="30" rx="4" fill="#e8eaed"/>
+  <rect x="105" y="214" width="200" height="30" rx="4" fill="#e8eaed"/>
+  <text x="117" y="234" font-size="12" fill="#3c4043" font-family="Roboto Mono, Consolas, monospace">quantity</text>
+  <rect x="310" y="214" width="290" height="30" rx="4" fill="#e8eaed"/>
+  <text x="322" y="234" font-size="12" fill="#3c4043">Number of items</text>
+
+  <!-- Row 6: unit_price -->
+  <rect x="20" y="248" width="80" height="30" rx="4" fill="white"/>
+  <rect x="105" y="248" width="200" height="30" rx="4" fill="white"/>
+  <text x="117" y="268" font-size="12" fill="#3c4043" font-family="Roboto Mono, Consolas, monospace">unit_price</text>
+  <rect x="310" y="248" width="290" height="30" rx="4" fill="white"/>
+  <text x="322" y="268" font-size="12" fill="#3c4043">Price per item</text>
+
+  <!-- Row 7: total_amount -->
+  <rect x="20" y="282" width="80" height="30" rx="4" fill="#e8eaed"/>
+  <rect x="105" y="282" width="200" height="30" rx="4" fill="#e8eaed"/>
+  <text x="117" y="302" font-size="12" fill="#3c4043" font-family="Roboto Mono, Consolas, monospace">total_amount</text>
+  <rect x="310" y="282" width="290" height="30" rx="4" fill="#e8eaed"/>
+  <text x="322" y="302" font-size="12" fill="#3c4043">Total order value</text>
+
+  <!-- Row 8: order_status -->
+  <rect x="20" y="316" width="80" height="30" rx="4" fill="white"/>
+  <rect x="105" y="316" width="200" height="30" rx="4" fill="white"/>
+  <text x="117" y="336" font-size="12" fill="#3c4043" font-family="Roboto Mono, Consolas, monospace">order_status</text>
+  <rect x="310" y="316" width="290" height="30" rx="4" fill="white"/>
+  <text x="322" y="336" font-size="12" fill="#3c4043">Current status of the order</text>
+</svg>

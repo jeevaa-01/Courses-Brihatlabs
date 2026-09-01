@@ -1,0 +1,93 @@
+---
+title: 'Prerequisites'
+sidebar_position: 1
+description: 'What you need before starting Part 2 — Part 1 concepts, basic SQL, and an optional free-tier AWS account.'
+---
+
+<DurationBadge minutes={3} />
+
+<LearningObjectives>
+
+- Check that you have the required background (Part 1 + basic SQL) before diving in
+- Recall the 5 Vs framework and service toolkit you built in Part 1
+- Understand why Part 2 needs no paid AWS resources
+
+</LearningObjectives>
+
+### What You Should Know
+
+**Required**
+- ✅ **Part 1 of this course** (5 Vs + AWS services per V)
+- 💻 Laptop with a modern browser
+- ☁️ AWS account (free tier; only for the optional hands-on snippets)
+- 🧮 Basic SQL (SELECT, FROM, JOIN, GROUP BY)
+
+**Helpful**
+- 📝 Completed the Part 1 S3 → Glue → Athena lab
+- 📚 Familiarity with JSON / CSV / Parquet
+
+### Mental Model You Already Have (From Part 1)
+
+![S3](/img/courses/aws-icons/s3.png) ![Glue](/img/courses/aws-icons/glue.png) ![Athena](/img/courses/aws-icons/athena.png) ![Redshift](/img/courses/aws-icons/redshift.png) ![Rekognition](/img/courses/aws-icons/rekognition.png) ![Kinesis](/img/courses/aws-icons/kinesis-streams.png) ![Kinesis Firehose](/img/courses/aws-icons/kinesis-firehose.png) ![Lambda](/img/courses/aws-icons/lambda.png) ![Macie](/img/courses/aws-icons/macie.png) ![QuickSight](/img/courses/aws-icons/quicksight.png) ![SageMaker](/img/courses/aws-icons/sagemaker.png) ![Bedrock](/img/courses/aws-icons/bedrock.png)
+
+```
+  +--------------------------------------------------------------+
+  |   5 Vs framework          AWS service toolkit                |
+  |   -------------------     ----------------------             |
+  |   Volume                  S3, Glacier, Redshift, EMR         |
+  |   Variety                 Glue, Athena, Rekognition, ...     |
+  |   Velocity                Kinesis, Firehose, Lambda, MSK     |
+  |   Veracity                DataBrew, Glue DQ, Macie, ...      |
+  |   Value                   QuickSight, SageMaker, Forecast    |
+  +--------------------------------------------------------------+
+```
+
+In Part 2 we **compose** these services into proven shapes.
+
+### No Paid Resources Required
+
+Part 2 is concept-heavy. Every diagram is annotated with the services you already met in Part 1. The Part 1 hands-on lab is the practical anchor — this course teaches the architectures that scale it up.
+
+:::warning[If you choose to experiment]
+Redshift and Kinesis can exit the free tier quickly. Use serverless modes and destroy resources the same day.
+:::
+
+<KeyTakeaways>
+
+- Part 2 builds directly on Part 1's 5 Vs framework and service toolkit — finish Part 1 first
+- Basic SQL (SELECT, JOIN, GROUP BY) is enough to follow every example
+- No paid AWS resources are required — the Part 1 lab is the hands-on anchor
+- If you do experiment with Redshift or Kinesis, use serverless modes and clean up the same day
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Which background is REQUIRED before starting Part 2?',
+      options: [
+        'AWS Solutions Architect certification',
+        'Deep Spark and Scala experience',
+        'Part 1 of this course plus basic SQL',
+        'A paid AWS support plan',
+      ],
+      answer: 2,
+      explanation:
+        'Part 2 composes the services introduced in Part 1, and its examples assume basic SQL — nothing more.',
+    },
+    {
+      question: 'Why can Redshift or Kinesis experiments become costly?',
+      options: [
+        'They require a minimum 1-year contract',
+        'They can exit the AWS free tier quickly if left running',
+        'They only run on dedicated hardware',
+        'They charge per SQL keyword',
+      ],
+      answer: 1,
+      explanation:
+        'Both services can accumulate charges fast. Use serverless modes and destroy resources the same day you create them.',
+    },
+  ]}
+/>
+
+<LessonComplete />

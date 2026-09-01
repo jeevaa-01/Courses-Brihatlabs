@@ -1,0 +1,91 @@
+---
+title: 'Install Java 11 JDK'
+sidebar_position: 2
+description: 'Install the Temurin JDK 11 and set JAVA_HOME — the runtime Apache Spark depends on.'
+---
+
+<DurationBadge minutes={4} />
+
+<LearningObjectives>
+
+- Install the Eclipse Temurin JDK 11 (LTS)
+- Set the `JAVA_HOME` environment variable machine-wide
+- Verify the JDK from Git Bash
+
+</LearningObjectives>
+
+:::warning[Java 11 exactly]
+Apache Spark requires **Java 11**. Do NOT use Java 17+ as it has compatibility issues with Spark.
+:::
+
+### Step 1 - Download JDK 11
+
+Go to [https://adoptium.net/temurin/releases/?version=11](https://adoptium.net/temurin/releases/?version=11)
+
+Select: Version **11 LTS**, OS **Windows**, Architecture **x64**, Package **JDK**
+
+Or via winget:
+
+```powershell
+winget install EclipseAdoptium.Temurin.11.JDK
+```
+
+### Step 2 - Set JAVA_HOME (if not auto-set)
+
+```powershell
+# PowerShell as Administrator
+[System.Environment]::SetEnvironmentVariable(
+  "JAVA_HOME",
+  "C:\Program Files\Eclipse Adoptium\jdk-11.x.x.x-hotspot",
+  "Machine"
+)
+```
+
+### Verify
+
+```bash
+java -version
+# openjdk version "11.0.x"
+
+echo $JAVA_HOME
+# /c/Program Files/Eclipse Adoptium/jdk-11...
+```
+
+<KeyTakeaways>
+
+- Spark 3.5 needs **JDK 11** — newer JDKs cause hard-to-debug errors
+- `JAVA_HOME` must point at the JDK folder, not the `bin` directory
+- Temurin (Eclipse Adoptium) is the recommended free JDK distribution
+
+</KeyTakeaways>
+
+<Quiz
+  questions={[
+    {
+      question: 'Why not install the latest Java (17/21) for this course?',
+      options: [
+        'Spark 3.5 has compatibility issues with Java 17+',
+        'Java 17 costs money',
+        'Windows 11 only supports Java 11',
+        'PySpark is written in Java 11',
+      ],
+      answer: 0,
+      explanation:
+        'Spark is tested against specific JDKs; JDK 11 is the safe LTS choice for this stack.',
+    },
+    {
+      question: 'PySpark fails with a Java error. Which variable do you check first?',
+      options: [
+        'JAVA_HOME — it must point at the JDK 11 install folder',
+        'PYTHONPATH',
+        'SPARK_LOCAL_IP',
+        'TEMP',
+      ],
+      answer: 0,
+      explanation:
+        'A missing or wrong JAVA_HOME (e.g., pointing at a JRE or JDK 17) is the most common PySpark startup failure.',
+    },
+  ]}
+/>
+
+<LessonComplete />
